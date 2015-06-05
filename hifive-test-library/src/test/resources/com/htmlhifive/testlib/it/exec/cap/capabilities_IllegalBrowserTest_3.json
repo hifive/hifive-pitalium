@@ -1,0 +1,17 @@
+[
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "chrome"
+	},
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "firefox"
+	},
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "illegal"
+	}
+]

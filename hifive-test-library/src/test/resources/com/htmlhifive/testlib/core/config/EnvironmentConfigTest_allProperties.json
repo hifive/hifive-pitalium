@@ -1,0 +1,10 @@
+{
+	"execMode": "RUN_TEST",
+	"hubHost": "127.0.0.1",
+	"hubPort": 8080,
+	"maxThreadCount": 100,
+	"maxThreadExecuteTime": 200,
+	"maxDriverWait": 300,
+	"capabilitiesFilePath": "test.json",
+	"persister": "test"
+}

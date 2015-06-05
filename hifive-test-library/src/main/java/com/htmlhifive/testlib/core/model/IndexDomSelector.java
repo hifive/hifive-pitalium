@@ -1,0 +1,101 @@
+/*
+ * Copyright (C) 2015 NS Solutions Corporation, All Rights Reserved.
+ */
+
+package com.htmlhifive.testlib.core.model;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.htmlhifive.testlib.common.util.JSONUtils;
+
+/**
+ * DOM要素を指定するためのセレクタを保持するクラス。セレクタに一致した要素のうち、指定したインデックスのものだけを対象とする。
+ */
+public class IndexDomSelector extends DomSelector {
+
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * セレクタに一致する要素のうち、どの要素を対象とするかを表すインデックス。指定しなければ、すべての要素を対象とします。
+	 */
+	private final Integer index;
+
+	/**
+	 * セレクタに一致する全てのDOM要素を指定します。
+	 * 
+	 * @param selector セレクタ
+	 */
+	public IndexDomSelector(DomSelector selector) {
+		this(selector, null);
+	}
+
+	/**
+	 * セレクタに一致する要素のうち、index番目の要素を指定します。
+	 * 
+	 * @param selector セレクタ
+	 * @param index 対象とする要素のインデックス
+	 */
+	public IndexDomSelector(DomSelector selector, Integer index) {
+		this(selector.getType(), selector.getValue(), index);
+	}
+
+	/**
+	 * DOM要素をセレクタの種別と値で指定します。セレクタに一致する要素のうち、index番目の要素を指定します。
+	 * 
+	 * @param type セレクタの種別
+	 * @param value セレクタの値
+	 * @param index 対象とする要素のインデックス
+	 */
+	@JsonCreator
+	public IndexDomSelector(@JsonProperty("type") SelectorType type, @JsonProperty("value") String value,
+			@JsonProperty("index") Integer index) {
+		super(type, value);
+		this.index = index;
+	}
+
+	/**
+	 * 対象とする要素のインデックスを取得します。
+	 * 
+	 * @return インデックス
+	 */
+	public Integer getIndex() {
+		return index;
+	}
+
+	/**
+	 * 同じDOMを表すセレクタか否かを調べます。
+	 * 
+	 * @param o 比較対象オブジェクト
+	 * @return セレクタの種別と値とインデックスが一致すればtrue
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		if (!super.equals(o)) {
+			return false;
+		}
+
+		IndexDomSelector that = (IndexDomSelector) o;
+
+		return !(index != null ? !index.equals(that.index) : that.index != null);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		final int hashPrime = 31;
+		result = hashPrime * result + (index != null ? index.hashCode() : 0);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return JSONUtils.toString(this);
+	}
+
+}

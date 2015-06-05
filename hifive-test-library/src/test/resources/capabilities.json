@@ -1,0 +1,109 @@
+[
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "firefox"
+	},
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "chrome"
+	},
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "internet explorer",
+		"version": "11"
+	},
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "internet explorer",
+		"version": "10"
+	},
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "internet explorer",
+		"version": "9"
+	},
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "internet explorer",
+		"version": "8"
+	},
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "internet explorer",
+		"version": "7"
+	},
+	{
+		"platform": "MAC",
+		"os": "OS X",
+		"browserName": "safari"
+	},
+	{
+		"platform": "ANDROID",
+		"platformName": "Android",
+		"platformVersion": "4.4.4",
+		"version": "4.4.4 Xperia Z3",
+		"deviceName": "Xperia Z3",
+		"os": "Android",
+		"browserName": "chrome"
+	},
+	{
+		"platform": "ANDROID",
+		"platformName": "Android",
+		"platformVersion": "5.1",
+		"version": "5.1 Nexus5",
+		"deviceName": "Nexus 5",
+		"os": "Android",
+		"browserName": "chrome"
+	},
+	{
+		"platform": "ANDROID",
+		"platformName": "Android",
+		"platformVersion": "4.4.4",
+		"version": "4.4 Nexus7",
+		"deviceName": "Nexus 7",
+		"os": "Android",
+		"browserName": "chrome"
+	},
+	{
+		"platform": "ANDROID",
+		"browserName": "android",
+		"version": "2.3.6 Galaxy S2",
+		"platformName": "Android",
+		"platformVersion": "2.3.6",
+		"deviceName": "Galaxy S2",
+		"automationName": "selendroid",
+		"autoWebview": true
+	},
+	{
+		"platform": "ANDROID",
+		"browserName": "android",
+		"version": "4.0.4 ASUS Pad",
+		"platformName": "Android",
+		"platformVersion": "4.0.4",
+		"deviceName": "ASUS Pad",
+		"automationName": "selendroid",
+		"autoWebview": true
+	},
+	{
+		"platformName": "iOS",
+		"os": "iOS",
+		"platformVersion": "8.1",
+		"deviceName": "iPad Air",
+		"browserName": "safari"
+	},
+	{
+		"browserName": "safari",
+		"deviceName": "iPhone6",
+		"os": "iOS",
+		"platformName": "iOS",
+		"platformVersion": "8.3",
+		"version": "8.3"
+	}
+]

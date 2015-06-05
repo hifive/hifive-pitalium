@@ -1,0 +1,4 @@
+{
+	"execMode": "EXPECTED",
+	"capabilitiesFilePath": "com\\htmlhifive\\testlib\\exec\\cap\\capabilities_MultipleBrowserTest.json"
+}

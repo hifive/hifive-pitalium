@@ -1,0 +1,12 @@
+[
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "chrome"
+	},
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "illegal"
+	}
+]
