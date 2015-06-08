@@ -1,7 +1,18 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation, All Rights Reserved.
+ * Copyright (C) 2015 NS Solutions Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package com.htmlhifive.testlib.core.io;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -18,7 +29,6 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import com.htmlhifive.testlib.image.model.PersistedScreenshotImage;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -38,6 +48,7 @@ import com.htmlhifive.testlib.core.model.SelectorType;
 import com.htmlhifive.testlib.core.model.TargetResult;
 import com.htmlhifive.testlib.core.model.TestResult;
 import com.htmlhifive.testlib.core.selenium.MrtCapabilities;
+import com.htmlhifive.testlib.image.model.PersistedScreenshotImage;
 import com.htmlhifive.testlib.image.model.RectangleArea;
 import com.htmlhifive.testlib.image.model.ScreenshotImage;
 
@@ -323,8 +334,8 @@ public class FilePersisterTest {
 						// MetadataはTargetResultとScreenshotImageで異なることに注意
 						// JSONから読み込んだTargetResultはScreenshotImageが設定されていないので自分で設定する
 						return new TargetResult(r.getResult(), r.getTarget(), r.getExcludes(), r.isMoveTarget(), r
-								.getHiddenElementSelectors(), new PersistedScreenshotImage(persister, new PersistMetadata(
-								"testId", "testClass", "testMethod", "scId", new IndexDomSelector(
+								.getHiddenElementSelectors(), new PersistedScreenshotImage(persister,
+								new PersistMetadata("testId", "testClass", "testMethod", "scId", new IndexDomSelector(
 										SelectorType.TAG_NAME, "body", 0), null, capabilities)), r.getOptions());
 					}
 				}));
