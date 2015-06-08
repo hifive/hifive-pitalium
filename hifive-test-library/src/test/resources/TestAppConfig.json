@@ -1,5 +1,5 @@
 {
-	"baseUrl": "http://localhost:8080/dummyUrl",
+	"baseUrl": "http://172.30.249.159:80/mdtTest/",
 	"windowHeight": 960,
 	"windowWidth": 1280
 }

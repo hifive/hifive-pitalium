@@ -1,0 +1,6 @@
+results/
+libs/*
+libs/sources/*
+!libs/hifive-*
+!libs/sources/
+target/
