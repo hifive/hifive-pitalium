@@ -1,6 +1,6 @@
 {
 	"execMode": "SET_EXPECTED",
-	"hubHost": "172.30.249.159",
+	"hubHost": "localhost",
 	"maxThreadExecuteTime": 3600,
 	"capabilitiesFilePath": "capabilities.json"
 }
