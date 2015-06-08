@@ -212,9 +212,9 @@ public class TakeEntirePageScreenshotTest extends MrtTestBase {
 
 		TargetResult targetResult = result.getTargetResults().get(0);
 		assertNull(targetResult.getResult());
-		assertNull(targetResult.getExcludes());
+		assertTrue(targetResult.getExcludes().isEmpty());
 		assertFalse(targetResult.isMoveTarget());
-		assertNull(targetResult.getHiddenElementSelectors());
+		assertTrue(targetResult.getHiddenElementSelectors().isEmpty());
 		assertNull(targetResult.getOptions());
 
 		ScreenAreaResult target = targetResult.getTarget();
