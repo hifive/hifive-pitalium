@@ -190,7 +190,7 @@ public abstract class MrtWebElement extends RemoteWebElement {
 	 * 要素を非表示状態にします。
 	 */
 	public void hide() {
-		if (!isDisplayed()) {
+		if (isVisibilityHidden() && !isDisplayed()) {
 			LOG.debug("element \"{}\" already hidden", this);
 			return;
 		}
@@ -200,7 +200,7 @@ public abstract class MrtWebElement extends RemoteWebElement {
 			new WebDriverWait(driver, SHOW_HIDE_TIMEOUT).until(new ExpectedCondition<Boolean>() {
 				@Override
 				public Boolean apply(WebDriver webDriver) {
-					return !isDisplayed();
+					return isVisibilityHidden() && !isDisplayed();
 				}
 			});
 		} catch (TimeoutException e) {
@@ -212,7 +212,7 @@ public abstract class MrtWebElement extends RemoteWebElement {
 	 * 要素を表示状態にします。
 	 */
 	public void show() {
-		if (isDisplayed()) {
+		if (!isVisibilityHidden() && isDisplayed()) {
 			LOG.debug("element \"{}\" already displayed", this);
 			return;
 		}
@@ -222,12 +222,21 @@ public abstract class MrtWebElement extends RemoteWebElement {
 			new WebDriverWait(driver, SHOW_HIDE_TIMEOUT).until(new ExpectedCondition<Boolean>() {
 				@Override
 				public Boolean apply(WebDriver webDriver) {
-					return isDisplayed();
+					return !isVisibilityHidden() && isDisplayed();
 				}
 			});
 		} catch (TimeoutException e) {
 			LOG.warn("Show element timeout. {}", this);
 		}
+	}
+
+	/**
+	 * 要素のvisibilityスタイル値がhiddenかどうかを取得します。
+	 * 
+	 * @return visibilityがhiddenの場合true、それ以外の値の場合false
+	 */
+	public boolean isVisibilityHidden() {
+		return driver.executeJavaScript("return arguments[0].style.visibility == 'hidden'", this);
 	}
 
 	/**
