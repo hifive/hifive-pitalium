@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="hifive-test" default="build">
+<project name="hifive-test-library" default="build">
 
 	<!-- プロジェクト名 -->
 	<basename property="current.project.name" file="${basedir}" suffix="${ant.file}" />
@@ -30,7 +30,7 @@
 
 	<!-- jarファイルの設定 -->
 	<property name="target.jar.name" value="${current.project.name}-${target.project.version}.jar" />
-<!--	<property name="target.srcjar.name" value="${current.project.name}-${target.project.version}-sources.jar" /> -->
+	<property name="target.srcjar.name" value="${current.project.name}-${target.project.version}-sources.jar" />
 
 	<!-- ライブラリのパス  -->
 	<path id="target.lib.path">
@@ -94,6 +94,8 @@
 		<mkdir dir="${target.work.location}" />
 		<jar destfile="${target.work.location}/${target.jar.name}">
 			<fileset dir="${target.main.bin.dir}" includes="**" />
+		</jar>
+		<jar destfile="${target.work.location}/${target.srcjar.name}">
 			<fileset dir="${target.main.src.dir}" includes="**" />
 		</jar>
 	</target>
