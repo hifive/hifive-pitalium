@@ -11,8 +11,8 @@
       },
       "RollingFile": {
         "name": "RollingFileAppender",
-        "fileName": "./logs/multidevicetest.log",
-        "filePattern": "./logs/multidevicetest-%d{yyyy-MM-dd}-%i.log",
+        "fileName": "./logs/hifive-test-library-sample.log",
+        "filePattern": "./logs/hifive-test-library-sample-%d{yyyy-MM-dd}-%i.log",
         "PatternLayout": {
           "pattern": "%d{DEFAULT} [%t] %-5level %logger{36} - %msg%n"
         },
