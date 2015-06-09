@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -62,7 +61,8 @@ public class TakeEntirePageScreenshotTest extends MrtTestBase {
 	public static void beforeClass() throws JsonProcessingException, IOException {
 		currentId = TestResultManager.getInstance().getCurrentId();
 		resultFolderPath = "results" + File.separator + currentId + File.separator
-				+ TakeEntirePageScreenshotTest.class.getName();
+				+ TakeEntirePageScreenshotTest.class.getSimpleName();
+		new File(resultFolderPath).mkdirs();
 	}
 
 	@Rule
@@ -231,12 +231,12 @@ public class TakeEntirePageScreenshotTest extends MrtTestBase {
 		ScreenAreaResult target = targetResult.getTarget();
 		IndexDomSelector expectedSelector = new IndexDomSelector(selectorType, "body", 0);
 		assertThat(target.getSelector(), is(expectedSelector));
-		assertSame(screenArea, target.getScreenArea());
+		assertEquals(screenArea, target.getScreenArea());
 
 		ScreenshotImage bodyImage = targetResult.getImage();
 		ImageIO.write(bodyImage.get(), "png", new File(getFileName(methodName, SelectorType.TAG_NAME) + ".png"));
 
-		assertThat((Map<String, Object>) result.getCapabilities(), is((Map<String, Object>) this.capabilities.asMap()));
+		assertNull(result.getCapabilities());
 
 		ScreenshotImage image = result.getEntireScreenshotImage();
 		ImageIO.write(image.get(), "png", new File(getFileName(methodName) + ".png"));
