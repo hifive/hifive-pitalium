@@ -58,7 +58,7 @@ public class AssertViewOfEntirePageCheckResultTest extends MrtTestBase {
 		resultFolderPath = "results" + File.separator + currentId + File.separator + TEST_CLASS_NAME;
 		results = mapper.readTree(new File(resultFolderPath + File.separator + "result.json"));
 
-		currentExpectedIds = mapper.readTree(new File("results" + File.separator + "urrentExpectedIds.json")).get(
+		currentExpectedIds = mapper.readTree(new File("results" + File.separator + "currentExpectedIds.json")).get(
 				TEST_CLASS_NAME);
 	}
 
@@ -119,7 +119,7 @@ public class AssertViewOfEntirePageCheckResultTest extends MrtTestBase {
 		// targetResult
 		JsonNode targetResult = screenshotResult.get("targetResults").get(0);
 		assertCoordinateInfo(targetResult, selectorType);
-		assertThat(targetResult.get("result").asText(), is("SUCCESS"));
+		assertNull(targetResult.get("result"));
 
 		// capabilities
 		assertThat(new MrtCapabilities(mapper.convertValue(screenshotResult.get("capabilities"), Map.class)),
