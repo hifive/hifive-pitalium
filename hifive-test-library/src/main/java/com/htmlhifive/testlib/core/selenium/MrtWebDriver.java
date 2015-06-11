@@ -483,6 +483,26 @@ public abstract class MrtWebDriver extends RemoteWebDriver {
 	private BufferedImage cropScreenshotImage(BufferedImage image, ScreenshotParams params) {
 		RectangleArea targetArea = params.getTarget().getArea();
 		RectangleArea floorTargetArea = targetArea.floor();
+
+		// Don't crop image when the target element is "body"
+		if (params.getTarget().isBody()) {
+			int width = image.getWidth();
+			if (width < floorTargetArea.getX() + floorTargetArea.getWidth()) {
+				width -= (int) floorTargetArea.getX();
+			} else {
+				width = (int) floorTargetArea.getWidth();
+			}
+			int height = image.getHeight();
+			if (height < floorTargetArea.getY() + floorTargetArea.getHeight()) {
+				height -= (int) floorTargetArea.getY();
+			} else {
+				height = (int) floorTargetArea.getHeight();
+			}
+			params.getTarget()
+					.setArea(new RectangleArea(floorTargetArea.getX(), floorTargetArea.getY(), width, height));
+			return image;
+		}
+
 		// (width + x) と (height + y) が画像サイズを超えないようにする
 		int maxCropWidth = (int) Math.min(floorTargetArea.getX() + floorTargetArea.getWidth(), image.getWidth());
 		int maxCropHeight = (int) Math.min(floorTargetArea.getY() + floorTargetArea.getHeight(), image.getHeight());
