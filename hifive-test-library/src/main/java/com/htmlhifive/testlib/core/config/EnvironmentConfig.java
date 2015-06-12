@@ -32,7 +32,7 @@ public class EnvironmentConfig implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final int DEFAULT_HUB_PORT = 4444;
 	private static final int DEFAULT_MAX_THREAD_COUNT = 16;
-	private static final int DEFAULT_MAX_THREAD_EXECUTE_TIME = 600;
+	private static final int DEFAULT_MAX_THREAD_EXECUTE_TIME = 3600;
 	private static final int DEFAULT_MAX_DRIVER_WAIT = 30;
 
 	/**
