@@ -15,10 +15,13 @@
  */
 package com.htmlhifive.testlib.it.assertion.execlude;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.openqa.selenium.Dimension;
 
 import com.htmlhifive.testlib.core.MrtTestBase;
+import com.htmlhifive.testlib.core.config.ExecMode;
 import com.htmlhifive.testlib.core.config.MrtTestConfig;
 import com.htmlhifive.testlib.core.model.CompareTarget;
 import com.htmlhifive.testlib.core.model.DomSelector;
@@ -39,6 +42,9 @@ public class CompareEntirePageTest extends MrtTestBase {
 	private static final DomSelector[] HIDDEN_ELEMENTS = new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME,
 			"gototop") };
 
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
 	/**
 	 * targetを指定せずにassertViewを実行するテスト.<br>
 	 * 前提条件：なし<br>
@@ -53,6 +59,11 @@ public class CompareEntirePageTest extends MrtTestBase {
 
 		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
 		wait.untilLoad();
+
+		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
+			expectedException.expect(AssertionError.class);
+		}
 
 		assertionView.assertView("topPage", null, HIDDEN_ELEMENTS);
 	}
@@ -71,6 +82,10 @@ public class CompareEntirePageTest extends MrtTestBase {
 
 		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
 		wait.untilLoad();
+
+		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
+		}
 
 		//		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body")) };
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), EXCLUDES, true) };
@@ -93,7 +108,11 @@ public class CompareEntirePageTest extends MrtTestBase {
 		wait.untilLoad();
 
 		// bodyにclass="body"を付加する
-		driver.executeJavaScript("document.body.addClassName('body');");
+		driver.executeJavaScript("document.body.className += ' body';");
+
+		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
+		}
 
 		//		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.CLASS_NAME, "body")) };
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.CLASS_NAME, "body"), EXCLUDES, true) };
@@ -118,6 +137,10 @@ public class CompareEntirePageTest extends MrtTestBase {
 		// bodyにmarginを付加する
 		driver.executeJavaScript("document.body.style.margin='10px;'");
 
+		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
+		}
+
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), EXCLUDES, true) };
 		assertionView.assertView("topPage", targets, HIDDEN_ELEMENTS);
 	}
@@ -141,6 +164,10 @@ public class CompareEntirePageTest extends MrtTestBase {
 
 		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
 		wait.untilLoad();
+
+		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
+		}
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), EXCLUDES, true) };
 		assertionView.assertView("topPage", targets, HIDDEN_ELEMENTS);
