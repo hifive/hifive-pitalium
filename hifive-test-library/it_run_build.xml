@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="hifive-test-library" default="test_all">
+
+	<property name="junit.output.dir" value="${target.work.dir}/test-reports/it" />
+
+    <target name="AssertViewOfEntirePageTestSuite">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.screenshot.fullpage.AssertViewOfEntirePageTestSuite" todir="${junit.output.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="TakeEntirePageScreenshotTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.screenshot.fullpage.TakeEntirePageScreenshotTest" todir="${junit.output.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="WithoutBaseTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.base.WithoutBaseTest" todir="${junit.output.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="WithBaseTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.base.WithBaseTest" todir="${junit.output.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="TestSuiteTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.multitest.TestSuiteTest" todir="${junit.output.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="SingleBrowserTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.cap.SingleBrowserTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_SingleBrowserTest.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="NoBrowserTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.cap.NoBrowserTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_NoBrowserTest.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="MultipleMethodTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.multitest.MultipleMethodTest" todir="${junit.output.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="MultipleBrowserTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.cap.MultipleBrowserTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_MultipleBrowserTest.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="IllegalBrowserTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.cap.IllegalBrowserTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_3.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="FileParameterTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.param.FileParameterTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\param\EnvironmentConfig_FileParameterTest.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="CompareEntirePageTestSuite" depends="CompareEntirePageTest SET_EXPECTED">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.assertion.fullpage.CompareEntirePageTestSuite" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=EnvironmentConfig_test.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="CompareEntirePageTest SET_EXPECTED">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.assertion.fullpage.CompareEntirePageTest" todir="${junit.output.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="CompareWithExcludesTestSuite" depends="CompareWithExcludesTest SET_EXPECTED">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.assertion.exclude.CompareWithExcludesTestSuite" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=EnvironmentConfig_test.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="CompareWithExcludesTest SET_EXPECTED">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.assertion.exclude.CompareWithExcludesTest" todir="${junit.output.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="screenshot partialpage">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <classpath refid="test.classpath"/>
+			<batchtest fork="yes" todir="${target.junit.report.dir}">
+				<fileset dir="${target.test.src.dir}" includes="${target.test.src.dir}/com/htmlhifive/testlib/it/screenshot/partialpage/*.java" />
+			</batchtest>
+        </junit>
+    </target>
+	<target name="assertion partialpage">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <classpath refid="test.classpath"/>
+			<batchtest fork="yes" todir="${target.junit.report.dir}">
+				<fileset dir="${target.test.src.dir}" includes="${target.test.src.dir}/com/htmlhifive/testlib/it/assertion/partialpage/*.java" />
+			</batchtest>
+        </junit>
+    </target>
+	<target name="test_all">
+		<antcall target="AssertViewOfEntirePageTestSuite" />
+		<antcall target="TakeEntirePageScreenshotTest" />
+		<antcall target="WithBaseTest" />
+		<antcall target="WithoutBaseTest" />
+		<antcall target="IllegalBrowserTest" />
+		<antcall target="MultipleBrowserTest" />
+		<antcall target="NoBrowserTest" />
+		<antcall target="SingleBrowserTest" />
+		<antcall target="MultipleMethodTest" />
+		<antcall target="TestSuiteTest" />
+		<antcall target="FileParameterTest" />
+		<antcall target="CompareEntirePageTestSuite" />
+		<antcall target="CompareWithExcludesTestSuite" />
+		<antcall target="screenshot partialpage" />
+		<antcall target="assertion partialpage" />
+	</target>
+</project>

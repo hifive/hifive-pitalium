@@ -59,6 +59,16 @@
 	</path>
 	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
+	<!-- テスト実行時のパス -->
+	<path id="test.classpath">
+		<pathelement location="${target.cobertura.instrument.dir}" />
+		<pathelement location="${target.test.bin.dir}" />
+		<path refid="required.classpath" />
+		<path refid="target.lib.path" />
+		<path refid="cobertura.classpath" />
+	</path>
+
+	<import file="it_run_build.xml"/>
 
 	<!-- =================================
           target: clean
@@ -105,7 +115,7 @@
          ================================= -->
 	<target name="test_compile" description="テストコードのコンパイルを行います">
 		<mkdir dir="${target.test.bin.dir}" />
-		<javac srcdir="${target.test.src.dir}" destdir="${target.test.bin.dir}" excludes="com/htmlhifive/testlib/it/**/*.java" debug="on" source="${target.java.source.version}" target="${target.java.version}" encoding="${target.java.encoding}" includeantruntime="false">
+		<javac srcdir="${target.test.src.dir}" destdir="${target.test.bin.dir}" debug="on" source="${target.java.source.version}" target="${target.java.version}" encoding="${target.java.encoding}" includeantruntime="false">
 			<compilerarg compiler="modern" line="-deprecation -g" />
 			<classpath>
 				<pathelement location="${target.test.bin.dir}" />
@@ -116,7 +126,6 @@
 		<copy todir="${target.test.bin.dir}" preservelastmodified="true">
 			<fileset dir="${target.test.res.dir}">
 				<include name="**" />
-				<exclude name="**/it/**"/>
 			</fileset>
 		</copy>
 	</target>
@@ -148,14 +157,7 @@
 		<junit fork="yes" printsummary="yes" maxmemory="1024m" dir="${target.cobertura.dir}">
 			<jvmarg value="-XX:-UseSplitVerifier" />
 			<formatter type="xml" />
-			<classpath>
-				<pathelement location="${target.cobertura.instrument.dir}" />
-				<pathelement location="${target.test.bin.dir}" />
-				<path refid="required.classpath" />
-				<path refid="target.lib.path" />
-				<path refid="cobertura.classpath" />
-			</classpath>
-
+			<classpath refid="test.classpath" />
 			<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
 
 			<batchtest fork="yes" todir="${target.junit.report.dir}">
@@ -202,5 +204,4 @@
 		<antcall target="build" />
 		<antcall target="test_report" />
 	</target>
-
 </project>
