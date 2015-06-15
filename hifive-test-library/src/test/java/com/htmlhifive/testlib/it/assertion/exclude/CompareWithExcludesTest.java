@@ -13,8 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.htmlhifive.testlib.it.assertion.execlude;
+package com.htmlhifive.testlib.it.assertion.exclude;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -27,12 +34,13 @@ import com.htmlhifive.testlib.core.model.CompareTarget;
 import com.htmlhifive.testlib.core.model.DomSelector;
 import com.htmlhifive.testlib.core.model.ScreenArea;
 import com.htmlhifive.testlib.core.model.SelectorType;
+import com.htmlhifive.testlib.core.result.TestResultManager;
 import com.htmlhifive.testlib.core.selenium.MrtWebDriverWait;
 
 /**
- * ページ全体(body)の比較のテスト
+ * excludeのテスト
  */
-public class CompareEntirePageTest extends MrtTestBase {
+public class CompareWithExcludesTest extends MrtTestBase {
 
 	private static final String URL_TOP_PAGE = MrtTestConfig.getInstance().getTestAppConfig().getBaseUrl();
 
@@ -87,7 +95,6 @@ public class CompareEntirePageTest extends MrtTestBase {
 			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
 		}
 
-		//		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body")) };
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), EXCLUDES, true) };
 		assertionView.assertView("topPage", targets, HIDDEN_ELEMENTS);
 	}
@@ -114,7 +121,6 @@ public class CompareEntirePageTest extends MrtTestBase {
 			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
 		}
 
-		//		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.CLASS_NAME, "body")) };
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.CLASS_NAME, "body"), EXCLUDES, true) };
 		assertionView.assertView("topPage", targets, HIDDEN_ELEMENTS);
 	}
@@ -135,7 +141,7 @@ public class CompareEntirePageTest extends MrtTestBase {
 		wait.untilLoad();
 
 		// bodyにmarginを付加する
-		driver.executeJavaScript("document.body.style.margin='10px;'");
+		driver.executeJavaScript("document.body.style.margin='100px'");
 
 		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
 			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
@@ -171,5 +177,21 @@ public class CompareEntirePageTest extends MrtTestBase {
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), EXCLUDES, true) };
 		assertionView.assertView("topPage", targets, HIDDEN_ELEMENTS);
+	}
+
+	@AfterClass
+	public static void saveExpectedId() throws IOException {
+		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() != ExecMode.SET_EXPECTED) {
+			return;
+		}
+
+		File file = new File("results" + File.separator + CompareWithExcludesTest.class.getSimpleName() + ".json");
+
+		FileWriter fw = new FileWriter(file);
+		BufferedWriter bw = new BufferedWriter(fw);
+		PrintWriter pw = new PrintWriter(bw);
+
+		pw.print(TestResultManager.getInstance().getCurrentId());
+		pw.close();
 	}
 }

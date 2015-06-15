@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.htmlhifive.testlib.it.assertion.execlude;
+package com.htmlhifive.testlib.it.assertion.exclude;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -23,6 +23,6 @@ import org.junit.runners.Suite.SuiteClasses;
  * CompareEntirePageTestを実行するクラス
  */
 @RunWith(Suite.class)
-@SuiteClasses(value = { CompareEntirePageTest.class, CompareEntirePageCheckResultTest.class })
-public class CompareEntirePageTestSuite {
+@SuiteClasses(value = { CompareWithExcludesTest.class, CompareWithExcludesCheckResultTest.class })
+public class CompareWithExcludesTestSuite {
 }

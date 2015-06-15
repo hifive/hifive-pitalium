@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.htmlhifive.testlib.it.assertion.execlude;
+package com.htmlhifive.testlib.it.assertion.exclude;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.By;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,16 +40,16 @@ import com.htmlhifive.testlib.core.config.ExecMode;
 import com.htmlhifive.testlib.core.config.MrtTestConfig;
 import com.htmlhifive.testlib.core.result.TestResultManager;
 import com.htmlhifive.testlib.core.selenium.MrtCapabilities;
-import com.htmlhifive.testlib.core.selenium.MrtWebElement;
+import com.htmlhifive.testlib.it.util.ItUtils;
 
 /**
  * ページ全体(body)のスクリーンショットの取得のテストの結果を確認するテストクラス
  */
-public class CompareEntirePageCheckResultTest extends MrtTestBase {
+public class CompareWithExcludesCheckResultTest extends MrtTestBase {
 
-	private static final String TEST_CLASS_NAME = "CompareEntirePageTest";
+	private static final String TEST_CLASS_NAME = "CompareWithExcludesTest";
 
-	private static final String EXPECTED_ID = "2015_05_31_21_29_19";
+	private static String expectedId = null;
 
 	private static JsonNode results = null;
 
@@ -55,8 +61,7 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 
 	/** jsonから座標情報の取得 */
 	private JsonNode getCoordinateInfo(String methodName) throws JsonProcessingException, IOException {
-		String jsonFileName = methodName + "_topPage_WINDOWS_" + capabilities.getBrowserName();
-		return mapper.readTree(new File(resultFolderPath + File.separator + jsonFileName + ".json"));
+		return mapper.readTree(new File(getFileName(methodName) + ".json"));
 	}
 
 	/** 結果JSONからこのメソッドのスクリーンショットの結果を取得 */
@@ -71,57 +76,51 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 	}
 
 	/** 座標情報のassert */
-	private void assertCoordinateInfo(JsonNode bodyJson, String selectorType) {
+	private void assertCoordinateInfo(JsonNode bodyJson, String selectorType, boolean withMargin) {
 		JsonNode targetNode = bodyJson.get("target");
 		JsonNode selectorNode = targetNode.get("selector");
 		assertThat(selectorNode.get("type").asText(), is(selectorType));
 		assertThat(selectorNode.get("value").asText(), is("body"));
 		assertThat(selectorNode.get("index").asInt(), is(0));
 		JsonNode rectangleNode = targetNode.get("rectangle");
-		assertThat(rectangleNode.get("x").asInt(), is(0));
-		assertThat(rectangleNode.get("y").asInt(), is(0));
-		//		assertThat(rectangleNode.get("width").asInt(), is(getBodyWidth()));
-		//		assertThat(rectangleNode.get("height").asInt(), is(getBodyHeight()));
+		int margin = withMargin ? 100 : 0;
+		assertThat(rectangleNode.get("x").asInt(), is(margin));
+		assertThat(rectangleNode.get("y").asInt(), is(margin));
 		JsonNode screenAreaConditionNode = targetNode.get("screenArea").get("selector");
 		assertThat(screenAreaConditionNode.get("type").asText(), is(selectorType));
 		assertThat(screenAreaConditionNode.get("value").asText(), is("body"));
 
-		assertThat(bodyJson.get("excludes").size(), is(0));
-	}
+		JsonNode exclude = bodyJson.get("excludes").get(0);
+		JsonNode excludeSelector = exclude.get("selector");
+		assertThat(excludeSelector.get("type").asText(), is("CLASS_NAME"));
+		assertThat(excludeSelector.get("value").asText(), is("fb-like-box"));
+		assertThat(excludeSelector.get("index").asText(), is("null"));
 
-	private static final int EXPECTED_WINDOW_SIZE = 1280;
-
-	private int getBodyWidth() {
-		return (int) ((MrtWebElement) driver.findElement(By.tagName("body"))).getRect().getHeight();
-		//		int chromeSize = 16;
-		//		if ("chrome".equals(capabilities.getBrowserName())) {
-		//			chromeSize = 10;
-		//		}
-		//		return 1280 - chromeSize;
-	}
-
-	private int getBodyHeight() {
-		return (int) ((MrtWebElement) driver.findElement(By.tagName("body"))).getRect().getHeight();
+		JsonNode excludeScreenAreaSelector = exclude.get("screenArea").get("selector");
+		assertThat(excludeScreenAreaSelector.get("type").asText(), is("CLASS_NAME"));
+		assertThat(excludeScreenAreaSelector.get("value").asText(), is("fb-like-box"));
 	}
 
 	/**
 	 * スクリーンショットの結果のassert
 	 *
 	 * @param selectorType
+	 * @param withMargin
 	 */
-	private void assertScreenshotResult(JsonNode screenshotResult, String selectorType) throws JsonProcessingException {
+	private void assertScreenshotResult(JsonNode screenshotResult, String selectorType, boolean withMargin)
+			throws JsonProcessingException {
 		assertThat(screenshotResult.get("screenshotId").asText(), is("topPage"));
 		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
 			assertThat(screenshotResult.get("result").asText(), is("SUCCESS"));
 		} else {
 			assertNull(screenshotResult.get("result"));
 		}
-		assertThat(screenshotResult.get("expectedId").asText(), is(EXPECTED_ID));
+		assertThat(screenshotResult.get("expectedId").asText(), is(expectedId));
 		assertThat(screenshotResult.get("testClass").asText(), is(TEST_CLASS_NAME));
 
 		// targetResult
 		JsonNode targetResult = screenshotResult.get("targetResults").get(0);
-		assertCoordinateInfo(targetResult, selectorType);
+		assertCoordinateInfo(targetResult, selectorType, withMargin);
 		assertThat(targetResult.get("result").asText(), is("SUCCESS"));
 
 		// capabilities
@@ -129,25 +128,20 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 				is(capabilities));
 	}
 
-	@BeforeClass
-	public static void beforeClass() throws JsonProcessingException, IOException {
-		currentId = TestResultManager.getInstance().getCurrentId();
-		currentId = "2015_05_31_21_36_57";
-		resultFolderPath = "results" + File.separator + currentId + File.separator + TEST_CLASS_NAME;
-		results = mapper.readTree(new File(resultFolderPath + File.separator + "result.json"));
+	private static String readExpectedId() throws IOException {
+		File file = new File("results" + File.separator + TEST_CLASS_NAME + ".json");
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String str = br.readLine();
+		br.close();
+		return str;
 	}
 
-	/**
-	 * targetを指定せずにassertViewを実行するテスト.<br>
-	 * 前提条件：なし<br>
-	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
-	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyNoTarget_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
-	 */
-	@Test
-	public void specifyNoTarget() throws JsonProcessingException, IOException {
-		assertResult("specifyNoTarget");
+	@BeforeClass
+	public static void beforeClass() throws JsonProcessingException, IOException {
+		expectedId = readExpectedId();
+		currentId = TestResultManager.getInstance().getCurrentId();
+		resultFolderPath = "results" + File.separator + currentId + File.separator + TEST_CLASS_NAME;
+		results = mapper.readTree(new File(resultFolderPath + File.separator + "result.json"));
 	}
 
 	/**
@@ -207,13 +201,40 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 	}
 
 	private void assertResult(String methodName, String selectorType) throws JsonProcessingException, IOException {
-		assertTrue(new File(resultFolderPath + File.separator + methodName + "_topPage_WINDOWS_"
-				+ capabilities.getBrowserName() + ".png").exists());
+		String fileName = getFileName(methodName) + ".png";
+		assertTrue(fileName + "が存在しません", new File(fileName).exists());
+
+		String fileNameOfSelector = getFileName(methodName, selectorType) + ".png";
+		assertTrue(fileNameOfSelector + "が存在しません", new File(fileNameOfSelector).exists());
 
 		JsonNode bodyJson = getCoordinateInfo(methodName).get(0);
-		assertCoordinateInfo(bodyJson, selectorType);
+		assertCoordinateInfo(bodyJson, selectorType, "specifyTargetBodyWithMargin".equals(methodName));
 
-		JsonNode screenshotResultJson = getCurrentScreenshotResultJson(methodName);
-		assertScreenshotResult(screenshotResultJson, selectorType);
+		JsonNode screenshotResultJson = ItUtils.getCurrentScreenshotResultJson(methodName, results, capabilities);
+		assertScreenshotResult(screenshotResultJson, selectorType, "specifyTargetBodyWithMargin".equals(methodName));
+	}
+
+	private String getFileName(String methodName) {
+		List<String> strs = new ArrayList<String>();
+		strs.add(resultFolderPath + File.separator + methodName);
+		strs.add("topPage");
+		if (capabilities.getPlatform() != null) {
+			strs.add(capabilities.getPlatform().name());
+		} else {
+			strs.add(capabilities.getPlatformName());
+		}
+		if (!StringUtils.isEmpty(capabilities.getPlatformVersion())) {
+			strs.add(capabilities.getPlatformVersion());
+		}
+		strs.add(capabilities.getBrowserName());
+		if (!StringUtils.isEmpty(capabilities.getVersion())) {
+			strs.add(capabilities.getVersion());
+		}
+
+		return StringUtils.join(strs, "_");
+	}
+
+	private String getFileName(String methodName, String selectorType) {
+		return getFileName(methodName) + "_" + selectorType + "_body_[0]";
 	}
 }
