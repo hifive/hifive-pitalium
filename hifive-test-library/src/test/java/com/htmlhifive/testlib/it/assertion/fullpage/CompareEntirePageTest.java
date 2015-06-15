@@ -15,14 +15,24 @@
  */
 package com.htmlhifive.testlib.it.assertion.fullpage;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
 
 import com.htmlhifive.testlib.core.MrtTestBase;
+import com.htmlhifive.testlib.core.config.ExecMode;
+import com.htmlhifive.testlib.core.config.MrtTestConfig;
 import com.htmlhifive.testlib.core.model.CompareTarget;
 import com.htmlhifive.testlib.core.model.DomSelector;
 import com.htmlhifive.testlib.core.model.ScreenArea;
 import com.htmlhifive.testlib.core.model.SelectorType;
+import com.htmlhifive.testlib.core.result.TestResultManager;
 import com.htmlhifive.testlib.core.selenium.MrtWebDriverWait;
 
 /**
@@ -140,5 +150,21 @@ public class CompareEntirePageTest extends MrtTestBase {
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body")) };
 		assertionView.assertView("topPage", targets, HIDDEN_ELEMENTS);
+	}
+
+	@AfterClass
+	public static void saveExpectedId() throws IOException {
+		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() != ExecMode.SET_EXPECTED) {
+			return;
+		}
+
+		File file = new File("results" + File.separator + CompareEntirePageTest.class.getSimpleName() + ".json");
+
+		FileWriter fw = new FileWriter(file);
+		BufferedWriter bw = new BufferedWriter(fw);
+		PrintWriter pw = new PrintWriter(bw);
+
+		pw.print(TestResultManager.getInstance().getCurrentId());
+		pw.close();
 	}
 }

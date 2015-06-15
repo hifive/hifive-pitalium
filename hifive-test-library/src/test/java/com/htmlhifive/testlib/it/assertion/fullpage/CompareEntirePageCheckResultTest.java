@@ -15,10 +15,14 @@
  */
 package com.htmlhifive.testlib.it.assertion.fullpage;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +46,7 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 
 	private static final String TEST_CLASS_NAME = "CompareEntirePageTest";
 
-	private static final String EXPECTED_ID = "2015_06_03_17_49_41";
+	private static String expectedId = null;
 
 	private static JsonNode results = null;
 
@@ -54,9 +58,20 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 
 	@BeforeClass
 	public static void beforeClass() throws JsonProcessingException, IOException {
+		expectedId = readExpectedId();
+
 		currentId = TestResultManager.getInstance().getCurrentId();
 		resultFolderPath = "results" + File.separator + currentId + File.separator + TEST_CLASS_NAME;
 		results = mapper.readTree(new File(resultFolderPath + File.separator + "result.json"));
+	}
+
+	/** ファイルから期待値IDを読み込む */
+	private static String readExpectedId() throws IOException {
+		File file = new File("results" + File.separator + TEST_CLASS_NAME + ".json");
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String str = br.readLine();
+		br.close();
+		return str;
 	}
 
 	/** jsonから座標情報の取得 */
@@ -110,7 +125,7 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 	private void assertScreenshotResult(JsonNode screenshotResult, String selectorType) throws JsonProcessingException {
 		assertThat(screenshotResult.get("screenshotId").asText(), is("topPage"));
 		assertThat(screenshotResult.get("result").asText(), is("SUCCESS"));
-		assertThat(screenshotResult.get("expectedId").asText(), is(EXPECTED_ID));
+		assertThat(screenshotResult.get("expectedId").asText(), is(expectedId));
 		assertThat(screenshotResult.get("testClass").asText(), is(TEST_CLASS_NAME));
 
 		// targetResult
