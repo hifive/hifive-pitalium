@@ -122,7 +122,7 @@ public class CompareEntirePageTest extends MrtTestBase {
 		wait.untilLoad();
 
 		// bodyにmarginを付加する
-		driver.executeJavaScript("document.body.style.margin='10px;'");
+		driver.executeJavaScript("document.body.style.margin='100px'");
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body")) };
 		assertionView.assertView("topPage", targets, HIDDEN_ELEMENTS);

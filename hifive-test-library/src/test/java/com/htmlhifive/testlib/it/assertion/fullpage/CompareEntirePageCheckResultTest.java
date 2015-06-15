@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.htmlhifive.testlib.core.MrtTestBase;
 import com.htmlhifive.testlib.core.result.TestResultManager;
 import com.htmlhifive.testlib.core.selenium.MrtCapabilities;
+import com.htmlhifive.testlib.it.util.ItUtils;
 
 /**
  * ページ全体(body)のスクリーンショットの取得のテストの結果を確認するテストクラス
@@ -59,13 +60,11 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 	@BeforeClass
 	public static void beforeClass() throws JsonProcessingException, IOException {
 		expectedId = readExpectedId();
-
 		currentId = TestResultManager.getInstance().getCurrentId();
 		resultFolderPath = "results" + File.separator + currentId + File.separator + TEST_CLASS_NAME;
 		results = mapper.readTree(new File(resultFolderPath + File.separator + "result.json"));
 	}
 
-	/** ファイルから期待値IDを読み込む */
 	private static String readExpectedId() throws IOException {
 		File file = new File("results" + File.separator + TEST_CLASS_NAME + ".json");
 		BufferedReader br = new BufferedReader(new FileReader(file));
@@ -79,35 +78,17 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 		return mapper.readTree(new File(getFileName(methodName) + ".json"));
 	}
 
-	/** 結果JSONからこのメソッドのスクリーンショットの結果を取得 */
-	private JsonNode getCurrentScreenshotResultJson(String methodName) {
-		for (JsonNode jn : results.get("screenshotResults")) {
-			if (methodName.equals(jn.get("testMethod").asText())) {
-				JsonNode version = jn.get("capabilities").get("version");
-				if (version == null) {
-					if (StringUtils.isEmpty(capabilities.getVersion())) {
-						return jn;
-					}
-				} else {
-					if (version.asText().equals(capabilities.getVersion())) {
-						return jn;
-					}
-				}
-			}
-		}
-		return null;
-	}
-
 	/** 座標情報のassert */
-	private void assertCoordinateInfo(JsonNode bodyJson, String selectorType) {
+	private void assertCoordinateInfo(JsonNode bodyJson, String selectorType, boolean withMargin) {
 		JsonNode targetNode = bodyJson.get("target");
 		JsonNode selectorNode = targetNode.get("selector");
 		assertThat(selectorNode.get("type").asText(), is(selectorType));
 		assertThat(selectorNode.get("value").asText(), is("body"));
 		assertThat(selectorNode.get("index").asInt(), is(0));
 		JsonNode rectangleNode = targetNode.get("rectangle");
-		assertThat(rectangleNode.get("x").asInt(), is(0));
-		assertThat(rectangleNode.get("y").asInt(), is(0));
+		int margin = withMargin ? 100 : 0;
+		assertThat(rectangleNode.get("x").asInt(), is(margin));
+		assertThat(rectangleNode.get("y").asInt(), is(margin));
 		assertThat(rectangleNode.get("width").asInt(), not(0));
 		assertThat(rectangleNode.get("height").asInt(), not(0));
 		JsonNode screenAreaConditionNode = targetNode.get("screenArea").get("selector");
@@ -122,7 +103,8 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 	 *
 	 * @param selectorType
 	 */
-	private void assertScreenshotResult(JsonNode screenshotResult, String selectorType) throws JsonProcessingException {
+	private void assertScreenshotResult(JsonNode screenshotResult, String selectorType, boolean withMargin)
+			throws JsonProcessingException {
 		assertThat(screenshotResult.get("screenshotId").asText(), is("topPage"));
 		assertThat(screenshotResult.get("result").asText(), is("SUCCESS"));
 		assertThat(screenshotResult.get("expectedId").asText(), is(expectedId));
@@ -130,7 +112,7 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 
 		// targetResult
 		JsonNode targetResult = screenshotResult.get("targetResults").get(0);
-		assertCoordinateInfo(targetResult, selectorType);
+		assertCoordinateInfo(targetResult, selectorType, withMargin);
 		assertThat(targetResult.get("result").asText(), is("SUCCESS"));
 
 		// capabilities
@@ -215,10 +197,10 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 		assertTrue(fileNameOfSelector + "が存在しません", new File(fileNameOfSelector).exists());
 
 		JsonNode bodyJson = getCoordinateInfo(methodName).get(0);
-		assertCoordinateInfo(bodyJson, selectorType);
+		assertCoordinateInfo(bodyJson, selectorType, "specifyTargetBodyWithMargin".equals(methodName));
 
-		JsonNode screenshotResultJson = getCurrentScreenshotResultJson(methodName);
-		assertScreenshotResult(screenshotResultJson, selectorType);
+		JsonNode screenshotResultJson = ItUtils.getCurrentScreenshotResultJson(methodName, results, capabilities);
+		assertScreenshotResult(screenshotResultJson, selectorType, "specifyTargetBodyWithMargin".equals(methodName));
 	}
 
 	private String getFileName(String methodName) {

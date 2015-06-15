@@ -157,7 +157,7 @@ public class TakeEntirePageScreenshotTest extends MrtTestBase {
 		wait.untilLoad();
 
 		// bodyにmarginを付加する
-		driver.executeJavaScript("document.body.style.margin='10px;'");
+		driver.executeJavaScript("document.body.style.margin='100px'");
 
 		ScreenshotResult result = driver.takeScreenshot("topPage");
 		assertScreenshotResult(result, "specifyTargetBodyWithMargin");

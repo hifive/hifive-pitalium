@@ -15,8 +15,11 @@
  */
 package com.htmlhifive.testlib.it.screenshot.fullpage;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.htmlhifive.testlib.core.MrtTestBase;
 import com.htmlhifive.testlib.core.result.TestResultManager;
 import com.htmlhifive.testlib.core.selenium.MrtCapabilities;
+import com.htmlhifive.testlib.it.util.ItUtils;
 
 /**
  * ページ全体(body)のスクリーンショットの取得のテストの結果を確認するテストクラス
@@ -67,35 +71,17 @@ public class AssertViewOfEntirePageCheckResultTest extends MrtTestBase {
 		return mapper.readTree(new File(getFileName(methodName) + ".json"));
 	}
 
-	/** 結果JSONからこのメソッドのスクリーンショットの結果を取得 */
-	private JsonNode getCurrentScreenshotResultJson(String methodName) {
-		for (JsonNode jn : results.get("screenshotResults")) {
-			if (methodName.equals(jn.get("testMethod").asText())) {
-				JsonNode version = jn.get("capabilities").get("version");
-				if (version == null) {
-					if (StringUtils.isEmpty(capabilities.getVersion())) {
-						return jn;
-					}
-				} else {
-					if (version.asText().equals(capabilities.getVersion())) {
-						return jn;
-					}
-				}
-			}
-		}
-		return null;
-	}
-
 	/** 座標情報のassert */
-	private void assertCoordinateInfo(JsonNode bodyJson, String selectorType) {
+	private void assertCoordinateInfo(JsonNode bodyJson, String selectorType, boolean withMargin) {
 		JsonNode targetNode = bodyJson.get("target");
 		JsonNode selectorNode = targetNode.get("selector");
 		assertThat(selectorNode.get("type").asText(), is(selectorType));
 		assertThat(selectorNode.get("value").asText(), is("body"));
 		assertThat(selectorNode.get("index").asInt(), is(0));
 		JsonNode rectangleNode = targetNode.get("rectangle");
-		assertThat(rectangleNode.get("x").asInt(), is(0));
-		assertThat(rectangleNode.get("y").asInt(), is(0));
+		int margin = withMargin ? 100 : 0;
+		assertThat(rectangleNode.get("x").asInt(), is(margin));
+		assertThat(rectangleNode.get("y").asInt(), is(margin));
 		assertThat(rectangleNode.get("width").asInt(), not(0));
 		assertThat(rectangleNode.get("height").asInt(), not(0));
 		JsonNode screenAreaConditionNode = targetNode.get("screenArea").get("selector");
@@ -110,7 +96,8 @@ public class AssertViewOfEntirePageCheckResultTest extends MrtTestBase {
 	 *
 	 * @param selectorType
 	 */
-	private void assertScreenshotResult(JsonNode screenshotResult, String selectorType) throws JsonProcessingException {
+	private void assertScreenshotResult(JsonNode screenshotResult, String selectorType, boolean withMargin)
+			throws JsonProcessingException {
 		assertThat(screenshotResult.get("screenshotId").asText(), is("topPage"));
 		assertNull(screenshotResult.get("result"));
 		assertNull(screenshotResult.get("expectedId"));
@@ -118,7 +105,7 @@ public class AssertViewOfEntirePageCheckResultTest extends MrtTestBase {
 
 		// targetResult
 		JsonNode targetResult = screenshotResult.get("targetResults").get(0);
-		assertCoordinateInfo(targetResult, selectorType);
+		assertCoordinateInfo(targetResult, selectorType, withMargin);
 		assertNull(targetResult.get("result"));
 
 		// capabilities
@@ -203,10 +190,10 @@ public class AssertViewOfEntirePageCheckResultTest extends MrtTestBase {
 		assertTrue(fileNameOfSelector + "が存在しません", new File(fileNameOfSelector).exists());
 
 		JsonNode bodyJson = getCoordinateInfo(methodName).get(0);
-		assertCoordinateInfo(bodyJson, selectorType);
+		assertCoordinateInfo(bodyJson, selectorType, "specifyTargetBodyWithMargin".equals(methodName));
 
-		JsonNode screenshotResultJson = getCurrentScreenshotResultJson(methodName);
-		assertScreenshotResult(screenshotResultJson, selectorType);
+		JsonNode screenshotResultJson = ItUtils.getCurrentScreenshotResultJson(methodName, results, capabilities);
+		assertScreenshotResult(screenshotResultJson, selectorType, "specifyTargetBodyWithMargin".equals(methodName));
 
 		assertThat(currentExpectedIds.get(methodName).asText(), is(currentId));
 	}
