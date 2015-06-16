@@ -15,10 +15,8 @@
  */
 package com.htmlhifive.testlib.it.assertion.exclude;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -145,55 +143,36 @@ public class CompareWithExcludesCheckResultTest extends MrtTestBase {
 	}
 
 	/**
-	 * bodyタグを指定してassertViewを実行するテスト.<br>
+	 * bodyをtargetにexcludeを指定するテスト.<br>
 	 * 前提条件：なし<br>
-	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
-	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetTagBody_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4, 5.1/iOS 8.1, 8.3<br>
+	 * 期待結果：テストに成功する。jsonファイルにexcludeの情報が出力される
 	 */
 	@Test
-	public void specifyTargetTagBody() throws JsonProcessingException, IOException {
-		assertResult("specifyTargetTagBody");
+	public void excludeForBody() throws JsonProcessingException, IOException {
+		assertResult("excludeForBody");
 	}
 
 	/**
-	 * クラスを指定してbodyのassertViewを実行するテスト.<br>
+	 * bodyにmarginがある場合にexcludeを指定するテスト<br>
 	 * 前提条件：なし<br>
-	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
-	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetBodyClass_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4, 5.1/iOS 8.1, 8.3<br>
+	 * 期待結果：テストに成功する
 	 */
 	@Test
-	public void specifyTargetClassBody() throws JsonProcessingException, IOException {
-		assertResult("specifyTargetClassBody", "CLASS_NAME");
+	public void excludeForBodyWithMargin() throws JsonProcessingException, IOException {
+		assertResult("excludeForBodyWithMargin");
 	}
 
 	/**
-	 * bodyにmarginがある場合にassertViewを実行するテスト.<br>
+	 * 十分な高さにしてスクロールが出ない状態でexcludeを指定するテスト<br>
 	 * 前提条件：なし<br>
-	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
-	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetBodyWithMargin_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4, 5.1/iOS 8.1, 8.3<br>
+	 * 期待結果：テストに成功する
 	 */
 	@Test
-	public void specifyTargetBodyWithMargin() throws JsonProcessingException, IOException {
-		assertResult("specifyTargetBodyWithMargin");
-	}
-
-	/**
-	 * 十分な高さにしてスクロールが出ない状態でbodyのassertViewを実行するテスト.<br>
-	 * 前提条件：なし<br>
-	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
-	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetBodyWithoutScroll_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
-	 */
-	@Test
-	public void specifyTargetBodyWithoutScroll() throws JsonProcessingException, IOException {
-		assertResult("specifyTargetBodyWithoutScroll");
+	public void excludeForBodyWithoutScroll() throws JsonProcessingException, IOException {
+		assertResult("excludeForBodyWithoutScroll");
 	}
 
 	private void assertResult(String methodName) throws JsonProcessingException, IOException {

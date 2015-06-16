@@ -54,15 +54,13 @@ public class CompareWithExcludesTest extends MrtTestBase {
 	public ExpectedException expectedException = ExpectedException.none();
 
 	/**
-	 * targetを指定せずにassertViewを実行するテスト.<br>
+	 * excludeを指定しないとdiffが出ることの確認のテスト<br>
 	 * 前提条件：なし<br>
-	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
-	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyNoTarget_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4, 5.1/iOS 8.1, 8.3<br>
+	 * 期待結果：assertViewでテストが失敗する
 	 */
 	@Test
-	public void specifyNoTarget() {
+	public void checkFailure() {
 		driver.get(URL_TOP_PAGE);
 
 		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
@@ -77,15 +75,13 @@ public class CompareWithExcludesTest extends MrtTestBase {
 	}
 
 	/**
-	 * bodyタグを指定してassertViewを実行するテスト.<br>
+	 * bodyをtargetにexcludeを指定するテスト.<br>
 	 * 前提条件：なし<br>
-	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
-	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetTagBody_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4, 5.1/iOS 8.1, 8.3<br>
+	 * 期待結果：テストに成功する。jsonファイルにexcludeの情報が出力される
 	 */
 	@Test
-	public void specifyTargetTagBody() {
+	public void excludeForBody() {
 		driver.get(URL_TOP_PAGE);
 
 		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
@@ -100,41 +96,13 @@ public class CompareWithExcludesTest extends MrtTestBase {
 	}
 
 	/**
-	 * クラスを指定してbodyのassertViewを実行するテスト.<br>
+	 * bodyにmarginがある場合にexcludeを指定するテスト<br>
 	 * 前提条件：なし<br>
-	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
-	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetBodyClass_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4, 5.1/iOS 8.1, 8.3<br>
+	 * 期待結果：テストに成功する
 	 */
 	@Test
-	public void specifyTargetClassBody() {
-		driver.get(URL_TOP_PAGE);
-
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
-		wait.untilLoad();
-
-		// bodyにclass="body"を付加する
-		driver.executeJavaScript("document.body.className += ' body';");
-
-		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
-			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
-		}
-
-		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.CLASS_NAME, "body"), EXCLUDES, true) };
-		assertionView.assertView("topPage", targets, HIDDEN_ELEMENTS);
-	}
-
-	/**
-	 * bodyにmarginがある場合のassertViewを実行するテスト.<br>
-	 * 前提条件：なし<br>
-	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
-	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetBodyWithMargin_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
-	 */
-	@Test
-	public void specifyTargetBodyWithMargin() {
+	public void excludeForBodyWithMargin() {
 		driver.get(URL_TOP_PAGE);
 
 		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
@@ -152,15 +120,13 @@ public class CompareWithExcludesTest extends MrtTestBase {
 	}
 
 	/**
-	 * 十分な高さにしてスクロールが出ない状態でbodyのassertViewを実行するテスト.<br>
+	 * 十分な高さにしてスクロールが出ない状態でexcludeを指定するテスト<br>
 	 * 前提条件：なし<br>
-	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
-	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetBodyWithoutScroll_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4, 5.1/iOS 8.1, 8.3<br>
+	 * 期待結果：テストに成功する
 	 */
 	@Test
-	public void specifyTargetBodyWithoutScroll() {
+	public void excludeForBodyWithoutScroll() {
 		String platformName = capabilities.getPlatformName();
 		if (!"iOS".equals(platformName) && !"Android".equals(platformName)) {
 			driver.manage().window().setSize(new Dimension(1280, 2500));
