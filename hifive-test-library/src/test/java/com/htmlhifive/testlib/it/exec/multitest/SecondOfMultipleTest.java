@@ -18,11 +18,16 @@ package com.htmlhifive.testlib.it.exec.multitest;
 import org.junit.Test;
 
 import com.htmlhifive.testlib.core.MrtTestBase;
+import com.htmlhifive.testlib.core.model.DomSelector;
+import com.htmlhifive.testlib.core.model.SelectorType;
 
 /**
  * 同時実行のテストの2つ目のテストクラス
  */
 public class SecondOfMultipleTest extends MrtTestBase {
+
+	private static final DomSelector[] HIDDEN_ELEMENTS = new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME,
+			"gototop") };
 
 	/**
 	 * 設定ファイルの内容が設定されているかのテスト<br>
@@ -33,6 +38,6 @@ public class SecondOfMultipleTest extends MrtTestBase {
 	@Test
 	public void test() {
 		driver.get(null);
-		assertionView.assertView("second");
+		assertionView.assertView("second", null, HIDDEN_ELEMENTS);
 	}
 }

@@ -15,19 +15,18 @@
  */
 package com.htmlhifive.testlib.it.exec.multitest;
 
+import static org.junit.Assert.*;
+
+import java.io.File;
+
 import org.junit.Test;
 
-import com.htmlhifive.testlib.core.MrtTestBase;
-import com.htmlhifive.testlib.core.model.DomSelector;
-import com.htmlhifive.testlib.core.model.SelectorType;
+import com.htmlhifive.testlib.core.result.TestResultManager;
 
 /**
- * 同時実行のテストの１つ目のテストクラス
+ * 同時実行のテストの2つ目のテストクラス
  */
-public class FirstOfMultipleTest extends MrtTestBase {
-
-	private static final DomSelector[] HIDDEN_ELEMENTS = new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME,
-			"gototop") };
+public class MultipleClassCheckResultTest {
 
 	/**
 	 * 設定ファイルの内容が設定されているかのテスト<br>
@@ -36,8 +35,9 @@ public class FirstOfMultipleTest extends MrtTestBase {
 	 * 期待結果：テストが正しく実行でき、assertViewの比較で一致する
 	 */
 	@Test
-	public void test() {
-		driver.get(null);
-		assertionView.assertView("first", null, HIDDEN_ELEMENTS);
+	public void checkFolders() {
+		String currentId = TestResultManager.getInstance().getCurrentId();
+		assertTrue(new File("results" + File.separator + currentId + File.separator + "FirstOfMultipleTest").exists());
+		assertTrue(new File("results" + File.separator + currentId + File.separator + "SecondOfMultipleTest").exists());
 	}
 }

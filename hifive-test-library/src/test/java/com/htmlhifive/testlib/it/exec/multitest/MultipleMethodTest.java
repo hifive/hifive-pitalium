@@ -18,11 +18,16 @@ package com.htmlhifive.testlib.it.exec.multitest;
 import org.junit.Test;
 
 import com.htmlhifive.testlib.core.MrtTestBase;
+import com.htmlhifive.testlib.core.model.DomSelector;
+import com.htmlhifive.testlib.core.model.SelectorType;
 
 /**
  * １つのテストケース内に複数のテストメソッドがあるテスト
  */
 public class MultipleMethodTest extends MrtTestBase {
+
+	private static final DomSelector[] HIDDEN_ELEMENTS = new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME,
+			"gototop") };
 
 	/**
 	 * 1つめのテスト<br>
@@ -33,7 +38,7 @@ public class MultipleMethodTest extends MrtTestBase {
 	@Test
 	public void firstTest() {
 		driver.get(null);
-		assertionView.assertView("firstTest");
+		assertionView.assertView("firstTest", null, HIDDEN_ELEMENTS);
 	}
 
 	/**
@@ -45,6 +50,6 @@ public class MultipleMethodTest extends MrtTestBase {
 	@Test
 	public void secondTest() {
 		driver.get(null);
-		assertionView.assertView("secondTest");
+		assertionView.assertView("secondTest", null, HIDDEN_ELEMENTS);
 	}
 }

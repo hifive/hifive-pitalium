@@ -35,11 +35,22 @@
             <classpath refid="test.classpath"/>
         </junit>
     </target>
-    <target name="TestSuiteTest">
+    <target name="MultipleClassTest">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.multitest.FirstOfMultipleTest" todir="${junit.output.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.multitest.SecondOfMultipleTest" todir="${junit.output.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
             <test name="com.htmlhifive.testlib.it.exec.multitest.TestSuiteTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=EnvironmentConfig_test.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>

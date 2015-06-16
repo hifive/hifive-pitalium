@@ -27,6 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * 　　　　　　　１つのテスト結果IDのフォルダに２つのテストクラスのフォルダができ、それぞれの内容が格納されている。
  */
 @RunWith(Suite.class)
-@SuiteClasses({ FirstOfMultipleTest.class, SecondOfMultipleTest.class })
-public class TestSuiteTest {
+@SuiteClasses({ FirstOfMultipleTest.class, SecondOfMultipleTest.class, MultipleClassCheckResultTest.class })
+public class MultipleClassTest {
+
 }
