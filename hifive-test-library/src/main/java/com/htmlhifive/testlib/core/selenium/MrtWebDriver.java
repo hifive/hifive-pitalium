@@ -63,7 +63,6 @@ public abstract class MrtWebDriver extends RemoteWebDriver {
 	 */
 	public static final double DEFAULT_SCREENSHOT_SCALE = 1d;
 
-	private static final Logger LOG = LoggerFactory.getLogger(MrtWebDriver.class);
 	private static final String[] SCRIPTS_SCROLL_TOP = { "document.documentElement.scrollTop",
 			"document.body.scrollTop" };
 	private static final String[] SCRIPTS_SCROLL_LEFT = { "document.documentElement.scrollLeft",
@@ -102,6 +101,7 @@ public abstract class MrtWebDriver extends RemoteWebDriver {
 	// CHECKSTYLE:ON
 	//@formatter:on
 
+	protected final Logger LOG = LoggerFactory.getLogger(getClass());
 	private final MrtCapabilities capabilities;
 	private String baseUrl;
 
@@ -788,11 +788,9 @@ public abstract class MrtWebDriver extends RemoteWebDriver {
 				"var _bodyTop = arguments[0].getBoundingClientRect().top; return _bodyTop;", bodyElement);
 
 		// topの絶対値とウィンドウ高さからページ全体の高さを計算
-		// topの座標には上マージンが含まれていないので別途足す
 		LOG.debug("relativeBodyTop: {}, bodyTop: {}, windowheight: {}, margin: {}", relativeBodyTop, bodyTop,
 				getWindowHeight(), margin.getTop());
-		double pageHeight = Math.abs(relativeBodyTop.doubleValue()) + bodyTop.doubleValue() + getWindowHeight()
-				+ margin.getTop();
+		double pageHeight = Math.abs(relativeBodyTop.doubleValue()) + bodyTop.doubleValue() + getWindowHeight();
 
 		// スクロール位置を元に戻す
 		scrollTo(scrollLeft, scrollTop);
