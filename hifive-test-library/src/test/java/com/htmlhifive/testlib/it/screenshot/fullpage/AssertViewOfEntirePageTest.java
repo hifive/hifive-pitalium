@@ -155,7 +155,7 @@ public class AssertViewOfEntirePageTest extends MrtTestBase {
 	@Test
 	public void driverQuitTest() throws IOException {
 		driver.get(URL_TOP_PAGE);
-		driver.close();
+		driver.quit();
 
 		expectedException.expect(WebDriverException.class);
 		assertionView.assertView("topPage");

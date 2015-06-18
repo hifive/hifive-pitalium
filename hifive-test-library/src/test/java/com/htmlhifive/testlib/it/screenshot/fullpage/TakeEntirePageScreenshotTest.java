@@ -200,7 +200,7 @@ public class TakeEntirePageScreenshotTest extends MrtTestBase {
 	@Test
 	public void driverQuitTest() throws IOException {
 		driver.get(TEST_TOP_PAGE_URL);
-		driver.close();
+		driver.quit();
 
 		expectedException.expect(WebDriverException.class);
 		driver.takeScreenshot("topPage");
