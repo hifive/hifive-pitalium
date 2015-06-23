@@ -1,4 +1,5 @@
 {
-	"execMode": "EXPECTED",
-	"capabilitiesFilePath": "com\\htmlhifive\\testlib\\exec\\cap\\capabilities_SingleBrowserTest.json"
+	"execMode": "TAKE_SCREENSHOT",
+	"hubHost": "172.30.249.159",
+	"capabilitiesFilePath": "com\\htmlhifive\\testlib\\it\\exec\\cap\\capabilities_SingleBrowserTest.json"
 }

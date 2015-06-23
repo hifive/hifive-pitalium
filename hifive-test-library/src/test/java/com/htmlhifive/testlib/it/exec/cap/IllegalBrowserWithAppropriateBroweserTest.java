@@ -26,12 +26,15 @@ import org.openqa.selenium.WebDriverException;
 import com.htmlhifive.testlib.core.MrtTestBase;
 
 /**
- * 不正なブラウザの実行のテスト. <br>
- * -Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\test\it\exec\cap\hifiveRunnerConfig_IllegalBrowserTest_1.
+ * 不正なブラウザの設定を含む実行のテスト. <br>
+ * 実行時は、JVMの引数で<br>
+ * -Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\test\it\exec\cap\hifiveRunnerConfig_IllegalBrowserTest_2.
  * json<br>
  * を指定すること.
  */
-public class IllegalBrowserTest extends MrtTestBase {
+public class IllegalBrowserWithAppropriateBroweserTest extends MrtTestBase {
+
+	private static final String ILLEGAL_BROWSER_STR = "illegal";
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
@@ -45,12 +48,21 @@ public class IllegalBrowserTest extends MrtTestBase {
 		 */
 		@Override
 		protected void starting(Description description) {
-			expectedException.expect(WebDriverException.class);
+			if (isIllegalCapability()) {
+				expectedException.expect(WebDriverException.class);
+			}
 		}
 	};
 
 	@Test
 	public void testWhenRightCapability() {
-		Assert.fail("テストが実行されました");
+		if (isIllegalCapability()) {
+			Assert.fail("テストが実行されました");
+		}
+		Assert.assertTrue(true);
+	}
+
+	private boolean isIllegalCapability() {
+		return ILLEGAL_BROWSER_STR.equals(capabilities.getBrowserName());
 	}
 }

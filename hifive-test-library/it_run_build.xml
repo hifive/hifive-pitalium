@@ -94,11 +94,29 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="com.htmlhifive.testlib.it.exec.cap.IllegalBrowserTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_3.json"/>
+            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_1.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
-    <target name="FileParameterTest">
+    <target name="IllegalBrowserWithAppropriateBroweserTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.cap.IllegalBrowserWithAppropriateBroweserTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_2.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+	<target name="IllegalBrowserWithAppropriateBrowesersTest">
+    <mkdir dir="${junit.output.dir}"/>
+    <junit fork="yes" printsummary="withOutAndErr">
+        <formatter type="xml"/>
+        <test name="com.htmlhifive.testlib.it.exec.cap.IllegalBrowserWithAppropriateBrowesersTest" todir="${junit.output.dir}"/>
+        <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_3.json"/>
+        <classpath refid="test.classpath"/>
+    </junit>
+</target>
+	<target name="FileParameterTest">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>

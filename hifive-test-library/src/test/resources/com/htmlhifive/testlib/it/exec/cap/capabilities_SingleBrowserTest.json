@@ -2,6 +2,7 @@
 	{
 		"platform": "WINDOWS",
 		"os": "WINDOWS",
-		"browserName": "internet explorer"
+		"browserName": "internet explorer",
+		"version": "11"
 	}
 ]
