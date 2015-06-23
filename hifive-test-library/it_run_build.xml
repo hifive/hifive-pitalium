@@ -34,6 +34,12 @@
             <test name="com.htmlhifive.testlib.it.exec.base.WithBaseTest" todir="${junit.output.dir}"/>
             <classpath refid="test.classpath"/>
         </junit>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.testlib.it.exec.base.WithBaseTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=EnvironmentConfig_test.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
     </target>
     <target name="MultipleClassTest">
         <mkdir dir="${junit.output.dir}"/>

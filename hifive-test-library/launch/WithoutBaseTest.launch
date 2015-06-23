@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/hifive-test-library/src/test/java/com/htmlhifive/testlib/ut/exec/base/WithoutBaseTest.java"/>
+<listEntry value="/hifive-test-library/src/test/java/com/htmlhifive/testlib/it/exec/base/WithoutBaseTest.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -12,4 +12,5 @@
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.htmlhifive.testlib.it.exec.base.WithoutBaseTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="hifive-test-library"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dcom.htmlhifive.testlib.environmentConfig=EnvironmentConfig_test.json"/>
 </launchConfiguration>

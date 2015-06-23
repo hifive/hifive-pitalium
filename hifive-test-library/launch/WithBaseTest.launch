@@ -13,4 +13,5 @@
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.htmlhifive.testlib.it.exec.base.WithBaseTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="hifive-test-library"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dcom.htmlhifive.testlib.environmentConfig=EnvironmentConfig_test.json"/>
 </launchConfiguration>
