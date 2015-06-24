@@ -79,7 +79,7 @@ public class AssertViewOfEntirePageCheckResultTest extends MrtTestBase {
 		JsonNode rectangleNode = targetNode.get("rectangle");
 
 		// TODO: モバイルはscaleのためにマージンが変わるが、テスト側で検知できないので目視確認
-		if (!"iOS".equals(capabilities.getPlatformName()) || !"Android".equals(capabilities.getPlatformName())) {
+		if (!"iOS".equals(capabilities.getPlatformName()) && !"Android".equals(capabilities.getPlatformName())) {
 			int margin = withMargin ? 100 : 0;
 			assertThat(rectangleNode.get("x").asInt(), is(margin));
 			assertThat(rectangleNode.get("y").asInt(), is(margin));
