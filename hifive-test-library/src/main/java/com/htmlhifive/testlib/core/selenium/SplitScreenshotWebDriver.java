@@ -72,13 +72,6 @@ abstract class SplitScreenshotWebDriver extends MrtWebDriver {
 		long windowWidth = getWindowWidth();
 		long windowHeight = getWindowHeight();
 
-		// 移動しているTOP分を引く
-		MrtWebElement bodyElement = (MrtWebElement) findElementByTagName("body");
-		WebElementRect bodyRect = bodyElement.getRect();
-		if (bodyRect.getTop() < 0) {
-			pageHeight += bodyRect.getTop();
-		}
-
 		double captureTop = 0d;
 		long scrollTop = -1L;
 		int totalHeight = 0;
