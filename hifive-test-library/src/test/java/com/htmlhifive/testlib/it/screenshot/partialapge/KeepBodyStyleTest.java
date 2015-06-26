@@ -49,18 +49,18 @@ public class KeepBodyStyleTest extends MrtTestBase {
 		driver.get(BASE_URL);
 
 		final String position = "absolute";
-		final int offsetLeft = 20;
-		final int offsetTop = 30;
+		final String offsetLeft = "20px";
+		final String offsetTop = "30px";
 
 		// 取得対象要素の座標を固定する。
 		StringBuilder sb = new StringBuilder();
 		sb.append("document.body.style.position = '");
 		sb.append(position);
-		sb.append("'; document.body.style.top = ");
+		sb.append("'; document.body.style.top = '");
 		sb.append(offsetTop);
-		sb.append("; document.body.style.left = ");
+		sb.append("'; document.body.style.left = '");
 		sb.append(offsetLeft);
-		sb.append(";");
+		sb.append("';");
 		System.out.println(sb.toString());
 		driver.executeJavaScript(sb.toString());
 
@@ -72,8 +72,8 @@ public class KeepBodyStyleTest extends MrtTestBase {
 		WebElement body = driver.findElement(By.tagName("body"));
 		//body.getCssValue("position");
 		assertThat(body.getCssValue("position"), is(position));
-		assertThat(body.getLocation().y, is(offsetTop));
-		assertThat(body.getLocation().x, is(offsetLeft));
+		assertThat(body.getCssValue("top"), is(offsetTop));
+		assertThat(body.getCssValue("left"), is(offsetLeft));
 	}
 
 	/**
