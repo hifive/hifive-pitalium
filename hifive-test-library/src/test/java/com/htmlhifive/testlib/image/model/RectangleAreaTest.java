@@ -29,10 +29,32 @@ public class RectangleAreaTest {
 	 */
 	@Test
 	public void testFloor() throws Exception {
-		RectangleArea rectangle = new RectangleArea(10.5d, 20.5d, 30.5d, 40.5d);
+		RectangleArea rectangle = new RectangleArea(10.3d, 20.4d, 30.5d, 40.6d);
 		RectangleArea result = rectangle.floor();
 
 		assertThat(result, is(new RectangleArea(10d, 20d, 30d, 40d)));
+	}
+
+	/**
+	 * 四捨五入テスト
+	 */
+	@Test
+	public void testRound() throws Exception {
+		RectangleArea rectangle = new RectangleArea(10.3d, 20.4d, 30.5d, 40.6d);
+		RectangleArea result = rectangle.round();
+
+		assertThat(result, is(new RectangleArea(10d, 20d, 31d, 41d)));
+	}
+
+	/**
+	 * 切り上げテスト
+	 */
+	@Test
+	public void testCeil() throws Exception {
+		RectangleArea rectangle = new RectangleArea(10.3d, 20.4d, 30.5d, 40.6d);
+		RectangleArea result = rectangle.ceil();
+
+		assertThat(result, is(new RectangleArea(11d, 21d, 31d, 41d)));
 	}
 
 	/**

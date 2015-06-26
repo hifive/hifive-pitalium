@@ -110,6 +110,24 @@ public class RectangleArea implements Serializable {
 	}
 
 	/**
+	 * 座標・サイズの小数点以下の値を四捨五入した矩形領域を生成します。
+	 *
+	 * @return 小数点以下を四捨五入した値を持つ矩形領域
+	 */
+	public RectangleArea round() {
+		return new RectangleArea(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
+	}
+
+	/**
+	 * 座標・サイズの小数点以下の値を切り上げた矩形領域を生成します。
+	 *
+	 * @return 小数点以下を切り上げた値を持つ矩形領域
+	 */
+	public RectangleArea ceil() {
+		return new RectangleArea(Math.ceil(x), Math.ceil(y), Math.ceil(width), Math.ceil(height));
+	}
+
+	/**
 	 * 指定量移動させた矩形領域を生成します。
 	 * 
 	 * @param deltaX X座標方向の移動量
@@ -136,13 +154,13 @@ public class RectangleArea implements Serializable {
 	}
 
 	/**
-	 * {@link Rectangle}に変換します。
+	 * 四捨五入された位置・座標を持った{@link Rectangle}に変換します。
 	 * 
-	 * @return 同じ位置・座標を持った{@link Rectangle}
+	 * @return 四捨五入された位置・座標を持った{@link Rectangle}
 	 */
 	public Rectangle toRectangle() {
-		return new Rectangle((int) Math.round(x), (int) Math.round(y), (int) Math.round(width),
-				(int) Math.round(height));
+		RectangleArea rect = round();
+		return new Rectangle((int) rect.x, (int) rect.y, (int) rect.width, (int) rect.height);
 	}
 
 	/**

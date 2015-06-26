@@ -522,7 +522,7 @@ public abstract class MrtWebDriver extends RemoteWebDriver {
 
 		params.getTarget().setArea(new RectangleArea(0d, 0d, targetImage.getWidth(), targetImage.getHeight()));
 		for (ScreenAreaWrapper wrapper : params.getExcludes()) {
-			wrapper.setArea(wrapper.getArea().floor().move(deltaX, deltaY));
+			wrapper.setArea(wrapper.getArea().move(deltaX, deltaY));
 		}
 
 		return targetImage;
