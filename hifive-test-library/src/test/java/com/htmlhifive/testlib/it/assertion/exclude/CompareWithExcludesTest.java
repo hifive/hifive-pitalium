@@ -25,7 +25,9 @@ import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import com.htmlhifive.testlib.core.MrtTestBase;
 import com.htmlhifive.testlib.core.config.ExecMode;
@@ -138,10 +140,57 @@ public class CompareWithExcludesTest extends MrtTestBase {
 		wait.untilLoad();
 
 		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+			wait.until(ExpectedConditions.presenceOfElementLocated(By.className("fb-like-box")));
 			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
 		}
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), EXCLUDES, true) };
+		assertionView.assertView("topPage", targets, HIDDEN_ELEMENTS);
+	}
+
+	/**
+	 * bodyでないtargetの要素の内部の要素をexcludeするテスト<br>
+	 * 前提条件：なし<br>
+	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4, 5.1/iOS 8.1, 8.3<br>
+	 * 期待結果：diffが発生する
+	 */
+	@Test
+	public void excludeElementInTarget() {
+		driver.get(URL_TOP_PAGE);
+
+		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		wait.untilLoad();
+
+		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='blue'");
+		}
+
+		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.ID, "wrapper"), EXCLUDES, true) };
+
+		assertionView.assertView("topPage", targets, HIDDEN_ELEMENTS);
+	}
+
+	/**
+	 * 異なる位置の要素をexclude対象とすると、エラーになるテスト<br>
+	 * 前提条件：なし<br>
+	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4, 5.1/iOS 8.1, 8.3<br>
+	 * 期待結果：diffが発生する
+	 */
+	@Test
+	public void excludeDifferentPositionElement() {
+		driver.get(URL_TOP_PAGE);
+
+		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		wait.untilLoad();
+
+		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
+			driver.executeJavaScript("document.getElementById('wrapper').style['text-align']='left'");
+			expectedException.expect(AssertionError.class);
+		}
+
+		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), EXCLUDES, true) };
+
 		assertionView.assertView("topPage", targets, HIDDEN_ELEMENTS);
 	}
 
