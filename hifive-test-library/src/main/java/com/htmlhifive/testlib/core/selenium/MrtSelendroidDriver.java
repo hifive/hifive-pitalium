@@ -17,7 +17,10 @@ package com.htmlhifive.testlib.core.selenium;
 
 import java.net.URL;
 
-class MrtSelendroidDriver extends MrtAndroidDriver {
+/**
+ * Android端末で利用する{@link org.openqa.selenium.WebDriver}。旧端末（Appium + Selendroid）向け。
+ */
+class MrtSelendroidDriver extends MrtAbsAndroidDriver {
 
 	/**
 	 * コンストラクタ
@@ -27,6 +30,11 @@ class MrtSelendroidDriver extends MrtAndroidDriver {
 	 */
 	MrtSelendroidDriver(URL remoteAddress, MrtCapabilities capabilities) {
 		super(remoteAddress, capabilities);
+	}
+
+	@Override
+	protected boolean canHideScrollbar() {
+		return false;
 	}
 
 	@Override

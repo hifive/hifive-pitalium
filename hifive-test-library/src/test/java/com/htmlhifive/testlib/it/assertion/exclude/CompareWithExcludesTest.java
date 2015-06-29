@@ -130,7 +130,7 @@ public class CompareWithExcludesTest extends MrtTestBase {
 	@Test
 	public void excludeForBodyWithoutScroll() {
 		String platformName = capabilities.getPlatformName();
-		if (!"iOS".equals(platformName) && !"Android".equals(platformName)) {
+		if (!"ios".equalsIgnoreCase(platformName) && !"android".equalsIgnoreCase(platformName)) {
 			driver.manage().window().setSize(new Dimension(1280, 2500));
 		}
 
