@@ -484,6 +484,7 @@ public class AssertionView extends TestWatcher {
 				LOG.warn("No element found for {}", current.getTarget());
 				processes.add(new TargetResult(null, current.getTarget(), current.getExcludes(),
 						current.isMoveTarget(), current.getHiddenElementSelectors()));
+				assertFail = true;
 
 				continue;
 			}
