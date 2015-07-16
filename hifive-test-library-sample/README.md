@@ -4,6 +4,16 @@ hifive-test-library-sample
 hifive-test-libraryの動作確認用サンプルプロジェクトです。
 動作させるための手順を以下に記載します。
 
+## 必要なライブラリを追加
+`hifive-test-library-sample/ivy_build.xml` の resolve ターゲットを実行します。
+
+  - コマンドラインから
+  `$ cd hifive-test-library-sample`
+  `$ ant -buildfile ivy_build.xml`
+
+  - IDE（eclipse）から
+  hifive-test-library-sampleプロジェクトをインポート -> `hifive-test-library-sample/ivy_build.xml` を右クリック -> 実行 -> Antビルド
+
 ## 環境構築
 
 1. Selenium Hubサーバの起動
