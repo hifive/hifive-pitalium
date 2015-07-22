@@ -1,6 +1,0 @@
-{
-	"execMode": "RUN_TEST",
-	"hubHost": "localhost",
-	"maxThreadExecuteTime": 3600,
-	"capabilitiesFilePath": "capabilities.json"
-}
