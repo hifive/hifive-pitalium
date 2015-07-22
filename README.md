@@ -1,4 +1,4 @@
-# hifive-test-library
+# pitalium
 
 Libraries for supporting regression testing of Web applications on multiple browsers and devices 
 using Selenium Grid (https://github.com/SeleniumHQ/selenium/wiki/Grid2) and Appium (http://appium.io/) .
