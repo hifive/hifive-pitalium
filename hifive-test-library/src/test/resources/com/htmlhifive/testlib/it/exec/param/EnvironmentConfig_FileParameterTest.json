@@ -1,8 +1,0 @@
-{
-	"execMode": "EXEC_TEST",
-	"capabilitiesFilePath": "com\\htmlhifive\\testlib\\exec\\cap\\capabilities_FileParameterTest.json",
-	"hub": {
-		"hostName": "localhost",
-		"port": 4444
-	}
-}

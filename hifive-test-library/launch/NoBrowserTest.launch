@@ -10,7 +10,7 @@
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
 <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.htmlhifive.testlib.it.exec.cap.NoBrowserTest"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.htmlhifive.pitalium.it.exec.cap.NoBrowserTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="pitalium"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_NoBrowserTest.json"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_NoBrowserTest.json"/>
 </launchConfiguration>

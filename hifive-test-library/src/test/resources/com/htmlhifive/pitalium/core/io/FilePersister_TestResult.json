@@ -1,0 +1,80 @@
+{
+	"resultId": "test1",
+	"screenshotResults": [
+		{
+			"screenshotId": "sampleCapture",
+			"targetResults": [
+				{
+					"target": {
+						"selector": {
+							"type": "TAG_NAME",
+							"value": "body",
+							"index": 0
+						},
+						"rectangle": {
+							"x": 0.0,
+							"y": 0.0,
+							"width": 1266.0,
+							"height": 1639.0
+						},
+						"screenArea": {
+							"selector": {
+								"type": "TAG_NAME",
+								"value": "body"
+							}
+						}
+					},
+					"excludes": [],
+					"moveTarget": false,
+					"hiddenElementSelectors": [
+						{
+							"type": "CLASS_NAME",
+							"value": "gototop"
+						}
+					]
+				}
+			],
+			"testClass": "testClass",
+			"testMethod": "testCaptureTop",
+			"capabilities": {
+				"platform": "WINDOWS",
+				"browserName": "firefox"
+			}
+		},
+		{
+			"screenshotId": "hoge",
+			"targetResults": [
+				{
+					"target": {
+						"selector": {
+							"type": "TAG_NAME",
+							"value": "body",
+							"index": 0
+						},
+						"rectangle": {
+							"x": 0.0,
+							"y": 0.0,
+							"width": 1266.0,
+							"height": 2162.0
+						},
+						"screenArea": {
+							"selector": {
+								"type": "TAG_NAME",
+								"value": "body"
+							}
+						}
+					},
+					"excludes": [],
+					"moveTarget": false,
+					"hiddenElementSelectors": []
+				}
+			],
+			"testClass": "testClass",
+			"testMethod": "test",
+			"capabilities": {
+				"platform": "WINDOWS",
+				"browserName": "firefox"
+			}
+		}
+	]
+}

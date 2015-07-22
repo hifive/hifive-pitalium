@@ -21,7 +21,7 @@
 		},
 		"loggers": {
 			"logger": {
-				"name": "com.htmlhifive.testlib",
+				"name": "com.htmlhifive.pitalium",
 				"level": "DEBUG",
 				"AppenderRef": [
 					{

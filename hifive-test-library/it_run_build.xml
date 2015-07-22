@@ -7,7 +7,7 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.screenshot.fullpage.AssertViewOfEntirePageTestSuite" todir="${junit.output.dir}"/>
+            <test name="com.htmlhifive.pitalium.it.screenshot.fullpage.AssertViewOfEntirePageTestSuite" todir="${junit.output.dir}"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -15,7 +15,7 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.screenshot.fullpage.TakeEntirePageScreenshotTest" todir="${junit.output.dir}"/>
+            <test name="com.htmlhifive.pitalium.it.screenshot.fullpage.TakeEntirePageScreenshotTest" todir="${junit.output.dir}"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -23,7 +23,7 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.base.WithoutBaseTest" todir="${junit.output.dir}"/>
+            <test name="com.htmlhifive.pitalium.it.exec.base.WithoutBaseTest" todir="${junit.output.dir}"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -31,13 +31,13 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.base.WithBaseTest" todir="${junit.output.dir}"/>
+            <test name="com.htmlhifive.pitalium.it.exec.base.WithBaseTest" todir="${junit.output.dir}"/>
             <classpath refid="test.classpath"/>
         </junit>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.base.WithBaseTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=EnvironmentConfig_test.json"/>
+            <test name="com.htmlhifive.pitalium.it.exec.base.WithBaseTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=EnvironmentConfig_test.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -45,18 +45,18 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.multitest.FirstOfMultipleTest" todir="${junit.output.dir}"/>
+            <test name="com.htmlhifive.pitalium.it.exec.multitest.FirstOfMultipleTest" todir="${junit.output.dir}"/>
             <classpath refid="test.classpath"/>
         </junit>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.multitest.SecondOfMultipleTest" todir="${junit.output.dir}"/>
+            <test name="com.htmlhifive.pitalium.it.exec.multitest.SecondOfMultipleTest" todir="${junit.output.dir}"/>
             <classpath refid="test.classpath"/>
         </junit>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.multitest.TestSuiteTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=EnvironmentConfig_test.json"/>
+            <test name="com.htmlhifive.pitalium.it.exec.multitest.TestSuiteTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=EnvironmentConfig_test.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -64,8 +64,8 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.cap.SingleBrowserTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_SingleBrowserTest.json"/>
+            <test name="com.htmlhifive.pitalium.it.exec.cap.SingleBrowserTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_SingleBrowserTest.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -73,8 +73,8 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.cap.NoBrowserTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_NoBrowserTest.json"/>
+            <test name="com.htmlhifive.pitalium.it.exec.cap.NoBrowserTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_NoBrowserTest.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -82,7 +82,7 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.multitest.MultipleMethodTest" todir="${junit.output.dir}"/>
+            <test name="com.htmlhifive.pitalium.it.exec.multitest.MultipleMethodTest" todir="${junit.output.dir}"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -90,8 +90,8 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.cap.MultipleBrowserTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_MultipleBrowserTest.json"/>
+            <test name="com.htmlhifive.pitalium.it.exec.cap.MultipleBrowserTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_MultipleBrowserTest.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -99,8 +99,8 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.cap.IllegalBrowserTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_1.json"/>
+            <test name="com.htmlhifive.pitalium.it.exec.cap.IllegalBrowserTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_1.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -108,8 +108,8 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.cap.IllegalBrowserWithAppropriateBroweserTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_2.json"/>
+            <test name="com.htmlhifive.pitalium.it.exec.cap.IllegalBrowserWithAppropriateBroweserTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_2.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -117,8 +117,8 @@
     <mkdir dir="${junit.output.dir}"/>
     <junit fork="yes" printsummary="withOutAndErr">
         <formatter type="xml"/>
-        <test name="com.htmlhifive.testlib.it.exec.cap.IllegalBrowserWithAppropriateBrowesersTest" todir="${junit.output.dir}"/>
-        <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_3.json"/>
+        <test name="com.htmlhifive.pitalium.it.exec.cap.IllegalBrowserWithAppropriateBrowesersTest" todir="${junit.output.dir}"/>
+        <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_3.json"/>
         <classpath refid="test.classpath"/>
     </junit>
 </target>
@@ -126,8 +126,8 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.exec.param.FileParameterTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=com\htmlhifive\testlib\it\exec\param\EnvironmentConfig_FileParameterTest.json"/>
+            <test name="com.htmlhifive.pitalium.it.exec.param.FileParameterTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\param\EnvironmentConfig_FileParameterTest.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -135,8 +135,8 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.assertion.fullpage.CompareEntirePageTestSuite" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=EnvironmentConfig_test.json"/>
+            <test name="com.htmlhifive.pitalium.it.assertion.fullpage.CompareEntirePageTestSuite" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=EnvironmentConfig_test.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -144,7 +144,7 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.assertion.fullpage.CompareEntirePageTest" todir="${junit.output.dir}"/>
+            <test name="com.htmlhifive.pitalium.it.assertion.fullpage.CompareEntirePageTest" todir="${junit.output.dir}"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -152,8 +152,8 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.assertion.exclude.CompareWithExcludesTestSuite" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.testlib.environmentConfig=EnvironmentConfig_test.json"/>
+            <test name="com.htmlhifive.pitalium.it.assertion.exclude.CompareWithExcludesTestSuite" todir="${junit.output.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=EnvironmentConfig_test.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -161,7 +161,7 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="com.htmlhifive.testlib.it.assertion.exclude.CompareWithExcludesTest" todir="${junit.output.dir}"/>
+            <test name="com.htmlhifive.pitalium.it.assertion.exclude.CompareWithExcludesTest" todir="${junit.output.dir}"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
