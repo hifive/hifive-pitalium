@@ -47,7 +47,7 @@ import com.htmlhifive.pitalium.core.model.ScreenshotResult;
 import com.htmlhifive.pitalium.core.model.SelectorType;
 import com.htmlhifive.pitalium.core.model.TargetResult;
 import com.htmlhifive.pitalium.core.model.TestResult;
-import com.htmlhifive.pitalium.core.selenium.MrtCapabilities;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.image.model.PersistedScreenshotImage;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.image.model.ScreenshotImage;
@@ -263,7 +263,7 @@ public class FilePersisterTest {
 		for (ScreenshotResult sr : expected.getScreenshotResults()) {
 			ScreenshotImage image = new PersistedScreenshotImage(persister, new PersistMetadata(expected.getResultId(),
 					sr.getTestClass(), sr.getTestMethod(), sr.getScreenshotId(), new IndexDomSelector(
-							SelectorType.TAG_NAME, "body", 0), null, new MrtCapabilities(sr.getCapabilities())));
+							SelectorType.TAG_NAME, "body", 0), null, new PtlCapabilities(sr.getCapabilities())));
 			imageField.set(sr.getTargetResults().get(0), image);
 		}
 
@@ -300,7 +300,7 @@ public class FilePersisterTest {
 		map.put("browserName", "firefox");
 		map.put("version", "38");
 
-		MrtCapabilities capabilities = new MrtCapabilities(map);
+		PtlCapabilities capabilities = new PtlCapabilities(map);
 		PersistMetadata metadata = new PersistMetadata("testId", "testClass", "testMethod", "scId", capabilities);
 		persister.saveTargetResults(metadata, expected);
 
@@ -320,7 +320,7 @@ public class FilePersisterTest {
 		map.put("browserName", "firefox");
 		map.put("version", "38");
 
-		final MrtCapabilities capabilities = new MrtCapabilities(map);
+		final PtlCapabilities capabilities = new PtlCapabilities(map);
 		final PersistMetadata metadata = new PersistMetadata("testId", "testClass", "testMethod", "scId", capabilities);
 
 		List<TargetResult> jsonValue = JSONUtils.readValue(
@@ -360,7 +360,7 @@ public class FilePersisterTest {
 		map.put("browserName", "firefox");
 		map.put("version", "38");
 
-		MrtCapabilities capabilities = new MrtCapabilities(map);
+		PtlCapabilities capabilities = new PtlCapabilities(map);
 		PersistMetadata metadata = new PersistMetadata("testId", "testClass", "testMethod", "scId", capabilities);
 		persister.loadTargetResults(metadata);
 	}
@@ -379,7 +379,7 @@ public class FilePersisterTest {
 		map.put("browserName", "firefox");
 		map.put("version", "38");
 
-		MrtCapabilities capabilities = new MrtCapabilities(map);
+		PtlCapabilities capabilities = new PtlCapabilities(map);
 		IndexDomSelector selector = new IndexDomSelector(SelectorType.CSS_SELECTOR, "main", 0);
 		PersistMetadata metadata = new PersistMetadata("testId", "testClass", "testMethod", "scId", selector, null,
 				capabilities);
@@ -403,7 +403,7 @@ public class FilePersisterTest {
 		map.put("browserName", "firefox");
 		map.put("version", "38");
 
-		MrtCapabilities capabilities = new MrtCapabilities(map);
+		PtlCapabilities capabilities = new PtlCapabilities(map);
 		RectangleArea rectangle = new RectangleArea(0d, 10d, 100d, 110d);
 		PersistMetadata metadata = new PersistMetadata("testId", "testClass", "testMethod", "scId", null, rectangle,
 				capabilities);
@@ -430,7 +430,7 @@ public class FilePersisterTest {
 		map.put("browserName", "firefox");
 		map.put("version", "38");
 
-		MrtCapabilities capabilities = new MrtCapabilities(map);
+		PtlCapabilities capabilities = new PtlCapabilities(map);
 		IndexDomSelector selector = new IndexDomSelector(SelectorType.CSS_SELECTOR, "main", 0);
 		PersistMetadata metadata = new PersistMetadata("testId", "testClass", "testMethod", "scId", selector, null,
 				capabilities);
@@ -456,7 +456,7 @@ public class FilePersisterTest {
 		map.put("browserName", "firefox");
 		map.put("version", "38");
 
-		MrtCapabilities capabilities = new MrtCapabilities(map);
+		PtlCapabilities capabilities = new PtlCapabilities(map);
 		RectangleArea rectangle = new RectangleArea(0d, 10d, 100d, 110d);
 		PersistMetadata metadata = new PersistMetadata("testId", "testClass", "testMethod", "scId", null, rectangle,
 				capabilities);
@@ -479,7 +479,7 @@ public class FilePersisterTest {
 		map.put("browserName", "firefox");
 		map.put("version", "38");
 
-		MrtCapabilities capabilities = new MrtCapabilities(map);
+		PtlCapabilities capabilities = new PtlCapabilities(map);
 		IndexDomSelector selector = new IndexDomSelector(SelectorType.CSS_SELECTOR, "1\\\\2/3:4*5?6\"7<8>9|0", 0);
 		PersistMetadata metadata = new PersistMetadata("testId", "testClass", "testMethod", "scId", selector, null,
 				capabilities);

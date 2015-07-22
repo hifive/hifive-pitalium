@@ -21,12 +21,12 @@ import static org.hamcrest.MatcherAssert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -34,9 +34,9 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * 非表示（visibility: hidden）要素のスクリーンショット取得のテスト<br>
  */
-public class TakeHiddenPartTest extends MrtTestBase {
+public class TakeHiddenPartTest extends PtlTestBase {
 
-	private static final String BASE_URL = MrtTestConfig.getInstance().getTestAppConfig().getBaseUrl();
+	private static final String BASE_URL = PtlTestConfig.getInstance().getTestAppConfig().getBaseUrl();
 
 	/**
 	 * 非表示（visibility: hidden）の要素のスクリーンショットが正しくとれていることを確認する。<br>

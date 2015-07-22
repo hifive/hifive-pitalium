@@ -3,7 +3,7 @@ package com.htmlhifive.pitalium.it.util;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.htmlhifive.pitalium.core.selenium.MrtCapabilities;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 
 public class ItUtils {
 
@@ -18,7 +18,7 @@ public class ItUtils {
 	 * @param capabilities
 	 */
 	public static JsonNode getCurrentScreenshotResultJson(String methodName, JsonNode results,
-			MrtCapabilities capabilities) {
+			PtlCapabilities capabilities) {
 		for (JsonNode jn : results.get("screenshotResults")) {
 			JsonNode capabilitiesNode = jn.get("capabilities");
 			if (methodName.equals(jn.get("testMethod").asText())

@@ -17,17 +17,17 @@ package com.htmlhifive.pitalium.it.exec.param;
 
 import static org.junit.Assert.*;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Test;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
 import com.htmlhifive.pitalium.core.config.ExecMode;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
 
 /**
  * JVMで引数を指定した場合のテスト
  */
-public class JVMParameterTest extends MrtTestBase {
+public class JVMParameterTest extends PtlTestBase {
 
 	/**
 	 * JVMの実行モードの引数を指定した場合のテスト。<br>
@@ -40,7 +40,7 @@ public class JVMParameterTest extends MrtTestBase {
 	public void checkParameter() {
 		driver.get(null);
 
-		MrtTestConfig config = MrtTestConfig.getInstance();
+		PtlTestConfig config = PtlTestConfig.getInstance();
 
 		// 実行設定の内容のチェック
 		EnvironmentConfig env = config.getEnvironment();

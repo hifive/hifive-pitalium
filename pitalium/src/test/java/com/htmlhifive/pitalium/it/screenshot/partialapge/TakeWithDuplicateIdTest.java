@@ -18,13 +18,13 @@ package com.htmlhifive.pitalium.it.screenshot.partialapge;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
-import com.htmlhifive.pitalium.core.MrtTestBase;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -32,9 +32,9 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * スクリーンショット取得時に、複数回同じIDを指定した場合のテスト
  */
-public class TakeWithDuplicateIdTest extends MrtTestBase {
+public class TakeWithDuplicateIdTest extends PtlTestBase {
 
-	private static final String BASE_URL = MrtTestConfig.getInstance().getTestAppConfig().getBaseUrl();
+	private static final String BASE_URL = PtlTestConfig.getInstance().getTestAppConfig().getBaseUrl();
 
 	/**
 	 * 同じIDを指定して複数のスクリーンショットを取得しようとした場合に例外が発生することを確認する。<br>

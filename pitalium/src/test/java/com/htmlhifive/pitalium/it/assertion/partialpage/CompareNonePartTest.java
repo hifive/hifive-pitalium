@@ -19,13 +19,13 @@ import java.awt.image.RasterFormatException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -33,12 +33,12 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * 要素が非表示（display : none）の場合に比較が正しく行われるかのテスト
  */
-public class CompareNonePartTest extends MrtTestBase {
+public class CompareNonePartTest extends PtlTestBase {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
-	private static final MrtTestConfig config = MrtTestConfig.getInstance();
+	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();
 
 	/**

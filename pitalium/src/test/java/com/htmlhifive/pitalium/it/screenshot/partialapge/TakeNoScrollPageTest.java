@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.PtlTestBase;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -29,9 +29,9 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * スクロールが無いページのスクリーンショット取得のテスト
  */
-public class TakeNoScrollPageTest extends MrtTestBase {
+public class TakeNoScrollPageTest extends PtlTestBase {
 
-	private static final String BASE_URL = MrtTestConfig.getInstance().getTestAppConfig().getBaseUrl();
+	private static final String BASE_URL = PtlTestConfig.getInstance().getTestAppConfig().getBaseUrl();
 
 	/**
 	 * スクロールが無いページ(ヘッダのみ表示した状態のページ)の<br>

@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,22 +30,21 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.DomSelector;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
 import com.htmlhifive.pitalium.core.result.TestResultManager;
-import com.htmlhifive.pitalium.core.selenium.MrtWebDriverWait;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriverWait;
 
 /**
  * excludeのテスト
  */
-public class CompareWithExcludesTest extends MrtTestBase {
+public class CompareWithExcludesTest extends PtlTestBase {
 
-	private static final String URL_TOP_PAGE = MrtTestConfig.getInstance().getTestAppConfig().getBaseUrl();
+	private static final String URL_TOP_PAGE = PtlTestConfig.getInstance().getTestAppConfig().getBaseUrl();
 
 	private static final ScreenArea[] EXCLUDES = new ScreenArea[] { ScreenArea.of(SelectorType.CLASS_NAME,
 			"fb-like-box") };
@@ -65,10 +65,10 @@ public class CompareWithExcludesTest extends MrtTestBase {
 	public void checkFailure() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
-		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
 			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
 			expectedException.expect(AssertionError.class);
 		}
@@ -86,10 +86,10 @@ public class CompareWithExcludesTest extends MrtTestBase {
 	public void excludeForBody() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
-		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
 			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
 		}
 
@@ -107,13 +107,13 @@ public class CompareWithExcludesTest extends MrtTestBase {
 	public void excludeForBodyWithMargin() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		// bodyにmarginを付加する
 		driver.executeJavaScript("document.body.style.margin='100px'");
 
-		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
 			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
 		}
 
@@ -136,10 +136,10 @@ public class CompareWithExcludesTest extends MrtTestBase {
 
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
-		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
 			wait.until(ExpectedConditions.presenceOfElementLocated(By.className("fb-like-box")));
 			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
 		}
@@ -158,10 +158,10 @@ public class CompareWithExcludesTest extends MrtTestBase {
 	public void excludeElementInTarget() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
-		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
 			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='blue'");
 		}
 
@@ -180,10 +180,10 @@ public class CompareWithExcludesTest extends MrtTestBase {
 	public void excludeDifferentPositionElement() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
-		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
 			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
 			driver.executeJavaScript("document.getElementById('wrapper').style['text-align']='left'");
 			expectedException.expect(AssertionError.class);
@@ -196,7 +196,7 @@ public class CompareWithExcludesTest extends MrtTestBase {
 
 	@AfterClass
 	public static void saveExpectedId() throws IOException {
-		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() != ExecMode.SET_EXPECTED) {
+		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() != ExecMode.SET_EXPECTED) {
 			return;
 		}
 

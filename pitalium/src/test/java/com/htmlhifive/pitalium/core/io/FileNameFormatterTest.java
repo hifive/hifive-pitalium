@@ -25,7 +25,7 @@ import org.openqa.selenium.Platform;
 
 import com.htmlhifive.pitalium.core.model.IndexDomSelector;
 import com.htmlhifive.pitalium.core.model.SelectorType;
-import com.htmlhifive.pitalium.core.selenium.MrtCapabilities;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
 public class FileNameFormatterTest {
@@ -35,7 +35,7 @@ public class FileNameFormatterTest {
 	 */
 	@Test
 	public void testFormat_selector() throws Exception {
-		MrtCapabilities capabilities = new MrtCapabilities(new HashMap<String, Object>());
+		PtlCapabilities capabilities = new PtlCapabilities(new HashMap<String, Object>());
 		capabilities.setPlatform(Platform.WINDOWS);
 		capabilities.setBrowserName("firefox");
 		capabilities.setVersion("38");
@@ -54,7 +54,7 @@ public class FileNameFormatterTest {
 	 */
 	@Test
 	public void testFormat_rectangle() throws Exception {
-		MrtCapabilities capabilities = new MrtCapabilities(new HashMap<String, Object>());
+		PtlCapabilities capabilities = new PtlCapabilities(new HashMap<String, Object>());
 		capabilities.setPlatform(Platform.WINDOWS);
 		capabilities.setBrowserName("firefox");
 		capabilities.setVersion("38");
@@ -73,7 +73,7 @@ public class FileNameFormatterTest {
 	 */
 	@Test
 	public void testFormat_selendroid() throws Exception {
-		MrtCapabilities capabilities = new MrtCapabilities(new HashMap<String, Object>());
+		PtlCapabilities capabilities = new PtlCapabilities(new HashMap<String, Object>());
 		capabilities.setPlatform(Platform.ANDROID);
 		capabilities.setBrowserName("");
 		capabilities.setCapability("deviceName", "ASUS Pad");
@@ -94,7 +94,7 @@ public class FileNameFormatterTest {
 	 */
 	@Test
 	public void testFormat_escape() throws Exception {
-		MrtCapabilities capabilities = new MrtCapabilities(new HashMap<String, Object>());
+		PtlCapabilities capabilities = new PtlCapabilities(new HashMap<String, Object>());
 		capabilities.setPlatform(Platform.WINDOWS);
 		capabilities.setBrowserName("firefox");
 		capabilities.setVersion("38");

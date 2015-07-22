@@ -17,15 +17,15 @@ package com.htmlhifive.pitalium.it.screenshot.hidden;
 
 import org.junit.Test;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.model.DomSelector;
 import com.htmlhifive.pitalium.core.model.SelectorType;
-import com.htmlhifive.pitalium.core.selenium.MrtWebDriverWait;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriverWait;
 
 /**
  * ページ全体(body)の比較のテスト
  */
-public class HiddenElementsTest extends MrtTestBase {
+public class HiddenElementsTest extends PtlTestBase {
 
 	private static final String URL_TOP_PAGE = "";
 
@@ -39,7 +39,7 @@ public class HiddenElementsTest extends MrtTestBase {
 	public void specifyHiddenElement() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		assertionView.assertView("topPage", null, new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME,
@@ -56,7 +56,7 @@ public class HiddenElementsTest extends MrtTestBase {
 	public void specifyMultipleHiddenElements() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		DomSelector[] hiddenElements = new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME, "gototop"),
@@ -75,7 +75,7 @@ public class HiddenElementsTest extends MrtTestBase {
 	public void specifyHiddenMultipleElements() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		DomSelector[] hiddenElements = new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME, "putCursol") };
@@ -93,7 +93,7 @@ public class HiddenElementsTest extends MrtTestBase {
 	public void specifyNotExistingHiddenElement() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		DomSelector[] hiddenElements = new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME, "dummyClass") };

@@ -18,12 +18,12 @@ package com.htmlhifive.pitalium.it.screenshot.partialapge;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -31,9 +31,9 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * セレクタで指定した要素が存在しない場合のテスト<br>
  */
-public class NoSuchElementTest extends MrtTestBase {
+public class NoSuchElementTest extends PtlTestBase {
 
-	private static final MrtTestConfig config = MrtTestConfig.getInstance();
+	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();
 
 	@Rule

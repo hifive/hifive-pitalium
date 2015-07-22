@@ -23,7 +23,7 @@ import com.htmlhifive.pitalium.common.util.JSONUtils;
 /**
  * 画像やテスト結果の情報をファイルから入出力する際の設定
  */
-@MrtConfiguration
+@PtlConfiguration
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FilePersisterConfig implements Serializable {
 

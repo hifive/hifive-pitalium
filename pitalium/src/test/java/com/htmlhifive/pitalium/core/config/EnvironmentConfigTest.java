@@ -55,15 +55,15 @@ public class EnvironmentConfigTest {
 	}
 
 	/**
-	 * MrtConfigurationPropertyのテスト
+	 * PtlConfigurationPropertyのテスト
 	 */
 	@Test
-	public void testAnnotatedProperties_MrtConfigurationProperty() throws Exception {
+	public void testAnnotatedProperties_PtlConfigurationProperty() throws Exception {
 		Map<String, String> props = new HashMap<String, String>();
 		props.put("environmentConfig", "com/htmlhifive/pitalium/core/config/EnvironmentConfigTest_allProperties.json");
 		props.put("execMode", "TAKE_SCREENSHOT");
 
-		MrtTestConfig config = new MrtTestConfig(props);
+		PtlTestConfig config = new PtlTestConfig(props);
 		EnvironmentConfig env = config.getConfig(EnvironmentConfig.class);
 
 		assertThat(env.getExecMode(), is(ExecMode.TAKE_SCREENSHOT));

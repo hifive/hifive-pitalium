@@ -19,15 +19,15 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 
 /**
- * MrtBaseを利用したテストの実行のテスト
+ * PtlTestBaseを利用したテストの実行のテスト
  */
-public class WithBaseTest extends MrtTestBase {
+public class WithBaseTest extends PtlTestBase {
 
 	/**
-	 * MrtBaseを利用したテストの実行のテスト<br>
+	 * PtlTestBaseを利用したテストの実行のテスト<br>
 	 * 前提条件：このテストをSET_EXPECTEDモードで1度実行し、スクリーンショットを取得している<br>
 	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
 	 * 期待結果：テストが正しく実行でき、assertViewの比較で一致する

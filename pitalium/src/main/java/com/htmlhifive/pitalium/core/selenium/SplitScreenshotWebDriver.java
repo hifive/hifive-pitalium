@@ -34,7 +34,7 @@ import com.htmlhifive.pitalium.image.util.ImageUtils;
 /**
  * スクリーンショットが可視範囲のみのブラウザ用のWebDriver。このクラスを拡張したdriverは、スクロール毎にスクリーンショットを撮り、結合した画像を返します。
  */
-abstract class SplitScreenshotWebDriver extends MrtWebDriver {
+abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SplitScreenshotWebDriver.class);
 
@@ -46,7 +46,7 @@ abstract class SplitScreenshotWebDriver extends MrtWebDriver {
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
-	SplitScreenshotWebDriver(URL remoteAddress, MrtCapabilities capabilities) {
+	SplitScreenshotWebDriver(URL remoteAddress, PtlCapabilities capabilities) {
 		super(remoteAddress, capabilities);
 	}
 

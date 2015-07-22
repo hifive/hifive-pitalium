@@ -18,11 +18,11 @@ package com.htmlhifive.pitalium.it.assertion.partialpage;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Test;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -30,9 +30,9 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * ページの特定要素の比較が正しく行われるかのテスト
  */
-public class ComparePartWithMarginTest extends MrtTestBase {
+public class ComparePartWithMarginTest extends PtlTestBase {
 
-	private static final MrtTestConfig config = MrtTestConfig.getInstance();
+	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();
 
 	/**

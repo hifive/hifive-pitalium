@@ -20,21 +20,21 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 
 /**
  * スクリーンショット取得関数を単体で呼び出すテスト
  */
-public class TakeScreenshotTest extends MrtTestBase {
+public class TakeScreenshotTest extends PtlTestBase {
 
-	private static final String BASE_URL = MrtTestConfig.getInstance().getTestAppConfig().getBaseUrl();
+	private static final String BASE_URL = PtlTestConfig.getInstance().getTestAppConfig().getBaseUrl();
 
 	/**
 	 * スクリーンショット取得関数を単体で呼び出すテスト

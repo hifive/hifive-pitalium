@@ -35,15 +35,15 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.result.TestResultManager;
-import com.htmlhifive.pitalium.core.selenium.MrtCapabilities;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.it.util.ItUtils;
 
 /**
  * ページ全体(body)のスクリーンショットの取得のテストの結果を確認するテストクラス
  */
-public class CompareEntirePageCheckResultTest extends MrtTestBase {
+public class CompareEntirePageCheckResultTest extends PtlTestBase {
 
 	private static final String TEST_CLASS_NAME = "CompareEntirePageTest";
 
@@ -116,7 +116,7 @@ public class CompareEntirePageCheckResultTest extends MrtTestBase {
 		assertThat(targetResult.get("result").asText(), is("SUCCESS"));
 
 		// capabilities
-		assertThat(new MrtCapabilities(mapper.convertValue(screenshotResult.get("capabilities"), Map.class)),
+		assertThat(new PtlCapabilities(mapper.convertValue(screenshotResult.get("capabilities"), Map.class)),
 				is(capabilities));
 	}
 

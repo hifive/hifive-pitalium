@@ -21,12 +21,12 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 
 /**
  * ブラウザの設定がされていない状態での実行のテスト
  */
-public class NoBrowserTest extends MrtTestBase {
+public class NoBrowserTest extends PtlTestBase {
 
 	/**
 	 * ブラウザの設定がされていないため、例外がスローされる

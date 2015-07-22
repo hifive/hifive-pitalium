@@ -40,7 +40,7 @@ import com.htmlhifive.pitalium.core.io.Persister;
 import com.htmlhifive.pitalium.core.io.ResourceUnavailableException;
 import com.htmlhifive.pitalium.core.model.IndexDomSelector;
 import com.htmlhifive.pitalium.core.model.SelectorType;
-import com.htmlhifive.pitalium.core.selenium.MrtCapabilities;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.image.util.ImageUtils;
 
 public class PersistedScreenshotImageTest {
@@ -57,7 +57,7 @@ public class PersistedScreenshotImageTest {
 	public void setUp() throws Exception {
 		persister = new FilePersister(FilePersisterConfig.builder().resultDirectory(DIRECTORY_NAME).build());
 
-		MrtCapabilities capabilities = new MrtCapabilities(new HashMap<String, Object>());
+		PtlCapabilities capabilities = new PtlCapabilities(new HashMap<String, Object>());
 		capabilities.setPlatform(Platform.WINDOWS);
 		capabilities.setBrowserName("firefox");
 		capabilities.setVersion("38");

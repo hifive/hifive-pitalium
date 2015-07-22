@@ -18,7 +18,7 @@ package com.htmlhifive.pitalium.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.htmlhifive.pitalium.core.selenium.MrtWebElement;
+import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
 /**
@@ -28,7 +28,7 @@ public class ScreenshotParams {
 
 	private final ScreenAreaWrapper target;
 	private final List<ScreenAreaWrapper> excludes;
-	private final List<MrtWebElement> hiddenElements;
+	private final List<PtlWebElement> hiddenElements;
 	private final boolean moveTarget;
 	private final Integer index;
 
@@ -45,7 +45,7 @@ public class ScreenshotParams {
 	 * @param index インデックス
 	 */
 	public ScreenshotParams(ScreenAreaWrapper target, List<ScreenAreaWrapper> excludes,
-			List<MrtWebElement> hiddenElements, boolean moveTarget, Integer index) {
+			List<PtlWebElement> hiddenElements, boolean moveTarget, Integer index) {
 		this.target = target;
 		this.excludes = excludes;
 		this.hiddenElements = hiddenElements;
@@ -87,7 +87,7 @@ public class ScreenshotParams {
 	 * 
 	 * @return 撮影時に非表示にする要素のリスト
 	 */
-	public List<MrtWebElement> getHiddenElements() {
+	public List<PtlWebElement> getHiddenElements() {
 		return hiddenElements;
 	}
 

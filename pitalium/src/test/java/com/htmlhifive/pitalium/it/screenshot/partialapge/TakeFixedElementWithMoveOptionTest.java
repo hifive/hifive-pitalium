@@ -25,8 +25,8 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.PtlTestBase;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -34,9 +34,9 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * 座標が固定されている要素に対するスクリーンショット取得のテスト
  */
-public class TakeFixedElementWithMoveOptionTest extends MrtTestBase {
+public class TakeFixedElementWithMoveOptionTest extends PtlTestBase {
 
-	private static final String BASE_URL = MrtTestConfig.getInstance().getTestAppConfig().getBaseUrl();
+	private static final String BASE_URL = PtlTestConfig.getInstance().getTestAppConfig().getBaseUrl();
 
 	/**
 	 * 元々座標が固定されている要素に対してisMoveオプションを指定して<br>

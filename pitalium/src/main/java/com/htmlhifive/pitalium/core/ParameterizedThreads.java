@@ -24,7 +24,7 @@ import org.junit.runners.model.RunnerScheduler;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 
 /**
  * {@link org.junit.runners.Parameterized}をマルチスレッドで実行するJUnit Runnerクラス
@@ -43,7 +43,7 @@ public class ParameterizedThreads extends Parameterized {
 		 * コンストラクタ
 		 */
 		public MultiThreadRunnerScheduler() {
-			EnvironmentConfig environment = MrtTestConfig.getInstance().getEnvironment();
+			EnvironmentConfig environment = PtlTestConfig.getInstance().getEnvironment();
 
 			executor = Executors.newFixedThreadPool(environment.getMaxThreadCount());
 			maxThreadExecuteTime = environment.getMaxThreadExecuteTime();

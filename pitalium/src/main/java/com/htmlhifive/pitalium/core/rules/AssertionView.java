@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.slf4j.Logger;
@@ -39,8 +40,7 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
-import com.htmlhifive.pitalium.core.MrtTestBase;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.io.PersistMetadata;
 import com.htmlhifive.pitalium.core.io.Persister;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
@@ -53,9 +53,9 @@ import com.htmlhifive.pitalium.core.model.ScreenshotResult;
 import com.htmlhifive.pitalium.core.model.SelectorType;
 import com.htmlhifive.pitalium.core.model.TargetResult;
 import com.htmlhifive.pitalium.core.result.TestResultManager;
-import com.htmlhifive.pitalium.core.selenium.MrtCapabilities;
-import com.htmlhifive.pitalium.core.selenium.MrtWebDriver;
-import com.htmlhifive.pitalium.core.selenium.MrtWebDriverFactory;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriverFactory;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.image.model.ScreenshotImage;
@@ -68,7 +68,7 @@ import com.htmlhifive.pitalium.image.util.ImageUtils;
  * <li>テスト成功時：期待結果IDの更新</li>
  * <li>テスト終了時：WebDriverのquit</li>
  * </ul>
- * {@link MrtTestBase}を拡張した場合は、既に定義済みのため指定する必要はありません。
+ * {@link PtlTestBase}を拡張した場合は、既に定義済みのため指定する必要はありません。
  */
 public class AssertionView extends TestWatcher {
 
@@ -88,8 +88,8 @@ public class AssertionView extends TestWatcher {
 	private String methodName;
 	private String currentId;
 
-	private MrtCapabilities capabilities;
-	private MrtWebDriver driver;
+	private PtlCapabilities capabilities;
+	private PtlWebDriver driver;
 
 	private final List<ScreenshotResult> results = new ArrayList<ScreenshotResult>();
 
@@ -148,12 +148,12 @@ public class AssertionView extends TestWatcher {
 	//</editor-fold>
 
 	/**
-	 * {@link org.openqa.selenium.Capabilities}に応じた{@link MrtWebDriver}を作成して返します。
+	 * {@link org.openqa.selenium.Capabilities}に応じた{@link PtlWebDriver}を作成して返します。
 	 * 
 	 * @param cap ブラウザスペック情報
 	 * @return ブラウザに対応するWebDriver
 	 */
-	public MrtWebDriver createDriver(MrtCapabilities cap) {
+	public PtlWebDriver createDriver(PtlCapabilities cap) {
 		if (driver != null) {
 			if (!capabilities.equals(cap)) {
 				throw new TestRuntimeException("Capabilities not match");
@@ -162,7 +162,7 @@ public class AssertionView extends TestWatcher {
 		}
 
 		capabilities = cap;
-		driver = MrtWebDriverFactory.getInstance(cap).getDriver();
+		driver = PtlWebDriverFactory.getInstance(cap).getDriver();
 		return driver;
 	}
 
@@ -300,7 +300,7 @@ public class AssertionView extends TestWatcher {
 		ValidateResult validateResult = validateTargetResults(targetResults, targets);
 
 		// Expected mode
-		if (!MrtTestConfig.getInstance().getEnvironment().getExecMode().isRunTest()) {
+		if (!PtlTestConfig.getInstance().getEnvironment().getExecMode().isRunTest()) {
 			ScreenshotResult screenshotResult = getScreenshotResultForExpectedMode(screenshotId, targetResults,
 					validateResult);
 			results.add(screenshotResult);
@@ -548,7 +548,7 @@ public class AssertionView extends TestWatcher {
 	/**
 	 * すでに取得したスクリーンショットについて、期待画像と一致するか検証します。一致しなければdiff画像を生成し、テストを失敗として中断します。
 	 * 
-	 * @param screenshotResult {@link MrtWebDriver#takeScreenshot(String) takeScreenshot}を実行して取得した結果オブジェクト
+	 * @param screenshotResult {@link PtlWebDriver#takeScreenshot(String) takeScreenshot}を実行して取得した結果オブジェクト
 	 */
 	public void assertScreenshot(ScreenshotResult screenshotResult) {
 		assertScreenshot(null, screenshotResult);
@@ -558,10 +558,10 @@ public class AssertionView extends TestWatcher {
 	 * すでに取得したスクリーンショットについて、期待画像と一致するか検証します。一致しなければdiff画像を生成し、テストを失敗として中断します。
 	 * 
 	 * @param message 失敗時に表示するメッセージ
-	 * @param screenshotResult {@link MrtWebDriver#takeScreenshot(String) takeScreenshot}を実行して取得した結果オブジェクト
+	 * @param screenshotResult {@link PtlWebDriver#takeScreenshot(String) takeScreenshot}を実行して取得した結果オブジェクト
 	 */
 	public void assertScreenshot(String message, ScreenshotResult screenshotResult) {
-		if (!MrtTestConfig.getInstance().getEnvironment().getExecMode().isRunTest()) {
+		if (!PtlTestConfig.getInstance().getEnvironment().getExecMode().isRunTest()) {
 			LOG.debug("assertScreenshot on {}#{} does nothing as current mode is SET_EXPECTED", className, methodName);
 			return;
 		}
@@ -605,7 +605,7 @@ public class AssertionView extends TestWatcher {
 	 * @param image 検証に使用する画像
 	 */
 	public void assertExist(String message, BufferedImage image) {
-		if (!MrtTestConfig.getInstance().getEnvironment().getExecMode().isRunTest()) {
+		if (!PtlTestConfig.getInstance().getEnvironment().getExecMode().isRunTest()) {
 			LOG.debug("assertExist on {}#{} does nothing as current mode is SET_EXPECTED", className, methodName);
 			return;
 		}

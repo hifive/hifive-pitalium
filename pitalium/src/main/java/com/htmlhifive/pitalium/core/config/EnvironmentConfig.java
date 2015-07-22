@@ -25,7 +25,7 @@ import com.htmlhifive.pitalium.core.io.FilePersister;
 /**
  * テストを実行するための共通設定を保持するクラス
  */
-@MrtConfiguration
+@PtlConfiguration
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EnvironmentConfig implements Serializable {
 
@@ -38,7 +38,7 @@ public class EnvironmentConfig implements Serializable {
 	/**
 	 * テスト実行モード
 	 */
-	@MrtConfigurationProperty("execMode")
+	@PtlConfigurationProperty("execMode")
 	private ExecMode execMode = ExecMode.SET_EXPECTED;
 
 	/**

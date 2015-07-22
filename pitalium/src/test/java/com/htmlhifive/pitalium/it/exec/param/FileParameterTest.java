@@ -20,19 +20,16 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.net.URL;
 
+import com.htmlhifive.pitalium.core.config.*;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
-import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
-import com.htmlhifive.pitalium.core.config.ExecMode;
-import com.htmlhifive.pitalium.core.config.FilePersisterConfig;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
-import com.htmlhifive.pitalium.core.config.TestAppConfig;
-import com.htmlhifive.pitalium.core.selenium.MrtCapabilities;
+import com.htmlhifive.pitalium.core.PtlTestBase;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 
-public class FileParameterTest extends MrtTestBase {
+public class FileParameterTest extends PtlTestBase {
 
 	/**
 	 * 設定ファイルの内容が設定されているかのテスト<br>
@@ -45,7 +42,7 @@ public class FileParameterTest extends MrtTestBase {
 	public void checkConfig() {
 		driver.get(null);
 
-		MrtTestConfig config = MrtTestConfig.getInstance();
+		PtlTestConfig config = PtlTestConfig.getInstance();
 
 		// 実行設定の内容のチェック
 		// TODO: MrtRunnerConfigに変える
@@ -67,7 +64,7 @@ public class FileParameterTest extends MrtTestBase {
 		assertEquals(EXPECTED_HUB_POST, server.getPort());
 
 		// capabilityの内容のチェック
-		MrtCapabilities cap = driver.getCapabilities();
+		PtlCapabilities cap = driver.getCapabilities();
 		assertEquals("com\\htmlhifive\\test\\exec\\cap\\capabilities_FileParameterTest.json",
 				env.getCapabilitiesFilePath());
 		assertEquals(Platform.WINDOWS, cap.getPlatform());
@@ -89,7 +86,7 @@ public class FileParameterTest extends MrtTestBase {
 		//		MrtPageConfig pageConf = config.getPageConfig();
 
 		// TODO: v1.0の対象外になるかも？
-		String EXPECTED_BASE_URL = MrtTestConfig.getInstance().getTestAppConfig().getBaseUrl();
+		String EXPECTED_BASE_URL = PtlTestConfig.getInstance().getTestAppConfig().getBaseUrl();
 		//		assertEquals(EXPECTED_BASE_URL, pageConf.getBaseUrl());
 		assertEquals(EXPECTED_BASE_URL, driver.getCurrentUrl()); // 空文字で開いたのでベースURLがそのまま開く
 

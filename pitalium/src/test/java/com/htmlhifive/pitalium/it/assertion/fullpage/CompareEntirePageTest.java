@@ -21,24 +21,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.DomSelector;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
 import com.htmlhifive.pitalium.core.result.TestResultManager;
-import com.htmlhifive.pitalium.core.selenium.MrtWebDriverWait;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriverWait;
 
 /**
  * ページ全体(body)の比較のテスト
  */
-public class CompareEntirePageTest extends MrtTestBase {
+public class CompareEntirePageTest extends PtlTestBase {
 
 	private static final String URL_TOP_PAGE = "";
 
@@ -57,7 +57,7 @@ public class CompareEntirePageTest extends MrtTestBase {
 	public void specifyNoTarget() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		assertionView.assertView("topPage", null, HIDDEN_ELEMENTS);
@@ -75,7 +75,7 @@ public class CompareEntirePageTest extends MrtTestBase {
 	public void specifyTargetTagBody() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		//		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body")) };
@@ -95,7 +95,7 @@ public class CompareEntirePageTest extends MrtTestBase {
 	public void specifyTargetClassBody() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		// bodyにclass="body"を付加する
@@ -118,7 +118,7 @@ public class CompareEntirePageTest extends MrtTestBase {
 	public void specifyTargetBodyWithMargin() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		// bodyにmarginを付加する
@@ -145,7 +145,7 @@ public class CompareEntirePageTest extends MrtTestBase {
 
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body")) };
@@ -154,7 +154,7 @@ public class CompareEntirePageTest extends MrtTestBase {
 
 	@AfterClass
 	public static void saveExpectedId() throws IOException {
-		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() != ExecMode.SET_EXPECTED) {
+		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() != ExecMode.SET_EXPECTED) {
 			return;
 		}
 

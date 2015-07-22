@@ -21,7 +21,7 @@ import com.htmlhifive.pitalium.common.util.JSONUtils;
 /**
  * テスト対象のページの共通設定を保持するクラス
  */
-@MrtConfiguration
+@PtlConfiguration
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestAppConfig {
 

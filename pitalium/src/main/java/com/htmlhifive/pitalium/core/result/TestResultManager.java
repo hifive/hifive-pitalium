@@ -32,7 +32,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
 import com.htmlhifive.pitalium.core.config.ExecMode;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.io.PersistMetadata;
 import com.htmlhifive.pitalium.core.io.Persister;
 import com.htmlhifive.pitalium.core.io.ResourceUnavailableException;
@@ -68,7 +68,7 @@ public final class TestResultManager {
 	 * 初期化します。
 	 */
 	private TestResultManager() {
-		this(MrtTestConfig.getInstance().getEnvironment());
+		this(PtlTestConfig.getInstance().getEnvironment());
 	}
 
 	/**

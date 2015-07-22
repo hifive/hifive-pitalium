@@ -34,7 +34,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriverException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.IndexDomSelector;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
@@ -43,13 +43,13 @@ import com.htmlhifive.pitalium.core.model.ScreenshotResult;
 import com.htmlhifive.pitalium.core.model.SelectorType;
 import com.htmlhifive.pitalium.core.model.TargetResult;
 import com.htmlhifive.pitalium.core.result.TestResultManager;
-import com.htmlhifive.pitalium.core.selenium.MrtWebDriverWait;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriverWait;
 import com.htmlhifive.pitalium.image.model.ScreenshotImage;
 
 /**
  * ページ全体(body)のスクリーンショットの取得のテスト
  */
-public class TakeEntirePageScreenshotTest extends MrtTestBase {
+public class TakeEntirePageScreenshotTest extends PtlTestBase {
 
 	private static final String TEST_TOP_PAGE_URL = "";
 
@@ -82,7 +82,7 @@ public class TakeEntirePageScreenshotTest extends MrtTestBase {
 	public void specifyNoTarget() throws IOException {
 		driver.get(TEST_TOP_PAGE_URL);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		ScreenshotResult result = driver.takeScreenshot("topPage");
@@ -103,7 +103,7 @@ public class TakeEntirePageScreenshotTest extends MrtTestBase {
 	public void specifyTargetTagBody() throws IOException {
 		driver.get(TEST_TOP_PAGE_URL);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		ScreenArea screenArea = ScreenArea.of(SelectorType.TAG_NAME, "body");
@@ -127,7 +127,7 @@ public class TakeEntirePageScreenshotTest extends MrtTestBase {
 	public void specifyTargetClassBody() throws IOException {
 		driver.get(TEST_TOP_PAGE_URL);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		// bodyにclass="body"を付加する
@@ -153,7 +153,7 @@ public class TakeEntirePageScreenshotTest extends MrtTestBase {
 	public void specifyTargetBodyWithMargin() throws IOException {
 		driver.get(TEST_TOP_PAGE_URL);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		// bodyにmarginを付加する
@@ -182,7 +182,7 @@ public class TakeEntirePageScreenshotTest extends MrtTestBase {
 
 		driver.get(TEST_TOP_PAGE_URL);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		ScreenshotResult result = driver.takeScreenshot("topPage");

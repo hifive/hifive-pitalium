@@ -18,13 +18,13 @@ package com.htmlhifive.pitalium.it.assertion.partialpage;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -32,9 +32,9 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * ExpectedとActualで、セレクタで取得された要素の数が異なる場合のテスト
  */
-public class CompareDifferentNumberOfPartTest extends MrtTestBase {
+public class CompareDifferentNumberOfPartTest extends PtlTestBase {
 
-	private static final MrtTestConfig config = MrtTestConfig.getInstance();
+	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();
 
 	@Rule

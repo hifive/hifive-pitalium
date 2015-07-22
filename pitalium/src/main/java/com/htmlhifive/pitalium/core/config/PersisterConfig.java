@@ -23,7 +23,7 @@ import com.htmlhifive.pitalium.common.util.JSONUtils;
 /**
  * 画像やテスト結果の入出力に関する設定
  */
-@MrtConfiguration
+@PtlConfiguration
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PersisterConfig implements Serializable {
 

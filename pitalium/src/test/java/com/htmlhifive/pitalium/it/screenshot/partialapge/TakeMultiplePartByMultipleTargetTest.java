@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.PtlTestBase;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -29,9 +29,9 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * ページの特定要素のスクリーンショットが正しくとれているかのテスト
  */
-public class TakeMultiplePartByMultipleTargetTest extends MrtTestBase {
+public class TakeMultiplePartByMultipleTargetTest extends PtlTestBase {
 
-	private static final String BASE_URL = MrtTestConfig.getInstance().getTestAppConfig().getBaseUrl();
+	private static final String BASE_URL = PtlTestConfig.getInstance().getTestAppConfig().getBaseUrl();
 
 	/**
 	 * 複数のセレクタで複数要素選択時にスクリーンショットが正しくとれているかのテスト<br>

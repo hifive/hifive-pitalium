@@ -17,14 +17,14 @@ package com.htmlhifive.pitalium.it.exec.multitest;
 
 import org.junit.Test;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.model.DomSelector;
 import com.htmlhifive.pitalium.core.model.SelectorType;
 
 /**
  * 同時実行のテストの１つ目のテストクラス
  */
-public class FirstOfMultipleTest extends MrtTestBase {
+public class FirstOfMultipleTest extends PtlTestBase {
 
 	private static final DomSelector[] HIDDEN_ELEMENTS = new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME,
 			"gototop") };

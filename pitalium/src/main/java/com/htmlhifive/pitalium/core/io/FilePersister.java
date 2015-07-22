@@ -29,6 +29,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,11 +38,10 @@ import com.google.common.base.Strings;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.config.FilePersisterConfig;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
 import com.htmlhifive.pitalium.core.model.ScreenshotResult;
 import com.htmlhifive.pitalium.core.model.TargetResult;
 import com.htmlhifive.pitalium.core.model.TestResult;
-import com.htmlhifive.pitalium.core.selenium.MrtCapabilities;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.image.model.PersistedScreenshotImage;
 
 /**
@@ -72,7 +72,7 @@ public class FilePersister implements Persister {
 	 * コンストラクタ
 	 */
 	public FilePersister() {
-		this(MrtTestConfig.getInstance().getPersisterConfig().getFile());
+		this(PtlTestConfig.getInstance().getPersisterConfig().getFile());
 	}
 
 	/**
@@ -214,7 +214,7 @@ public class FilePersister implements Persister {
 		List<ScreenshotResult> results = new ArrayList<ScreenshotResult>(testResult.getScreenshotResults().size());
 		for (ScreenshotResult r : testResult.getScreenshotResults()) {
 			PersistMetadata m = new PersistMetadata(metadata.getExpectedId(), metadata.getClassName(),
-					r.getTestMethod(), r.getScreenshotId(), new MrtCapabilities(r.getCapabilities()));
+					r.getTestMethod(), r.getScreenshotId(), new PtlCapabilities(r.getCapabilities()));
 			List<TargetResult> targetResults = fillScreenshotImageProperty(r.getTargetResults(), m);
 			results.add(new ScreenshotResult(r.getScreenshotId(), r.getResult(), r.getExpectedId(), targetResults, r
 					.getTestClass(), r.getTestMethod(), r.getCapabilities(), null));

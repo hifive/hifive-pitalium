@@ -29,11 +29,11 @@ import org.junit.runners.Parameterized;
 import com.htmlhifive.pitalium.core.ParameterizedThreads;
 import com.htmlhifive.pitalium.core.rules.AssertionView;
 import com.htmlhifive.pitalium.core.rules.ResultCollector;
-import com.htmlhifive.pitalium.core.selenium.MrtCapabilities;
-import com.htmlhifive.pitalium.core.selenium.MrtWebDriver;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 
 /**
- * MrtBaseを利用しないテストの実行のテスト
+ * PtlTestBaseを利用しないテストの実行のテスト
  */
 @RunWith(ParameterizedThreads.class)
 public class WithoutBaseTest {
@@ -44,8 +44,8 @@ public class WithoutBaseTest {
 	 * @return Capabilityのリスト
 	 */
 	@Parameterized.Parameters(name = "{0}")
-	public static List<MrtCapabilities[]> readCapabilities() {
-		return MrtCapabilities.readCapabilities();
+	public static List<PtlCapabilities[]> readCapabilities() {
+		return PtlCapabilities.readCapabilities();
 	}
 
 	/**
@@ -64,12 +64,12 @@ public class WithoutBaseTest {
 	 * このインスタンスに割り当てられたcapability.
 	 */
 	@Parameterized.Parameter
-	public MrtCapabilities capabilities;
+	public PtlCapabilities capabilities;
 
 	/**
 	 * ブラウザ操作用driver.
 	 */
-	private MrtWebDriver driver;
+	private PtlWebDriver driver;
 
 	/**
 	 * テストクラスセットアップ.
@@ -80,7 +80,7 @@ public class WithoutBaseTest {
 	}
 
 	/**
-	 * MrtBaseを利用しないテストの実行のテスト<br>
+	 * PtlTestBaseを利用しないテストの実行のテスト<br>
 	 * 前提条件：このテストをSET_EXPECTEDモードで1度実行し、スクリーンショットを取得している<br>
 	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
 	 * 期待結果：テストが正しく実行でき、assertViewの比較で一致する

@@ -18,12 +18,12 @@ package com.htmlhifive.pitalium.it.screenshot.partialapge;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -31,9 +31,9 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * 非表示（display: none）要素のスクリーンショット取得のテスト<br>
  */
-public class TakeNonePartTest extends MrtTestBase {
+public class TakeNonePartTest extends PtlTestBase {
 
-	private static final String BASE_URL = MrtTestConfig.getInstance().getTestAppConfig().getBaseUrl();
+	private static final String BASE_URL = PtlTestConfig.getInstance().getTestAppConfig().getBaseUrl();
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();

@@ -23,7 +23,7 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.openqa.selenium.WebDriverException;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 
 /**
  * 不正なブラウザの設定を含む実行のテスト. <br>
@@ -32,7 +32,7 @@ import com.htmlhifive.pitalium.core.MrtTestBase;
  * json<br>
  * を指定すること.
  */
-public class IllegalBrowserWithAppropriateBroweserTest extends MrtTestBase {
+public class IllegalBrowserWithAppropriateBroweserTest extends PtlTestBase {
 
 	private static final String ILLEGAL_BROWSER_STR = "illegal";
 

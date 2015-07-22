@@ -21,12 +21,12 @@ import static org.hamcrest.MatcherAssert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -34,9 +34,9 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * 座標が固定されている要素に対するスクリーンショット取得のテスト
  */
-public class KeepBodyStyleTest extends MrtTestBase {
+public class KeepBodyStyleTest extends PtlTestBase {
 
-	private static final String BASE_URL = MrtTestConfig.getInstance().getTestAppConfig().getBaseUrl();
+	private static final String BASE_URL = PtlTestConfig.getInstance().getTestAppConfig().getBaseUrl();
 
 	/**
 	 * bodyにスタイルが定義されている固定されている要素に対してisMoveオプションを指定して<br>

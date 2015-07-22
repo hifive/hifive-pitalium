@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.model.IndexDomSelector;
-import com.htmlhifive.pitalium.core.selenium.MrtCapabilities;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
 /**
@@ -60,7 +60,7 @@ public class PersistMetadata implements Serializable {
 	/**
 	 * Capabilities
 	 */
-	private final MrtCapabilities capabilities;
+	private final PtlCapabilities capabilities;
 
 	/**
 	 * コンストラクタ
@@ -82,7 +82,7 @@ public class PersistMetadata implements Serializable {
 	 * @param capabilities Capability
 	 */
 	public PersistMetadata(String expectedId, String className, String methodName, String screenshotId,
-			MrtCapabilities capabilities) {
+			PtlCapabilities capabilities) {
 		this(expectedId, className, methodName, screenshotId, null, null, capabilities);
 	}
 
@@ -98,7 +98,7 @@ public class PersistMetadata implements Serializable {
 	 * @param capabilities Capability
 	 */
 	public PersistMetadata(String expectedId, String className, String methodName, String screenshotId,
-			IndexDomSelector selector, RectangleArea rectangle, MrtCapabilities capabilities) {
+			IndexDomSelector selector, RectangleArea rectangle, PtlCapabilities capabilities) {
 		this.expectedId = expectedId;
 		this.className = className;
 		this.methodName = methodName;
@@ -167,7 +167,7 @@ public class PersistMetadata implements Serializable {
 	 * 
 	 * @return Capability
 	 */
-	public MrtCapabilities getCapabilities() {
+	public PtlCapabilities getCapabilities() {
 		return capabilities;
 	}
 

@@ -24,9 +24,9 @@ import org.junit.rules.ExpectedException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -34,9 +34,9 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * 要素のサイズが異なるときに正しく比較が行われるかのテスト
  */
-public class CompareDifferentSizeTest extends MrtTestBase {
+public class CompareDifferentSizeTest extends PtlTestBase {
 
-	private static final MrtTestConfig config = MrtTestConfig.getInstance();
+	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();
 
 	@Rule

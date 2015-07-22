@@ -17,12 +17,12 @@ package com.htmlhifive.pitalium.it.exec.cap;
 
 import org.junit.Test;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 
 /**
  * 複数のブラウザでの実行のテスト
  */
-public class MultipleBrowserTest extends MrtTestBase {
+public class MultipleBrowserTest extends PtlTestBase {
 
 	@Test
 	public void test() {

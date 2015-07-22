@@ -23,16 +23,16 @@ import org.junit.rules.ExpectedException;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriverException;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
-import com.htmlhifive.pitalium.core.selenium.MrtWebDriverWait;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriverWait;
 
 /**
  * ページ全体(body)の比較のテスト
  */
-public class AssertViewOfEntirePageTest extends MrtTestBase {
+public class AssertViewOfEntirePageTest extends PtlTestBase {
 
 	private static final String URL_TOP_PAGE = "";
 
@@ -51,7 +51,7 @@ public class AssertViewOfEntirePageTest extends MrtTestBase {
 	public void specifyNoTarget() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		assertionView.assertView("topPage");
@@ -69,7 +69,7 @@ public class AssertViewOfEntirePageTest extends MrtTestBase {
 	public void specifyTargetTagBody() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body")) };
@@ -88,7 +88,7 @@ public class AssertViewOfEntirePageTest extends MrtTestBase {
 	public void specifyTargetClassBody() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		// bodyにclass="body"を付加する
@@ -110,7 +110,7 @@ public class AssertViewOfEntirePageTest extends MrtTestBase {
 	public void specifyTargetBodyWithMargin() {
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		// bodyにmarginを付加する
@@ -137,7 +137,7 @@ public class AssertViewOfEntirePageTest extends MrtTestBase {
 
 		driver.get(URL_TOP_PAGE);
 
-		MrtWebDriverWait wait = new MrtWebDriverWait(driver, 30);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
 		wait.untilLoad();
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body")) };

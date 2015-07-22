@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,17 +34,16 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
-import com.htmlhifive.pitalium.core.config.MrtTestConfig;
 import com.htmlhifive.pitalium.core.result.TestResultManager;
-import com.htmlhifive.pitalium.core.selenium.MrtCapabilities;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.it.util.ItUtils;
 
 /**
  * ページ全体(body)のスクリーンショットの取得のテストの結果を確認するテストクラス
  */
-public class CompareWithExcludesCheckResultTest extends MrtTestBase {
+public class CompareWithExcludesCheckResultTest extends PtlTestBase {
 
 	private static final String TEST_CLASS_NAME = "CompareWithExcludesTest";
 
@@ -108,7 +108,7 @@ public class CompareWithExcludesCheckResultTest extends MrtTestBase {
 	private void assertScreenshotResult(JsonNode screenshotResult, String selectorType, boolean withMargin)
 			throws JsonProcessingException {
 		assertThat(screenshotResult.get("screenshotId").asText(), is("topPage"));
-		if (MrtTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
+		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
 			assertThat(screenshotResult.get("result").asText(), is("SUCCESS"));
 		} else {
 			assertNull(screenshotResult.get("result"));
@@ -122,7 +122,7 @@ public class CompareWithExcludesCheckResultTest extends MrtTestBase {
 		assertThat(targetResult.get("result").asText(), is("SUCCESS"));
 
 		// capabilities
-		assertThat(new MrtCapabilities(mapper.convertValue(screenshotResult.get("capabilities"), Map.class)),
+		assertThat(new PtlCapabilities(mapper.convertValue(screenshotResult.get("capabilities"), Map.class)),
 				is(capabilities));
 	}
 
