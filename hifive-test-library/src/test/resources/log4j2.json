@@ -11,8 +11,8 @@
 			},
 			"RollingFile": {
 				"name": "RollingFileAppender",
-				"fileName": "./logs/hifive-test-library.log",
-				"filePattern": "./test-result/logs/hifive-test-library-%d{yyyy-MM-dd}-%i.log",
+				"fileName": "./logs/pitalium.log",
+				"filePattern": "./test-result/logs/pitalium-%d{yyyy-MM-dd}-%i.log",
 				"PatternLayout": {
 					"pattern": "%d{DEFAULT} [%t] %-5level %logger{36} - %msg%n"
 				},

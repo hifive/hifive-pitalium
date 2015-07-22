@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="hifive-test-library" default="build">
+<project name="pitalium" default="build">
 
 	<!-- プロジェクト名 -->
 	<basename property="current.project.name" file="${basedir}" suffix="${ant.file}" />
