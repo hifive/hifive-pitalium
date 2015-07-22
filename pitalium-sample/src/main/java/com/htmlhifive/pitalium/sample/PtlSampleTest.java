@@ -23,17 +23,17 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.htmlhifive.pitalium.core.MrtTestBase;
+import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.DomSelector;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
-import com.htmlhifive.pitalium.core.selenium.MrtWebElement;
+import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 
 /**
  * @author msakai
  */
-public class MrtSampleTest extends MrtTestBase {
+public class PtlSampleTest extends PtlTestBase {
 
 	private static final DomSelector[] HIDE_ELEMENTS = { new DomSelector(SelectorType.CLASS_NAME, "gototop") };
 
@@ -70,7 +70,7 @@ public class MrtSampleTest extends MrtTestBase {
 		String url = "conts/web/view/tutorial/menu";
 		driver.get(url);
 
-		MrtWebElement e = (MrtWebElement) driver.findElement(By.cssSelector(".wikimodel-freestanding"));
+		PtlWebElement e = (PtlWebElement) driver.findElement(By.cssSelector(".wikimodel-freestanding"));
 
 		JavascriptExecutor jse = (JavascriptExecutor) driver;
 		jse.executeScript("arguments[0].width=arguments[1]", e, e.getRect().getWidth());
