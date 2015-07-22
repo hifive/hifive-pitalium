@@ -1,18 +1,18 @@
-hifive-test-library-sample
+pitalium-sample
 ====
 
-hifive-test-libraryの動作確認用サンプルプロジェクトです。
+pitaliumの動作確認用サンプルプロジェクトです。
 動作させるための手順を以下に記載します。
 
 ## 必要なライブラリを追加
-`hifive-test-library-sample/ivy_build.xml` の resolve ターゲットを実行します。
+`pitalium-sample/ivy_build.xml` の resolve ターゲットを実行します。
 
   - コマンドラインから
-  `$ cd hifive-test-library-sample`
+  `$ cd pitalium-sample`
   `$ ant -buildfile ivy_build.xml`
 
   - IDE（eclipse）から
-  hifive-test-library-sampleプロジェクトをインポート -> `hifive-test-library-sample/ivy_build.xml` を右クリック -> 実行 -> Antビルド
+  pitalium-sampleプロジェクトをインポート -> `pitalium-sample/ivy_build.xml` を右クリック -> 実行 -> Antビルド
 
 ## 環境構築
 
@@ -64,7 +64,7 @@ src/main/resources/capabilities.jsonを開き、テストを実行するブラ�
 ## 正解定義モードで実行
 1. MrtSampleTest.javaを実行します。
 
-2. hifive-test-library-sample/results フォルダ以下に実行結果画像が生成されます。
+2. pitalium-sample/results フォルダ以下に実行結果画像が生成されます。
 
 ## テスト実行モードで実行
 1. 実行モードを切り替えます。
@@ -74,7 +74,7 @@ src/main/resources/EnvironmentConfig.jsonを開き、2行目を次のように�
 
 2. MrtSampleTest.javaを実行します。
 
-3. hifive-test-library-sample/results フォルダ以下に実行結果画像が生成されます。
+3. pitalium-sample/results フォルダ以下に実行結果画像が生成されます。
 
 正解定義モードで実行した際の結果画像と、今回の実行結果画像を比較し、差異があった場合は差分画像が出力されます。
 

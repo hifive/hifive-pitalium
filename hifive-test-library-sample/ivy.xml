@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
 	<info organisation="com.htmlhifive"
-		module="hifive-test-library-sample"
+		module="pitalium-sample"
 	/>
 	<configurations>
 		<conf name="default" visibility="public" />
