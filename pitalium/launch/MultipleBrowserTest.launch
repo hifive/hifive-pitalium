@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/pitalium/src/test/java/com/htmlhifive/testlib/ut/exec/cap/MultipleBrowserTest.java"/>
+<listEntry value="/pitalium/src/test/java/com/htmlhifive/pitalium/ut/exec/cap/MultipleBrowserTest.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -12,5 +12,5 @@
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.htmlhifive.pitalium.it.exec.cap.MultipleBrowserTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="pitalium"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_MultipleBrowserTest.json"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_MultipleBrowserTest.json"/>
 </launchConfiguration>

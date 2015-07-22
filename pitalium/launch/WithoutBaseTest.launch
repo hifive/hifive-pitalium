@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/pitalium/src/test/java/com/htmlhifive/testlib/it/exec/base/WithoutBaseTest.java"/>
+<listEntry value="/pitalium/src/test/java/com/htmlhifive/pitalium/it/exec/base/WithoutBaseTest.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>

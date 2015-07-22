@@ -41,15 +41,15 @@ public class MrtWebDriverWait extends WebDriverWait {
 
 	//@formatter:off
 	//CHECKSTYLE:OFF
-	private static final String LOAD_COMPLETE_SCRIPT = "function hifive_testlib_loadComplete () {" +
+	private static final String LOAD_COMPLETE_SCRIPT = "function pitalium_loadComplete () {" +
 			"  var element = document.createElement('div');" +
 			"  element.id = '%s';" +
 			"  document.body.appendChild(element);" +
 			"}" +
 			"if (document.readyState == 'complete') {" +
-			"  hifive_testlib_loadComplete();" +
+			"  pitalium_loadComplete();" +
 			"} else {" +
-			"  window.addEventListener('load', hifive_testlib_loadComplete);" +
+			"  window.addEventListener('load', pitalium_loadComplete);" +
 			"}";
 
 	private static final String DELETE_TAG_SCRIPT =

@@ -60,7 +60,7 @@ public class EnvironmentConfigTest {
 	@Test
 	public void testAnnotatedProperties_MrtConfigurationProperty() throws Exception {
 		Map<String, String> props = new HashMap<String, String>();
-		props.put("environmentConfig", "com/htmlhifive/testlib/core/config/EnvironmentConfigTest_allProperties.json");
+		props.put("environmentConfig", "com/htmlhifive/pitalium/core/config/EnvironmentConfigTest_allProperties.json");
 		props.put("execMode", "TAKE_SCREENSHOT");
 
 		MrtTestConfig config = new MrtTestConfig(props);

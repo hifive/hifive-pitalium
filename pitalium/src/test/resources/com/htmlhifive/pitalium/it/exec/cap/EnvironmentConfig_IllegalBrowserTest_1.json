@@ -1,5 +1,5 @@
 {
 	"execMode": "TAKE_SCREENSHOT",
 	"hubHost": "172.30.249.159",
-	"capabilitiesFilePath": "com\\htmlhifive\\testlib\\it\\exec\\cap\\capabilities_IllegalBrowserTest_1.json"
+	"capabilitiesFilePath": "com\\htmlhifive\\pitalium\\it\\exec\\cap\\capabilities_IllegalBrowserTest_1.json"
 }

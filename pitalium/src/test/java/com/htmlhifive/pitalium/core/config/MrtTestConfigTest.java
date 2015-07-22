@@ -160,7 +160,7 @@ public class MrtTestConfigTest {
 	@Test
 	public void testGetEnvironment_startupArguments() throws Exception {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("environmentConfig", "com/htmlhifive/testlib/core/config/MrtTestConfigTest_Env.json");
+		map.put("environmentConfig", "com/htmlhifive/pitalium/core/config/MrtTestConfigTest_Env.json");
 		map.put("execMode", "TAKE_SCREENSHOT");
 
 		MrtTestConfig config = new MrtTestConfig(map);
@@ -176,7 +176,7 @@ public class MrtTestConfigTest {
 	@Test
 	public void testGetEnvironment_fileNotExists() throws Exception {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("environmentConfig", "com/htmlhifive/testlib/core/config/FILE_NOT_EXISTS");
+		map.put("environmentConfig", "com/htmlhifive/pitalium/core/config/FILE_NOT_EXISTS");
 		map.put("execMode", "TAKE_SCREENSHOT");
 
 		expectedException.expect(TestRuntimeException.class);

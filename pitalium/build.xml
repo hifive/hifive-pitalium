@@ -162,7 +162,7 @@
 
 			<batchtest fork="yes" todir="${target.junit.report.dir}">
 				<fileset dir="${target.test.src.dir}">
-					<exclude name="com/htmlhifive/testlib/it/**/*.java" />
+					<exclude name="com/htmlhifive/pitalium/it/**/*.java" />
 				</fileset>
 			</batchtest>
 		</junit>

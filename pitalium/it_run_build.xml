@@ -65,7 +65,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="com.htmlhifive.pitalium.it.exec.cap.SingleBrowserTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_SingleBrowserTest.json"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_SingleBrowserTest.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -74,7 +74,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="com.htmlhifive.pitalium.it.exec.cap.NoBrowserTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_NoBrowserTest.json"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_NoBrowserTest.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -91,7 +91,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="com.htmlhifive.pitalium.it.exec.cap.MultipleBrowserTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_MultipleBrowserTest.json"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_MultipleBrowserTest.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -100,7 +100,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="com.htmlhifive.pitalium.it.exec.cap.IllegalBrowserTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_1.json"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_1.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -109,7 +109,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="com.htmlhifive.pitalium.it.exec.cap.IllegalBrowserWithAppropriateBroweserTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_2.json"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_2.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -118,7 +118,7 @@
     <junit fork="yes" printsummary="withOutAndErr">
         <formatter type="xml"/>
         <test name="com.htmlhifive.pitalium.it.exec.cap.IllegalBrowserWithAppropriateBrowesersTest" todir="${junit.output.dir}"/>
-        <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_3.json"/>
+        <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_3.json"/>
         <classpath refid="test.classpath"/>
     </junit>
 </target>
@@ -127,7 +127,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="com.htmlhifive.pitalium.it.exec.param.FileParameterTest" todir="${junit.output.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\testlib\it\exec\param\EnvironmentConfig_FileParameterTest.json"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\param\EnvironmentConfig_FileParameterTest.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
@@ -171,7 +171,7 @@
             <formatter type="xml"/>
             <classpath refid="test.classpath"/>
 			<batchtest fork="yes" todir="${target.junit.report.dir}">
-				<fileset dir="${target.test.src.dir}" includes="${target.test.src.dir}/com/htmlhifive/testlib/it/screenshot/partialpage/*.java" />
+				<fileset dir="${target.test.src.dir}" includes="${target.test.src.dir}/com/htmlhifive/pitalium/it/screenshot/partialpage/*.java" />
 			</batchtest>
         </junit>
     </target>
@@ -181,7 +181,7 @@
             <formatter type="xml"/>
             <classpath refid="test.classpath"/>
 			<batchtest fork="yes" todir="${target.junit.report.dir}">
-				<fileset dir="${target.test.src.dir}" includes="${target.test.src.dir}/com/htmlhifive/testlib/it/assertion/partialpage/*.java" />
+				<fileset dir="${target.test.src.dir}" includes="${target.test.src.dir}/com/htmlhifive/pitalium/it/assertion/partialpage/*.java" />
 			</batchtest>
         </junit>
     </target>
