@@ -787,10 +787,10 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		Number relativeBodyTop = executeJavaScript(
 				"var _bodyTop = arguments[0].getBoundingClientRect().top; return _bodyTop;", bodyElement);
 
-		// topの絶対値とウィンドウ高さからページ全体の高さを計算
+		// topの移動量とウィンドウ高さからページ全体の高さを計算
 		LOG.debug("relativeBodyTop: {}, bodyTop: {}, windowheight: {}, margin: {}", relativeBodyTop, bodyTop,
 				getWindowHeight(), margin.getTop());
-		double pageHeight = Math.abs(relativeBodyTop.doubleValue()) + bodyTop.doubleValue() + getWindowHeight();
+		double pageHeight = -relativeBodyTop.doubleValue() + bodyTop.doubleValue() + getWindowHeight();
 
 		// スクロール位置を元に戻す
 		scrollTo(scrollLeft, scrollTop);
