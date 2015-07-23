@@ -6,7 +6,7 @@ pitaliumのプロジェクトです。
 ## ビルド手順
 
 1. リポジトリのクローン
-`$ git clone git@github.com:hifive/pitalium.git`
+`$ git clone git@github.com:hifive/hifive-pitalium.git`
 
 2. Apche ivyを利用しpitaliumプロジェクトに必要なライブラリを追加
 `pitalium/ivy_build.xml` の resolve ターゲットを実行します。
