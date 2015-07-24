@@ -1,7 +1,7 @@
-pitalium-sample
+Pitalium Sample
 ====
 
-pitaliumの動作確認用サンプルプロジェクトです。
+Pitaliumの動作確認用サンプルプロジェクトです。
 動作させるための手順を以下に記載します。
 
 ## 必要なライブラリを追加
@@ -69,10 +69,10 @@ src/main/resources/capabilities.jsonを開き、テストを実行するブラ�
 ## テスト実行モードで実行
 1. 実行モードを切り替えます。
 
-src/main/resources/EnvironmentConfig.jsonを開き、2行目を次のように書き換えます。
+src/main/resources/environmentConfig.jsonを開き、2行目を次のように書き換えます。
   "execMode": "RUN_TEST",
 
-2. MrtSampleTest.javaを実行します。
+2. PtlSampleTest.javaを実行します。
 
 3. pitalium-sample/results フォルダ以下に実行結果画像が生成されます。
 
