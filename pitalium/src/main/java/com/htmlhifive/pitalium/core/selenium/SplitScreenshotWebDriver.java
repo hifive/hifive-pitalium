@@ -75,11 +75,13 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 		double captureTop = 0d;
 		long scrollTop = -1L;
 		int totalHeight = 0;
+		int totalWidth = -1;
 		double currentScale = Double.NaN;
 		int imageHeight = -1;
 
-		List<BufferedImage> images = new ArrayList<BufferedImage>();
+		List<List<BufferedImage>> images = new ArrayList<List<BufferedImage>>();
 		try {
+			// Vertical scroll
 			while (scrollTop < pageHeight) {
 				scrollTo(0d, captureTop);
 				// Wait until scroll finished
@@ -89,34 +91,71 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				if (scrollTop == currentScrollTop) {
 					break;
 				}
-
 				scrollTop = currentScrollTop;
 
-				// Screenshot
 				int headerHeight = getHeaderHeight(pageHeight, scrollTop);
 				int footerHeight = getFooterHeight(pageHeight, scrollTop, windowHeight);
-				BufferedImage image = getScreenshotAsBufferedImage();
-				if (headerHeight > 0 || footerHeight > 0) {
-					image = ImageUtils.trim(image, headerHeight, 0, footerHeight, 0);
+				List<BufferedImage> lineImages = new ArrayList<BufferedImage>();
+
+				// Horizontal scroll
+				double captureLeft = 0d;
+				long scrollLeft = -1L;
+				int lineWidth = 0;
+				while (scrollLeft < pageWidth) {
+					scrollTo(captureLeft, captureTop);
+					// Wait until scroll finished
+					Thread.sleep(100L);
+
+					long currentScrollLeft = Math.round(getCurrentScrollLeft());
+					if (scrollLeft == currentScrollLeft) {
+						break;
+					}
+					scrollLeft = currentScrollLeft;
+
+					// Take screenshot
+					BufferedImage image = getScreenshotAsBufferedImage();
+					// Trim header or footer
+					if (headerHeight > 0 || footerHeight > 0) {
+						image = ImageUtils.trim(image, headerHeight, 0, footerHeight, 0);
+					}
+
+					// Calc scale
+					if (Double.isNaN(currentScale)) {
+						currentScale = calcScale(windowWidth, image.getWidth());
+						scale = currentScale;
+						LOG.debug("pageWidth: {}, pageHeight: {}, windowWidth: {}, windowHeight: {}, scale: {}",
+								pageWidth, pageHeight, windowWidth, windowHeight, scale);
+					}
+
+					// 次の画像と重なる部分を切り取っておく
+					image = trimOverlap(captureTop, captureLeft, windowHeight, windowWidth, scale, image);
+
+					if (imageHeight < 0) {
+						imageHeight = image.getHeight();
+					}
+
+					lineImages.add(image);
+					lineWidth += image.getWidth();
+					captureLeft += calcHorizontalScrollIncrement(windowWidth);
 				}
 
-				// scale
-				if (Double.isNaN(currentScale)) {
-					currentScale = calcScale(windowWidth, image.getWidth());
-					scale = currentScale;
-					LOG.debug("pageWidth: {}, pageHeight: {}, windowWidth: {}, windowHeight: {}, scale: {}", pageWidth,
-							pageHeight, windowWidth, windowHeight, scale);
+				// 右端の画像の重複部分をトリムする
+				if (lineImages.size() > 1) {
+					BufferedImage rImg = lineImages.get(lineImages.size() - 1);
+					int trimLeft = calcTrimTop(lineImages.size(), windowWidth, pageWidth, scale);
+					LOG.debug("trimLeft: " + trimLeft);
+
+					if (trimLeft < rImg.getWidth()) {
+						lineImages.set(lineImages.size() - 1, ImageUtils.trim(rImg, 0, trimLeft, 0, 0));
+						lineWidth -= trimLeft;
+					}
 				}
 
-				// 次の画像と重なる部分を切り取っておく
-				image = trimCaptureTop(captureTop, windowHeight, scale, image);
-
-				if (imageHeight < 0) {
-					imageHeight = image.getHeight();
-				}
-
-				images.add(image);
+				images.add(lineImages);
 				totalHeight += imageHeight;
+				if (totalWidth < 0) {
+					totalWidth = lineWidth;
+				}
 
 				// 次のキャプチャ開始位置を設定
 				// HeaderHeightがある場合、画像の高さからスクロール幅を逆算
@@ -132,24 +171,41 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 		// 末尾の画像の重複部分をトリムする
 		if (images.size() > 1) {
-			BufferedImage lastImage = images.get(images.size() - 1);
-			int trimTop = calcTrimTop(images.size(), windowHeight, pageHeight, scale);
-			LOG.debug("trimTop: " + trimTop);
+			for (int i = 0; i < images.get(images.size() - 1).size(); i++) {
+				BufferedImage lastImage = images.get(images.size() - 1).get(i);
+				int trimTop = calcTrimTop(images.size(), windowHeight, pageHeight, scale);
+				LOG.debug("trimTop: " + trimTop);
 
-			if (trimTop < lastImage.getHeight()) {
-				images.set(images.size() - 1, ImageUtils.trim(lastImage, trimTop, 0, 0, 0));
-				totalHeight -= trimTop;
+				if (trimTop < lastImage.getHeight()) {
+					images.get(images.size() - 1).set(i, ImageUtils.trim(lastImage, trimTop, 0, 0, 0));
+					if (i == 0) {
+						totalHeight -= trimTop;
+					}
+				}
 			}
 		}
 
 		// 全キャプチャを結合
-		BufferedImage screenshot = new BufferedImage(images.get(0).getWidth(), totalHeight, BufferedImage.TYPE_INT_RGB);
+		BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
 		Graphics graphics = screenshot.getGraphics();
 		int nextTop = 0;
-		for (BufferedImage image : images) {
-			graphics.drawImage(image, 0, nextTop, null);
-			nextTop += image.getHeight();
+		for (List<BufferedImage> lineImage : images) {
+			int imgHeight = -1;
+			int nextLeft = 0;
+			for (BufferedImage img : lineImage) {
+				graphics.drawImage(img, nextLeft, nextTop, null);
+				nextLeft += img.getWidth();
+				if (imgHeight < 0) {
+					imgHeight = img.getHeight();
+				}
+			}
+			nextTop += imgHeight;
 		}
+
+		//		for (BufferedImage image : images) {
+		//			graphics.drawImage(image, 0, nextTop, null);
+		//			nextTop += image.getHeight();
+		//		}
 
 		return screenshot;
 	}
@@ -173,6 +229,16 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	 */
 	protected double calcScrollIncrement(long windowHeight) {
 		return windowHeight;
+	}
+
+	/**
+	 * 横スクロール量を計算します。
+	 * 
+	 * @param windowWidth ウィンドウの幅
+	 * @return スクロール量
+	 */
+	protected double calcHorizontalScrollIncrement(long windowWidth) {
+		return windowWidth;
 	}
 
 	/**
@@ -235,7 +301,8 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	 * @param img スクリーンショット画像
 	 * @return 重複を切り取った画像
 	 */
-	protected BufferedImage trimCaptureTop(double captureTop, long windowHeight, double currentScale, BufferedImage img) {
+	protected BufferedImage trimOverlap(double captureTop, double captureLeft, long windowHeight, long windowWidth,
+			double currentScale, BufferedImage img) {
 		return img;
 	}
 

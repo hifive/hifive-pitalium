@@ -742,19 +742,25 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		double scrollTop = getCurrentScrollTop();
 		double scrollLeft = getCurrentScrollLeft();
 
-		// 一番右までスクロール
+		// bodyの絶対座標を取得
 		PtlWebElement bodyElement = (PtlWebElement) findElementByTagName("body");
+		scrollTo(0d, 0d);
+		Number bodyLeft = executeJavaScript(
+				"var _bodyLeft = arguments[0].getBoundingClientRect().left; return _bodyLeft;", bodyElement);
+
+		// 一番右までスクロールした状態からbodyの相対座標を取得
 		String scrollWidth = executeScript("return arguments[0].scrollWidth", bodyElement).toString();
 		WebElementMargin margin = bodyElement.getMargin();
-
-		// 小数点以下の誤差対策で+1
+		// ページの幅 + 小数点以下の誤差対策で+1した座標へスクロール
 		double totalWidth = Double.parseDouble(scrollWidth) + margin.getLeft() + margin.getRight() + 1;
 		scrollTo(totalWidth, 0d);
+		Number relativeBodyLeft = executeJavaScript(
+				"var _bodyLeft = arguments[0].getBoundingClientRect().left; return _bodyLeft;", bodyElement);
 
-		// leftの絶対値とウィンドウ幅からページ全体の幅を計算
-		// leftの座標には左マージンが含まれていないので別途足す
-		margin = bodyElement.getMargin();
-		double pageWidth = Math.abs(bodyElement.getRect().getLeft()) + getWindowWidth() + margin.getLeft();
+		// leftの移動量とウィンドウ幅からページ全体の高さを計算
+		LOG.debug("relativeBodyLeft: {}, bodyLeft: {}, windowWidth: {}, margin: {}", relativeBodyLeft, bodyLeft,
+				getWindowWidth(), margin.getLeft());
+		double pageWidth = -relativeBodyLeft.doubleValue() + bodyLeft.doubleValue() + getWindowWidth();
 
 		// スクロール位置を元に戻す
 		scrollTo(scrollLeft, scrollTop);
