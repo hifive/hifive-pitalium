@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.*;
+import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.RunWith;
@@ -30,26 +31,46 @@ import org.junit.runners.Parameterized;
 
 /**
  * <p>
- * {@link Parameterized}と{@link ParameterizedBeforeClass}、{@link ParameterizedAfterClass}のテスト
+ * {@link ParameterizedClassRule}のテスト。
  * </p>
  * JUnitのサイクルが以下の順で回ることを確認する。
  * <ul>
  * <li>BEFORE_CLASS</li>
+ * <li>PARAMETERIZED_CLASS_RULE STARTING</li>
  * <li>PARAMETERIZED_BEFORE_CLASS</li>
  * <li>BEFORE</li>
  * <li>METHOD</li>
  * <li>AFTER</li>
  * <li>PARAMETERIZED_AFTER_CLASS</li>
+ * <li>PARAMETERIZED_CLASS_RULE FINISHED</li>
  * <li>AFTER_CLASS</li>
  * </ul>
  */
-public class ParameterizedBeforeAfterTest {
+public class ParameterizedClassRuleTest {
 
 	static String[] logs = { "", "" };
 
+	public static class ParameterizedTestWatcherExt extends ParameterizedTestWatcher {
+
+		private int param(Object[] params) {
+			return (int) (Integer) params[0];
+		}
+
+		@Override
+		protected void starting(Description description, Object[] params) {
+			logs[param(params)] += "pwStarting ";
+		}
+
+		@Override
+		protected void finished(Description description, Object[] params) {
+			logs[param(params)] += "pwFinished ";
+		}
+
+	}
+
 	@RunWith(Parameterized.class)
 	@Parameterized.UseParametersRunnerFactory(PtlBlockJUnit4ClassRunnerWithParametersFactory.class)
-	public static class ParameterizedBeforeAndAfterTestClass {
+	public static class ParameterizedClassRuleTestClass {
 
 		@Parameterized.Parameters
 		public static Collection<Object[]> parameters() {
@@ -78,6 +99,9 @@ public class ParameterizedBeforeAfterTest {
 			logs[param] += "parameterizedAfterClass ";
 		}
 
+		@ParameterizedClassRule
+		public static ParameterizedTestWatcherExt watcher = new ParameterizedTestWatcherExt();
+
 		@Parameterized.Parameter
 		public int param;
 
@@ -105,10 +129,10 @@ public class ParameterizedBeforeAfterTest {
 
 	@Test
 	public void testParameterizedBeforeClassAndAfterClass() throws Exception {
-		Result result = JUnitCore.runClasses(ParameterizedBeforeAndAfterTestClass.class);
+		Result result = JUnitCore.runClasses(ParameterizedClassRuleTestClass.class);
 		assertThat(result.getRunCount(), is(4));
 
-		final String expectedLog = "beforeClass parameterizedBeforeClass before test after before test after parameterizedAfterClass afterClass ";
+		final String expectedLog = "beforeClass pwStarting parameterizedBeforeClass before test after before test after parameterizedAfterClass pwFinished afterClass ";
 		assertThat(logs[0], is(expectedLog));
 		assertThat(logs[1], is(expectedLog));
 	}
