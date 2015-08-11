@@ -42,7 +42,8 @@ public abstract class PtlWebElement extends RemoteWebElement {
 			"var _obj = {"
 					+ "  \"left\": arguments[0].getBoundingClientRect().left,"
 					+ "  \"top\": arguments[0].getBoundingClientRect().top,"
-					+ "  \"width\": arguments[0].getBoundingClientRect().width,"
+//					+ "  \"width\": arguments[0].getBoundingClientRect().width,"
+					+ "  \"width\": arguments[0].getBoundingClientRect().right - arguments[0].getBoundingClientRect().left,"
 					+ "  \"scrollWidth\": arguments[0].scrollWidth,"
 					+ "  \"height\": arguments[0].getBoundingClientRect().bottom - arguments[0].getBoundingClientRect().top"
 					+ "};"
@@ -145,13 +146,15 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		double top = getDoubleOrDefault(object.get("top"), 0d);
 
 		// scrollWidthはdisplay: inlineのときに要素の幅が取得できないため、BoundingClientRect#widthも使う
-		double width = getDoubleOrDefault(object.get("scrollWidth"), 0d);
-		if (width == 0d) {
-			width = getDoubleOrDefault(object.get("width"), 0d);
-		}
+		//		double width = getDoubleOrDefault(object.get("scrollWidth"), 0d);
+		//		if (width == 0d) {
+		//			width = getDoubleOrDefault(object.get("width"), 0d);
+		//		}
+		double width = getTagName().equals("body") ? driver.getCurrentPageWidth() : getDoubleOrDefault(
+				object.get("width"), 0d);
 		// widthはボーダーを含める
-		WebElementBorderWidth borderWidth = getBorderWidth();
-		width += borderWidth.getLeft() + borderWidth.getRight();
+		//		WebElementBorderWidth borderWidth = getBorderWidth();
+		//		width += borderWidth.getLeft() + borderWidth.getRight();
 
 		// bodyの場合はページ全体の高さを返す
 		double height = getTagName().equals("body") ? driver.getCurrentPageHeight() : getDoubleOrDefault(
