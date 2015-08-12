@@ -20,8 +20,6 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
- * TODO JavaDoc
- * 
  * @author nakatani
  */
 public class RunParameterizedRules extends Statement {

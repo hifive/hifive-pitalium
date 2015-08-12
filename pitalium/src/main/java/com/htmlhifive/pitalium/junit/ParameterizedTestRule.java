@@ -20,8 +20,9 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
- * {@link org.junit.runners.Parameterized.Parameters}で設定した値を受け取ることができる{@link org.junit.rules.TestWatcher}
- * 
+ * {@link org.junit.runners.Parameterized.Parameters}で設定した値を受け取ることができる{@link org.junit.rules.TestRule}
+ *
+ * @see org.junit.Rule
  * @see org.junit.rules.TestRule
  * @author nakatani
  */

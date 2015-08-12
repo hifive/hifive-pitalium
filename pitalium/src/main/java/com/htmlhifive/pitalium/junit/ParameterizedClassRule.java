@@ -22,9 +22,30 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO javadoc
+ * <p>
+ * {@link org.junit.runners.Parameterized}テストにおいて、各パラメーター毎に全てのメソッド始まる前と後をフック出来るメソッドまたはフィールドを指定します。
+ * </p>
+ * 以下のサンプルのように利用してください。
+ * 
+ * <pre>
+ * &#064;RunWith(Parameterized.class)
+ * &#064;Parameterized.UseParametersRunnerFactory(PtlBlockJUnit4ClassRunnerWithParametersFactory.class)
+ * public class SampleTest {
+ * 
+ *     &#064;Parameterized.Parameters
+ *     public static Collection&lt;Object[]&gt; parameters() {
+ *         return Arrays.asList(new Object[] { &quot;1&quot;, 1 }, new Object[] { &quot;2&quot;, 2 });
+ *     }
+ * 
+ *     &#064;ParameterizedClassRule
+ *     public static ParameterizedTestWatcher parameterizedWatcher = new ParameterizedTestWatcher() {
+ *     }
+ * 
+ * }
+ * </pre>
  * 
  * @see org.junit.ClassRule
+ * @see ParameterizedTestRule
  * @author nakatani
  */
 @Retention(RetentionPolicy.RUNTIME)

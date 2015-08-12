@@ -22,8 +22,30 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * <p>
  * {@link org.junit.runners.Parameterized}テストにおいて、各パラメーター毎に全てのメソッドが終わった時に一度だけ呼ばれるメソッドを指定します。
+ * </p>
+ * 以下のサンプルのように利用してください。
  * 
+ * <pre>
+ * &#064;RunWith(Parameterized.class)
+ * &#064;Parameterized.UseParametersRunnerFactory(PtlBlockJUnit4ClassRunnerWithParametersFactory.class)
+ * public class SampleTest {
+ * 
+ *     &#064;Parameterized.Parameters
+ *     public static Collection&lt;Object[]&gt; parameters() {
+ *         return Arrays.asList(new Object[] {&quot;1&quot;, 1}, new Object[] {&quot;2&quot;, 2});
+ *     }
+ * 
+ *     &#064;ParameterizedAfterClass
+ *     public static void parameterizedAfterClass(<b>String param1, int param2</b>) {
+ * 
+ *     }
+ * 
+ * }
+ * </pre>
+ * 
+ * @see org.junit.AfterClass
  * @author nakatani
  */
 @Retention(RetentionPolicy.RUNTIME)
