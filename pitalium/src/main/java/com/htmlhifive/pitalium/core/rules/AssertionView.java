@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,11 +36,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.PtlTestBase;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.io.PersistMetadata;
 import com.htmlhifive.pitalium.core.io.Persister;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
@@ -56,6 +58,7 @@ import com.htmlhifive.pitalium.core.result.TestResultManager;
 import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriverFactory;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriverManager;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.image.model.ScreenshotImage;
@@ -89,7 +92,8 @@ public class AssertionView extends TestWatcher {
 	private String currentId;
 
 	private PtlCapabilities capabilities;
-	private PtlWebDriver driver;
+	protected PtlWebDriverManager.WebDriverContainer webDriverContainer;
+	protected PtlWebDriver driver;
 
 	private final List<ScreenshotResult> results = new ArrayList<ScreenshotResult>();
 
@@ -124,13 +128,9 @@ public class AssertionView extends TestWatcher {
 	protected void finished(Description desc) {
 		LOG.trace("{} finished", desc.getDisplayName());
 
-		if (driver != null) {
-			try {
-				driver.quit();
-				driver = null;
-			} catch (Exception e) {
-				LOG.warn("Unexpected error when close WebDriver.", e);
-			}
+		if (webDriverContainer != null) {
+			webDriverContainer.quit();
+			driver = null;
 		}
 
 		if (results.isEmpty()) {
@@ -162,7 +162,15 @@ public class AssertionView extends TestWatcher {
 		}
 
 		capabilities = cap;
-		driver = PtlWebDriverFactory.getInstance(cap).getDriver();
+		webDriverContainer = PtlWebDriverManager.getInstance().getWebDriver(description.getTestClass(), cap,
+				new Supplier<WebDriver>() {
+					@Override
+					public PtlWebDriver get() {
+						return PtlWebDriverFactory.getInstance(capabilities).getDriver();
+					}
+				});
+
+		driver = webDriverContainer.get();
 		return driver;
 	}
 
