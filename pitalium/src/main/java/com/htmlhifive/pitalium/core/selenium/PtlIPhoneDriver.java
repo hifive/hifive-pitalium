@@ -111,8 +111,8 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 	}
 
 	@Override
-	protected double calcScrollIncrementWithHeader(int imageHeight, double scale) {
-		double scrollIncrement = super.calcScrollIncrementWithHeader(imageHeight, scale);
+	protected double calcVerticalScrollIncrementWithHeader(int imageHeight, double scale) {
+		double scrollIncrement = super.calcVerticalScrollIncrementWithHeader(imageHeight, scale);
 		return scrollIncrement - 1;
 	}
 

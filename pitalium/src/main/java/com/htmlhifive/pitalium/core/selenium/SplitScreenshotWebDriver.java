@@ -160,9 +160,9 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				// 次のキャプチャ開始位置を設定
 				// HeaderHeightがある場合、画像の高さからスクロール幅を逆算
 				if (headerHeight > 0) {
-					captureTop += calcScrollIncrementWithHeader(imageHeight, scale);
+					captureTop += calcVerticalScrollIncrementWithHeader(imageHeight, scale);
 				} else {
-					captureTop += calcScrollIncrement(windowHeight);
+					captureTop += calcVerticalScrollIncrement(windowHeight);
 				}
 			}
 		} catch (InterruptedException e) {
@@ -217,7 +217,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	 * @param currentScale スケール
 	 * @return スクロール量
 	 */
-	protected double calcScrollIncrementWithHeader(int imageHeight, double currentScale) {
+	protected double calcVerticalScrollIncrementWithHeader(int imageHeight, double currentScale) {
 		return imageHeight / currentScale;
 	}
 
@@ -227,7 +227,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	 * @param windowHeight ウィンドウの高さ
 	 * @return スクロール量
 	 */
-	protected double calcScrollIncrement(long windowHeight) {
+	protected double calcVerticalScrollIncrement(long windowHeight) {
 		return windowHeight;
 	}
 

@@ -98,8 +98,8 @@ class PtlIPadDriver extends PtlIPhoneDriver {
 	}
 
 	@Override
-	protected double calcScrollIncrementWithHeader(int imageHeight, double scale) {
-		double scrollIncrement = super.calcScrollIncrementWithHeader(imageHeight, scale);
+	protected double calcVerticalScrollIncrementWithHeader(int imageHeight, double scale) {
+		double scrollIncrement = super.calcVerticalScrollIncrementWithHeader(imageHeight, scale);
 		// タブがないときはヘッダの影が1px写りこむため、スクロール幅を1px少なくする
 		if (getWindowHandles().size() <= 1) {
 			scrollIncrement -= 1;
