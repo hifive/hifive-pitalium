@@ -18,13 +18,15 @@ package com.htmlhifive.pitalium.junit;
 
 import org.junit.runner.Runner;
 import org.junit.runners.model.InitializationError;
-import org.junit.runners.parameterized.BlockJUnit4ClassRunnerWithParametersFactory;
+import org.junit.runners.parameterized.ParametersRunnerFactory;
 import org.junit.runners.parameterized.TestWithParameters;
 
 /**
+ * {@link PtlBlockJUnit4ClassRunnerWithParameters}Çê∂ê¨Ç∑ÇÈ{@link ParametersRunnerFactory}
+ *
  * @author nakatani
  */
-public class PtlBlockJUnit4ClassRunnerWithParametersFactory extends BlockJUnit4ClassRunnerWithParametersFactory {
+public class PtlBlockJUnit4ClassRunnerWithParametersFactory implements ParametersRunnerFactory {
 
 	@Override
 	public Runner createRunnerForTestWithParameters(TestWithParameters test) throws InitializationError {
