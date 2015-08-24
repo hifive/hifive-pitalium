@@ -15,10 +15,8 @@
  */
 package com.htmlhifive.pitalium.it.assertion.fullpage;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,6 +34,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.htmlhifive.pitalium.core.PtlTestBase;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.result.TestResultManager;
 import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.it.util.ItUtils;
@@ -61,12 +60,14 @@ public class CompareEntirePageCheckResultTest extends PtlTestBase {
 	public static void beforeClass() throws JsonProcessingException, IOException {
 		expectedId = readExpectedId();
 		currentId = TestResultManager.getInstance().getCurrentId();
-		resultFolderPath = "results" + File.separator + currentId + File.separator + TEST_CLASS_NAME;
+		resultFolderPath = PtlTestConfig.getInstance().getPersisterConfig().getFile().getResultDirectory()
+				+ File.separator + currentId + File.separator + TEST_CLASS_NAME;
 		results = mapper.readTree(new File(resultFolderPath + File.separator + "result.json"));
 	}
 
 	private static String readExpectedId() throws IOException {
-		File file = new File("results" + File.separator + TEST_CLASS_NAME + ".json");
+		File file = new File(PtlTestConfig.getInstance().getPersisterConfig().getFile().getResultDirectory()
+				+ File.separator + TEST_CLASS_NAME + ".json");
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String str = br.readLine();
 		br.close();
@@ -100,7 +101,7 @@ public class CompareEntirePageCheckResultTest extends PtlTestBase {
 
 	/**
 	 * スクリーンショットの結果のassert
-	 *
+	 * 
 	 * @param selectorType
 	 */
 	private void assertScreenshotResult(JsonNode screenshotResult, String selectorType, boolean withMargin)
