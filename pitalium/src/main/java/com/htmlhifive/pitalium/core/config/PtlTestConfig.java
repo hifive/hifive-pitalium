@@ -48,6 +48,7 @@ public class PtlTestConfig {
 	private EnvironmentConfig environment;
 	private PersisterConfig persisterConfig;
 	private TestAppConfig testApp;
+	private HttpServerConfig httpServerConfig;
 
 	private PtlTestConfig() {
 		this(getSystemStartupArguments());
@@ -289,6 +290,22 @@ public class PtlTestConfig {
 			LOG.debug("persisterConfig: {}", persisterConfig);
 			return persisterConfig;
 		}
+	}
+
+	/**
+	 * Pitalium HTTPサーバーに関する設定を取得します。
+	 * 
+	 * @return Pitalium HTTPサーバーに関する設定
+	 */
+	public synchronized HttpServerConfig getHttpServerConfig() {
+		if (httpServerConfig != null) {
+			return httpServerConfig;
+		}
+
+		httpServerConfig = getConfig(HttpServerConfig.class);
+
+		LOG.debug("httpServerConfig: {}", httpServerConfig);
+		return httpServerConfig;
 	}
 
 	/**

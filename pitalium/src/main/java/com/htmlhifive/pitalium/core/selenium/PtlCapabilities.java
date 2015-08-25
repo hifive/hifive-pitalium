@@ -21,9 +21,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.htmlhifive.pitalium.common.exception.JSONException;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 
 /**
  * テスト実行時に指定したCapabilityを保持するクラス。
@@ -43,14 +45,18 @@ public class PtlCapabilities extends DesiredCapabilities {
 	private static final Logger LOG = LoggerFactory.getLogger(PtlCapabilities.class);
 
 	private static List<PtlCapabilities[]> capabilities;
+	private static AtomicInteger idGenerator = new AtomicInteger(0);
+
+	private final int id;
 
 	/**
 	 * コンストラクタ
 	 * 
-	 * @param rawMap Capabilityを保持するマップ
+	 * @param rawMap Capabilitiesを保持するマップ
 	 */
 	public PtlCapabilities(Map<String, ?> rawMap) {
 		super(rawMap);
+		id = idGenerator.getAndIncrement();
 	}
 
 	/**
@@ -60,6 +66,7 @@ public class PtlCapabilities extends DesiredCapabilities {
 	 */
 	public PtlCapabilities(Capabilities other) {
 		super(other);
+		id = idGenerator.getAndIncrement();
 	}
 
 	/**
@@ -125,6 +132,20 @@ public class PtlCapabilities extends DesiredCapabilities {
 	}
 
 	/**
+	 * @param id
+	 * @return
+	 * @throws IndexOutOfBoundsException
+	 */
+	public static PtlCapabilities getCapabilitiesById(int id) {
+		List<PtlCapabilities[]> capabilities = readCapabilities();
+		if (id < 0 || capabilities.size() <= id) {
+			throw new IndexOutOfBoundsException(String.format(Locale.US, "id %d is out of bounds.", id));
+		}
+
+		return capabilities.get(id)[0];
+	}
+
+	/**
 	 * プラットフォーム名を取得します。
 	 * 
 	 * @return プラットフォーム名
@@ -154,6 +175,15 @@ public class PtlCapabilities extends DesiredCapabilities {
 	 */
 	public String getDeviceName() {
 		return toString(getCapability("deviceName"));
+	}
+
+	/**
+	 * CapabilitiesのユニークIDを取得します。
+	 * 
+	 * @return CapabilitiesのユニークID
+	 */
+	public int getId() {
+		return id;
 	}
 
 	private static String toString(Object object) {
