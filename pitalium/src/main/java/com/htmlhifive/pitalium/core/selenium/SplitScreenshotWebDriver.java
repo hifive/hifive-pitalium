@@ -17,9 +17,13 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +33,7 @@ import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.DomSelector;
 import com.htmlhifive.pitalium.core.model.ScreenshotParams;
 import com.htmlhifive.pitalium.core.model.TargetResult;
+import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.image.util.ImageUtils;
 
 /**
@@ -64,6 +69,18 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	 */
 	@Override
 	public BufferedImage getEntirePageScreenshot() {
+		return getMinimumScreenshot(null);
+	}
+
+	/**
+	 * ページの左上から指定された要素までを含むスクリーンショットを撮影し、{@link BufferedImage}として返します。<br/>
+	 * 要素が指定されていない場合はページ全体を撮影します。
+	 * 
+	 * @param params スクリーンショット撮影用パラメータ
+	 * @return 撮影したスクリーンショット
+	 */
+	@Override
+	public BufferedImage getMinimumScreenshot(ScreenshotParams params) {
 		// ウィンドウの最大サイズを取得
 		long pageWidth = getCurrentPageWidth();
 		long pageHeight = getCurrentPageHeight();
@@ -78,9 +95,18 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 		double currentScale = Double.NaN;
 		int imageHeight = -1;
 
+		// 撮影したい要素の位置を取得
+		double captureBottom = -1;
+		if (params != null) {
+			RectangleArea elementArea = params.getTarget().getArea();
+			captureBottom = elementArea.getY() + elementArea.getHeight();
+		} else {
+			captureBottom = pageHeight;
+		}
+
 		List<BufferedImage> images = new ArrayList<BufferedImage>();
 		try {
-			while (scrollTop < pageHeight) {
+			while (scrollTop < captureBottom) {
 				scrollTo(0d, captureTop);
 				// Wait until scroll finished
 				Thread.sleep(100L);
@@ -117,6 +143,15 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 				images.add(image);
 				totalHeight += imageHeight;
+
+				// デバッグ用（部分画像を保存）
+				try {
+					ImageIO.write(image, "png",
+							new File("C:\\Users\\msakai\\Desktop\\testimage\\chrome\\" + images.size() + ".png"));
+				} catch (IOException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				}
 
 				// 次のキャプチャ開始位置を設定
 				// HeaderHeightがある場合、画像の高さからスクロール幅を逆算
