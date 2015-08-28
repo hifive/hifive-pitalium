@@ -16,13 +16,20 @@
 
 package com.htmlhifive.pitalium.core.http;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.io.IOUtils;
+
+import com.google.common.collect.ImmutableMap;
+import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+import com.htmlhifive.pitalium.common.util.TextReplacer;
 import com.htmlhifive.pitalium.core.config.HttpServerConfig;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.http.handler.TakeScreenshotHandler;
 import com.htmlhifive.pitalium.core.rules.AssertionView;
-import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 
 /**
@@ -69,9 +76,18 @@ public class PtlHttpServerUtils {
 	static void loadPitaliumFunctions(final PtlWebDriver driver, HttpServerConfig config) {
 		startHttpServer();
 
-		String script = SCRIPT_LOAD_PITALIUM_FUNCTIONS.replaceAll("\\$\\{host\\}", config.getHostname())
-				.replaceAll("\\$\\{port\\}", String.valueOf(config.getPort()))
-				.replaceAll("\\$\\{capabilitiesId\\}", String.valueOf(driver.getCapabilities().getId()));
+		URL resource = PtlHttpServerUtils.class.getResource("loadPitaliumFunctions.js");
+		String s;
+		try {
+			s = IOUtils.toString(resource);
+		} catch (IOException e) {
+			throw new TestRuntimeException(e);
+		}
+
+		Map<String, ?> params = ImmutableMap.of("host", config.getHostname(), "port", config.getPort(),
+				"capabilitiesId", driver.getCapabilities().getId());
+		String script = TextReplacer.replace(s, params);
+
 		driver.executeJavaScript(script);
 	}
 
@@ -93,12 +109,8 @@ public class PtlHttpServerUtils {
 			final TakeScreenshotAction beforeAction, Runnable screenshotAction) {
 		startHttpServer();
 
-		awaitRequest(driver.getCapabilities(), TakeScreenshotHandler.MONITOR_TYPE, timeout, beforeAction);
+		awaitRequest(driver.getCapabilities().getId(), TakeScreenshotHandler.MONITOR_TYPE, timeout, beforeAction);
 		screenshotAction.run();
-	}
-
-	public static void awaitRequest(PtlCapabilities capabilities, String type, long timeout, Runnable action) {
-		awaitRequest(capabilities.getId(), type, timeout, action);
 	}
 
 	public static void awaitRequest(int id, String type, long timeout, Runnable action) {

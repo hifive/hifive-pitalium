@@ -28,7 +28,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 /**
- * TODO JavaDoc
+ * {@link HttpHandler}の簡易実装クラス。CORS対応やQueryStringのパースを行う。
+ * 
+ * @author nakatani
  */
 public abstract class AbstractHttpHandler implements HttpHandler {
 
@@ -39,7 +41,7 @@ public abstract class AbstractHttpHandler implements HttpHandler {
 	}
 
 	/**
-	 * Cross Origin Resource Sharingを可能にするヘッダーを送信します。
+	 * Cross Origin Resource Sharingを可能にするヘッダーを追加します。
 	 */
 	protected void addCORSHeaders(HttpExchange httpExchange) throws IOException {
 		Headers headers = httpExchange.getResponseHeaders();
@@ -52,25 +54,50 @@ public abstract class AbstractHttpHandler implements HttpHandler {
 	 * HTTPリクエストを処理します。
 	 * 
 	 * @param httpExchange
-	 * @param queryStrings
+	 * @param queryStrings ブラウザから渡されたQueryStringのマップ
 	 * @throws IOException
 	 * @see #handle(HttpExchange)
 	 */
 	protected abstract void handle(HttpExchange httpExchange, Map<String, String> queryStrings) throws IOException;
 
+	/**
+	 * BODYを空の状態でレスポンスを送信します。
+	 *
+	 * @param httpExchange
+	 * @param responseCode レスポンスのステータスコード
+	 * @throws IOException
+	 */
 	protected void sendNoResponse(HttpExchange httpExchange, int responseCode) throws IOException {
 		httpExchange.sendResponseHeaders(responseCode, 0);
 		httpExchange.close();
 	}
 
+	/**
+	 * ステータスコード400で空のレスポンスを送信します。
+	 *
+	 * @param httpExchange
+	 * @throws IOException
+	 */
 	protected void sendBadRequest(HttpExchange httpExchange) throws IOException {
 		sendNoResponse(httpExchange, HttpURLConnection.HTTP_BAD_REQUEST);
 	}
 
+	/**
+	 * ステータスコード404で空のレスポンスを送信します。
+	 * 
+	 * @param httpExchange
+	 * @throws IOException
+	 */
 	protected void sendNotFound(HttpExchange httpExchange) throws IOException {
 		sendNoResponse(httpExchange, HttpURLConnection.HTTP_NOT_FOUND);
 	}
 
+	/**
+	 * クエリストリングをパースします。
+	 * 
+	 * @param queryString パース前のクエリストリング
+	 * @return パースしてKey-Valueペア
+	 */
 	protected Map<String, String> parseQueryString(String queryString) {
 		Map<String, String> map = new HashMap<String, String>();
 		if (Strings.isEmpty(queryString)) {

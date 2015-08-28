@@ -40,10 +40,11 @@ public class PtlHttpServerUtilsTest extends PtlTestBase {
 		PtlHttpServer.stop();
 	}
 
+	HttpServerConfig config = HttpServerConfig.builder().port(PORT).build();
+
 	@Test
 	public void testLoadPitaliumFunctions() throws Exception {
 		driver.get(null);
-		HttpServerConfig config = HttpServerConfig.builder().port(PORT).build();
 		PtlHttpServerUtils.loadPitaliumFunctions(driver, config);
 
 		String id = driver.executeJavaScript("return pitalium.capabilitiesId();");
@@ -55,9 +56,36 @@ public class PtlHttpServerUtilsTest extends PtlTestBase {
 		driver.get(null);
 		assertThat(PtlHttpServerUtils.isPitaliumFunctionsLoaded(driver), is(false));
 
-		HttpServerConfig config = HttpServerConfig.builder().port(PORT).build();
 		PtlHttpServerUtils.loadPitaliumFunctions(driver, config);
 		assertThat(PtlHttpServerUtils.isPitaliumFunctionsLoaded(driver), is(true));
+	}
+
+	@Test
+	public void testRequestTakeScreenshot() throws Exception {
+		driver.get(null);
+		PtlHttpServerUtils.loadPitaliumFunctions(driver, config);
+
+		final StringBuffer sb = new StringBuffer();
+		sb.append("begin ");
+
+		PtlHttpServerUtils.requestTakeScreenshot(driver, 30000L, new PtlHttpServerUtils.TakeScreenshotAction(driver) {
+			@Override
+			public void run() {
+				sb.append("before_action ");
+				driver.executeJavaScript("setTimeout(function () {pitalium.requestTakeScreenshot();}, 3000);");
+				sb.append("after_execute ");
+			}
+		}, new Runnable() {
+			@Override
+			public void run() {
+				sb.append("take_screenshot_action ");
+			}
+		});
+
+		sb.append("end ");
+
+		final String expected = "begin before_action after_execute take_screenshot_action end ";
+		assertThat(sb.toString(), is(expected));
 	}
 
 }

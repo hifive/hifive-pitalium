@@ -37,7 +37,8 @@ import com.htmlhifive.pitalium.core.http.PtlHttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 
 /**
- * パス「/res/**」へのHTTPアクセスに対してリソースを返すHTTPハンドラー
+ * パス「/res/*」へのHTTPアクセスに対してリソースを返すHTTPハンドラー<br />
+ * 「/src/main/resources/pitalium/http/res」に存在するリソースファイルを返します。
  * 
  * @author nakatani
  */

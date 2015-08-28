@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.htmlhifive.pitalium.common.exception.PtlInterruptedException;
+import com.htmlhifive.pitalium.common.exception.PtlTimeoutException;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 
 /**
  * HTTPサーバー経由の処理を行うためのWait処理を担当するクラス
@@ -28,16 +30,18 @@ import com.htmlhifive.pitalium.common.exception.PtlInterruptedException;
  */
 public class PtlHttpObjectMonitor {
 
+	//<editor-fold desc="MonitorKey">
+
 	static class MonitorKey {
-		final int capabilitiesId;
+		final int id;
 		final String type;
 
-		public MonitorKey(int capabilitiesId, String type) {
+		public MonitorKey(int id, String type) {
 			if (type == null) {
 				throw new NullPointerException();
 			}
 
-			this.capabilitiesId = capabilitiesId;
+			this.id = id;
 			this.type = type;
 		}
 
@@ -50,21 +54,41 @@ public class PtlHttpObjectMonitor {
 
 			MonitorKey that = (MonitorKey) o;
 
-			if (capabilitiesId != that.capabilitiesId)
+			if (id != that.id)
 				return false;
 			return type.equals(that.type);
 		}
 
 		@Override
 		public int hashCode() {
-			int result = capabilitiesId;
+			int result = id;
 			result = 31 * result + type.hashCode();
 			return result;
 		}
 	}
 
+	//</editor-fold>
+
 	private static final Map<MonitorKey, PtlHttpObjectMonitor> MONITORS = new HashMap<MonitorKey, PtlHttpObjectMonitor>();
 
+	/**
+	 * スレッドロック用のオブジェクトを取得します。
+	 * 
+	 * @param capabilities ブラウザ種別
+	 * @param type ロック種別
+	 * @return スレッドロック用のオブジェクト
+	 */
+	public static PtlHttpObjectMonitor getMonitor(PtlCapabilities capabilities, String type) {
+		return getMonitor(capabilities.getId(), type);
+	}
+
+	/**
+	 * スレッドロック用のオブジェクトを取得します。
+	 *
+	 * @param id ユニークID
+	 * @param type ロック種別
+	 * @return スレッドロック用のオブジェクト
+	 */
 	public static synchronized PtlHttpObjectMonitor getMonitor(int id, String type) {
 		MonitorKey key = new MonitorKey(id, type);
 		PtlHttpObjectMonitor monitor = MONITORS.get(key);
@@ -77,74 +101,38 @@ public class PtlHttpObjectMonitor {
 
 	private boolean locked;
 
-	public synchronized void lock(long timeout) {
-			locked = true;
-
-		long beginTime = System.currentTimeMillis();
-
-			try {
-					wait(timeout);
-			} catch (InterruptedException e) {
-				throw new PtlInterruptedException(e);
-			}
-
-			long currentTime = System.currentTimeMillis();
-			if (currentTime - beginTime > timeout) {
-				throw new PtlInterruptedException(new InterruptedException());
-			}
+	private PtlHttpObjectMonitor() {
 	}
 
+	/**
+	 * スレッドをロックします。{@code timeout}で設定した時間が経過する、または別のスレッドから{@link #unlock()}を呼ばれるまでスレッドはロックされます。 {@code timeout}
+	 * で設定した時間が経過してロックが解除された場合、{@link PtlTimeoutException}がスローされます。
+	 *
+	 * @param timeout スレッドのロックが自動解除されるまでの時間（ミリ秒）
+	 * @throws PtlTimeoutException {@code timeout}で設定した時間が経過してロックが解除された場合
+	 */
+	public synchronized void lock(long timeout) {
+		locked = true;
+
+		try {
+			wait(timeout);
+		} catch (InterruptedException e) {
+			throw new PtlInterruptedException(e);
+		}
+
+		// When timeout
+		if (locked) {
+			locked = false;
+			throw new PtlTimeoutException();
+		}
+	}
+
+	/**
+	 * スレッドのロック状態を解除します。
+	 */
 	public synchronized void unlock() {
 		locked = false;
 		notifyAll();
 	}
-
-	//	private static final Map<MonitorKey, Object> MONITOR_OBJECTS = new HashMap<MonitorKey, Object>();
-	//
-	//	public static void wait(PtlCapabilities capabilities, String type, long timeout) {
-	//		wait(capabilities.getId(), type, timeout);
-	//	}
-	//
-	//	public static void wait(int id, String type, long timeout) {
-	//		final Object lockObj;
-	//		synchronized (MONITOR_OBJECTS) {
-	//			MonitorKey key = new MonitorKey(id, type);
-	//			if (MONITOR_OBJECTS.containsKey(key)) {
-	//				throw new TestRuntimeException(
-	//						String.format(Locale.US, "\"Capabilities id[%d] and type[%s]\" is already waiting", id, type));
-	//			}
-	//
-	//			lockObj = new Object();
-	//			MONITOR_OBJECTS.put(key, lockObj);
-	//		}
-	//
-	//		synchronized (lockObj) {
-	//			try {
-	//				lockObj.wait(timeout);
-	//			} catch (InterruptedException e) {
-	//				throw new PtlInterruptedException(e);
-	//			}
-	//		}
-	//	}
-	//
-	//	public static void notify(PtlCapabilities capabilities, String type) {
-	//		notify(capabilities.getId(), type);
-	//	}
-	//
-	//	public static void notify(int id, String type) {
-	//		final Object lockObj;
-	//		synchronized (MONITOR_OBJECTS) {
-	//			MonitorKey key = new MonitorKey(id, type);
-	//			lockObj = MONITOR_OBJECTS.remove(key);
-	//			if (lockObj == null) {
-	//				throw new TestRuntimeException(
-	//						String.format(Locale.US, "\"Capabilities id[%d] and type[%s]\" is not waiting", id, type));
-	//			}
-	//		}
-	//
-	//		synchronized (lockObj) {
-	//			lockObj.notifyAll();
-	//		}
-	//	}
 
 }

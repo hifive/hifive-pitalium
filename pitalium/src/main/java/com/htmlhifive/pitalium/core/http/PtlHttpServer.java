@@ -33,7 +33,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 /**
- * TODO JavaDoc
+ * テストケース実行中にPitaliumライブラリがHTTPアクセスによる制御を受けるためのHTTPサーバー
  * 
  * @author nakatani
  */
@@ -57,7 +57,7 @@ public class PtlHttpServer {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void initialize(HttpServerConfig config, Class<?>... handlerClasses) {
+	public static void initialize(HttpServerConfig config, Class... handlerClasses) {
 		LOG.trace("initialize");
 
 		PtlHttpServer.config = config;

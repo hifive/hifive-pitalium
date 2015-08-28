@@ -22,7 +22,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO JavaDoc
+ * <p>
+ * {@link PtlHttpServer}が受けたリクエストを処理する{@link com.sun.net.httpserver.HttpHandler}に設定するアノテーション。{@link #value()}
+ * にはリクエストを待機するパスを&quot;/&quot;から記述します。
+ * </p>
+ *
+ * 記述例：
+ * <pre>
+ * <b>&#064;PtlHttpHandler(&quot;/hoge/fuga&quot;)</b>
+ * public class SampleHttpHandler implements HttpHandler {
+ *     ....
+ * }
+ * </pre>
  * 
  * @author nakatani
  */
@@ -30,6 +41,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PtlHttpHandler {
 
+	/**
+	 * リクエストを待機するパス。&quot;/&quot;から記述する必要があります。
+	 *
+	 * @return リクエストを待機するパス
+	 */
 	String value();
 
 }
