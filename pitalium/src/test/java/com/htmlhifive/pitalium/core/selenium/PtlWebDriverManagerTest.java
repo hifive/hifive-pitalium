@@ -174,7 +174,7 @@ public class PtlWebDriverManagerTest {
 
 		@Test
 		public void test1() throws Exception {
-			assertThat(container.reuse, is(false));
+			assertThat(container.status, is(PtlWebDriverManager.ReuseStatus.METHOD));
 		}
 
 		@Test
@@ -271,7 +271,7 @@ public class PtlWebDriverManagerTest {
 
 		@Test
 		public void test1() throws Exception {
-			assertThat(container.reuse, is(true));
+			assertThat(container.status, is(PtlWebDriverManager.ReuseStatus.CLASS));
 		}
 
 		@Test

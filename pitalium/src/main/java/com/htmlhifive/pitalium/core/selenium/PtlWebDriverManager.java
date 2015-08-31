@@ -25,12 +25,14 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.annotation.PtlWebDriverStrategy;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 
 /**
  * {@link PtlWebDriver}のインスタンスを管理するクラス
@@ -38,6 +40,19 @@ import com.htmlhifive.pitalium.core.annotation.PtlWebDriverStrategy;
  * @author nakatani
  */
 public class PtlWebDriverManager {
+
+	enum ReuseStatus {
+		/**
+		 * テストメソッド単位
+		 */
+		METHOD, /**
+				 * テストクラス単位
+				 */
+		CLASS, /**
+				 * 全テストクラス共通
+				 */
+		ALL_CLASSES;
+	}
 
 	private static class DriverKey {
 		final Class<?> clss;
@@ -77,11 +92,11 @@ public class PtlWebDriverManager {
 	public static class WebDriverContainer {
 
 		final WebDriver driver;
-		final boolean reuse;
+		final ReuseStatus status;
 
-		public WebDriverContainer(WebDriver driver, boolean reuse) {
+		public WebDriverContainer(WebDriver driver, ReuseStatus status) {
 			this.driver = driver;
-			this.reuse = reuse;
+			this.status = status;
 		}
 
 		/**
@@ -96,7 +111,7 @@ public class PtlWebDriverManager {
 		 * {@link WebDriver#quit()}をコールします。
 		 */
 		public void quit() {
-			if (!reuse) {
+			if (status == ReuseStatus.METHOD) {
 				driver.quit();
 			}
 		}
@@ -115,16 +130,39 @@ public class PtlWebDriverManager {
 	}
 
 	private final Map<DriverKey, WebDriver> drivers = new HashMap<DriverKey, WebDriver>();
-	private final LoadingCache<Class<?>, Boolean> driverReuses = CacheBuilder.newBuilder().maximumSize(200L)
-			.build(new CacheLoader<Class<?>, Boolean>() {
+	private final LoadingCache<Class<?>, ReuseStatus> driverReuses = CacheBuilder.newBuilder().maximumSize(200L)
+			.build(new CacheLoader<Class<?>, ReuseStatus>() {
+
 				@Override
-				public Boolean load(Class<?> clss) throws Exception {
+				public ReuseStatus load(Class<?> clss) throws Exception {
 					PtlWebDriverStrategy strategy = clss.getAnnotation(PtlWebDriverStrategy.class);
-					return strategy != null && strategy.reuse();
+					if (strategy != null) {
+						return strategy.reuse() ? ReuseStatus.CLASS : ReuseStatus.METHOD;
+					}
+					if (reuseDriverForAllClasses) {
+						return ReuseStatus.ALL_CLASSES;
+					}
+					return ReuseStatus.METHOD;
 				}
 			});
+	private final Map<PtlCapabilities, WebDriver> allClassesDrivers = new HashMap<PtlCapabilities, WebDriver>();
+
+	private boolean reuseDriverForAllClasses = PtlTestConfig.getInstance().getTestAppConfig()
+			.isReuseDriverForAllClasses();
 
 	private PtlWebDriverManager() {
+	}
+
+	/**
+	 * 内部キャッシュをリセットします。
+	 */
+	@VisibleForTesting
+	synchronized void resetCache(boolean reuseDriverForAllClasses) {
+		this.reuseDriverForAllClasses = reuseDriverForAllClasses;
+
+		drivers.clear();
+		driverReuses.invalidateAll();
+		allClassesDrivers.clear();
 	}
 
 	/**
@@ -147,28 +185,40 @@ public class PtlWebDriverManager {
 			throw new NullPointerException("supplier");
 		}
 
-		boolean reuse;
+		ReuseStatus status;
 		try {
-			reuse = driverReuses.get(clss);
+			status = driverReuses.get(clss);
 		} catch (ExecutionException e) {
 			throw new TestRuntimeException(e);
 		}
 
 		// ドライバーを再利用しない場合はSupplierから取得したドライバーを返す。
-		if (!reuse) {
-			return new WebDriverContainer(supplier.get(), false);
+		if (status == ReuseStatus.METHOD) {
+			return new WebDriverContainer(supplier.get(), ReuseStatus.METHOD);
 		}
 
 		DriverKey key = new DriverKey(clss, capabilities);
 		WebDriver driver = drivers.get(key);
 		if (driver != null) {
-			LOG.debug("");
-			return new WebDriverContainer(driver, true);
+			return new WebDriverContainer(driver, status);
 		}
 
-		driver = supplier.get();
-		drivers.put(key, driver);
-		return new WebDriverContainer(driver, true);
+		// クラス単位
+		if (status == ReuseStatus.CLASS) {
+			driver = supplier.get();
+			drivers.put(key, driver);
+			return new WebDriverContainer(driver, status);
+		}
+
+		// 全体
+		driver = allClassesDrivers.get(capabilities);
+		if (driver == null) {
+			driver = supplier.get();
+			drivers.put(key, driver);
+			allClassesDrivers.put(capabilities, driver);
+		}
+
+		return new WebDriverContainer(driver, status);
 	}
 
 	/**
@@ -185,14 +235,14 @@ public class PtlWebDriverManager {
 			throw new NullPointerException("capabilities");
 		}
 
-		boolean reuse;
+		ReuseStatus status;
 		try {
-			reuse = driverReuses.get(clss);
+			status = driverReuses.get(clss);
 		} catch (ExecutionException e) {
 			throw new TestRuntimeException(e);
 		}
 
-		if (!reuse) {
+		if (status == ReuseStatus.METHOD || status == ReuseStatus.ALL_CLASSES) {
 			return;
 		}
 
