@@ -28,7 +28,7 @@ import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.common.util.TextReplacer;
 import com.htmlhifive.pitalium.core.config.HttpServerConfig;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
-import com.htmlhifive.pitalium.core.http.handler.TakeScreenshotHandler;
+import com.htmlhifive.pitalium.core.http.handler.UnlockThreadRequestHandler;
 import com.htmlhifive.pitalium.core.rules.AssertionView;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 
@@ -37,23 +37,9 @@ import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
  */
 public class PtlHttpServerUtils {
 
-	//@formatter:off
-	private static final String SCRIPT_LOAD_PITALIUM_FUNCTIONS =
-			"if (window.pitalium) {" +
-					"  return;" +
-					"}" +
-					"" +
-					"var el = document.createElement('script');" +
-					"el.type = 'text/javascript';" +
-					"el.src = '//${host}:${port}/res/pitalium-functions.js';" +
-					"el.onload = function () {" +
-					"  pitalium.capabilitiesId('${capabilitiesId}');" +
-					"  pitalium.remoteHostname('${host}');" +
-					"  pitalium.remotePort('${port}');" +
-					"};" +
-					"document.head.appendChild(el);";
-	//@formatter:on
-
+	/**
+	 * HTTPサーバーを開始します。
+	 */
 	static void startHttpServer() {
 		PtlHttpServer.start();
 	}
@@ -91,47 +77,60 @@ public class PtlHttpServerUtils {
 		driver.executeJavaScript(script);
 	}
 
+	/**
+	 * Pitalium HTTP Serverで利用するスクリプトファイルがブラウザにロードされているかどうか取得します。
+	 * 
+	 * @param driver 対象ブラウザのWebDriver
+	 * @return スクリプトファイルがブラウザにロードされている場合true、ロードされていない場合false
+	 */
 	public static boolean isPitaliumFunctionsLoaded(PtlWebDriver driver) {
 		return driver.executeJavaScript("return window.pitalium ? true : false;");
 	}
 
-	public static void requestTakeScreenshot(PtlWebDriver driver, final AssertionView view, final String screenshotId,
-			long timeout, TakeScreenshotAction beforeAction) throws InterruptedException {
-		requestTakeScreenshot(driver, timeout, beforeAction, new Runnable() {
-			@Override
-			public void run() {
-				view.assertView(screenshotId);
-			}
-		});
+	public static void awaitAssertView(PtlWebDriver driver, long timeout, Runnable asyncAction, AssertionView assertion,
+			String screenshotId) {
+		awaitUnlockRequest(driver, timeout, asyncAction);
+		assertion.assertView(screenshotId);
 	}
 
-	public static void requestTakeScreenshot(final PtlWebDriver driver, long timeout,
-			final TakeScreenshotAction beforeAction, Runnable screenshotAction) {
+	/**
+	 * Webブラウザからスレッドロック解除の通知があるまで指定の時間待機します。<br />
+	 * &quot;/unlockThread&quot;へXmlHTTPRequestを送信する、または&quot;pitalium.sendUnlockRequest()&quot;を実行することで待機を解除します。
+	 *
+	 * @param driver 対象ブラウザのWebDriver
+	 * @param timeout 待機タイムアウト（ミリ秒）
+	 * @param asyncAction 待機中に非同期で行う動作
+	 */
+	public static void awaitUnlockRequest(PtlWebDriver driver, long timeout, Runnable asyncAction) {
+		awaitUnlockRequest(driver, timeout, asyncAction, null);
+	}
+
+	/**
+	 * Webブラウザからスレッドロック解除の通知があるまで指定の時間待機します。<br />
+	 * &quot;/unlockThread&quot;へXmlHTTPRequestを送信する、または&quot;pitalium.sendUnlockRequest()&quot;を実行することで待機を解除します。
+	 * 
+	 * @param driver 対象ブラウザのWebDriver
+	 * @param timeout 待機タイムアウト（ミリ秒）
+	 * @param asyncAction 待機中に非同期で行う動作
+	 * @param awaitAction 待機後に行う動作
+	 */
+	public static void awaitUnlockRequest(PtlWebDriver driver, long timeout, Runnable asyncAction,
+			Runnable awaitAction) {
+		awaitRequest(driver.getCapabilities().getId(), UnlockThreadRequestHandler.MONITOR_TYPE, timeout, asyncAction);
+
+		if (awaitAction != null) {
+			awaitAction.run();
+		}
+	}
+
+	public static void awaitRequest(int id, String type, long timeout, Runnable asyncAction) {
 		startHttpServer();
 
-		awaitRequest(driver.getCapabilities().getId(), TakeScreenshotHandler.MONITOR_TYPE, timeout, beforeAction);
-		screenshotAction.run();
-	}
-
-	public static void awaitRequest(int id, String type, long timeout, Runnable action) {
-		Executors.newSingleThreadExecutor().submit(action);
+		Executors.newSingleThreadExecutor().submit(asyncAction);
 		PtlHttpObjectMonitor.getMonitor(id, type).lock(timeout);
 	}
 
 	private PtlHttpServerUtils() {
 	}
 
-	public static abstract class TakeScreenshotAction implements Runnable {
-
-		private final PtlWebDriver driver;
-
-		public TakeScreenshotAction(PtlWebDriver driver) {
-			this.driver = driver;
-		}
-
-		public final void requestTakeScreenshot() {
-			driver.executeJavaScript("pitalium.requestTakeScreenshot();");
-		}
-
-	}
 }

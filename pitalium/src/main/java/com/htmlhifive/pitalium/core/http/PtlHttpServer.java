@@ -28,7 +28,7 @@ import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.config.HttpServerConfig;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.http.handler.ResourceHandler;
-import com.htmlhifive.pitalium.core.http.handler.TakeScreenshotHandler;
+import com.htmlhifive.pitalium.core.http.handler.UnlockThreadRequestHandler;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
@@ -53,7 +53,7 @@ public class PtlHttpServer {
 	public static void initialize(HttpServerConfig config) {
 		// TODO initialize..where..??
 		// TODO collect handlers by reflection
-		initialize(config, ResourceHandler.class, TakeScreenshotHandler.class);
+		initialize(config, ResourceHandler.class, UnlockThreadRequestHandler.class);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -27,21 +27,26 @@ import com.htmlhifive.pitalium.core.http.PtlHttpHandler;
 import com.htmlhifive.pitalium.core.http.PtlHttpObjectMonitor;
 import com.sun.net.httpserver.HttpExchange;
 
-@PtlHttpHandler("/takeScreenshot")
-public class TakeScreenshotHandler extends AbstractHttpHandler {
+/**
+ * ブラウザからの通信を受けスレッドのロックを解除するHTTPハンドラー
+ * 
+ * @author nakatani
+ */
+@PtlHttpHandler("/unlockThread")
+public class UnlockThreadRequestHandler extends AbstractHttpHandler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TakeScreenshotHandler.class);
+	private static final Logger LOG = LoggerFactory.getLogger(UnlockThreadRequestHandler.class);
 
 	/**
 	 * {@link PtlHttpObjectMonitor}に利用する種別
 	 */
-	public static final String MONITOR_TYPE = "takeScreenshot";
+	public static final String MONITOR_TYPE = "unlockThread";
 
 	@Override
 	protected void handle(HttpExchange httpExchange, Map<String, String> queryStrings) throws IOException {
 		String capabilitiesId = queryStrings.get("id");
 		if (capabilitiesId == null) {
-			LOG.error("\"id\" query parameter is required for HTTP request \"/takeScreenshot\"");
+			LOG.error("\"id\" query parameter is required for HTTP request \"/unlockThread\"");
 			sendBadRequest(httpExchange);
 			return;
 		}

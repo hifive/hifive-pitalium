@@ -61,30 +61,30 @@ public class PtlHttpServerUtilsTest extends PtlTestBase {
 	}
 
 	@Test
-	public void testRequestTakeScreenshot() throws Exception {
+	public void testAwaitUnlockRequest() throws Exception {
 		driver.get(null);
 		PtlHttpServerUtils.loadPitaliumFunctions(driver, config);
 
 		final StringBuffer sb = new StringBuffer();
 		sb.append("begin ");
 
-		PtlHttpServerUtils.requestTakeScreenshot(driver, 30000L, new PtlHttpServerUtils.TakeScreenshotAction(driver) {
+		PtlHttpServerUtils.awaitUnlockRequest(driver, 30000L, new Runnable() {
 			@Override
 			public void run() {
 				sb.append("before_action ");
-				driver.executeJavaScript("setTimeout(function () {pitalium.requestTakeScreenshot();}, 3000);");
+				driver.executeJavaScript("setTimeout(function () {pitalium.sendUnlockRequest();}, 3000);");
 				sb.append("after_execute ");
 			}
 		}, new Runnable() {
 			@Override
 			public void run() {
-				sb.append("take_screenshot_action ");
+				sb.append("await_action ");
 			}
 		});
 
 		sb.append("end ");
 
-		final String expected = "begin before_action after_execute take_screenshot_action end ";
+		final String expected = "begin before_action after_execute await_action end ";
 		assertThat(sb.toString(), is(expected));
 	}
 

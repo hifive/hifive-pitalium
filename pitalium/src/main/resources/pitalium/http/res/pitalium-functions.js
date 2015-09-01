@@ -102,14 +102,14 @@
      *
      * @param capabilitiesId
      */
-    pitalium.requestTakeScreenshot = function (capabilitiesId) {
+    pitalium.sendUnlockRequest = function (capabilitiesId) {
         capabilitiesId = capabilitiesId || pitalium.capabilitiesId();
         if (!capabilitiesId) {
             console.debug('capabilitiesId is required.');
             return;
         }
 
-        var url = pitalium.getURL('takeScreenshot?id=' + capabilitiesId);
+        var url = pitalium.getURL('unlockThread?id=' + capabilitiesId);
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url);
         xhr.send();

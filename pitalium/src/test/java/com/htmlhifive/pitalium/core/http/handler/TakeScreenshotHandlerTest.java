@@ -16,48 +16,49 @@
 
 package com.htmlhifive.pitalium.core.http.handler;
 
-import com.htmlhifive.pitalium.core.PtlTestBase;
-import com.htmlhifive.pitalium.core.http.PtlHttpServerUtils;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import com.htmlhifive.pitalium.core.PtlTestBase;
+import com.htmlhifive.pitalium.core.http.PtlHttpServerUtils;
 
 public class TakeScreenshotHandlerTest extends PtlTestBase {
 
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
+	@Rule
+	public ExpectedException expected = ExpectedException.none();
 
-    boolean takeScreenshotCalled;
+	boolean takeScreenshotCalled;
 
-    @Test
-    public void testRequestTakeScreenshot() throws Exception {
-        takeScreenshotCalled = false;
+	@Test
+	public void testRequestTakeScreenshot() throws Exception {
+		takeScreenshotCalled = false;
 
-        driver.get(null);
-        PtlHttpServerUtils.loadPitaliumFunctions(driver);
-        PtlHttpServerUtils.requestTakeScreenshot(driver, 30000L, new PtlHttpServerUtils.TakeScreenshotAction(driver) {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000L);
-                } catch (InterruptedException e) {
-e.printStackTrace();
-                }
+		driver.get(null);
+		PtlHttpServerUtils.loadPitaliumFunctions(driver);
+		PtlHttpServerUtils.awaitUnlockRequest(driver, 30000L, new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(3000L);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 
-                requestTakeScreenshot();
-            }
-        }, new Runnable() {
-            @Override
-            public void run() {
-                driver.takeScreenshot("testRequestTakeScreenshot");
-                takeScreenshotCalled = true;
-            }
-        });
+				driver.executeScript("pitalium.sendUnlockRequest()");
+			}
+		}, new Runnable() {
+			@Override
+			public void run() {
+				driver.takeScreenshot("testRequestTakeScreenshot");
+				takeScreenshotCalled = true;
+			}
+		});
 
-        assertThat(takeScreenshotCalled, is(true));
-    }
+		assertThat(takeScreenshotCalled, is(true));
+	}
 
 }
