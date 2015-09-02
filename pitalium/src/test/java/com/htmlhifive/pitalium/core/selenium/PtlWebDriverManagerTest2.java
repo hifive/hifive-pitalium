@@ -122,7 +122,7 @@ public class PtlWebDriverManagerTest2 {
 	@AfterClass
 	public static void resetDriverManager() throws Exception {
 		PtlWebDriverManager.getInstance()
-				.resetCache(PtlTestConfig.getInstance().getTestAppConfig().isReuseDriverForAllClasses());
+				.resetCache(PtlTestConfig.getInstance().getEnvironment().isReuseDriverForAllClasses());
 	}
 
 	/**

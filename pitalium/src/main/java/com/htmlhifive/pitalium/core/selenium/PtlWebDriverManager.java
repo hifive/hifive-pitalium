@@ -147,7 +147,7 @@ public class PtlWebDriverManager {
 			});
 	private final Map<PtlCapabilities, WebDriver> allClassesDrivers = new HashMap<PtlCapabilities, WebDriver>();
 
-	private boolean reuseDriverForAllClasses = PtlTestConfig.getInstance().getTestAppConfig()
+	private boolean reuseDriverForAllClasses = PtlTestConfig.getInstance().getEnvironment()
 			.isReuseDriverForAllClasses();
 
 	private PtlWebDriverManager() {

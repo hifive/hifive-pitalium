@@ -76,6 +76,11 @@ public class EnvironmentConfig implements Serializable {
 	private String persister = FilePersister.class.getName();
 
 	/**
+	 * 全テストクラスの全テストケースでWebDriverを閉じずに再利用します。
+	 */
+	private boolean reuseDriverForAllClasses;
+
+	/**
 	 * デフォルトの設定値を持つオブジェクトを生成します。
 	 */
 	public EnvironmentConfig() {
@@ -154,6 +159,15 @@ public class EnvironmentConfig implements Serializable {
 	}
 
 	/**
+	 * 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうかを取得します。
+	 *
+	 * @return 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうか
+	 */
+	public boolean isReuseDriverForAllClasses() {
+		return reuseDriverForAllClasses;
+	}
+
+	/**
 	 * テスト実行モードを設定します。
 	 * 
 	 * @param execMode テスト実行モード
@@ -225,9 +239,87 @@ public class EnvironmentConfig implements Serializable {
 		this.persister = persister;
 	}
 
+	/**
+	 * 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうかを設定します。
+	 *
+	 * @param reuseDriverForAllClasses 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうか
+	 */
+	void setReuseDriverForAllClasses(boolean reuseDriverForAllClasses) {
+		this.reuseDriverForAllClasses = reuseDriverForAllClasses;
+	}
+
 	@Override
 	public String toString() {
 		return JSONUtils.toString(this);
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+
+		private final EnvironmentConfig config = new EnvironmentConfig();
+
+		public EnvironmentConfig build() {
+			final EnvironmentConfig ev = new EnvironmentConfig();
+			ev.setExecMode(config.execMode);
+			ev.setHubHost(config.hubHost);
+			ev.setHubPort(config.hubPort);
+			ev.setMaxThreadCount(config.maxThreadCount);
+			ev.setMaxThreadExecuteTime(config.maxThreadExecuteTime);
+			ev.setMaxDriverWait(config.maxDriverWait);
+			ev.setCapabilitiesFilePath(config.capabilitiesFilePath);
+			ev.setPersister(config.persister);
+			ev.setReuseDriverForAllClasses(config.reuseDriverForAllClasses);
+			return ev;
+		}
+
+		public Builder execMode(ExecMode execMode) {
+			config.execMode = execMode;
+			return this;
+		}
+
+		public Builder hubHost(String hubHost) {
+			config.hubHost = hubHost;
+			return this;
+		}
+
+		public Builder hubPort(int hubPort) {
+			config.hubPort = hubPort;
+			return this;
+		}
+
+		public Builder maxThreadCount(int maxThreadCount) {
+			config.maxThreadCount = maxThreadCount;
+			return this;
+		}
+
+		public Builder maxThreadExecuteTime(int maxThreadExecuteTime) {
+			config.maxThreadExecuteTime = maxThreadExecuteTime;
+			return this;
+		}
+
+		public Builder maxDriverWait(int maxDriverWait) {
+			config.maxDriverWait = maxDriverWait;
+			return this;
+		}
+
+		public Builder capabilitiesFilePath(String capabilitiesFilePath) {
+			config.capabilitiesFilePath = capabilitiesFilePath;
+			return this;
+		}
+
+		public Builder persister(String persister) {
+			config.persister = persister;
+			return this;
+		}
+
+		public Builder reuseDriverForAllClasses(boolean reuseDriverForAllClasses) {
+			config.reuseDriverForAllClasses = reuseDriverForAllClasses;
+			return this;
+		}
+
 	}
 
 }

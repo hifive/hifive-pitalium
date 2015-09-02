@@ -43,11 +43,6 @@ public class TestAppConfig {
 	private int windowHeight = DEFAULT_WINDOW_HEIGHT;
 
 	/**
-	 * 全テストクラスの全テストケースでWebDriverを閉じずに再利用します。
-	 */
-	private boolean reuseDriverForAllClasses;
-
-	/**
 	 * テスト対象ページのベースURLを取得します。
 	 * 
 	 * @return ベースURL
@@ -72,15 +67,6 @@ public class TestAppConfig {
 	 */
 	public int getWindowHeight() {
 		return windowHeight;
-	}
-
-	/**
-	 * 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうかを取得します。
-	 * 
-	 * @return 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうか
-	 */
-	public boolean isReuseDriverForAllClasses() {
-		return reuseDriverForAllClasses;
 	}
 
 	/**
@@ -110,15 +96,6 @@ public class TestAppConfig {
 		this.windowHeight = windowHeight;
 	}
 
-	/**
-	 * 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうかを設定します。
-	 * 
-	 * @param reuseDriverForAllClasses 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうか
-	 */
-	void setReuseDriverForAllClasses(boolean reuseDriverForAllClasses) {
-		this.reuseDriverForAllClasses = reuseDriverForAllClasses;
-	}
-
 	@Override
 	public String toString() {
 		return JSONUtils.toString(this);
@@ -137,7 +114,6 @@ public class TestAppConfig {
 			config.setBaseUrl(this.config.baseUrl);
 			config.setWindowWidth(this.config.windowWidth);
 			config.setWindowHeight(this.config.windowHeight);
-			config.setReuseDriverForAllClasses(this.config.reuseDriverForAllClasses);
 			return config;
 		}
 
@@ -153,11 +129,6 @@ public class TestAppConfig {
 
 		public Builder windowHeight(int windowHeight) {
 			config.windowHeight = windowHeight;
-			return this;
-		}
-
-		public Builder reuseDriverForAllClasses(boolean reuseDriverForAllClasses) {
-			config.reuseDriverForAllClasses = reuseDriverForAllClasses;
 			return this;
 		}
 

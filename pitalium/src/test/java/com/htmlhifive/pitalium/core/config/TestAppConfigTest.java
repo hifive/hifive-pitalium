@@ -34,21 +34,19 @@ public class TestAppConfigTest {
 		assertThat(config.getBaseUrl(), is(nullValue()));
 		assertThat(config.getWindowWidth(), is(1280));
 		assertThat(config.getWindowHeight(), is(800));
-		assertThat(config.isReuseDriverForAllClasses(), is(false));
 	}
 
-    /**
-     * ビルダーテスト。全プロパティを設定。
-     */
+	/**
+	 * ビルダーテスト。全プロパティを設定。
+	 */
 	@Test
 	public void builderWithAllProps() throws Exception {
 		TestAppConfig config = TestAppConfig.builder().baseUrl("http://localhost:8096/").windowWidth(500)
-				.windowHeight(600).reuseDriverForAllClasses(true).build();
+				.windowHeight(600).build();
 
 		assertThat(config.getBaseUrl(), is("http://localhost:8096/"));
 		assertThat(config.getWindowWidth(), is(500));
 		assertThat(config.getWindowHeight(), is(600));
-		assertThat(config.isReuseDriverForAllClasses(), is(true));
 	}
 
 }

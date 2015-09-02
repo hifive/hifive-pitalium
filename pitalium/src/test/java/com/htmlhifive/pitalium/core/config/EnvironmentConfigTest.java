@@ -15,8 +15,8 @@
  */
 package com.htmlhifive.pitalium.core.config;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -67,6 +67,44 @@ public class EnvironmentConfigTest {
 		EnvironmentConfig env = config.getConfig(EnvironmentConfig.class);
 
 		assertThat(env.getExecMode(), is(ExecMode.TAKE_SCREENSHOT));
+	}
+
+	/**
+	 * ビルダーテスト。プロパティ設定なし。
+	 */
+	@Test
+	public void builderWithNoProps() throws Exception {
+		EnvironmentConfig config = EnvironmentConfig.builder().build();
+
+		assertThat(config.getExecMode(), is(ExecMode.SET_EXPECTED));
+		assertThat(config.getHubHost(), is("localhost"));
+		assertThat(config.getHubPort(), is(4444));
+		assertThat(config.getMaxThreadCount(), is(16));
+		assertThat(config.getMaxThreadExecuteTime(), is(3600));
+		assertThat(config.getMaxDriverWait(), is(30));
+		assertThat(config.getCapabilitiesFilePath(), is("capabilities.json"));
+		assertThat(config.getPersister(), is("com.htmlhifive.pitalium.core.io.FilePersister"));
+		assertThat(config.isReuseDriverForAllClasses(), is(false));
+	}
+
+	/**
+	 * ビルダーテスト。全プロパティを設定。
+	 */
+	@Test
+	public void builderWithAllProps() throws Exception {
+		EnvironmentConfig config = EnvironmentConfig.builder().execMode(ExecMode.TAKE_SCREENSHOT).hubHost("127.0.0.1")
+				.hubPort(1234).maxThreadCount(1).maxThreadExecuteTime(2).maxDriverWait(10)
+				.capabilitiesFilePath("cap.json").persister("persister").reuseDriverForAllClasses(true).build();
+
+		assertThat(config.getExecMode(), is(ExecMode.TAKE_SCREENSHOT));
+		assertThat(config.getHubHost(), is("127.0.0.1"));
+		assertThat(config.getHubPort(), is(1234));
+		assertThat(config.getMaxThreadCount(), is(1));
+		assertThat(config.getMaxThreadExecuteTime(), is(2));
+		assertThat(config.getMaxDriverWait(), is(10));
+		assertThat(config.getCapabilitiesFilePath(), is("cap.json"));
+		assertThat(config.getPersister(), is("persister"));
+		assertThat(config.isReuseDriverForAllClasses(), is(true));
 	}
 
 }
