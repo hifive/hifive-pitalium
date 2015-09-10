@@ -49,7 +49,7 @@ class PtlIPadDriver extends PtlIPhoneDriver {
 	}
 
 	@Override
-	protected int getHeaderHeight(long pageHeight, long scrollTop) {
+	protected int getHeaderHeight(long scrollTop) {
 
 		int currentHeaderHeight = headerHeight;
 		if (getWindowHandles().size() > 1) {
@@ -64,7 +64,7 @@ class PtlIPadDriver extends PtlIPhoneDriver {
 	}
 
 	@Override
-	protected int getFooterHeight(long pageHeight, long scrollTop, long windowHeight) {
+	protected int getFooterHeight(long scrollTop, double captureTop) {
 		return 0;
 	}
 
