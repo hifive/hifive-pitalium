@@ -16,12 +16,12 @@
 
 package com.htmlhifive.pitalium.core.model;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -231,6 +231,75 @@ public class ScreenshotArgumentBuilderTest {
 	}
 
 	/**
+	 * addNewTargetで既存のCompareTargetを追加
+	 */
+	@Test
+	public void addNewTarget_CompareTarget() throws Exception {
+		CompareTarget target = new CompareTarget(ScreenArea.of(SelectorType.ID, "id"),
+				new ScreenArea[] { ScreenArea.of(SelectorType.CSS_SELECTOR, "css"), ScreenArea.of(1d, 2d, 3d, 4d) },
+				false);
+
+// @formatter:off
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
+				.addNewTarget(target)
+				.build();
+// @formatter:on
+
+		assertThat(arg.getScreenshotId(), is("ssid"));
+		assertThat(arg.getTargets().size(), is(1));
+		assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
+
+		assertThat(arg.getTargets().get(0), is(target));
+		assertThat(arg.getTargets().get(0), is(not(sameInstance(target))));
+	}
+
+	/**
+	 * addNewTargetで既存のCompareTargetを追加
+	 */
+	@Test
+	public void addNewTarget_CompareTarget_edit() throws Exception {
+		CompareTarget target = new CompareTarget(ScreenArea.of(SelectorType.ID, "id"),
+				new ScreenArea[] { ScreenArea.of(SelectorType.CSS_SELECTOR, "css"), ScreenArea.of(1d, 2d, 3d, 4d) },
+				false);
+
+// @formatter:off
+        ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
+                .addNewTarget(target)
+                    .addExcludeByPartialLinkText("partial")
+                    .moveTarget(true)
+                .build();
+// @formatter:on
+
+		assertThat(arg.getScreenshotId(), is("ssid"));
+		assertThat(arg.getTargets().size(), is(1));
+		assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
+
+		assertThat(arg.getTargets().get(0),
+				is(new CompareTarget(ScreenArea.of(SelectorType.ID, "id"),
+						new ScreenArea[] { ScreenArea.of(SelectorType.CSS_SELECTOR, "css"),
+								ScreenArea.of(1d, 2d, 3d, 4d), ScreenArea.of(SelectorType.PARTIAL_LINK, "partial") },
+				true)));
+	}
+
+	/**
+	 * addMewTargetで既存のScreenAreaを追加
+	 */
+	@Test
+	public void addNewTarget_ScreenArea() throws Exception {
+// @formatter:off
+        ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
+                .addNewTarget(ScreenArea.of(SelectorType.ID, "id"))
+                .build();
+// @formatter:on
+
+		assertThat(arg.getScreenshotId(), is("ssid"));
+		assertThat(arg.getTargets().size(), is(1));
+		assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
+
+		assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(SelectorType.ID, "id"), null, true)));
+	}
+
+	/**
 	 * addExcludeをaddNewTargetより前にコールすると例外
 	 */
 	@Test
@@ -357,6 +426,40 @@ public class ScreenshotArgumentBuilderTest {
 						new ScreenArea[] { ScreenArea.of(SelectorType.CLASS_NAME, "ex_class"),
 								ScreenArea.of(SelectorType.LINK_TEXT, "ex_link") },
 						true)));
+	}
+
+	/**
+	 * Excludeをコレクションで追加
+	 */
+	@Test
+	public void addExcludes_collection() throws Exception {
+		ScreenArea[] areas = { ScreenArea.of(SelectorType.ID, "id"), ScreenArea.of(1d, 2d, 3d, 4d) };
+		Collection<ScreenArea> excludes = Arrays.asList(areas);
+
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid").addNewTarget().addExcludes(excludes).build();
+
+		assertThat(arg.getScreenshotId(), is("ssid"));
+		assertThat(arg.getTargets().size(), is(1));
+		assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
+
+		assertThat(arg.getTargets().get(0),
+				is(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), areas, true)));
+	}
+
+	/**
+	 * Excludeを配列で追加
+	 */
+	@Test
+	public void addExcludes_array() throws Exception {
+		ScreenArea[] areas = { ScreenArea.of(SelectorType.ID, "id"), ScreenArea.of(1d, 2d, 3d, 4d) };
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid").addNewTarget().addExcludes(areas).build();
+
+		assertThat(arg.getScreenshotId(), is("ssid"));
+		assertThat(arg.getTargets().size(), is(1));
+		assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
+
+		assertThat(arg.getTargets().get(0),
+				is(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), areas, true)));
 	}
 
 	/**
@@ -509,6 +612,41 @@ public class ScreenshotArgumentBuilderTest {
 
 			assertThat(arg.getHiddenElementSelectors().get(0), is(new DomSelector(mapping.getValue(), "value")));
 		}
+	}
+
+	/**
+	 * HiddenElementSelectorをコレクションで追加
+	 */
+	@Test
+	public void addHiddenElementSelectors_collection() throws Exception {
+		DomSelector[] selectors = { new DomSelector(SelectorType.ID, "id"),
+				new DomSelector(SelectorType.TAG_NAME, "tag") };
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
+				.addHiddenElementSelectors(Arrays.asList(selectors)).build();
+
+		assertThat(arg.getScreenshotId(), is("ssid"));
+		assertThat(arg.getTargets().isEmpty(), is(true));
+		assertThat(arg.getHiddenElementSelectors().size(), is(2));
+
+		assertThat(arg.getHiddenElementSelectors().get(0), is(selectors[0]));
+		assertThat(arg.getHiddenElementSelectors().get(0), is(selectors[1]));
+	}
+
+	/**
+	 * HiddenElementSelectorを配列で追加
+	 */
+	@Test
+	public void addHiddenElementSelectors_array() throws Exception {
+		DomSelector[] selectors = { new DomSelector(SelectorType.ID, "id"),
+				new DomSelector(SelectorType.TAG_NAME, "tag") };
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid").addHiddenElementSelectors(selectors).build();
+
+		assertThat(arg.getScreenshotId(), is("ssid"));
+		assertThat(arg.getTargets().isEmpty(), is(true));
+		assertThat(arg.getHiddenElementSelectors().size(), is(2));
+
+		assertThat(arg.getHiddenElementSelectors().get(0), is(selectors[0]));
+		assertThat(arg.getHiddenElementSelectors().get(0), is(selectors[1]));
 	}
 
 }

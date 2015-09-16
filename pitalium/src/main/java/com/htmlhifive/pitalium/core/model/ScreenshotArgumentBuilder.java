@@ -16,12 +16,16 @@
 
 package com.htmlhifive.pitalium.core.model;
 
+import java.util.Collection;
+
 /**
  * TODO JavaDoc
  *
  * @author nakatani
  */
 public class ScreenshotArgumentBuilder {
+
+	//<editor-fold desc="Constructor">
 
 	protected ScreenshotArgumentBuilder() {
 		// TODO
@@ -30,6 +34,8 @@ public class ScreenshotArgumentBuilder {
 	protected ScreenshotArgumentBuilder(String screenshotId) {
 		// TODO
 	}
+
+	//</editor-fold>
 
 	public ScreenshotArgument build() {
 		throw new UnsupportedOperationException("TODO");
@@ -40,7 +46,19 @@ public class ScreenshotArgumentBuilder {
 		return this;
 	}
 
+	//<editor-fold desc="AddNewTarget">
+
 	public ScreenshotArgumentBuilder addNewTarget() {
+		// TODO
+		return this;
+	}
+
+	public ScreenshotArgumentBuilder addNewTarget(CompareTarget target) {
+		// TODO
+		return this;
+	}
+
+	public ScreenshotArgumentBuilder addNewTarget(ScreenArea area) {
 		// TODO
 		return this;
 	}
@@ -95,6 +113,10 @@ public class ScreenshotArgumentBuilder {
 		return this;
 	}
 
+	//</editor-fold>
+
+	//<editor-fold desc="AddExclude">
+
 	public ScreenshotArgumentBuilder addExclude(SelectorType type, String value) {
 		// TODO
 		return this;
@@ -145,6 +167,18 @@ public class ScreenshotArgumentBuilder {
 		return this;
 	}
 
+	public ScreenshotArgumentBuilder addExcludes(Collection<ScreenArea> excludes) {
+		// TODO
+		return this;
+	}
+
+	public ScreenshotArgumentBuilder addExcludes(ScreenArea... excludes) {
+		// TODO
+		return this;
+	}
+
+	//</editor-fold>
+
 	public ScreenshotArgumentBuilder moveTarget(boolean moveTarget) {
 		// TODO
 		return this;
@@ -193,6 +227,16 @@ public class ScreenshotArgumentBuilder {
 	}
 
 	public ScreenshotArgumentBuilder addHiddenElementsByXPath(String value) {
+		// TODO
+		return this;
+	}
+
+	public ScreenshotArgumentBuilder addHiddenElementSelectors(Collection<DomSelector> selectors) {
+		// TODO
+		return this;
+	}
+
+	public ScreenshotArgumentBuilder addHiddenElementSelectors(DomSelector... selectors) {
 		// TODO
 		return this;
 	}
