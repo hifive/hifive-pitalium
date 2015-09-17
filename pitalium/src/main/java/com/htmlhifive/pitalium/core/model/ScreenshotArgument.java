@@ -22,13 +22,23 @@ import java.util.List;
 import com.google.common.base.Strings;
 
 /**
- * TODO JavaDoc
+ * <p>
+ * スクリーンショットを撮影するための要素を指定するセレクタや座標、除外する要素の情報等を持つクラス
+ * </p>
+ * {@link #builder()}または{@link #builder(String)}でビルダーを取得してスクリーンショットの撮影方法を組み立てます。
  * 
  * @author nakatani
  */
 public class ScreenshotArgument {
 
+	/**
+	 * {@link List}を要素を変更できないListへ変換します。{@code list}にnullが渡された場合空の変更できないリストが返ります。
+	 * 
+	 * @param list 変換するリスト
+	 * @return 要素を変更できないリスト
+	 */
 	private static <T> List<T> toUnmodifiableList(List<T> list) {
+		// TODO Move to CollectionUtils?
 		if (list == null || list.isEmpty()) {
 			return Collections.emptyList();
 		} else {
@@ -36,10 +46,21 @@ public class ScreenshotArgument {
 		}
 	}
 
+	/**
+	 * {@link ScreenshotArgument}を構築するためのビルダーオブジェクトをスクリーンショットIDを指定せずに取得します。
+	 * 
+	 * @return ビルダーオブジェクト
+	 */
 	public static ScreenshotArgumentBuilder builder() {
 		return new ScreenshotArgumentBuilder();
 	}
 
+	/**
+	 * {@link ScreenshotArgument}を構築するためのビルダーオブジェクトをスクリーンショットIDを指定して取得します。
+	 * 
+	 * @param screenshotId スクリーンショットID
+	 * @return ビルダーオブジェクト
+	 */
 	public static ScreenshotArgumentBuilder builder(String screenshotId) {
 		return new ScreenshotArgumentBuilder(screenshotId);
 	}
@@ -50,6 +71,14 @@ public class ScreenshotArgument {
 
 	private final List<DomSelector> hiddenElementSelectors;
 
+	/**
+	 * 初期化します。
+	 * 
+	 * @param screenshotId スクリーンショットID
+	 * @param targets スクリーンショット取得・比較の対象となる領域のリスト
+	 * @param hiddenElementSelectors スクリーンショット撮影時に非表示にする要素を示すセレクタのリスト
+	 * @throws NullPointerException {@code screenshotId}がnullまたは空文字だった場合
+	 */
 	protected ScreenshotArgument(String screenshotId, List<CompareTarget> targets,
 			List<DomSelector> hiddenElementSelectors) {
 		if (Strings.isNullOrEmpty(screenshotId)) {
@@ -61,18 +90,40 @@ public class ScreenshotArgument {
 		this.hiddenElementSelectors = toUnmodifiableList(hiddenElementSelectors);
 	}
 
+	/**
+	 * スクリーンショットIDを取得します。
+	 * 
+	 * @return スクリーンショットID
+	 */
 	public String getScreenshotId() {
 		return screenshotId;
 	}
 
+	/**
+	 * スクリーンショット取得・比較の対象となる領域のリストを取得します。
+	 * 
+	 * @return スクリーンショット取得・比較の対象となる領域のリスト
+	 */
 	public List<CompareTarget> getTargets() {
 		return targets;
 	}
 
+	/**
+	 * スクリーンショット撮影時に非表示にする要素を示すセレクタのリストを取得します。
+	 * 
+	 * @return スクリーンショット撮影時に非表示にする要素を示すセレクタのリスト
+	 */
 	public List<DomSelector> getHiddenElementSelectors() {
 		return hiddenElementSelectors;
 	}
 
+	/**
+	 * {@link #getTargets() targets}、{@link #getHiddenElementSelectors() hiddenElementSelectors}
+	 * のコレクションの中身を変更せず、スクリーンショットIDだけを{@code screenshotId}で指定した値に変更した新しい{@link ScreenshotArgument}を返します。
+	 * 
+	 * @param screenshotId 新しいスクリーンショットID
+	 * @return スクリーンショットIDが変更された新しいオブジェクト
+	 */
 	public ScreenshotArgument withScreenshotId(String screenshotId) {
 		return new ScreenshotArgument(screenshotId, targets, hiddenElementSelectors);
 	}
@@ -105,4 +156,5 @@ public class ScreenshotArgument {
 		result = 31 * result + hiddenElementSelectors.hashCode();
 		return result;
 	}
+
 }
