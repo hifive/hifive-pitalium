@@ -16,7 +16,14 @@
 
 package com.htmlhifive.pitalium.core.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import com.google.common.base.Function;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 
 /**
  * TODO JavaDoc
@@ -25,92 +32,120 @@ import java.util.Collection;
  */
 public class ScreenshotArgumentBuilder {
 
+	static class TargetParamHolder {
+		final ScreenArea target;
+		final List<ScreenArea> excludes = new ArrayList<ScreenArea>();
+		boolean moveTarget = true;
+
+		public TargetParamHolder(ScreenArea target) {
+			this.target = target;
+		}
+	}
+
+	private String screenshotId;
+	private final List<TargetParamHolder> targets = new ArrayList<TargetParamHolder>();
+	private final List<DomSelector> hiddenElementSelectors = new ArrayList<DomSelector>();
+
+	private TargetParamHolder currentHolder;
+
 	//<editor-fold desc="Constructor">
 
 	protected ScreenshotArgumentBuilder() {
-		// TODO
 	}
 
 	protected ScreenshotArgumentBuilder(String screenshotId) {
-		// TODO
+		this.screenshotId = screenshotId;
 	}
 
 	//</editor-fold>
 
+	private TargetParamHolder getCurrentHolder() {
+		if (currentHolder == null) {
+			throw new IllegalStateException("addNewTarget is not called");
+		}
+		return currentHolder;
+	}
+
+	private void setCurrentHolder(ScreenArea target) {
+		targets.add(currentHolder = new TargetParamHolder(target));
+	}
+
 	public ScreenshotArgument build() {
-		throw new UnsupportedOperationException("TODO");
+		// Validate screenshot id
+		if (Strings.isNullOrEmpty(screenshotId)) {
+			throw new IllegalStateException("screenshotId must not be empty");
+		}
+
+		List<CompareTarget> compareTargets = Lists.transform(targets, new Function<TargetParamHolder, CompareTarget>() {
+			@Override
+			public CompareTarget apply(TargetParamHolder holder) {
+				return new CompareTarget(holder.target, holder.excludes.toArray(new ScreenArea[holder.excludes.size()]),
+						holder.moveTarget);
+			}
+		});
+
+		return new ScreenshotArgument(screenshotId, compareTargets, new ArrayList<DomSelector>(hiddenElementSelectors));
 	}
 
 	public ScreenshotArgumentBuilder screenshotId(String screenshotId) {
-		// TODO
+		this.screenshotId = screenshotId;
 		return this;
 	}
 
 	//<editor-fold desc="AddNewTarget">
 
 	public ScreenshotArgumentBuilder addNewTarget() {
-		// TODO
-		return this;
+		return addNewTarget(new CompareTarget());
 	}
 
 	public ScreenshotArgumentBuilder addNewTarget(CompareTarget target) {
-		// TODO
-		return this;
+		return addNewTarget(target.getCompareArea()).addExcludes(target.getExcludes())
+				.moveTarget(target.isMoveTarget());
 	}
 
-	public ScreenshotArgumentBuilder addNewTarget(ScreenArea area) {
-		// TODO
+	public ScreenshotArgumentBuilder addNewTarget(ScreenArea target) {
+		setCurrentHolder(target);
 		return this;
 	}
 
 	public ScreenshotArgumentBuilder addNewTarget(SelectorType type, String value) {
-		// TODO
-		return this;
+		return addNewTarget(ScreenArea.of(type, value));
 	}
 
 	public ScreenshotArgumentBuilder addNewTargetById(String value) {
-		// TODO
-		return this;
+		return addNewTarget(SelectorType.ID, value);
 	}
 
 	public ScreenshotArgumentBuilder addNewTargetByClassName(String value) {
-		// TODO
-		return this;
+		return addNewTarget(SelectorType.CLASS_NAME, value);
 	}
 
 	public ScreenshotArgumentBuilder addNewTargetByCssSelector(String value) {
-		// TODO
-		return this;
+		return addNewTarget(SelectorType.CSS_SELECTOR, value);
 	}
 
 	public ScreenshotArgumentBuilder addNewTargetByLinkText(String value) {
-		// TODO
-		return this;
+		return addNewTarget(SelectorType.LINK_TEXT, value);
 	}
 
 	public ScreenshotArgumentBuilder addNewTargetByName(String value) {
-		// TODO
-		return this;
+		return addNewTarget(SelectorType.NAME, value);
 	}
 
 	public ScreenshotArgumentBuilder addNewTargetByPartialLinkText(String value) {
-		// TODO
-		return this;
+		return addNewTarget(SelectorType.PARTIAL_LINK, value);
 	}
 
 	public ScreenshotArgumentBuilder addNewTargetByTagName(String value) {
-		// TODO
-		return this;
+		return addNewTarget(SelectorType.TAG_NAME, value);
 	}
 
 	public ScreenshotArgumentBuilder addNewTargetByXPath(String value) {
-		// TODO
-		return this;
+		return addNewTarget(SelectorType.XPATH, value);
 	}
 
 	public ScreenshotArgumentBuilder addNewTarget(double x, double y, double width, double height) {
-		// TODO
-		return this;
+		return addNewTarget(ScreenArea.of(x, y, width, height));
 	}
 
 	//</editor-fold>
@@ -118,126 +153,116 @@ public class ScreenshotArgumentBuilder {
 	//<editor-fold desc="AddExclude">
 
 	public ScreenshotArgumentBuilder addExclude(SelectorType type, String value) {
-		// TODO
-		return this;
+		return addExclude(ScreenArea.of(type, value));
 	}
 
 	public ScreenshotArgumentBuilder addExcludeById(String value) {
-		// TODO
-		return this;
+		return addExclude(SelectorType.ID, value);
 	}
 
 	public ScreenshotArgumentBuilder addExcludeByClassName(String value) {
-		// TODO
-		return this;
+		return addExclude(SelectorType.CLASS_NAME, value);
 	}
 
 	public ScreenshotArgumentBuilder addExcludeByCssSelector(String value) {
-		// TODO
-		return this;
+		return addExclude(SelectorType.CSS_SELECTOR, value);
 	}
 
 	public ScreenshotArgumentBuilder addExcludeByLinkText(String value) {
-		// TODO
-		return this;
+		return addExclude(SelectorType.LINK_TEXT, value);
 	}
 
 	public ScreenshotArgumentBuilder addExcludeByName(String value) {
-		// TODO
-		return this;
+		return addExclude(SelectorType.NAME, value);
 	}
 
 	public ScreenshotArgumentBuilder addExcludeByPartialLinkText(String value) {
-		// TODO
-		return this;
+		return addExclude(SelectorType.PARTIAL_LINK, value);
 	}
 
 	public ScreenshotArgumentBuilder addExcludeByTagName(String value) {
-		// TODO
-		return this;
+		return addExclude(SelectorType.TAG_NAME, value);
 	}
 
 	public ScreenshotArgumentBuilder addExcludeByXPath(String value) {
-		// TODO
+		return addExclude(SelectorType.XPATH, value);
+	}
+
+	public ScreenshotArgumentBuilder addExclude(ScreenArea exclude) {
+		TargetParamHolder holder = getCurrentHolder();
+		holder.excludes.add(exclude);
 		return this;
 	}
 
 	public ScreenshotArgumentBuilder addExclude(double x, double y, double width, double height) {
-		// TODO
-		return this;
+		return addExclude(ScreenArea.of(x, y, width, height));
 	}
 
 	public ScreenshotArgumentBuilder addExcludes(Collection<ScreenArea> excludes) {
-		// TODO
+		TargetParamHolder holder = getCurrentHolder();
+		holder.excludes.addAll(excludes);
 		return this;
 	}
 
 	public ScreenshotArgumentBuilder addExcludes(ScreenArea... excludes) {
-		// TODO
+		TargetParamHolder holder = getCurrentHolder();
+		Collections.addAll(holder.excludes, excludes);
 		return this;
 	}
 
 	//</editor-fold>
 
 	public ScreenshotArgumentBuilder moveTarget(boolean moveTarget) {
-		// TODO
+		getCurrentHolder().moveTarget = moveTarget;
 		return this;
 	}
 
 	//<editor-fold desc="HiddenElementSelector">
 
 	public ScreenshotArgumentBuilder addHiddenElementSelector(SelectorType type, String value) {
-		// TODO
+		hiddenElementSelectors.add(new DomSelector(type, value));
 		return this;
 	}
 
 	public ScreenshotArgumentBuilder addHiddenElementsById(String value) {
-		// TODO
-		return this;
+		return addHiddenElementSelector(SelectorType.ID, value);
 	}
 
 	public ScreenshotArgumentBuilder addHiddenElementsByClassName(String value) {
-		// TODO
-		return this;
+		return addHiddenElementSelector(SelectorType.CLASS_NAME, value);
 	}
 
 	public ScreenshotArgumentBuilder addHiddenElementsByCssSelector(String value) {
-		// TODO
-		return this;
+		return addHiddenElementSelector(SelectorType.CSS_SELECTOR, value);
 	}
 
 	public ScreenshotArgumentBuilder addHiddenElementsByLinkText(String value) {
-		// TODO
-		return this;
+		return addHiddenElementSelector(SelectorType.LINK_TEXT, value);
 	}
 
 	public ScreenshotArgumentBuilder addHiddenElementsByName(String value) {
-		// TODO
-		return this;
+		return addHiddenElementSelector(SelectorType.NAME, value);
 	}
 
 	public ScreenshotArgumentBuilder addHiddenElementsByPartialLinkText(String value) {
-		// TODO
-		return this;
+		return addHiddenElementSelector(SelectorType.PARTIAL_LINK, value);
 	}
 
 	public ScreenshotArgumentBuilder addHiddenElementsByTagName(String value) {
-		// TODO
-		return this;
+		return addHiddenElementSelector(SelectorType.TAG_NAME, value);
 	}
 
 	public ScreenshotArgumentBuilder addHiddenElementsByXPath(String value) {
-		// TODO
-		return this;
+		return addHiddenElementSelector(SelectorType.XPATH, value);
 	}
 
 	public ScreenshotArgumentBuilder addHiddenElementSelectors(Collection<DomSelector> selectors) {
-		// TODO
+		hiddenElementSelectors.addAll(selectors);
 		return this;
 	}
 
 	public ScreenshotArgumentBuilder addHiddenElementSelectors(DomSelector... selectors) {
-		// TODO
+		Collections.addAll(hiddenElementSelectors, selectors);
 		return this;
 	}
 
