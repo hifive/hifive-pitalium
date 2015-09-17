@@ -44,6 +44,7 @@ import com.htmlhifive.pitalium.core.model.IndexDomSelector;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.ScreenAreaResult;
 import com.htmlhifive.pitalium.core.model.ScreenAreaWrapper;
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.core.model.ScreenshotParams;
 import com.htmlhifive.pitalium.core.model.ScreenshotResult;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -246,6 +247,16 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	public ScreenshotResult takeScreenshot(String screenshotId, CompareTarget[] compareTargets,
 			DomSelector[] hiddenElementsSelectors) {
 		return takeScreenshot(screenshotId, Arrays.asList(compareTargets), Arrays.asList(hiddenElementsSelectors));
+	}
+
+	/**
+	 * スクリーンショットの撮影条件を指定してスクリーンショットを撮影します。
+	 * 
+	 * @param arg スクリーンショット撮影条件
+	 * @return スクリーンショット撮影結果
+	 */
+	public ScreenshotResult takeScreenshot(ScreenshotArgument arg) {
+		return takeScreenshot(arg.getScreenshotId(), arg.getTargets(), arg.getHiddenElementSelectors());
 	}
 
 	/**
