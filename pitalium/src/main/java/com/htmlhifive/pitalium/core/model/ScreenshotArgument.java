@@ -77,4 +77,32 @@ public class ScreenshotArgument {
 		return new ScreenshotArgument(screenshotId, targets, hiddenElementSelectors);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		ScreenshotArgument that = (ScreenshotArgument) o;
+
+		if (!screenshotId.equals(that.screenshotId)) {
+			return false;
+		}
+		if (!targets.equals(that.targets)) {
+			return false;
+		}
+		return hiddenElementSelectors.equals(that.hiddenElementSelectors);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = screenshotId.hashCode();
+		result = 31 * result + targets.hashCode();
+		result = 31 * result + hiddenElementSelectors.hashCode();
+		return result;
+	}
 }
