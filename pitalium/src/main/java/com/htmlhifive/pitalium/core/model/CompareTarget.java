@@ -16,6 +16,7 @@
 package com.htmlhifive.pitalium.core.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import com.htmlhifive.pitalium.image.model.CompareOption;
 
@@ -68,9 +69,8 @@ public class CompareTarget implements Serializable {
 	 *
 	 * @param compareArea 指定領域
 	 * @param excludes 比較時に除外する領域
-	 * @param moveTarget 
-	 *            スクリーンショット撮影時に指定領域を定位置に移動するか否か。移動する場合はtrueを指定します。trueの場合、レンダリングによって発生する想定外の誤差を抑制しますが、ページによっては画面のレイアウトが崩れる場合があります
-	 *            。
+	 * @param moveTarget スクリーンショット撮影時に指定領域を定位置に移動するか否か。移動する場合はtrueを指定します。trueの場合、レンダリングによって発生する想定外の誤差を抑制しますが、
+	 *            ページによっては画面のレイアウトが崩れる場合があります 。
 	 */
 	public CompareTarget(ScreenArea compareArea, ScreenArea[] excludes, boolean moveTarget) {
 		this.compareArea = compareArea;
@@ -112,6 +112,41 @@ public class CompareTarget implements Serializable {
 	 */
 	public boolean isMoveTarget() {
 		return moveTarget;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		CompareTarget that = (CompareTarget) o;
+
+		if (moveTarget != that.moveTarget) {
+			return false;
+		}
+		if (!compareArea.equals(that.compareArea)) {
+			return false;
+		}
+		// Probably incorrect - comparing Object[] arrays with Arrays.equals
+		if (!Arrays.equals(options, that.options)) {
+			return false;
+		}
+		// Probably incorrect - comparing Object[] arrays with Arrays.equals
+		return Arrays.equals(excludes, that.excludes);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = compareArea.hashCode();
+		result = 31 * result + (options != null ? Arrays.hashCode(options) : 0);
+		result = 31 * result + Arrays.hashCode(excludes);
+		result = 31 * result + (moveTarget ? 1 : 0);
+		return result;
 	}
 
 }
