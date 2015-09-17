@@ -49,7 +49,7 @@ public class ScreenshotArgumentBuilderTest {
 		ScreenshotArgumentBuilder builder = new ScreenshotArgumentBuilder();
 
 		expected.expect(IllegalStateException.class);
-		expected.expect(containsString("screenshotId"));
+		expected.expectMessage(containsString("screenshotId"));
 
 		builder.build();
 	}
@@ -62,7 +62,7 @@ public class ScreenshotArgumentBuilderTest {
 		ScreenshotArgumentBuilder builder = new ScreenshotArgumentBuilder(null);
 
 		expected.expect(IllegalStateException.class);
-		expected.expect(containsString("screenshotId"));
+		expected.expectMessage(containsString("screenshotId"));
 
 		builder.build();
 	}
@@ -75,7 +75,7 @@ public class ScreenshotArgumentBuilderTest {
 		ScreenshotArgumentBuilder builder = new ScreenshotArgumentBuilder("");
 
 		expected.expect(IllegalStateException.class);
-		expected.expect(containsString("screenshotId"));
+		expected.expectMessage(containsString("screenshotId"));
 
 		builder.build();
 	}
@@ -112,7 +112,7 @@ public class ScreenshotArgumentBuilderTest {
 		ScreenshotArgumentBuilder builder = new ScreenshotArgumentBuilder().screenshotId(null);
 
 		expected.expect(IllegalStateException.class);
-		expected.expect(containsString("screenshotId"));
+		expected.expectMessage(containsString("screenshotId"));
 
 		builder.build();
 	}
@@ -137,7 +137,7 @@ public class ScreenshotArgumentBuilderTest {
 		ScreenshotArgumentBuilder builder = new ScreenshotArgumentBuilder("ssid").screenshotId(null);
 
 		expected.expect(IllegalStateException.class);
-		expected.expect(containsString("screenshotId"));
+		expected.expectMessage(containsString("screenshotId"));
 
 		builder.build();
 	}
@@ -217,7 +217,7 @@ public class ScreenshotArgumentBuilderTest {
         ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
                 .addNewTargetById("id")
                 .addNewTargetByClassName("class")
-                .addExcludeByName("name")
+                .addNewTargetByName("name")
                 .build();
 // @formatter:on
 
@@ -227,7 +227,7 @@ public class ScreenshotArgumentBuilderTest {
 
 		assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(SelectorType.ID, "id"))));
 		assertThat(arg.getTargets().get(1), is(new CompareTarget(ScreenArea.of(SelectorType.CLASS_NAME, "class"))));
-		assertThat(arg.getTargets().get(1), is(new CompareTarget(ScreenArea.of(SelectorType.NAME, "name"))));
+		assertThat(arg.getTargets().get(2), is(new CompareTarget(ScreenArea.of(SelectorType.NAME, "name"))));
 	}
 
 	/**
@@ -307,7 +307,7 @@ public class ScreenshotArgumentBuilderTest {
 		ScreenshotArgumentBuilder builder = new ScreenshotArgumentBuilder("ssid");
 
 		expected.expect(IllegalStateException.class);
-		expected.expect(containsString("addExclude should be called after addNewTarget"));
+		expected.expectMessage(containsString("addNewTarget is not called"));
 
 		builder.addExclude(SelectorType.ID, "target");
 	}
@@ -406,7 +406,7 @@ public class ScreenshotArgumentBuilderTest {
         ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
                 .addNewTargetByLinkText("link")
                 .addNewTargetByPartialLinkText("partial_link")
-                    .addNewTargetByXPath("ex_xpath")
+                    .addExcludeByXPath("ex_xpath")
                 .addNewTargetByTagName("tag")
                     .addExcludeByClassName("ex_class")
                     .addExcludeByLinkText("ex_link")
@@ -470,7 +470,7 @@ public class ScreenshotArgumentBuilderTest {
 		ScreenshotArgumentBuilder builder = new ScreenshotArgumentBuilder("ssid");
 
 		expected.expect(IllegalStateException.class);
-		expected.expect(containsString("moveTarget should be called after addNewTarget"));
+		expected.expectMessage(containsString("addNewTarget is not called"));
 
 		builder.moveTarget(false);
 	}
@@ -574,8 +574,8 @@ public class ScreenshotArgumentBuilderTest {
 		assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
 
 		assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(SelectorType.ID, "id"), null, false)));
-		assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(1d, 2d, 3d, 4d), null, true)));
-		assertThat(arg.getTargets().get(0),
+		assertThat(arg.getTargets().get(1), is(new CompareTarget(ScreenArea.of(1d, 2d, 3d, 4d), null, true)));
+		assertThat(arg.getTargets().get(2),
 				is(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), null, false)));
 	}
 
@@ -629,7 +629,7 @@ public class ScreenshotArgumentBuilderTest {
 		assertThat(arg.getHiddenElementSelectors().size(), is(2));
 
 		assertThat(arg.getHiddenElementSelectors().get(0), is(selectors[0]));
-		assertThat(arg.getHiddenElementSelectors().get(0), is(selectors[1]));
+		assertThat(arg.getHiddenElementSelectors().get(1), is(selectors[1]));
 	}
 
 	/**
@@ -646,7 +646,7 @@ public class ScreenshotArgumentBuilderTest {
 		assertThat(arg.getHiddenElementSelectors().size(), is(2));
 
 		assertThat(arg.getHiddenElementSelectors().get(0), is(selectors[0]));
-		assertThat(arg.getHiddenElementSelectors().get(0), is(selectors[1]));
+		assertThat(arg.getHiddenElementSelectors().get(1), is(selectors[1]));
 	}
 
 }
