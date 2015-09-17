@@ -79,12 +79,13 @@ public class ScreenshotArgumentBuilder {
 		List<CompareTarget> compareTargets = Lists.transform(targets, new Function<TargetParamHolder, CompareTarget>() {
 			@Override
 			public CompareTarget apply(TargetParamHolder holder) {
-				return new CompareTarget(holder.target, holder.excludes.toArray(new ScreenArea[holder.excludes.size()]),
-						holder.moveTarget);
+				return new CompareTarget(holder.target,
+						holder.excludes.toArray(new ScreenArea[holder.excludes.size()]), holder.moveTarget);
 			}
 		});
 
-		return new ScreenshotArgument(screenshotId, compareTargets, new ArrayList<DomSelector>(hiddenElementSelectors));
+		return new ScreenshotArgument(screenshotId, new ArrayList<CompareTarget>(compareTargets),
+				new ArrayList<DomSelector>(hiddenElementSelectors));
 	}
 
 	public ScreenshotArgumentBuilder screenshotId(String screenshotId) {
