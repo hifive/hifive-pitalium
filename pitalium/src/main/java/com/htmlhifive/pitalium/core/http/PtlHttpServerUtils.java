@@ -22,7 +22,10 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.io.IOUtils;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.common.util.TextReplacer;
@@ -46,7 +49,7 @@ public class PtlHttpServerUtils {
 
 	/**
 	 * Pitalium HTTP Serverで利用するスクリプトファイルをブラウザにロードします。
-	 * 
+	 *
 	 * @param driver 対象ブラウザのWebDriver
 	 */
 	public static void loadPitaliumFunctions(PtlWebDriver driver) {
@@ -55,7 +58,7 @@ public class PtlHttpServerUtils {
 
 	/**
 	 * Pitalium HTTP Serverで利用するスクリプトファイルをブラウザにロードします。
-	 * 
+	 *
 	 * @param driver 対象ブラウザのWebDriver
 	 * @param config HTTP Serverの設定
 	 */
@@ -75,11 +78,19 @@ public class PtlHttpServerUtils {
 		String script = TextReplacer.replace(s, params);
 
 		driver.executeJavaScript(script);
+
+		// Pitalium JS functionsが確実に読み込まれるまで待機
+		new WebDriverWait(driver, 30L).until(new Predicate<WebDriver>() {
+			@Override
+			public boolean apply(WebDriver d) {
+				return isPitaliumFunctionsLoaded(driver);
+			}
+		});
 	}
 
 	/**
 	 * Pitalium HTTP Serverで利用するスクリプトファイルがブラウザにロードされているかどうか取得します。
-	 * 
+	 *
 	 * @param driver 対象ブラウザのWebDriver
 	 * @return スクリプトファイルがブラウザにロードされている場合true、ロードされていない場合false
 	 */
@@ -108,7 +119,7 @@ public class PtlHttpServerUtils {
 	/**
 	 * Webブラウザからスレッドロック解除の通知があるまで指定の時間待機します。<br />
 	 * &quot;/unlockThread&quot;へXmlHTTPRequestを送信する、または&quot;pitalium.sendUnlockRequest()&quot;を実行することで待機を解除します。
-	 * 
+	 *
 	 * @param driver 対象ブラウザのWebDriver
 	 * @param timeout 待機タイムアウト（ミリ秒）
 	 * @param asyncAction 待機中に非同期で行う動作
