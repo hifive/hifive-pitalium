@@ -31,6 +31,7 @@ public class HttpServerConfigTest {
 		HttpServerConfig config = HttpServerConfig.builder().build();
 		assertThat(config.getHostname(), is("localhost"));
 		assertThat(config.getPort(), is(8080));
+		assertThat(config.getAwaitTimeout(), is(30L));
 	}
 
 	/**
@@ -38,9 +39,10 @@ public class HttpServerConfigTest {
 	 */
 	@Test
 	public void buildWithCustomProperties() throws Exception {
-		HttpServerConfig config = HttpServerConfig.builder().hostname("hostname").port(1234).build();
+		HttpServerConfig config = HttpServerConfig.builder().hostname("hostname").port(1234).awaitTimeout(1L).build();
 		assertThat(config.getHostname(), is("hostname"));
 		assertThat(config.getPort(), is(1234));
+		assertThat(config.getAwaitTimeout(), is(1L));
 	}
 
 }
