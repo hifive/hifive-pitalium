@@ -1,0 +1,8 @@
+html text/html
+js   text/javascript
+json application/json
+xml  application/xml
+jpeg image/jpeg
+jpg  image/jpg
+png  image/png
+bmp  image/x-bmp

@@ -16,23 +16,26 @@
 
 package com.htmlhifive.pitalium.core.http.handler;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
-import javax.activation.MimetypesFileTypeMap;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.http.PtlHttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 
@@ -48,6 +51,44 @@ public class ResourceHandler extends AbstractHttpHandler {
 	private static final Logger LOG = LoggerFactory.getLogger(ResourceHandler.class);
 
 	private static final String RESOURCES_DIRECTORY_PATH = "pitalium/http/res/";
+
+	/**
+	 * &quot;ContentTypeMappings.txt&quot;リソースからContent-Typeのマッピングを取得します。
+	 */
+	static Map<String, String> getContentTypeMappings() {
+		Map<String, String> map = new HashMap<String, String>();
+
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(
+					ResourceHandler.class.getResourceAsStream("ContentTypeMappings.txt")));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (Strings.isNullOrEmpty(line)) {
+					continue;
+				}
+
+				String[] split = line.split("\\s+");
+				if (split.length != 2) {
+					continue;
+				}
+
+				map.put(split[0], split[1]);
+			}
+
+			return map;
+		} catch (IOException e) {
+			throw new TestRuntimeException(e);
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					LOG.error("", e);
+				}
+			}
+		}
+	}
 
 	private final LoadingCache<String, byte[]> cache = CacheBuilder.newBuilder().maximumSize(20L)
 			.build(new CacheLoader<String, byte[]>() {
@@ -72,6 +113,8 @@ public class ResourceHandler extends AbstractHttpHandler {
 				}
 			});
 
+	private final Map<String, String> contentTypeMappings = getContentTypeMappings();
+
 	@Override
 	protected void handle(HttpExchange httpExchange, Map<String, String> queryStrings) throws IOException {
 		URI uri = httpExchange.getRequestURI();
@@ -95,9 +138,12 @@ public class ResourceHandler extends AbstractHttpHandler {
 			return;
 		}
 
-		// TODO Content-Type mapping
-		String contentType = MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(name);
-		httpExchange.getResponseHeaders().set("Content-Type", contentType);
+		String[] extensionSplit = name.split("\\.");
+		if (extensionSplit.length >= 2) {
+			String contentType = contentTypeMappings.get(extensionSplit[extensionSplit.length - 1].toLowerCase());
+			httpExchange.getResponseHeaders().set("Content-Type", contentType);
+		}
+
 		httpExchange.sendResponseHeaders(200, data.length);
 		httpExchange.getResponseBody().write(data);
 		httpExchange.close();

@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.io.IOUtils;
@@ -65,8 +66,7 @@ public class ResourceHandlerTest {
 		String expected = IOUtils.toString(getClass().getClassLoader().getResourceAsStream(
 				"pitalium/http/res/ResourceHandlerTest.json"));
 		assertThat(IOUtils.toString(conn.getInputStream()), is(expected));
-
-		//        assertThat(conn.getHeaderField("Content-Type"), is("application/json"));
+		assertThat(conn.getHeaderField("Content-Type"), is("application/json"));
 	}
 
 	/**
@@ -79,6 +79,15 @@ public class ResourceHandlerTest {
 		conn.connect();
 
 		assertThat(conn.getResponseCode(), is(404));
+	}
+
+	/**
+	 * Content-Typeのマッピングテスト
+	 */
+	@Test
+	public void getContentTypeMappings() throws Exception {
+		Map<String, String> mappings = ResourceHandler.getContentTypeMappings();
+		assertThat(mappings.get("html"), is("text/html"));
 	}
 
 }
