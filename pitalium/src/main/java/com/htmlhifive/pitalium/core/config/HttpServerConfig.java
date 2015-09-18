@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 
 /**
- * TODO JavaDoc
+ * Pitalium HTTPサーバーの設定
  */
 @PtlConfiguration
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -41,30 +41,60 @@ public class HttpServerConfig implements Serializable {
 	private int port = 8080;
 
 	/**
-	 * リクエストを待機するデフォルトのタイムアウト時間（秒
+	 * リクエストを待機するデフォルトのタイムアウト時間（秒）
 	 */
 	private long awaitTimeout = 30L;
 
+	/**
+	 * テスト実行中のブラウザからPitalium HTTPサーバーへアクセスするためのホスト名を取得します。
+	 * 
+	 * @return テスト実行中のブラウザからPitalium HTTPサーバーへアクセスするためのホスト名
+	 */
 	public String getHostname() {
 		return hostname;
 	}
 
+	/**
+	 * テスト実行中のブラウザからPitalium HTTPサーバーへアクセスするためのホスト名を設定します。
+	 * 
+	 * @param hostname テスト実行中のブラウザからPitalium HTTPサーバーへアクセスするためのホスト名
+	 */
 	void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
 
+	/**
+	 * Pitalium HTTPサーバーを実行するポート番号を取得します。
+	 * 
+	 * @return Pitalium HTTPサーバーを実行するポート番号
+	 */
 	public int getPort() {
 		return port;
 	}
 
+	/**
+	 * Pitalium HTTPサーバーを実行するポート番号を設定します。
+	 * 
+	 * @param port Pitalium HTTPサーバーを実行するポート番号
+	 */
 	void setPort(int port) {
 		this.port = port;
 	}
 
+	/**
+	 * リクエストを待機するデフォルトのタイムアウト時間（秒）を取得します。
+	 * 
+	 * @return リクエストを待機するデフォルトのタイムアウト時間
+	 */
 	public long getAwaitTimeout() {
 		return awaitTimeout;
 	}
 
+	/**
+	 * リクエストを待機するデフォルトのタイムアウト時間（秒）を設定します
+	 * 
+	 * @param awaitTimeout リクエストを待機するデフォルトのタイムアウト時間
+	 */
 	void setAwaitTimeout(long awaitTimeout) {
 		this.awaitTimeout = awaitTimeout;
 	}
@@ -102,6 +132,11 @@ public class HttpServerConfig implements Serializable {
 		return result;
 	}
 
+	/**
+	 * {@link HttpServerConfig}を生成するビルダーオブジェクトの新規インスタンスを取得します。
+	 * 
+	 * @return ビルダーオブジェクトのインスタンス
+	 */
 	public static Builder builder() {
 		return new Builder();
 	}
@@ -110,6 +145,11 @@ public class HttpServerConfig implements Serializable {
 
 		final HttpServerConfig config = new HttpServerConfig();
 
+		/**
+		 * 設定した値で{@link HttpServerConfig}の新規インスタンスを生成します。
+		 * 
+		 * @return {@link HttpServerConfig}の新規インスタンス
+		 */
 		public HttpServerConfig build() {
 			HttpServerConfig c = new HttpServerConfig();
 			c.setHostname(config.hostname);
@@ -118,16 +158,34 @@ public class HttpServerConfig implements Serializable {
 			return config;
 		}
 
+		/**
+		 * テスト実行中のブラウザからPitalium HTTPサーバーへアクセスするためのホスト名を設定します。
+		 * 
+		 * @param hostname テスト実行中のブラウザからPitalium HTTPサーバーへアクセスするためのホスト名
+		 * @return ビルダーインスタンス自身
+		 */
 		public Builder hostname(String hostname) {
 			config.hostname = hostname;
 			return this;
 		}
 
+		/**
+		 * Pitalium HTTPサーバーを実行するポート番号を設定します。
+		 * 
+		 * @param port Pitalium HTTPサーバーを実行するポート番号
+		 * @return ビルダーインスタンス自身
+		 */
 		public Builder port(int port) {
 			config.port = port;
 			return this;
 		}
 
+		/**
+		 * リクエストを待機するデフォルトのタイムアウト時間（秒）を設定します
+		 * 
+		 * @param awaitTimeout リクエストを待機するデフォルトのタイムアウト時間
+		 * @return ビルダーインスタンス自身
+		 */
 		public Builder awaitTimeout(long awaitTimeout) {
 			config.awaitTimeout = awaitTimeout;
 			return this;
