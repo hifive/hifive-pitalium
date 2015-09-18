@@ -40,6 +40,11 @@ public class HttpServerConfig implements Serializable {
 	 */
 	private int port = 8080;
 
+	/**
+	 * リクエストを待機するデフォルトのタイムアウト時間（秒
+	 */
+	private long awaitTimeout = 30L;
+
 	public String getHostname() {
 		return hostname;
 	}
@@ -54,6 +59,14 @@ public class HttpServerConfig implements Serializable {
 
 	void setPort(int port) {
 		this.port = port;
+	}
+
+	public long getAwaitTimeout() {
+		return awaitTimeout;
+	}
+
+	void setAwaitTimeout(long awaitTimeout) {
+		this.awaitTimeout = awaitTimeout;
 	}
 
 	@Override
@@ -75,14 +88,17 @@ public class HttpServerConfig implements Serializable {
 		if (port != that.port) {
 			return false;
 		}
+		if (awaitTimeout != that.awaitTimeout) {
+			return false;
+		}
 		return !(hostname != null ? !hostname.equals(that.hostname) : that.hostname != null);
-
 	}
 
 	@Override
 	public int hashCode() {
 		int result = hostname != null ? hostname.hashCode() : 0;
 		result = 31 * result + port;
+		result = 31 * result + (int) (awaitTimeout ^ (awaitTimeout >>> 32));
 		return result;
 	}
 
@@ -98,6 +114,7 @@ public class HttpServerConfig implements Serializable {
 			HttpServerConfig c = new HttpServerConfig();
 			c.setHostname(config.hostname);
 			c.setPort(config.port);
+			c.setAwaitTimeout(config.awaitTimeout);
 			return config;
 		}
 
@@ -108,6 +125,11 @@ public class HttpServerConfig implements Serializable {
 
 		public Builder port(int port) {
 			config.port = port;
+			return this;
+		}
+
+		public Builder awaitTimeout(long awaitTimeout) {
+			config.awaitTimeout = awaitTimeout;
 			return this;
 		}
 
