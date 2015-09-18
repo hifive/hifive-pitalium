@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.base.Predicate;
@@ -36,9 +38,16 @@ import com.htmlhifive.pitalium.core.rules.AssertionView;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 
 /**
- * TODO JavaDoc
+ * Pitalium HTTPサーバーを利用して非同期アクションを実行するためのメソッドを提供するユーティリティ
  */
 public class PtlHttpServerUtils {
+
+	/**
+	 * 設定されている標準の非同期待機タイムアウト時間を取得します。
+	 */
+	static long getDefaultAwaitTimeout() {
+		return TimeUnit.SECONDS.toMillis(PtlTestConfig.getInstance().getHttpServerConfig().getAwaitTimeout());
+	}
 
 	/**
 	 * HTTPサーバーを開始します。
@@ -132,6 +141,125 @@ public class PtlHttpServerUtils {
 		if (awaitAction != null) {
 			awaitAction.run();
 		}
+	}
+
+	/**
+	 * 指定の要素をクリックし、Webブラウザからスレッドロック解除の通知があるまで待機します。<br />
+	 * &quot;/unlockThread&quot;へXmlHTTPRequestを送信する、または&quot;pitalium.sendUnlockRequest()&quot;を実行することで待機を解除します。
+	 * 
+	 * @param driver 対象ブラウザのWebDriver
+	 * @param element クリックする要素
+	 */
+	public static void clickAndAwaitUnlockRequest(PtlWebDriver driver, WebElement element) {
+		clickAndAwaitUnlockRequest(driver, element, getDefaultAwaitTimeout());
+	}
+
+	/**
+	 * 指定の要素をクリックし、Webブラウザからスレッドロック解除の通知があるまで指定の時間待機します。<br />
+	 * &quot;/unlockThread&quot;へXmlHTTPRequestを送信する、または&quot;pitalium.sendUnlockRequest()&quot;を実行することで待機を解除します。
+	 *
+	 * @param driver 対象ブラウザのWebDriver
+	 * @param element クリックする要素
+	 * @param timeout 待機タイムアウト（ミリ秒）
+	 */
+	public static void clickAndAwaitUnlockRequest(PtlWebDriver driver, final WebElement element, long timeout) {
+		awaitUnlockRequest(driver, timeout, new Runnable() {
+			@Override
+			public void run() {
+				element.click();
+			}
+		});
+	}
+
+	/**
+	 * 指定の要素をサブミットし、Webブラウザからスレッドロック解除の通知があるまで待機します。<br />
+	 * &quot;/unlockThread&quot;へXmlHTTPRequestを送信する、または&quot;pitalium.sendUnlockRequest()&quot;を実行することで待機を解除します。
+	 *
+	 * @param driver 対象ブラウザのWebDriver
+	 * @param element サブミットする要素
+	 */
+	public static void submitAndAwaitUnlockRequest(PtlWebDriver driver, WebElement element) {
+		clickAndAwaitUnlockRequest(driver, element, getDefaultAwaitTimeout());
+	}
+
+	/**
+	 * 指定の要素をサブミットし、Webブラウザからスレッドロック解除の通知があるまで指定の時間待機します。<br />
+	 * &quot;/unlockThread&quot;へXmlHTTPRequestを送信する、または&quot;pitalium.sendUnlockRequest()&quot;を実行することで待機を解除します。
+	 *
+	 * @param driver 対象ブラウザのWebDriver
+	 * @param element サブミットする要素
+	 * @param timeout 待機タイムアウト（ミリ秒）
+	 */
+	public static void submitAndAwaitUnlockRequest(PtlWebDriver driver, final WebElement element, long timeout) {
+		awaitUnlockRequest(driver, timeout, new Runnable() {
+			@Override
+			public void run() {
+				element.submit();
+			}
+		});
+	}
+
+	/**
+	 * 指定の要素に文字を入力し、Webブラウザからスレッドロック解除の通知があるまで待機します。<br />
+	 * &quot;/unlockThread&quot;へXmlHTTPRequestを送信する、または&quot;pitalium.sendUnlockRequest()&quot;を実行することで待機を解除します。
+	 *
+	 * @param driver 対象ブラウザのWebDriver
+	 * @param element 文字を入力する要素
+	 * @param charSequences 入力する文字列
+	 */
+	public static void sendKeysAndAwaitUnlockRequest(PtlWebDriver driver, WebElement element,
+			CharSequence... charSequences) {
+		sendKeysAndAwaitUnlockRequest(driver, element, getDefaultAwaitTimeout(), charSequences);
+	}
+
+	/**
+	 * 指定の要素に文字を入力し、Webブラウザからスレッドロック解除の通知があるまで指定の時間待機します。<br />
+	 * &quot;/unlockThread&quot;へXmlHTTPRequestを送信する、または&quot;pitalium.sendUnlockRequest()&quot;を実行することで待機を解除します。
+	 *
+	 * @param driver 対象ブラウザのWebDriver
+	 * @param element 文字を入力する要素
+	 * @param timeout 待機タイムアウト（ミリ秒）
+	 * @param charSequences 入力する文字列
+	 */
+	public static void sendKeysAndAwaitUnlockRequest(PtlWebDriver driver, final WebElement element, long timeout,
+			final CharSequence... charSequences) {
+		awaitUnlockRequest(driver, timeout, new Runnable() {
+			@Override
+			public void run() {
+				element.sendKeys(charSequences);
+			}
+		});
+	}
+
+	/**
+	 * JavaScriptを実行し、Webブラウザからスレッドロック解除の通知があるまで待機します。<br />
+	 * &quot;/unlockThread&quot;へXmlHTTPRequestを送信する、または&quot;pitalium.sendUnlockRequest()&quot;を実行することで待機を解除します。
+	 *
+	 * @param driver 対象ブラウザのWebDriver
+	 * @param script 実行するスクリプト
+	 * @param args スクリプトに渡す引数
+	 */
+	public static void executeScriptAndAwaitUnlockRequest(PtlWebDriver driver, String script, Object... args) {
+		executeScriptAndAwaitUnlockRequest(driver, getDefaultAwaitTimeout(), script, args);
+	}
+
+	/**
+	 * JavaScriptを実行し、Webブラウザからスレッドロック解除の通知があるまで指定の時間待機します。<br />
+	 * &quot;/unlockThread&quot;へXmlHTTPRequestを送信する、または&quot;pitalium.sendUnlockRequest()&quot;を実行することで待機を解除します。
+	 *
+	 * @param driver 対象ブラウザのWebDriver
+	 * @param timeout 待機タイムアウト（ミリ秒）
+	 * @param script 実行するスクリプト
+	 * @param args スクリプトに渡す引数
+	 */
+	public static void executeScriptAndAwaitUnlockRequest(final PtlWebDriver driver, long timeout, final String script,
+			final Object... args) {
+		awaitUnlockRequest(driver, timeout, new Runnable() {
+			@Override
+			public void run() {
+				driver.executeScript(script, args);
+			}
+		});
 	}
 
 	public static void awaitRequest(int id, String type, long timeout, Runnable asyncAction) {

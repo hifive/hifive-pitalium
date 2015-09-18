@@ -17,12 +17,17 @@
 package com.htmlhifive.pitalium.core.http;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import com.htmlhifive.pitalium.common.exception.PtlTimeoutException;
 import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.HttpServerConfig;
 
@@ -40,10 +45,16 @@ public class PtlHttpServerUtilsTest extends PtlTestBase {
 		PtlHttpServer.stop();
 	}
 
+	@Rule
+	public ExpectedException expected = ExpectedException.none();
+
 	HttpServerConfig config = HttpServerConfig.builder().port(PORT).build();
 
+	/**
+	 * Pitalium functionsを読み込む関数のテスト
+	 */
 	@Test
-	public void testLoadPitaliumFunctions() throws Exception {
+	public void loadPitaliumFunctions() throws Exception {
 		driver.get(null);
 		PtlHttpServerUtils.loadPitaliumFunctions(driver, config);
 
@@ -51,8 +62,11 @@ public class PtlHttpServerUtilsTest extends PtlTestBase {
 		assertThat(id, is(String.valueOf(capabilities.getId())));
 	}
 
+	/**
+	 * Pitalium functionsが読み込まれているかチェックする関数のテスト
+	 */
 	@Test
-	public void testIsPitaliumFunctionsLoaded() throws Exception {
+	public void isPitaliumFunctionsLoaded() throws Exception {
 		driver.get(null);
 		assertThat(PtlHttpServerUtils.isPitaliumFunctionsLoaded(driver), is(false));
 
@@ -60,8 +74,11 @@ public class PtlHttpServerUtilsTest extends PtlTestBase {
 		assertThat(PtlHttpServerUtils.isPitaliumFunctionsLoaded(driver), is(true));
 	}
 
+	/**
+	 * UnlockThread経由の非同期アクションを実行するテスト
+	 */
 	@Test
-	public void testAwaitUnlockRequest() throws Exception {
+	public void awaitUnlockRequest() throws Exception {
 		driver.get(null);
 		PtlHttpServerUtils.loadPitaliumFunctions(driver, config);
 
@@ -86,6 +103,80 @@ public class PtlHttpServerUtilsTest extends PtlTestBase {
 
 		final String expected = "begin before_action after_execute await_action end ";
 		assertThat(sb.toString(), is(expected));
+	}
+
+	/**
+	 * UnlockThread経由の非同期アクションがタイムアウトするテスト
+	 */
+	@Test
+	public void awaitUnlockRequest_timeout() throws Exception {
+		driver.get(null);
+		PtlHttpServerUtils.loadPitaliumFunctions(driver, config);
+
+		expected.expect(PtlTimeoutException.class);
+
+		PtlHttpServerUtils.awaitUnlockRequest(driver, TimeUnit.SECONDS.toMillis(1L), new Runnable() {
+			@Override
+			public void run() {
+				driver.executeJavaScript("setTimeout(function () {pitalium.sendUnlockRequest();}, 3000);");
+			}
+		}, new Runnable() {
+			@Override
+			public void run() {
+				fail();
+			}
+		});
+
+		fail();
+	}
+
+	/**
+	 * クリックして非同期アクションを実行するテスト
+	 */
+	@Test
+	public void clickAndAwaitUnlockRequest() throws Exception {
+		driver.get("http://localhost:18080/res/PtlHttpServerUtilsTest.html");
+		PtlHttpServerUtils.loadPitaliumFunctions(driver, config);
+
+		PtlHttpServerUtils.clickAndAwaitUnlockRequest(driver, driver.findElementById("click"));
+		assertTrue(true);
+	}
+
+	/**
+	 * サブミットして非同期アクションを実行するテスト
+	 */
+	@Test
+	public void submitAndAwaitUnlockRequest() throws Exception {
+		driver.get("http://localhost:18080/res/PtlHttpServerUtilsTest.html");
+		PtlHttpServerUtils.loadPitaliumFunctions(driver, config);
+
+		PtlHttpServerUtils.submitAndAwaitUnlockRequest(driver, driver.findElementById("submit"));
+		assertTrue(true);
+	}
+
+	/**
+	 * 文字入力をして非同期アクションを実行するテスト
+	 */
+	@Test
+	public void sendKeysAndAwaitUnlockRequest() throws Exception {
+		driver.get("http://localhost:18080/res/PtlHttpServerUtilsTest.html");
+		PtlHttpServerUtils.loadPitaliumFunctions(driver, config);
+
+		PtlHttpServerUtils.sendKeysAndAwaitUnlockRequest(driver, driver.findElementById("sendKeys"), "a");
+		assertTrue(true);
+	}
+
+	/**
+	 * スクリプト実行をして非同期アクションを実行するテスト
+	 */
+	@Test
+	public void executeScriptAndAwaitUnlockRequest() throws Exception {
+		driver.get("http://localhost:18080/res/PtlHttpServerUtilsTest.html");
+		PtlHttpServerUtils.loadPitaliumFunctions(driver, config);
+
+		PtlHttpServerUtils.executeScriptAndAwaitUnlockRequest(driver,
+				"setTimeout(function(){pitalium.sendUnlockRequest();},3000);");
+		assertTrue(true);
 	}
 
 }
