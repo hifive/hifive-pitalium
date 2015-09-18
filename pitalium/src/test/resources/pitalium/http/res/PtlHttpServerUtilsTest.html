@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PtlHttpServerUtilTest</title>
+</head>
+<body>
+<button id="click">Click</button>
+<form id="form" action="#" method="get">
+    <input id="submit"  type="submit" name="submit">
+</form>
+<input id="sendKeys" type="text" name="text">
+</body>
+<script type="text/javascript">
+    function sendRequest(e) {
+        e.preventDefault();
+
+        setTimeout(function () {
+            pitalium.sendUnlockRequest();
+        }, 3000);
+    }
+
+    document.getElementById('click').addEventListener('click', sendRequest, false);
+    document.getElementById('form').addEventListener('submit', sendRequest, false);
+    document.getElementById('sendKeys').addEventListener('keyup', sendRequest, false);
+</script>
+</html>
