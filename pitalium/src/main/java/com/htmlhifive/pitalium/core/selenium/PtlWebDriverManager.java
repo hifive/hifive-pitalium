@@ -51,7 +51,7 @@ public class PtlWebDriverManager {
 		CLASS, /**
 				 * 全テストクラス共通
 				 */
-		ALL_CLASSES;
+		ALL_CLASSES
 	}
 
 	private static class DriverKey {
@@ -65,15 +65,18 @@ public class PtlWebDriverManager {
 
 		@Override
 		public boolean equals(Object o) {
-			if (this == o)
+			if (this == o) {
 				return true;
-			if (o == null || getClass() != o.getClass())
+			}
+			if (o == null || getClass() != o.getClass()) {
 				return false;
+			}
 
 			DriverKey driverKey = (DriverKey) o;
 
-			if (!clss.equals(driverKey.clss))
+			if (!clss.equals(driverKey.clss)) {
 				return false;
+			}
 			return capabilities.equals(driverKey.capabilities);
 		}
 
@@ -136,8 +139,9 @@ public class PtlWebDriverManager {
 				@Override
 				public ReuseStatus load(Class<?> clss) throws Exception {
 					PtlWebDriverStrategy strategy = clss.getAnnotation(PtlWebDriverStrategy.class);
-					if (strategy != null) {
-						return strategy.reuse() ? ReuseStatus.CLASS : ReuseStatus.METHOD;
+					if (strategy != null && strategy.sessionLevel() != PtlWebDriverStrategy.SessionLevel.DEFAULT) {
+						return strategy.sessionLevel() == PtlWebDriverStrategy.SessionLevel.TEST_CLASS
+								? ReuseStatus.CLASS : ReuseStatus.METHOD;
 					}
 					if (reuseDriverForAllClasses) {
 						return ReuseStatus.ALL_CLASSES;

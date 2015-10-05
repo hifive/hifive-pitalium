@@ -31,10 +31,32 @@ import java.lang.annotation.Target;
 public @interface PtlWebDriverStrategy {
 
 	/**
-	 * {@link com.htmlhifive.pitalium.core.selenium.PtlWebDriver}をメソッドを超えて再利用するかを指定します。
-	 * 
-	 * @return 再利用する場合true、しない場合false
+	 * WebDriverセッションの利用範囲を指定する列挙値
 	 */
-	boolean reuse() default false;
+	enum SessionLevel {
+		/**
+		 * {@link PtlWebDriverStrategy#sessionLevel()}のデフォルト値です。
+		 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses}の設定を利用します。
+		 */
+		DEFAULT, /**
+					 * テストケース毎に個別のWebDriverセッションを利用します。テストケース開始時にWebDriverセッションが開始され、テストケース終了時に自動クローズされます。
+					 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses}
+					 * の設定をクラス単位で上書きします。
+					 */
+		TEST_CASE, /**
+					 * テストクラス内の全てのテストケースで同一のWebDriverセッションを利用します。テストクラスの開始時にWebDriverセッションが開始され、
+					 * テストクラスの全ケース終了時に自動クローズされます。
+					 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses}
+					 * の設定をクラス単位で上書きします。
+					 */
+		TEST_CLASS;
+	}
+
+	/**
+	 * WebDriverセッションの利用範囲を指定します。
+	 * 
+	 * @return WebDriverセッションの利用範囲
+	 */
+	SessionLevel sessionLevel() default SessionLevel.DEFAULT;
 
 }
