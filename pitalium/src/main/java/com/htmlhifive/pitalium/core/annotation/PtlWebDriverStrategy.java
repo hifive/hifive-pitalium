@@ -38,7 +38,7 @@ public @interface PtlWebDriverStrategy {
 		 * {@link PtlWebDriverStrategy#sessionLevel()}のデフォルト値です。
 		 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses}の設定を利用します。
 		 */
-		DEFAULT, /**
+		USE_CONFIG, /**
 					 * テストケース毎に個別のWebDriverセッションを利用します。テストケース開始時にWebDriverセッションが開始され、テストケース終了時に自動クローズされます。
 					 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses}
 					 * の設定をクラス単位で上書きします。
@@ -57,6 +57,6 @@ public @interface PtlWebDriverStrategy {
 	 * 
 	 * @return WebDriverセッションの利用範囲
 	 */
-	SessionLevel sessionLevel() default SessionLevel.DEFAULT;
+	SessionLevel sessionLevel() default SessionLevel.USE_CONFIG;
 
 }

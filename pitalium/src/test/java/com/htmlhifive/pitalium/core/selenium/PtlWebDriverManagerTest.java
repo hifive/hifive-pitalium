@@ -72,7 +72,7 @@ public class PtlWebDriverManagerTest {
 	public static final int NO_ANNOTATION_1 = 0x01;
 	public static final int NO_ANNOTATION_2 = 0x02;
 	public static final int ANNOTATED_ONLY = 0x04;
-	public static final int ANNOTATED_DEFAULT = 0x08;
+	public static final int ANNOTATED_USE_CONFIG = 0x08;
 	public static final int ANNOTATED_TEST_CASE = 0x10;
 	public static final int ANNOTATED_TEST_CLASS = 0x20;
 
@@ -98,10 +98,10 @@ public class PtlWebDriverManagerTest {
 		}
 	}
 
-	@PtlWebDriverStrategy(sessionLevel = PtlWebDriverStrategy.SessionLevel.DEFAULT)
-	public static class AnnotatedDefault extends BaseClass {
-		public AnnotatedDefault() {
-			super(ANNOTATED_DEFAULT);
+	@PtlWebDriverStrategy(sessionLevel = PtlWebDriverStrategy.SessionLevel.USE_CONFIG)
+	public static class AnnotatedUseConfig extends BaseClass {
+		public AnnotatedUseConfig() {
+			super(ANNOTATED_USE_CONFIG);
 		}
 	}
 
@@ -160,7 +160,7 @@ public class PtlWebDriverManagerTest {
 	 * </p>
 	 * 以下が同じWebDriverのインスタンスIDになる。
 	 * <ul>
-	 * <li>NO_ANNOTATED_1 - 1,2 / NO_ANNOTATED_2 - 1,2 / ANNOTATED_ONLY - 1,2 / ANNOTATED_DEFAULT - 1,2</li>
+	 * <li>NO_ANNOTATED_1 - 1,2 / NO_ANNOTATED_2 - 1,2 / ANNOTATED_ONLY - 1,2 / ANNOTATED_USE_CONFIG - 1,2</li>
 	 * <li>ANNOTATED_TEST_CLASS - 1,2</li>
 	 * <li>ANNOTATED_TEST_CASE - 1</li>
 	 * <li>ANNOTATED_TEST_CASE - 2</li>
@@ -169,12 +169,12 @@ public class PtlWebDriverManagerTest {
 	@Test
 	public void reuseDriverOnAllClasses() throws Exception {
 		PtlWebDriverManager.getInstance().resetCache(true);
-		JUnitCore.runClasses(NoAnnotation1.class, NoAnnotation2.class, AnnotatedOnly.class, AnnotatedDefault.class,
+		JUnitCore.runClasses(NoAnnotation1.class, NoAnnotation2.class, AnnotatedOnly.class, AnnotatedUseConfig.class,
 				AnnotatedTestCase.class, AnnotatedTestClass.class);
 
 		for (Map<Integer, Integer> instanceIds : driverInstanceIds.values()) {
-			// NO_ANNOTATED_1 - 1,2 / NO_ANNOTATED_2 - 1,2 / ANNOTATED_ONLY - 1,2 / ANNOTATED_DEFAULT - 1,2
-			int[] classIds = { NO_ANNOTATION_1, NO_ANNOTATION_2, ANNOTATED_ONLY, ANNOTATED_DEFAULT };
+			// NO_ANNOTATED_1 - 1,2 / NO_ANNOTATED_2 - 1,2 / ANNOTATED_ONLY - 1,2 / ANNOTATED_USE_CONFIG - 1,2
+			int[] classIds = { NO_ANNOTATION_1, NO_ANNOTATION_2, ANNOTATED_ONLY, ANNOTATED_USE_CONFIG};
 
 			int expect1 = instanceIds.get(NO_ANNOTATION_1 | TEST_1);
 			for (int classId : classIds) {
@@ -208,7 +208,7 @@ public class PtlWebDriverManagerTest {
 	@Test
 	public void notReuseDriverOnAllClasses() throws Exception {
 		PtlWebDriverManager.getInstance().resetCache(false);
-		JUnitCore.runClasses(NoAnnotation1.class, NoAnnotation2.class, AnnotatedOnly.class, AnnotatedDefault.class,
+		JUnitCore.runClasses(NoAnnotation1.class, NoAnnotation2.class, AnnotatedOnly.class, AnnotatedUseConfig.class,
 				AnnotatedTestCase.class, AnnotatedTestClass.class);
 
 		for (Map<Integer, Integer> instanceIds : driverInstanceIds.values()) {

@@ -139,7 +139,7 @@ public class PtlWebDriverManager {
 				@Override
 				public ReuseStatus load(Class<?> clss) throws Exception {
 					PtlWebDriverStrategy strategy = clss.getAnnotation(PtlWebDriverStrategy.class);
-					if (strategy != null && strategy.sessionLevel() != PtlWebDriverStrategy.SessionLevel.DEFAULT) {
+					if (strategy != null && strategy.sessionLevel() != PtlWebDriverStrategy.SessionLevel.USE_CONFIG) {
 						return strategy.sessionLevel() == PtlWebDriverStrategy.SessionLevel.TEST_CLASS
 								? ReuseStatus.CLASS : ReuseStatus.METHOD;
 					}
