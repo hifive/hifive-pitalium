@@ -76,9 +76,9 @@ public class EnvironmentConfig implements Serializable {
 	private String persister = FilePersister.class.getName();
 
 	/**
-	 * 全テストクラスの全テストケースでWebDriverを閉じずに再利用します。
+	 * WebDriverセッションの利用レベル
 	 */
-	private boolean reuseDriverForAllClasses;
+	private WebDriverSessionLevel sessionLevel = WebDriverSessionLevel.TEST_CASE;
 
 	/**
 	 * デフォルトの設定値を持つオブジェクトを生成します。
@@ -159,12 +159,12 @@ public class EnvironmentConfig implements Serializable {
 	}
 
 	/**
-	 * 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうかを取得します。
-	 *
-	 * @return 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうか
+	 * WebDriverセッションの利用レベルを取得します。
+	 * 
+	 * @return WebDriverセッションの利用レベル
 	 */
-	public boolean isReuseDriverForAllClasses() {
-		return reuseDriverForAllClasses;
+	public WebDriverSessionLevel getSessionLevel() {
+		return sessionLevel;
 	}
 
 	/**
@@ -240,12 +240,12 @@ public class EnvironmentConfig implements Serializable {
 	}
 
 	/**
-	 * 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうかを設定します。
-	 *
-	 * @param reuseDriverForAllClasses 全テストクラスの全テストケースでWebDriverを閉じずに再利用するかどうか
+	 * WebDriverセッションの利用レベルを設定します。
+	 * 
+	 * @param sessionLevel WebDriverセッションの利用レベル
 	 */
-	void setReuseDriverForAllClasses(boolean reuseDriverForAllClasses) {
-		this.reuseDriverForAllClasses = reuseDriverForAllClasses;
+	public void setSessionLevel(WebDriverSessionLevel sessionLevel) {
+		this.sessionLevel = sessionLevel;
 	}
 
 	@Override
@@ -271,7 +271,7 @@ public class EnvironmentConfig implements Serializable {
 			ev.setMaxDriverWait(config.maxDriverWait);
 			ev.setCapabilitiesFilePath(config.capabilitiesFilePath);
 			ev.setPersister(config.persister);
-			ev.setReuseDriverForAllClasses(config.reuseDriverForAllClasses);
+			ev.setSessionLevel(config.sessionLevel);
 			return ev;
 		}
 
@@ -315,8 +315,8 @@ public class EnvironmentConfig implements Serializable {
 			return this;
 		}
 
-		public Builder reuseDriverForAllClasses(boolean reuseDriverForAllClasses) {
-			config.reuseDriverForAllClasses = reuseDriverForAllClasses;
+		public Builder sessionLevel(WebDriverSessionLevel sessionLevel) {
+			config.sessionLevel = sessionLevel;
 			return this;
 		}
 

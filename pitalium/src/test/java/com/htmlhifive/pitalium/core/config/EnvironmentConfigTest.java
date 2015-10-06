@@ -84,7 +84,7 @@ public class EnvironmentConfigTest {
 		assertThat(config.getMaxDriverWait(), is(30));
 		assertThat(config.getCapabilitiesFilePath(), is("capabilities.json"));
 		assertThat(config.getPersister(), is("com.htmlhifive.pitalium.core.io.FilePersister"));
-		assertThat(config.isReuseDriverForAllClasses(), is(false));
+		assertThat(config.getSessionLevel(), is(WebDriverSessionLevel.TEST_CASE));
 	}
 
 	/**
@@ -92,9 +92,19 @@ public class EnvironmentConfigTest {
 	 */
 	@Test
 	public void builderWithAllProps() throws Exception {
-		EnvironmentConfig config = EnvironmentConfig.builder().execMode(ExecMode.TAKE_SCREENSHOT).hubHost("127.0.0.1")
-				.hubPort(1234).maxThreadCount(1).maxThreadExecuteTime(2).maxDriverWait(10)
-				.capabilitiesFilePath("cap.json").persister("persister").reuseDriverForAllClasses(true).build();
+//@formatter:off
+		EnvironmentConfig config = EnvironmentConfig.builder()
+				.execMode(ExecMode.TAKE_SCREENSHOT)
+				.hubHost("127.0.0.1")
+				.hubPort(1234)
+				.maxThreadCount(1)
+				.maxThreadExecuteTime(2)
+				.maxDriverWait(10)
+				.capabilitiesFilePath("cap.json")
+				.persister("persister")
+				.sessionLevel(WebDriverSessionLevel.GLOBAL)
+				.build();
+//@formatter:on
 
 		assertThat(config.getExecMode(), is(ExecMode.TAKE_SCREENSHOT));
 		assertThat(config.getHubHost(), is("127.0.0.1"));
@@ -104,7 +114,7 @@ public class EnvironmentConfigTest {
 		assertThat(config.getMaxDriverWait(), is(10));
 		assertThat(config.getCapabilitiesFilePath(), is("cap.json"));
 		assertThat(config.getPersister(), is("persister"));
-		assertThat(config.isReuseDriverForAllClasses(), is(true));
+		assertThat(config.getSessionLevel(), is(WebDriverSessionLevel.GLOBAL));
 	}
 
 }

@@ -33,6 +33,7 @@ import com.google.common.cache.LoadingCache;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.annotation.PtlWebDriverStrategy;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
+import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
 
 /**
  * {@link PtlWebDriver}のインスタンスを管理するクラス
@@ -40,19 +41,6 @@ import com.htmlhifive.pitalium.core.config.PtlTestConfig;
  * @author nakatani
  */
 public class PtlWebDriverManager {
-
-	enum ReuseStatus {
-		/**
-		 * テストメソッド単位
-		 */
-		METHOD, /**
-				 * テストクラス単位
-				 */
-		CLASS, /**
-				 * 全テストクラス共通
-				 */
-		ALL_CLASSES
-	}
 
 	private static class DriverKey {
 		final Class<?> clss;
@@ -95,11 +83,11 @@ public class PtlWebDriverManager {
 	public static class WebDriverContainer {
 
 		final WebDriver driver;
-		final ReuseStatus status;
+		final WebDriverSessionLevel sessionLevel;
 
-		public WebDriverContainer(WebDriver driver, ReuseStatus status) {
+		public WebDriverContainer(WebDriver driver, WebDriverSessionLevel sessionLevel) {
 			this.driver = driver;
-			this.status = status;
+			this.sessionLevel = sessionLevel;
 		}
 
 		/**
@@ -114,7 +102,7 @@ public class PtlWebDriverManager {
 		 * {@link WebDriver#quit()}をコールします。
 		 */
 		public void quit() {
-			if (status == ReuseStatus.METHOD) {
+			if (sessionLevel == WebDriverSessionLevel.TEST_CASE) {
 				driver.quit();
 			}
 		}
@@ -133,26 +121,31 @@ public class PtlWebDriverManager {
 	}
 
 	private final Map<DriverKey, WebDriver> drivers = new HashMap<DriverKey, WebDriver>();
-	private final LoadingCache<Class<?>, ReuseStatus> driverReuses = CacheBuilder.newBuilder().maximumSize(200L)
-			.build(new CacheLoader<Class<?>, ReuseStatus>() {
+	private final LoadingCache<Class<?>, WebDriverSessionLevel> driverReuses = CacheBuilder.newBuilder()
+			.maximumSize(200L).build(new CacheLoader<Class<?>, WebDriverSessionLevel>() {
 
 				@Override
-				public ReuseStatus load(Class<?> clss) throws Exception {
+				public WebDriverSessionLevel load(Class<?> clss) throws Exception {
 					PtlWebDriverStrategy strategy = clss.getAnnotation(PtlWebDriverStrategy.class);
-					if (strategy != null && strategy.sessionLevel() != PtlWebDriverStrategy.SessionLevel.USE_CONFIG) {
-						return strategy.sessionLevel() == PtlWebDriverStrategy.SessionLevel.TEST_CLASS
-								? ReuseStatus.CLASS : ReuseStatus.METHOD;
+					if (strategy != null) {
+						switch (strategy.sessionLevel()) {
+							case GLOBAL:
+								return WebDriverSessionLevel.GLOBAL;
+
+							case TEST_CASE:
+								return WebDriverSessionLevel.TEST_CASE;
+
+							case TEST_CLASS:
+								return WebDriverSessionLevel.TEST_CLASS;
+						}
 					}
-					if (reuseDriverForAllClasses) {
-						return ReuseStatus.ALL_CLASSES;
-					}
-					return ReuseStatus.METHOD;
+
+					return configSessionLevel;
 				}
 			});
 	private final Map<PtlCapabilities, WebDriver> allClassesDrivers = new HashMap<PtlCapabilities, WebDriver>();
 
-	private boolean reuseDriverForAllClasses = PtlTestConfig.getInstance().getEnvironment()
-			.isReuseDriverForAllClasses();
+	private WebDriverSessionLevel configSessionLevel = PtlTestConfig.getInstance().getEnvironment().getSessionLevel();
 
 	private PtlWebDriverManager() {
 	}
@@ -161,8 +154,8 @@ public class PtlWebDriverManager {
 	 * 内部キャッシュをリセットします。
 	 */
 	@VisibleForTesting
-	synchronized void resetCache(boolean reuseDriverForAllClasses) {
-		this.reuseDriverForAllClasses = reuseDriverForAllClasses;
+	synchronized void resetCache(WebDriverSessionLevel sessionLevel) {
+		this.configSessionLevel = sessionLevel;
 
 		drivers.clear();
 		driverReuses.invalidateAll();
@@ -189,29 +182,29 @@ public class PtlWebDriverManager {
 			throw new NullPointerException("supplier");
 		}
 
-		ReuseStatus status;
+		WebDriverSessionLevel level;
 		try {
-			status = driverReuses.get(clss);
+			level = driverReuses.get(clss);
 		} catch (ExecutionException e) {
 			throw new TestRuntimeException(e);
 		}
 
 		// ドライバーを再利用しない場合はSupplierから取得したドライバーを返す。
-		if (status == ReuseStatus.METHOD) {
-			return new WebDriverContainer(supplier.get(), ReuseStatus.METHOD);
+		if (level == WebDriverSessionLevel.TEST_CASE) {
+			return new WebDriverContainer(supplier.get(), WebDriverSessionLevel.TEST_CASE);
 		}
 
 		DriverKey key = new DriverKey(clss, capabilities);
 		WebDriver driver = drivers.get(key);
 		if (driver != null) {
-			return new WebDriverContainer(driver, status);
+			return new WebDriverContainer(driver, level);
 		}
 
 		// クラス単位
-		if (status == ReuseStatus.CLASS) {
+		if (level == WebDriverSessionLevel.TEST_CLASS) {
 			driver = supplier.get();
 			drivers.put(key, driver);
-			return new WebDriverContainer(driver, status);
+			return new WebDriverContainer(driver, level);
 		}
 
 		// 全体
@@ -222,7 +215,7 @@ public class PtlWebDriverManager {
 			allClassesDrivers.put(capabilities, driver);
 		}
 
-		return new WebDriverContainer(driver, status);
+		return new WebDriverContainer(driver, level);
 	}
 
 	/**
@@ -239,14 +232,14 @@ public class PtlWebDriverManager {
 			throw new NullPointerException("capabilities");
 		}
 
-		ReuseStatus status;
+		WebDriverSessionLevel level;
 		try {
-			status = driverReuses.get(clss);
+			level = driverReuses.get(clss);
 		} catch (ExecutionException e) {
 			throw new TestRuntimeException(e);
 		}
 
-		if (status == ReuseStatus.METHOD || status == ReuseStatus.ALL_CLASSES) {
+		if (level == WebDriverSessionLevel.TEST_CLASS || level == WebDriverSessionLevel.GLOBAL) {
 			return;
 		}
 

@@ -49,7 +49,12 @@ public @interface PtlWebDriverStrategy {
 					 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses}
 					 * の設定をクラス単位で上書きします。
 					 */
-		TEST_CLASS;
+		TEST_CLASS, /**
+					 * テスト全体を通じて共通のWebDriverセッションを利用します。WebDriverセッションは必要に応じて開始されますが自動でクローズはされません。
+					 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses}
+					 * の設定をクラス単位で上書きします。
+					 */
+		GLOBAL
 	}
 
 	/**
