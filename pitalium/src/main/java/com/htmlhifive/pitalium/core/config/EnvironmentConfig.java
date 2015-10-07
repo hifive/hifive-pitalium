@@ -78,7 +78,7 @@ public class EnvironmentConfig implements Serializable {
 	/**
 	 * WebDriverセッションの利用レベル
 	 */
-	private WebDriverSessionLevel sessionLevel = WebDriverSessionLevel.TEST_CASE;
+	private WebDriverSessionLevel webDriverSessionLevel = WebDriverSessionLevel.TEST_CASE;
 
 	/**
 	 * デフォルトの設定値を持つオブジェクトを生成します。
@@ -163,8 +163,8 @@ public class EnvironmentConfig implements Serializable {
 	 * 
 	 * @return WebDriverセッションの利用レベル
 	 */
-	public WebDriverSessionLevel getSessionLevel() {
-		return sessionLevel;
+	public WebDriverSessionLevel getWebDriverSessionLevel() {
+		return webDriverSessionLevel;
 	}
 
 	/**
@@ -242,10 +242,10 @@ public class EnvironmentConfig implements Serializable {
 	/**
 	 * WebDriverセッションの利用レベルを設定します。
 	 * 
-	 * @param sessionLevel WebDriverセッションの利用レベル
+	 * @param webDriverSessionLevel WebDriverセッションの利用レベル
 	 */
-	public void setSessionLevel(WebDriverSessionLevel sessionLevel) {
-		this.sessionLevel = sessionLevel;
+	public void setWebDriverSessionLevel(WebDriverSessionLevel webDriverSessionLevel) {
+		this.webDriverSessionLevel = webDriverSessionLevel;
 	}
 
 	@Override
@@ -271,7 +271,7 @@ public class EnvironmentConfig implements Serializable {
 			ev.setMaxDriverWait(config.maxDriverWait);
 			ev.setCapabilitiesFilePath(config.capabilitiesFilePath);
 			ev.setPersister(config.persister);
-			ev.setSessionLevel(config.sessionLevel);
+			ev.setWebDriverSessionLevel(config.webDriverSessionLevel);
 			return ev;
 		}
 
@@ -315,8 +315,8 @@ public class EnvironmentConfig implements Serializable {
 			return this;
 		}
 
-		public Builder sessionLevel(WebDriverSessionLevel sessionLevel) {
-			config.sessionLevel = sessionLevel;
+		public Builder webDriverSessionLevel(WebDriverSessionLevel webDriverSessionLevel) {
+			config.webDriverSessionLevel = webDriverSessionLevel;
 			return this;
 		}
 

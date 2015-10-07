@@ -145,7 +145,7 @@ public class PtlWebDriverManager {
 			});
 	private final Map<PtlCapabilities, WebDriver> allClassesDrivers = new HashMap<PtlCapabilities, WebDriver>();
 
-	private WebDriverSessionLevel configSessionLevel = PtlTestConfig.getInstance().getEnvironment().getSessionLevel();
+	private WebDriverSessionLevel configSessionLevel = PtlTestConfig.getInstance().getEnvironment().getWebDriverSessionLevel();
 
 	private PtlWebDriverManager() {
 	}

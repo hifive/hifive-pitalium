@@ -161,7 +161,7 @@ public class PtlWebDriverManagerTest {
 
 	@AfterClass
 	public static void resetDriverManager() throws Exception {
-		PtlWebDriverManager.getInstance().resetCache(PtlTestConfig.getInstance().getEnvironment().getSessionLevel());
+		PtlWebDriverManager.getInstance().resetCache(PtlTestConfig.getInstance().getEnvironment().getWebDriverSessionLevel());
 	}
 
 	/**
