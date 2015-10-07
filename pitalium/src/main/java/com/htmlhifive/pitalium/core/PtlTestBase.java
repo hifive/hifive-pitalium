@@ -17,6 +17,9 @@ package com.htmlhifive.pitalium.core;
 
 import java.util.List;
 
+import com.htmlhifive.pitalium.core.rules.PtlWebDriverCloser;
+import com.htmlhifive.pitalium.junit.ParameterizedClassRule;
+import com.htmlhifive.pitalium.junit.PtlBlockJUnit4ClassRunnerWithParametersFactory;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -33,6 +36,7 @@ import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
  * 本テストツールの機能を利用する場合は、このクラスを拡張してテストクラスを実装してください。
  */
 @RunWith(ParameterizedThreads.class)
+@Parameterized.UseParametersRunnerFactory(PtlBlockJUnit4ClassRunnerWithParametersFactory.class)
 public abstract class PtlTestBase {
 
 	//CHECKSTYLE:OFF
@@ -41,6 +45,12 @@ public abstract class PtlTestBase {
 	 */
 	@ClassRule
 	public static ResultCollector collector = new ResultCollector();
+
+	/**
+	 * &#064;ParameterizedClassRule テストクラスに共通の処理を実行するクラス。WebDriver管理を行う。
+	 */
+	@ParameterizedClassRule
+	public static PtlWebDriverCloser driverCloser = new PtlWebDriverCloser();
 
 	/**
 	 * &#064;Rule メソッドに共通の処理を実行するクラス。driverのセットアップやassertを行う。
