@@ -22,7 +22,7 @@ import org.junit.runners.parameterized.ParametersRunnerFactory;
 import org.junit.runners.parameterized.TestWithParameters;
 
 /**
- * {@link PtlBlockJUnit4ClassRunnerWithParameters}‚ğ¶¬‚·‚é{@link ParametersRunnerFactory}
+ * {@link PtlBlockJUnit4ClassRunnerWithParameters}ã‚’ç”Ÿæˆã™ã‚‹{@link ParametersRunnerFactory}
  *
  * @author nakatani
  */
