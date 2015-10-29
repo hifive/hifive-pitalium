@@ -37,7 +37,9 @@ public class MultipleClassCheckResultTest {
 	@Test
 	public void checkFolders() {
 		String currentId = TestResultManager.getInstance().getCurrentId();
-		assertTrue(new File("results" + File.separator + currentId + File.separator + "FirstOfMultipleTest").exists());
-		assertTrue(new File("results" + File.separator + currentId + File.separator + "SecondOfMultipleTest").exists());
+		assertTrue(new File("test-result/results" + File.separator + currentId + File.separator + "FirstOfMultipleTest")
+				.exists());
+		assertTrue(new File("test-result/results" + File.separator + currentId + File.separator
+				+ "SecondOfMultipleTest").exists());
 	}
 }

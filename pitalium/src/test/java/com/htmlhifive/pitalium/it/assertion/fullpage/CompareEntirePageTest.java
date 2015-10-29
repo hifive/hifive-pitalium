@@ -21,13 +21,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
 
 import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.DomSelector;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
@@ -158,7 +158,8 @@ public class CompareEntirePageTest extends PtlTestBase {
 			return;
 		}
 
-		File file = new File("results" + File.separator + CompareEntirePageTest.class.getSimpleName() + ".json");
+		File file = new File(PtlTestConfig.getInstance().getPersisterConfig().getFile().getResultDirectory()
+				+ File.separator + CompareEntirePageTest.class.getSimpleName() + ".json");
 
 		FileWriter fw = new FileWriter(file);
 		BufferedWriter bw = new BufferedWriter(fw);

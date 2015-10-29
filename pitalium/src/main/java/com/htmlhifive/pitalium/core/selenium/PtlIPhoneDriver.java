@@ -66,7 +66,7 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 	}
 
 	@Override
-	protected int getHeaderHeight(long pageHeight, long scrollTop) {
+	protected int getHeaderHeight(long scrollTop) {
 
 		int currentHeaderHeight = headerHeight;
 		if (scrollTop > 0) {
@@ -77,9 +77,9 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 	}
 
 	@Override
-	protected int getFooterHeight(long pageHeight, long scrollTop, long windowHeight) {
+	protected int getFooterHeight(long scrollTop, double captureTop) {
 		int currentFooterHeight = footerHeight;
-		if (scrollTop + windowHeight < pageHeight) {
+		if (scrollTop < Math.round(captureTop)) {
 			// 最下部以外はフッタを影ごと切り取る
 			currentFooterHeight += 2;
 		}

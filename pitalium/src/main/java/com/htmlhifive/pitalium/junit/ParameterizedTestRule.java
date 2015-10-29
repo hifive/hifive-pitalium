@@ -13,10 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.htmlhifive.pitalium.core.selenium;
+
+package com.htmlhifive.pitalium.junit;
+
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 /**
- * Internet Explorer 8で利用する{@link org.openqa.selenium.WebElement}
+ * {@link org.junit.runners.Parameterized.Parameters}で設定した値を受け取ることができる{@link org.junit.rules.TestRule}
+ *
+ * @see org.junit.Rule
+ * @see org.junit.rules.TestRule
+ * @author nakatani
  */
-class PtlInternetExplorer8WebElement extends PtlInternetExplorerWebElement {
+public interface ParameterizedTestRule {
+
+	Statement apply(Statement base, Description description, Object[] params);
+
 }

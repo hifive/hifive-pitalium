@@ -32,6 +32,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.htmlhifive.pitalium.core.PtlTestBase;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.result.TestResultManager;
 import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.it.util.ItUtils;
@@ -56,11 +57,13 @@ public class AssertViewOfEntirePageCheckResultTest extends PtlTestBase {
 	@BeforeClass
 	public static void beforeClass() throws JsonProcessingException, IOException {
 		currentId = TestResultManager.getInstance().getCurrentId();
-		resultFolderPath = "results" + File.separator + currentId + File.separator + TEST_CLASS_NAME;
+		resultFolderPath = PtlTestConfig.getInstance().getPersisterConfig().getFile().getResultDirectory()
+				+ File.separator + currentId + File.separator + TEST_CLASS_NAME;
 		results = mapper.readTree(new File(resultFolderPath + File.separator + "result.json"));
 
-		currentExpectedIds = mapper.readTree(new File("results" + File.separator + "currentExpectedIds.json")).get(
-				TEST_CLASS_NAME);
+		currentExpectedIds = mapper.readTree(
+				new File(PtlTestConfig.getInstance().getPersisterConfig().getFile().getResultDirectory()
+						+ File.separator + "currentExpectedIds.json")).get(TEST_CLASS_NAME);
 	}
 
 	/** jsonから座標情報の取得 */
@@ -81,6 +84,9 @@ public class AssertViewOfEntirePageCheckResultTest extends PtlTestBase {
 		// TODO: モバイルはscaleのためにマージンが変わるが、テスト側で検知できないので目視確認
 		if (!"iOS".equals(capabilities.getPlatformName()) && !"Android".equals(capabilities.getPlatformName())) {
 			int margin = withMargin ? 100 : 0;
+			if (capabilities.getBrowserName().equals("internet explorer") && capabilities.getVersion().equals("7")) {
+				margin += 2;
+			}
 			assertThat(rectangleNode.get("x").asInt(), is(margin));
 			assertThat(rectangleNode.get("y").asInt(), is(margin));
 			assertThat(rectangleNode.get("width").asInt(), not(0));
@@ -95,7 +101,7 @@ public class AssertViewOfEntirePageCheckResultTest extends PtlTestBase {
 
 	/**
 	 * スクリーンショットの結果のassert
-	 *
+	 * 
 	 * @param selectorType
 	 */
 	private void assertScreenshotResult(JsonNode screenshotResult, String selectorType, boolean withMargin)
@@ -120,8 +126,7 @@ public class AssertViewOfEntirePageCheckResultTest extends PtlTestBase {
 	 * 前提条件：なし<br>
 	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
 	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyNoTarget_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される
 	 */
 	@Test
 	public void specifyNoTarget() throws JsonProcessingException, IOException {
@@ -133,8 +138,7 @@ public class AssertViewOfEntirePageCheckResultTest extends PtlTestBase {
 	 * 前提条件：なし<br>
 	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
 	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetTagBody_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される
 	 */
 	@Test
 	public void specifyTargetTagBody() throws JsonProcessingException, IOException {
@@ -146,8 +150,7 @@ public class AssertViewOfEntirePageCheckResultTest extends PtlTestBase {
 	 * 前提条件：なし<br>
 	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
 	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetBodyClass_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される
 	 */
 	@Test
 	public void specifyTargetClassBody() throws JsonProcessingException, IOException {
@@ -159,8 +162,7 @@ public class AssertViewOfEntirePageCheckResultTest extends PtlTestBase {
 	 * 前提条件：なし<br>
 	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
 	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetBodyWithMargin_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される
 	 */
 	@Test
 	public void specifyTargetBodyWithMargin() throws JsonProcessingException, IOException {
@@ -172,8 +174,7 @@ public class AssertViewOfEntirePageCheckResultTest extends PtlTestBase {
 	 * 前提条件：なし<br>
 	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
 	 * 期待結果：実行したタイムスタンプのフォルダ内にspecifyTargetBodyWithoutScroll_topPage_WINDOWS_(browser name).pngが生成される<br>
-	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される<br>
-	 * 　　　　　　　RUN_TESTモードの場合、assertViewの比較で一致し、compareResultがtrueとなる
+	 * 　　　　　　　仕様通りのresult.jsonと座標用のjsonファイルが生成される
 	 */
 	@Test
 	public void specifyTargetBodyWithoutScroll() throws JsonProcessingException, IOException {
