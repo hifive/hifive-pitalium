@@ -260,17 +260,6 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	}
 
 	/**
-	 * viewport内の表示領域とスクリーンショットのサイズ比を計算します。
-	 * 
-	 * @param windowWidth ウィンドウ（viewport内の表示領域）の幅
-	 * @param imageWidth スクリーンショットの幅
-	 * @return サイズ比。PCの場合は1
-	 */
-	protected double calcScale(double windowWidth, double imageWidth) {
-		return DEFAULT_SCREENSHOT_SCALE;
-	}
-
-	/**
 	 * スクリーンショットに含まれるウィンドウのヘッダーの高さを取得します。
 	 * 
 	 * @param pageHeight ページの高さ
