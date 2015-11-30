@@ -15,7 +15,17 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.openqa.selenium.WebElement;
+
+import com.htmlhifive.pitalium.core.model.CompareTarget;
+import com.htmlhifive.pitalium.core.model.ScreenshotParams;
+import com.htmlhifive.pitalium.core.model.TargetResult;
+import com.htmlhifive.pitalium.image.model.ScreenshotImage;
 
 /**
  * Firefoxで利用する{@link org.openqa.selenium.WebDriver}
@@ -24,7 +34,7 @@ class PtlFirefoxDriver extends PtlWebDriver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -35,5 +45,49 @@ class PtlFirefoxDriver extends PtlWebDriver {
 	@Override
 	protected PtlWebElement newPtlWebElement() {
 		return new PtlFirefoxWebElement();
+	}
+
+	@Override
+	protected void trimNonMovePadding(List<List<TargetResult>> allTargetScreenshots,
+			List<Pair<CompareTarget, ScreenshotParams>> targetParams) {
+		// firefoxのtextareaは上下paddingが常に表示されるため、不要なpaddingを切り取る
+		for (int i = 0; i < allTargetScreenshots.size(); i++) {
+			PtlWebElement targetElement = (PtlWebElement) (targetParams.get(i).getLeft().getCompareArea().getSelector()
+					.getType().findElement(this, targetParams.get(i).getLeft().getCompareArea().getSelector()
+					.getValue()));
+			if (targetElement.getTagName().equals("textarea")) {
+				List<TargetResult> targetScreenshots = allTargetScreenshots.get(i);
+				for (int j = 0; j < targetScreenshots.size(); j++) {
+					TargetResult oldResult = targetScreenshots.get(j);
+					targetScreenshots.set(
+							j,
+							new TargetResult(null, oldResult.getTarget(), oldResult.getExcludes(), oldResult
+									.isMoveTarget(), oldResult.getHiddenElementSelectors(), new ScreenshotImage(
+									trimTargetPadding(targetElement, oldResult.getImage().get(), j,
+											targetScreenshots.size())), oldResult.getOptions()));
+				}
+			}
+		}
+	}
+
+	@Override
+	protected void trimMovePadding(WebElement el, List<BufferedImage> images) {
+		// firefoxのtextareaは上下paddingが常に表示されるため、不要なpaddingを切り取る
+		if (el.getTagName().equals("textarea")) {
+			for (int i = 0; i < images.size(); i++) {
+				images.set(i, trimTargetPadding(el, images.get(i), i, images.size()));
+			}
+		}
+	}
+
+	@Override
+	protected int calcTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement) {
+		int trimTop = super.calcTrimTop(imageHeight, scrollAmount, targetElement);
+		// firefoxのtextareaは上下paddingが常に表示されるため、上padding分trim量を減らす
+		if (targetElement.getTagName().equals("textarea")) {
+			WebElementPadding padding = targetElement.getPadding();
+			trimTop -= padding.getTop();
+		}
+		return trimTop;
 	}
 }
