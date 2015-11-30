@@ -58,6 +58,10 @@
 		</script>
 	</target>
 
+	<target name="resolve-test" depends="resolve" description="--> retrieve test dependencies with ivy">
+		<ivy:retrieve pattern="${lib.dir}/[artifact]-[revision].[ext]" type="bundle,jar" conf="test" />
+	</target>
+
 	<target name="resolve-sub" description="--> call ivy">
 		<ivy:retrieve pattern="${lib.dir}/sources/[artifact]-[revision]-sources.[ext]" type="source" conf="${conf.name}" />
 	</target>
