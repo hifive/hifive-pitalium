@@ -18,12 +18,16 @@ package com.htmlhifive.pitalium.core.selenium;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
+import org.openqa.selenium.WebElement;
+
 import com.htmlhifive.pitalium.image.util.ImageUtils;
 
 /**
  * Internet Explorer 8で利用する{@link org.openqa.selenium.WebDriver}
  */
 class PtlInternetExplorer8Driver extends PtlInternetExplorerDriver {
+
+	private static final String GET_FRAMEBORDER_INT_SCRIPT = "return parseInt(arguments[0].frameBorder)";
 
 	/**
 	 * コンストラクタ
@@ -47,4 +51,22 @@ class PtlInternetExplorer8Driver extends PtlInternetExplorerDriver {
 		return ImageUtils.trim(screenshot, 2, 2, 2, 2);
 	}
 
+	@Override
+	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image) {
+		BufferedImage trimedImage = super.trimTargetBorder(el, image);
+
+		// IE7・8はiframeに2pxのボーダーが写りこむため削る
+		if (el.getTagName().equals("iframe")) {
+			int frameBorder = Integer.parseInt(executeScript(GET_FRAMEBORDER_INT_SCRIPT, el).toString());
+			if (frameBorder > 0) {
+				int top = 2;
+				int left = 2;
+				int bottom = 2;
+				int right = 2;
+
+				return ImageUtils.trim(trimedImage, top, left, bottom, right);
+			}
+		}
+		return trimedImage;
+	}
 }
