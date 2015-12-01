@@ -101,4 +101,37 @@ public class TestAppConfig {
 		return JSONUtils.toString(this);
 	}
 
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+
+		final TestAppConfig config = new TestAppConfig();
+
+		public TestAppConfig build() {
+			TestAppConfig config = new TestAppConfig();
+			config.setBaseUrl(this.config.baseUrl);
+			config.setWindowWidth(this.config.windowWidth);
+			config.setWindowHeight(this.config.windowHeight);
+			return config;
+		}
+
+		public Builder baseUrl(String baseUrl) {
+			config.baseUrl = baseUrl;
+			return this;
+		}
+
+		public Builder windowWidth(int windowWidth) {
+			config.windowWidth = windowWidth;
+			return this;
+		}
+
+		public Builder windowHeight(int windowHeight) {
+			config.windowHeight = windowHeight;
+			return this;
+		}
+
+	}
+
 }

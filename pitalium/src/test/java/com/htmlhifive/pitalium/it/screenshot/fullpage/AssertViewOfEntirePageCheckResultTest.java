@@ -84,6 +84,9 @@ public class AssertViewOfEntirePageCheckResultTest extends PtlTestBase {
 		// TODO: モバイルはscaleのためにマージンが変わるが、テスト側で検知できないので目視確認
 		if (!"iOS".equals(capabilities.getPlatformName()) && !"Android".equals(capabilities.getPlatformName())) {
 			int margin = withMargin ? 100 : 0;
+			if (capabilities.getBrowserName().equals("internet explorer") && capabilities.getVersion().equals("7")) {
+				margin += 2;
+			}
 			assertThat(rectangleNode.get("x").asInt(), is(margin));
 			assertThat(rectangleNode.get("y").asInt(), is(margin));
 			assertThat(rectangleNode.get("width").asInt(), not(0));
