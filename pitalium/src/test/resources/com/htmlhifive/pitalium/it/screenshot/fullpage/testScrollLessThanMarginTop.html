@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<script type="text/javascript">
+		var margin = 300;
+		var documentHeight = 1000;
+
+		document.body.style.width = "500px";
+		document.body.style.padding = 0;
+		document.body.style.margin = 0;
+		document.body.style.marginTop = margin + "px";
+		document.body.style.height = (documentHeight - margin) + "px";
+		document.body.style.backgroundColor = "red";
+
+		var count = 0;
+		var elementHeight = 20;
+		var red = 0;
+		var green = 0;
+		var blue = 0;
+
+		var limit = (documentHeight - margin) / elementHeight;
+		while (count < limit) {
+			switch (count % 3) {
+			case 0:
+				red += 10;
+				break;
+
+			case 1:
+				green += 10;
+				break;
+
+			case 2:
+				blue += 10;
+				break;
+			}
+
+			var el = document.createElement("div");
+			el.style.width = "100%";
+			el.style.height = elementHeight + "px";
+			el.style.backgroundColor = "rgb(" + red + "," + green + "," + blue
+					+ ")";
+			document.body.appendChild(el);
+
+			count++;
+		}
+	</script>
+</body>
+</html>

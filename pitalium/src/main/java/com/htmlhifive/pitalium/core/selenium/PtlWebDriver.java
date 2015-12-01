@@ -44,6 +44,7 @@ import com.htmlhifive.pitalium.core.model.IndexDomSelector;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.ScreenAreaResult;
 import com.htmlhifive.pitalium.core.model.ScreenAreaWrapper;
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.core.model.ScreenshotParams;
 import com.htmlhifive.pitalium.core.model.ScreenshotResult;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -249,6 +250,16 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	}
 
 	/**
+	 * スクリーンショットの撮影条件を指定してスクリーンショットを撮影します。
+	 * 
+	 * @param arg スクリーンショット撮影条件
+	 * @return スクリーンショット撮影結果
+	 */
+	public ScreenshotResult takeScreenshot(ScreenshotArgument arg) {
+		return takeScreenshot(arg.getScreenshotId(), arg.getTargets(), arg.getHiddenElementSelectors());
+	}
+
+	/**
 	 * 撮影時に非表示にする要素を指定し、指定範囲のスクリーンショットを撮影します。
 	 * 
 	 * @param screenshotId スクリーンショットID
@@ -298,12 +309,13 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			additionalParams[i] = nonMoveTargetParams.get(i).getRight();
 		}
 
+		// Take entire screenshot
 		ScreenshotParams entireScreenshotParams = new ScreenshotParams(ScreenAreaWrapper.fromArea(
 				ScreenArea.of(SelectorType.TAG_NAME, "body"), this, null).get(0), new ArrayList<ScreenAreaWrapper>(),
 				hiddenElements, false, 0);
 		ScreenshotImage entireScreenshotImage = getTargetResult(new CompareTarget(), hiddenElementSelectors,
 				entireScreenshotParams, additionalParams).getImage();
-
+		// Clip non-move targets from entire screenshot image
 		List<TargetResult> screenshotResults = new ArrayList<TargetResult>();
 		for (Pair<CompareTarget, ScreenshotParams> pair : nonMoveTargetParams) {
 			screenshotResults.add(getTargetResult(pair.getLeft(), hiddenElementSelectors, pair.getRight(),
@@ -547,7 +559,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 */
 	protected BufferedImage getScreenshotInternalWithoutMoving(ScreenshotParams params,
 			ScreenshotParams... additionalParams) {
-		BufferedImage image = getEntirePageScreenshot();
+		BufferedImage image = getMinimumScreenshot(params);
 		updateScreenWrapperStatus(0d, 0d, params, additionalParams);
 		return image;
 	}
@@ -577,7 +589,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		executeScript(SCRIPT_MOVE_BODY, "absolute", String.format("%spx", -moveAmount.getY()),
 				String.format("%spx", -moveAmount.getX()));
 
-		BufferedImage image = getEntirePageScreenshot();
+		BufferedImage image = getMinimumScreenshot(params);
 
 		updateScreenWrapperStatus(moveAmount.getX(), moveAmount.getY(), params, additionalParams);
 
@@ -658,6 +670,16 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 */
 	public BufferedImage getEntirePageScreenshot() {
 		return getScreenshotAsBufferedImage();
+	}
+
+	/**
+	 * パラメータで指定された要素を含む最小範囲でスクリーンショットを撮影し、{@link BufferedImage}として返します。<br>
+	 * 
+	 * @param params スクリーンショット撮影用パラメータ
+	 * @return 撮影したスクリーンショット
+	 */
+	protected BufferedImage getMinimumScreenshot(ScreenshotParams params) {
+		return getEntirePageScreenshot();
 	}
 
 	/**

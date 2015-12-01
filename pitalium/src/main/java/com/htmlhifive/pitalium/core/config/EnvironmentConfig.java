@@ -76,6 +76,11 @@ public class EnvironmentConfig implements Serializable {
 	private String persister = FilePersister.class.getName();
 
 	/**
+	 * WebDriverセッションの利用レベル
+	 */
+	private WebDriverSessionLevel webDriverSessionLevel = WebDriverSessionLevel.TEST_CASE;
+
+	/**
 	 * デフォルトの設定値を持つオブジェクトを生成します。
 	 */
 	public EnvironmentConfig() {
@@ -154,6 +159,15 @@ public class EnvironmentConfig implements Serializable {
 	}
 
 	/**
+	 * WebDriverセッションの利用レベルを取得します。
+	 * 
+	 * @return WebDriverセッションの利用レベル
+	 */
+	public WebDriverSessionLevel getWebDriverSessionLevel() {
+		return webDriverSessionLevel;
+	}
+
+	/**
 	 * テスト実行モードを設定します。
 	 * 
 	 * @param execMode テスト実行モード
@@ -225,9 +239,87 @@ public class EnvironmentConfig implements Serializable {
 		this.persister = persister;
 	}
 
+	/**
+	 * WebDriverセッションの利用レベルを設定します。
+	 * 
+	 * @param webDriverSessionLevel WebDriverセッションの利用レベル
+	 */
+	public void setWebDriverSessionLevel(WebDriverSessionLevel webDriverSessionLevel) {
+		this.webDriverSessionLevel = webDriverSessionLevel;
+	}
+
 	@Override
 	public String toString() {
 		return JSONUtils.toString(this);
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+
+		private final EnvironmentConfig config = new EnvironmentConfig();
+
+		public EnvironmentConfig build() {
+			final EnvironmentConfig ev = new EnvironmentConfig();
+			ev.setExecMode(config.execMode);
+			ev.setHubHost(config.hubHost);
+			ev.setHubPort(config.hubPort);
+			ev.setMaxThreadCount(config.maxThreadCount);
+			ev.setMaxThreadExecuteTime(config.maxThreadExecuteTime);
+			ev.setMaxDriverWait(config.maxDriverWait);
+			ev.setCapabilitiesFilePath(config.capabilitiesFilePath);
+			ev.setPersister(config.persister);
+			ev.setWebDriverSessionLevel(config.webDriverSessionLevel);
+			return ev;
+		}
+
+		public Builder execMode(ExecMode execMode) {
+			config.execMode = execMode;
+			return this;
+		}
+
+		public Builder hubHost(String hubHost) {
+			config.hubHost = hubHost;
+			return this;
+		}
+
+		public Builder hubPort(int hubPort) {
+			config.hubPort = hubPort;
+			return this;
+		}
+
+		public Builder maxThreadCount(int maxThreadCount) {
+			config.maxThreadCount = maxThreadCount;
+			return this;
+		}
+
+		public Builder maxThreadExecuteTime(int maxThreadExecuteTime) {
+			config.maxThreadExecuteTime = maxThreadExecuteTime;
+			return this;
+		}
+
+		public Builder maxDriverWait(int maxDriverWait) {
+			config.maxDriverWait = maxDriverWait;
+			return this;
+		}
+
+		public Builder capabilitiesFilePath(String capabilitiesFilePath) {
+			config.capabilitiesFilePath = capabilitiesFilePath;
+			return this;
+		}
+
+		public Builder persister(String persister) {
+			config.persister = persister;
+			return this;
+		}
+
+		public Builder webDriverSessionLevel(WebDriverSessionLevel webDriverSessionLevel) {
+			config.webDriverSessionLevel = webDriverSessionLevel;
+			return this;
+		}
+
 	}
 
 }

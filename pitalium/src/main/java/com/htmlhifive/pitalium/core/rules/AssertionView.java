@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,11 +36,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.PtlTestBase;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.io.PersistMetadata;
 import com.htmlhifive.pitalium.core.io.Persister;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
@@ -49,6 +51,7 @@ import com.htmlhifive.pitalium.core.model.ExecResult;
 import com.htmlhifive.pitalium.core.model.IndexDomSelector;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.ScreenAreaResult;
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.core.model.ScreenshotResult;
 import com.htmlhifive.pitalium.core.model.SelectorType;
 import com.htmlhifive.pitalium.core.model.TargetResult;
@@ -56,6 +59,7 @@ import com.htmlhifive.pitalium.core.result.TestResultManager;
 import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriverFactory;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriverManager;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.image.model.ScreenshotImage;
@@ -89,7 +93,8 @@ public class AssertionView extends TestWatcher {
 	private String currentId;
 
 	private PtlCapabilities capabilities;
-	private PtlWebDriver driver;
+	protected PtlWebDriverManager.WebDriverContainer webDriverContainer;
+	protected PtlWebDriver driver;
 
 	private final List<ScreenshotResult> results = new ArrayList<ScreenshotResult>();
 
@@ -124,13 +129,9 @@ public class AssertionView extends TestWatcher {
 	protected void finished(Description desc) {
 		LOG.trace("{} finished", desc.getDisplayName());
 
-		if (driver != null) {
-			try {
-				driver.quit();
-				driver = null;
-			} catch (Exception e) {
-				LOG.warn("Unexpected error when close WebDriver.", e);
-			}
+		if (webDriverContainer != null) {
+			webDriverContainer.quit();
+			driver = null;
 		}
 
 		if (results.isEmpty()) {
@@ -162,7 +163,15 @@ public class AssertionView extends TestWatcher {
 		}
 
 		capabilities = cap;
-		driver = PtlWebDriverFactory.getInstance(cap).getDriver();
+		webDriverContainer = PtlWebDriverManager.getInstance().getWebDriver(description.getTestClass(), cap,
+				new Supplier<WebDriver>() {
+					@Override
+					public PtlWebDriver get() {
+						return PtlWebDriverFactory.getInstance(capabilities).getDriver();
+					}
+				});
+
+		driver = webDriverContainer.get();
 		return driver;
 	}
 
@@ -253,6 +262,29 @@ public class AssertionView extends TestWatcher {
 	public void assertView(String screenshotId, List<CompareTarget> compareTargets,
 			List<DomSelector> hiddenElementsSelectors) {
 		assertView(null, screenshotId, compareTargets, hiddenElementsSelectors);
+	}
+
+	/**
+	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
+	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
+	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
+	 * 
+	 * @param arg スクリーンショットを撮影するための条件
+	 */
+	public void assertView(ScreenshotArgument arg) {
+		assertView(null, arg);
+	}
+
+	/**
+	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
+	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
+	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
+	 * 
+	 * @param message {@link AssertionError}を識別する文字列
+	 * @param arg スクリーンショットを撮影するための条件
+	 */
+	public void assertView(String message, ScreenshotArgument arg) {
+		assertView(message, arg.getScreenshotId(), arg.getTargets(), arg.getHiddenElementSelectors());
 	}
 
 	/**

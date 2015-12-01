@@ -160,7 +160,6 @@
     <property name="severity" value="ignore"/>
     <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
   </module>
-  <module name="StrictDuplicateCode"/>
   <module name="SuppressionCommentFilter"/>
   <module name="SuppressWithNearbyCommentFilter"/>
 </module>
