@@ -15,8 +15,23 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+
 /**
  * Internet Explorer 8で利用する{@link org.openqa.selenium.WebElement}
  */
 class PtlInternetExplorer8WebElement extends PtlInternetExplorerWebElement {
+
+	@Override
+	public WebElementBorderWidth getBorderWidth() {
+		if (getTagName().equals("iframe")) {
+			// IE7・8はiframeのボーダーが2px
+			double top = 2;
+			double left = 2;
+			double bottom = 2;
+			double right = 2;
+
+			return new WebElementBorderWidth(top, right, bottom, left);
+		}
+		return super.getBorderWidth();
+	}
 }

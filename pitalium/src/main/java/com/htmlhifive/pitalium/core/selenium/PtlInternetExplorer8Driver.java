@@ -18,8 +18,6 @@ package com.htmlhifive.pitalium.core.selenium;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
-import org.openqa.selenium.WebElement;
-
 import com.htmlhifive.pitalium.image.util.ImageUtils;
 
 /**
@@ -27,11 +25,9 @@ import com.htmlhifive.pitalium.image.util.ImageUtils;
  */
 class PtlInternetExplorer8Driver extends PtlInternetExplorerDriver {
 
-	private static final String GET_FRAMEBORDER_INT_SCRIPT = "return parseInt(arguments[0].frameBorder)";
-
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -49,24 +45,5 @@ class PtlInternetExplorer8Driver extends PtlInternetExplorerDriver {
 		// IE7,8は上下左右2pxを削る
 		BufferedImage screenshot = super.getEntirePageScreenshot();
 		return ImageUtils.trim(screenshot, 2, 2, 2, 2);
-	}
-
-	@Override
-	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image) {
-		BufferedImage trimedImage = super.trimTargetBorder(el, image);
-
-		// IE7・8はiframeに2pxのボーダーが写りこむため削る
-		if (el.getTagName().equals("iframe")) {
-			int frameBorder = Integer.parseInt(executeScript(GET_FRAMEBORDER_INT_SCRIPT, el).toString());
-			if (frameBorder > 0) {
-				int top = 2;
-				int left = 2;
-				int bottom = 2;
-				int right = 2;
-
-				return ImageUtils.trim(trimedImage, top, left, bottom, right);
-			}
-		}
-		return trimedImage;
 	}
 }

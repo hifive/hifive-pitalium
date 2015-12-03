@@ -30,4 +30,18 @@ class PtlInternetExplorer7WebElement extends PtlInternetExplorerWebElement {
 
 		return new WebElementRect(rect.getLeft() - 2d, rect.getTop() - 2d, rect.getWidth(), rect.getHeight());
 	}
+
+	@Override
+	public WebElementBorderWidth getBorderWidth() {
+		if (getTagName().equals("iframe")) {
+			// IE7・8はiframeのボーダーが2px
+			double top = 2;
+			double left = 2;
+			double bottom = 2;
+			double right = 2;
+
+			return new WebElementBorderWidth(top, right, bottom, left);
+		}
+		return super.getBorderWidth();
+	}
 }
