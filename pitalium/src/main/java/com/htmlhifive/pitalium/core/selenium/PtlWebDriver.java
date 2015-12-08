@@ -356,7 +356,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		for (Pair<CompareTarget, ScreenshotParams> pair : targetParams) {
 			WebElement el = pair.getLeft().getCompareArea().getSelector().getType()
 					.findElement(this, pair.getLeft().getCompareArea().getSelector().getValue());
-			if (!capabilities.getPlatformName().equals("ANDROID")) {
+			if (capabilities.getPlatformName() == null || !capabilities.getPlatformName().equals("ANDROID")) {
 				((PtlWebElement) el).hideScrollBar();
 			}
 			// textareaの場合はリサイズ不可にする
@@ -514,7 +514,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 		// TODO: 元の状態を覚えておいて復元する
 		// スクロールバーをhiddenにする
-		if (!capabilities.getPlatformName().equals("ANDROID")) {
+		if (capabilities.getPlatformName() == null || !capabilities.getPlatformName().equals("ANDROID")) {
 			((PtlWebElement) el).hideScrollBar();
 		}
 		// textareaの場合はリサイズ不可にする
