@@ -351,11 +351,16 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		int nonMoveTargetSize = targetParams.size();
 		double currentScale = Double.NaN;
 
-		// TODO: 元の状態を覚えておいて復元する
+		String overflowStatus[][] = new String[targetParams.size()][2];
 		// スクロールバーをhiddenにする
-		for (Pair<CompareTarget, ScreenshotParams> pair : targetParams) {
+		for (int i = 0; i < targetParams.size(); i++) {
+			Pair<CompareTarget, ScreenshotParams> pair = targetParams.get(i);
 			WebElement el = pair.getLeft().getCompareArea().getSelector().getType()
 					.findElement(this, pair.getLeft().getCompareArea().getSelector().getValue());
+
+			// スクロールバーの元の状態を覚えておく
+			overflowStatus[i] = ((PtlWebElement) el).getOverflowStatus();
+
 			if (capabilities.getPlatformName() == null || !capabilities.getPlatformName().equals("ANDROID")) {
 				((PtlWebElement) el).hideScrollBar();
 			}
@@ -495,6 +500,14 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			nonMoveTargetResults.add(tResult);
 		}
 
+		// スクロールバーを元に戻す
+		for (int i = 0; i < targetParams.size(); i++) {
+			Pair<CompareTarget, ScreenshotParams> pair = targetParams.get(i);
+			WebElement el = pair.getLeft().getCompareArea().getSelector().getType()
+					.findElement(this, pair.getLeft().getCompareArea().getSelector().getValue());
+			((PtlWebElement) el).setOverflowStatus(overflowStatus[i][0], overflowStatus[i][1]);
+		}
+
 		return nonMoveTargetResults;
 	}
 
@@ -512,7 +525,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				.findElement(this, target.getCompareArea().getSelector().getValue());
 		WebElementPadding targetPadding = ((PtlWebElement) el).getPadding();
 
-		// TODO: 元の状態を覚えておいて復元する
+		// スクロールバーの元の状態を覚えておく
+		String overflowStatus[] = ((PtlWebElement) el).getOverflowStatus();
+
 		// スクロールバーをhiddenにする
 		if (capabilities.getPlatformName() == null || !capabilities.getPlatformName().equals("ANDROID")) {
 			((PtlWebElement) el).hideScrollBar();
@@ -638,6 +653,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 						return createScreenAreaResult(input, null);
 					}
 				});
+
+		// スクロールバーを元の状態に戻す
+		((PtlWebElement) el).setOverflowStatus(overflowStatus[0], overflowStatus[1]);
 
 		return new TargetResult(null, targetAreaResult, excludes, params.isMoveTarget(), hiddenElementSelectors,
 				new ScreenshotImage(screenshot), target.getOptions());

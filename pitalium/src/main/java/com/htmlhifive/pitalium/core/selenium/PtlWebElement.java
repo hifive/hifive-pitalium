@@ -96,12 +96,27 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	private static final String[] SCRIPTS_SCROLL_LEFT = {
 				"arguments[0].contentWindow.document.documentElement.scrollLeft",
 				"arguments[0].contentWindow.document.body.scrollLeft" };
-	private static final String SCRIPT_HIDDEN_ELEMENT_OVERFLOW = "arguments[0].style.overflow='hidden'";
-	private static final String SCRIPT_HIDDEN_FRAME_OVERFLOW = "arguments[0].contentWindow.document.documentElement.style.overflow='hidden'";
-	private static final String SCRIPT_HIDDEN_ELEMENT_OVERFLOWY_IE10 = "arguments[0].style.overflowY='hidden'";
-	private static final String SCRIPT_HIDDEN_ELEMENT_OVERFLOWX_IE10 = "arguments[0].style.overflowX='hidden'";
+	private static final String SCRIPT_GET_ELEMENT_OVERFLOW = "var style = arguments[0].style;"
+			+ "var _obj = {"
+			+ "  \"x\": style.overflowX,"
+			+ "  \"y\": style.overflowY"
+			+ "};"
+			+ "return _obj;";
+	private static final String SCRIPT_GET_FRAME_OVERFLOW = "var style = arguments[0].contentWindow.document.documentElement.style;"
+			+ "var _obj = {"
+			+ "  \"x\": style.overflowX,"
+			+ "  \"y\": style.overflowY"
+			+ "};"
+			+ "return _obj;";
 
-	private static final String SCRIPT_SET_RESIZE_NONE = "arguments[0].style.resize = 'none'";
+	private static final String SCRIPT_SET_ELEMENT_OVERFLOW = "var style = arguments[0].style;"
+			+ "style.overflowX = arguments[1];"
+			+ "style.overflowY = arguments[2];";
+	private static final String SCRIPT_SET_FRAME_OVERFLOW = "var style = arguments[0].contentWindow.document.documentElement.style;"
+			+ "style.overflowX = arguments[1];"
+			+ "style.overflowY = arguments[2];";
+
+	private static final String SCRIPT_SET_RESIZE_NONE = "arguments[0].style.resize='none'";
 	//CHECKSTYLE:ON
 	//@formatter:on
 
@@ -470,17 +485,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * スクロールバーを非表示にする。
 	 */
 	public void hideScrollBar() {
-		if (getTagName().equals("iframe") || getTagName().equals("frame")) {
-			driver.executeScript(SCRIPT_HIDDEN_FRAME_OVERFLOW, this);
-		} else if (driver.getCapabilities().getBrowserName().equals("internet explorer")
-		//TODO: IE10・11用コードの切り出し
-				&& (driver.getCapabilities().getVersion().equals("10") || driver.getCapabilities().getVersion()
-						.equals("11"))) {
-			driver.executeScript(SCRIPT_HIDDEN_ELEMENT_OVERFLOWY_IE10, this);
-			driver.executeScript(SCRIPT_HIDDEN_ELEMENT_OVERFLOWX_IE10, this);
-		} else {
-			driver.executeScript(SCRIPT_HIDDEN_ELEMENT_OVERFLOW, this);
-		}
+		setOverflowStatus("hidden", "hidden");
 	}
 
 	/**
@@ -490,6 +495,35 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	public void setNoResizable() {
 		if (getTagName().equals("textarea")) {
 			driver.executeScript(SCRIPT_SET_RESIZE_NONE, this);
+		}
+	}
+
+	/**
+	 * styleに設定されているoverflowの値を返す。
+	 *
+	 * @return overflowの設定値
+	 */
+	public String[] getOverflowStatus() {
+		Map<String, Object> object;
+		if (getTagName().equals("iframe") || getTagName().equals("frame")) {
+			object = driver.executeJavaScript(SCRIPT_GET_FRAME_OVERFLOW, this);
+		} else {
+			object = driver.executeJavaScript(SCRIPT_GET_ELEMENT_OVERFLOW, this);
+		}
+		return new String[] { object.get("x").toString(), object.get("y").toString() };
+	}
+
+	/**
+	 * Overflowのstyleを設定する。
+	 *
+	 * @param xStatus x方向の設定
+	 * @param yStatus y方向の設定
+	 */
+	public void setOverflowStatus(String xStatus, String yStatus) {
+		if (getTagName().equals("iframe") || getTagName().equals("frame")) {
+			driver.executeScript(SCRIPT_SET_FRAME_OVERFLOW, this, xStatus, yStatus);
+		} else {
+			driver.executeScript(SCRIPT_SET_ELEMENT_OVERFLOW, this, xStatus, yStatus);
 		}
 	}
 
