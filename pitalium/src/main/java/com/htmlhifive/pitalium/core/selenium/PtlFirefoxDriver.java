@@ -52,9 +52,7 @@ class PtlFirefoxDriver extends PtlWebDriver {
 			List<Pair<CompareTarget, ScreenshotParams>> targetParams) {
 		// firefoxのtextareaは上下paddingが常に表示されるため、不要なpaddingを切り取る
 		for (int i = 0; i < allTargetScreenshots.size(); i++) {
-			PtlWebElement targetElement = (PtlWebElement) (targetParams.get(i).getLeft().getCompareArea().getSelector()
-					.getType().findElement(this, targetParams.get(i).getLeft().getCompareArea().getSelector()
-					.getValue()));
+			PtlWebElement targetElement = (PtlWebElement) (targetParams.get(i).getRight().getTarget().getElement());
 			if (targetElement.getTagName().equals("textarea")) {
 				List<TargetResult> targetScreenshots = allTargetScreenshots.get(i);
 				for (int j = 0; j < targetScreenshots.size(); j++) {
