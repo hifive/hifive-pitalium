@@ -52,6 +52,7 @@ public class EnvironmentConfigTest {
 		assertThat(env.getMaxDriverWait(), is(300));
 		assertThat(env.getCapabilitiesFilePath(), is("test.json"));
 		assertThat(env.getPersister(), is("test"));
+		assertThat(env.isDebug(), is(true));
 	}
 
 	/**
@@ -85,6 +86,7 @@ public class EnvironmentConfigTest {
 		assertThat(config.getCapabilitiesFilePath(), is("capabilities.json"));
 		assertThat(config.getPersister(), is("com.htmlhifive.pitalium.core.io.FilePersister"));
 		assertThat(config.getWebDriverSessionLevel(), is(WebDriverSessionLevel.TEST_CASE));
+		assertThat(config.isDebug(), is(false));
 	}
 
 	/**
@@ -103,6 +105,7 @@ public class EnvironmentConfigTest {
 				.capabilitiesFilePath("cap.json")
 				.persister("persister")
 				.webDriverSessionLevel(WebDriverSessionLevel.GLOBAL)
+				.debug(true)
 				.build();
 //@formatter:on
 
@@ -115,6 +118,7 @@ public class EnvironmentConfigTest {
 		assertThat(config.getCapabilitiesFilePath(), is("cap.json"));
 		assertThat(config.getPersister(), is("persister"));
 		assertThat(config.getWebDriverSessionLevel(), is(WebDriverSessionLevel.GLOBAL));
+		assertThat(config.isDebug(), is(true));
 	}
 
 }
