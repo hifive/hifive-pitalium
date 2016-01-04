@@ -18,18 +18,24 @@ package com.htmlhifive.pitalium.core.selenium;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
@@ -37,8 +43,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.DomSelector;
 import com.htmlhifive.pitalium.core.model.IndexDomSelector;
@@ -103,10 +112,13 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	// CHECKSTYLE:ON
 	//@formatter:on
 
+	private static final Map<Capabilities, AtomicInteger> DEBUG_SCREENSHOT_COUNTS = new HashMap<Capabilities, AtomicInteger>();
+
 	protected final Logger LOG = LoggerFactory.getLogger(getClass());
 	private final PtlCapabilities capabilities;
 	private String baseUrl;
 	private double scale = DEFAULT_SCREENSHOT_SCALE;
+	private EnvironmentConfig environmentConfig;
 
 	/**
 	 * コンストラクタ
@@ -143,6 +155,15 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	}
 
 	/**
+	 * 環境情報を設定します。
+	 * 
+	 * @param environmentConfig 環境情報
+	 */
+	protected final void setEnvironmentConfig(EnvironmentConfig environmentConfig) {
+		this.environmentConfig = environmentConfig;
+	}
+
+	/**
 	 * 指定されたURLをブラウザで開きます。urlがhttp://またはhttps://から始まる場合はそのまま、それ以外の場合は{@link #baseUrl} + urlのアドレスを開きます。
 	 *
 	 * @param url 開きたいURL
@@ -163,6 +184,60 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	@Override
 	public PtlCapabilities getCapabilities() {
 		return capabilities;
+	}
+
+	@Override
+	public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+		X screenshot = super.getScreenshotAs(outputType);
+		if (environmentConfig.isDebug()) {
+			exportDebugScreenshot(screenshot);
+		}
+		return screenshot;
+	}
+
+	private void exportDebugScreenshot(Object screenshot) {
+		File imageFile;
+		if (screenshot instanceof String) {
+			imageFile = OutputType.FILE.convertFromBase64Png((String) screenshot);
+		} else if (screenshot instanceof byte[]) {
+			imageFile = OutputType.FILE.convertFromPngBytes((byte[]) screenshot);
+		} else if (screenshot instanceof File) {
+			imageFile = (File) screenshot;
+		} else {
+			LOG.warn("Unknown OutputType: \"{}\"", screenshot.getClass().getName());
+			return;
+		}
+
+		// Filename -> logs/screenshots/firefox/43/0000.png
+		// FIXME: 2016/01/04 保存ディレクトリをちゃんとする
+		String filename;
+		File dir;
+		synchronized (DEBUG_SCREENSHOT_COUNTS) {
+			AtomicInteger counter = DEBUG_SCREENSHOT_COUNTS.get(capabilities);
+			if (counter == null) {
+				counter = new AtomicInteger();
+				DEBUG_SCREENSHOT_COUNTS.put(capabilities, counter);
+			}
+			int count = counter.getAndIncrement();
+
+			filename = String.format(Locale.US, "%04d.png", count);
+			dir = new File("logs", "screenshots");
+			dir = new File(dir, capabilities.getBrowserName());
+			if (!Strings.isNullOrEmpty(capabilities.getVersion())) {
+				dir = new File(dir, capabilities.getVersion());
+			}
+
+			if (!dir.exists() && !dir.mkdirs()) {
+				LOG.warn("Debug screenshot persist error. Cannot make directory \"{}\"", dir.getAbsolutePath());
+				return;
+			}
+		}
+
+		try {
+			Files.copy(imageFile, new File(dir, filename));
+		} catch (IOException e) {
+			LOG.warn("Debug screenshot persist error", e);
+		}
 	}
 
 	/**
