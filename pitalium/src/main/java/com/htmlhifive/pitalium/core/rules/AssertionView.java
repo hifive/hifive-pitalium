@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.htmlhifive.pitalium.core.rules;
 
 import java.awt.Rectangle;
@@ -23,9 +24,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.openqa.selenium.WebDriver;
@@ -37,6 +40,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
@@ -97,6 +101,7 @@ public class AssertionView extends TestWatcher {
 	protected PtlWebDriver driver;
 
 	private final List<ScreenshotResult> results = new ArrayList<ScreenshotResult>();
+	private final List<AssertionError> verifyErrors = new ArrayList<AssertionError>();
 
 	//<editor-fold desc="Watcher methods">
 
@@ -119,10 +124,28 @@ public class AssertionView extends TestWatcher {
 
 	@Override
 	protected void succeeded(Description desc) {
-		LOG.trace("{} succeeded", desc.getDisplayName());
-
 		// テストに成功したらExpectedIdを更新
-		TestResultManager.getInstance().updateExpectedId(className, methodName);
+		if (verifyErrors.isEmpty()) {
+			LOG.trace("{} succeeded", desc.getDisplayName());
+			TestResultManager.getInstance().updateExpectedId(className, methodName);
+			return;
+		}
+
+		LOG.trace("{} verified {} errors", desc.getDisplayName(), verifyErrors.size());
+		TestResultManager.getInstance().cancelUpdateExpectedId(className);
+		String errors = StringUtils.join(
+				FluentIterable.from(verifyErrors).transform(new Function<AssertionError, String>() {
+					@Override
+					public String apply(AssertionError error) {
+						return error.getMessage();
+					}
+				}).filter(new Predicate<String>() {
+					@Override
+					public boolean apply(String message) {
+						return !Strings.isNullOrEmpty(message);
+					}
+				}), "\n");
+		throw new AssertionError(String.format(Locale.US, "Verified %d errors: %s", verifyErrors.size(), errors));
 	}
 
 	@Override
@@ -364,6 +387,41 @@ public class AssertionView extends TestWatcher {
 		}
 
 		LOG.debug("actual assertView success. {}#{} {}", className, methodName, screenshotId);
+	}
+
+	/**
+	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
+	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
+	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。<br />
+	 * <br />
+	 * {@link #assertView(ScreenshotArgument)}との違いは{@code RUN_TEST}時に比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
+	 * 
+	 * @param arg スクリーンショットを撮影するための条件
+	 */
+	public void verifyView(ScreenshotArgument arg) {
+		try {
+			assertView(arg);
+		} catch (AssertionError e) {
+			verifyErrors.add(e);
+		}
+	}
+
+	/**
+	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
+	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
+	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。<br />
+	 * <br />
+	 * {@link #assertView(ScreenshotArgument)}との違いは{@code RUN_TEST}時に比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
+	 * 
+	 * @param message {@link AssertionError}を識別する文字列
+	 * @param arg スクリーンショットを撮影するための条件
+	 */
+	public void verifyView(String message, ScreenshotArgument arg) {
+		try {
+			assertView(message, arg);
+		} catch (AssertionError e) {
+			verifyErrors.add(e);
+		}
 	}
 
 	/**
@@ -615,6 +673,37 @@ public class AssertionView extends TestWatcher {
 		LOG.debug("actual assertScreenshot success. {}#{} {}", className, methodName, screenshotId);
 	}
 
+	/**
+	 * すでに取得したスクリーンショットについて、期待画像と一致するか検証します。一致しなければdiff画像を生成し、テストを失敗とします。<br />
+	 * <br />
+	 * {@link #assertScreenshot(ScreenshotResult)}との違いは比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
+	 * 
+	 * @param screenshotResult {@link PtlWebDriver#takeScreenshot(String) takeScreenshot}を実行して取得した結果オブジェクト
+	 */
+	public void verifyScreenshot(ScreenshotResult screenshotResult) {
+		try {
+			assertScreenshot(screenshotResult);
+		} catch (AssertionError e) {
+			verifyErrors.add(e);
+		}
+	}
+
+	/**
+	 * すでに取得したスクリーンショットについて、期待画像と一致するか検証します。一致しなければdiff画像を生成し、テストを失敗とします。<br />
+	 * <br />
+	 * {@link #assertScreenshot(ScreenshotResult)}との違いは比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
+	 * 
+	 * @param message 失敗時に表示するメッセージ
+	 * @param screenshotResult {@link PtlWebDriver#takeScreenshot(String) takeScreenshot}を実行して取得した結果オブジェクト
+	 */
+	public void verifyScreenshot(String message, ScreenshotResult screenshotResult) {
+		try {
+			assertScreenshot(message, screenshotResult);
+		} catch (AssertionError e) {
+			verifyErrors.add(e);
+		}
+	}
+
 	//</editor-fold>
 
 	//<editor-fold desc="assertExists">
@@ -651,6 +740,39 @@ public class AssertionView extends TestWatcher {
 		}
 
 		throw Strings.isNullOrEmpty(message) ? new AssertionError() : new AssertionError(message);
+	}
+
+	/**
+	 * 画面全体のスクリーンショットを撮影し、指定の画像が現在のページ上に存在するかどうか検証します。<br />
+	 * ただし、テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の場合、検証は行われません。<br />
+	 * <br />
+	 * {@link #assertExist(BufferedImage)}との違いは比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
+	 * 
+	 * @param image 検証に使用する画像
+	 */
+	public void verifyExists(BufferedImage image) {
+		try {
+			assertExist(image);
+		} catch (AssertionError e) {
+			verifyErrors.add(e);
+		}
+	}
+
+	/**
+	 * 画面全体のスクリーンショットを撮影し、指定の画像が現在のページ上に存在するかどうか検証します。<br />
+	 * ただし、テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の場合、検証は行われません。<br />
+	 * <br />
+	 * {@link #assertExist(BufferedImage)}との違いは比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
+	 * 
+	 * @param message {@link AssertionError}を識別する文字列
+	 * @param image 検証に使用する画像
+	 */
+	public void verifyExists(String message, BufferedImage image) {
+		try {
+			assertExist(message, image);
+		} catch (AssertionError e) {
+			verifyErrors.add(e);
+		}
 	}
 
 	//</editor-fold>
