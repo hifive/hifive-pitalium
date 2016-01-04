@@ -42,5 +42,14 @@
 	<classpathentry kind="lib" path="libs/selenium-api-2.46.0.jar"/>
 	<classpathentry kind="lib" path="libs/selenium-remote-driver-2.46.0.jar"/>
 	<classpathentry kind="lib" path="libs/selenium-support-2.46.0.jar"/>
+	<classpathentry kind="lib" path="libs/mockito-all-1.10.19.jar"/>
+	<classpathentry kind="lib" path="libs/objenesis-2.1.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-api-mockito-1.6.3.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-api-support-1.6.3.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-core-1.6.3.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-reflect-1.6.3.jar"/>
+	<classpathentry kind="lib" path="libs/javassist-3.20.0-GA.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-module-junit4-1.6.3.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-module-junit4-common-1.6.3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
