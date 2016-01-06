@@ -166,7 +166,7 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveTargetResults(PersistMetadata metadata, List<TargetResult> results) {
 		File file = checkParentFileAvailable(getTargetResultsFile(metadata));
-		JSONUtils.writeValue(file, results);
+		JSONUtils.writeValueWithIndent(file, results);
 	}
 
 	@Override
@@ -202,7 +202,7 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveTestResult(PersistMetadata metadata, TestResult result) {
 		File file = checkParentFileAvailable(getTestResultFile(metadata));
-		JSONUtils.writeValue(file, result);
+		JSONUtils.writeValueWithIndent(file, result);
 	}
 
 	@Override
@@ -226,7 +226,7 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveExpectedIds(Map<String, Map<String, String>> expectedIds) {
 		File file = checkParentFileAvailable(getExpectedIdsFile());
-		JSONUtils.writeValue(file, expectedIds);
+		JSONUtils.writeValueWithIndent(file, expectedIds);
 	}
 
 	@Override
