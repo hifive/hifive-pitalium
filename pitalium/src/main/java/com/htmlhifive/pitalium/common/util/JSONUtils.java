@@ -30,11 +30,15 @@ import com.htmlhifive.pitalium.common.exception.JSONException;
 public final class JSONUtils {
 
 	private static ObjectMapper mapper;
+	private static ObjectMapper indentMapper;
 
 	static {
 		mapper = new ObjectMapper();
 		mapper.findAndRegisterModules();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+		indentMapper = new ObjectMapper();
+		indentMapper.findAndRegisterModules();
+		indentMapper.enable(SerializationFeature.INDENT_OUTPUT);
 	}
 
 	private JSONUtils() {
@@ -127,6 +131,34 @@ public final class JSONUtils {
 	public static void writeValue(File file, Object value) {
 		try {
 			mapper.writeValue(file, value);
+		} catch (IOException e) {
+			throw new JSONException(e);
+		}
+	}
+
+	/**
+	 * オブジェクトをJSON文字列として取得します
+	 * 
+	 * @param object オブジェクト
+	 * @return オブジェクトを表すJSON文字列
+	 */
+	public static String toStringWithIndent(Object object) {
+		try {
+			return indentMapper.writeValueAsString(object);
+		} catch (IOException e) {
+			throw new JSONException(e);
+		}
+	}
+
+	/**
+	 * 値をJSONに変換し、ファイルに書き込みます。
+	 * 
+	 * @param file 書き込み先ファイル
+	 * @param value 書き込む値
+	 */
+	public static void writeValueWithIndent(File file, Object value) {
+		try {
+			indentMapper.writeValue(file, value);
 		} catch (IOException e) {
 			throw new JSONException(e);
 		}
