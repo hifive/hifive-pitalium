@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
@@ -225,6 +226,16 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			dir = new File(dir, capabilities.getBrowserName());
 			if (!Strings.isNullOrEmpty(capabilities.getVersion())) {
 				dir = new File(dir, capabilities.getVersion());
+			}
+
+			// First time => delete old files
+			if (count == 0 && dir.exists()) {
+				try {
+					FileUtils.deleteDirectory(dir);
+				} catch (IOException e) {
+					LOG.warn("Cannot delete debug screenshot directory \"" + dir.getAbsolutePath() + "\"", e);
+					return;
+				}
 			}
 
 			if (!dir.exists() && !dir.mkdirs()) {
