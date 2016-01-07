@@ -18,6 +18,7 @@ package com.htmlhifive.pitalium.core.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
 /**
@@ -136,7 +137,7 @@ public class ScreenArea implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ScreenArea{" + "selector=" + selector + ", rectangle=" + rectangle + '}';
+		return JSONUtils.toString(this);
 	}
 
 }

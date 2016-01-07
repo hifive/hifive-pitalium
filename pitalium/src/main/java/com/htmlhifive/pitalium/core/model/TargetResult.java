@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.image.model.CompareOption;
 import com.htmlhifive.pitalium.image.model.ScreenshotImage;
 
@@ -260,9 +261,7 @@ public class TargetResult implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TargetResult{" + "result=" + result + ", target=" + target + ", excludes=" + excludes + ", moveTarget="
-				+ moveTarget + ", hiddenElementSelectors=" + hiddenElementSelectors + ", image=" + image + ", options="
-				+ Arrays.toString(options) + '}';
+		return JSONUtils.toString(this);
 	}
 
 }

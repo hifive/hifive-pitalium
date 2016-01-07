@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (C) 2015 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@ package com.htmlhifive.pitalium.core.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
 /**
@@ -142,8 +143,7 @@ public class ScreenAreaResult implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ScreenAreaResult{" + "selector=" + selector + ", rectangle=" + rectangle + ", screenArea=" + screenArea
-				+ '}';
+		return JSONUtils.toString(this);
 	}
 
 }

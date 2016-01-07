@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.image.model.ScreenshotImage;
 
 /**
@@ -243,9 +244,7 @@ public class ScreenshotResult implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ScreenshotResult{" + "screenshotId='" + screenshotId + '\'' + ", result=" + result + ", expectedId='"
-				+ expectedId + '\'' + ", targetResults=" + targetResults + ", testClass='" + testClass + '\''
-				+ ", testMethod='" + testMethod + '\'' + ", capabilities=" + capabilities + '}';
+		return JSONUtils.toString(this);
 	}
 
 }

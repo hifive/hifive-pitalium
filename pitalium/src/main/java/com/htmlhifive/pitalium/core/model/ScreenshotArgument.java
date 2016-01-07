@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.base.Strings;
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 
 /**
  * <p>
@@ -155,6 +156,11 @@ public class ScreenshotArgument {
 		result = 31 * result + targets.hashCode();
 		result = 31 * result + hiddenElementSelectors.hashCode();
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return JSONUtils.toString(this);
 	}
 
 }

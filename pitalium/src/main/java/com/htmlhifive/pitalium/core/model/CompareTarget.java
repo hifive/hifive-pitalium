@@ -18,6 +18,7 @@ package com.htmlhifive.pitalium.core.model;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.image.model.CompareOption;
 
 /**
@@ -57,7 +58,7 @@ public class CompareTarget implements Serializable {
 
 	/**
 	 * 指定領域をスクリーンショット取得・比較の対象とします。
-	 *
+	 * 
 	 * @param compareArea 指定領域
 	 */
 	public CompareTarget(ScreenArea compareArea) {
@@ -66,7 +67,7 @@ public class CompareTarget implements Serializable {
 
 	/**
 	 * 指定領域（{@link #excludes}の領域を除く）をスクリーンショット取得・比較の対象とします。
-	 *
+	 * 
 	 * @param compareArea 指定領域
 	 * @param excludes 比較時に除外する領域
 	 * @param moveTarget スクリーンショット撮影時に指定領域を定位置に移動するか否か。移動する場合はtrueを指定します。trueの場合、レンダリングによって発生する想定外の誤差を抑制しますが、
@@ -80,7 +81,7 @@ public class CompareTarget implements Serializable {
 
 	/**
 	 * スクリーンショット・比較の対象領域を取得します。
-	 *
+	 * 
 	 * @return 比較対象のエリア
 	 */
 	public ScreenArea getCompareArea() {
@@ -89,7 +90,7 @@ public class CompareTarget implements Serializable {
 
 	/**
 	 * 比較オプションを取得します。
-	 *
+	 * 
 	 * @return 比較オプション
 	 */
 	public CompareOption[] getOptions() {
@@ -98,7 +99,7 @@ public class CompareTarget implements Serializable {
 
 	/**
 	 * 比較時に除外する領域を取得します。
-	 *
+	 * 
 	 * @return 除外する領域
 	 */
 	public ScreenArea[] getExcludes() {
@@ -107,7 +108,7 @@ public class CompareTarget implements Serializable {
 
 	/**
 	 * スクリーンショット撮影時に指定領域を定位置に移動するか否かの設定を取得します。
-	 *
+	 * 
 	 * @return 撮影時に指定領域を定位置に移動するか否か。移動する場合はtrue。
 	 */
 	public boolean isMoveTarget() {
@@ -147,6 +148,11 @@ public class CompareTarget implements Serializable {
 		result = 31 * result + Arrays.hashCode(excludes);
 		result = 31 * result + (moveTarget ? 1 : 0);
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return JSONUtils.toString(this);
 	}
 
 }

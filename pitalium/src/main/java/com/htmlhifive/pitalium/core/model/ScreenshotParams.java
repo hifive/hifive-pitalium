@@ -18,6 +18,7 @@ package com.htmlhifive.pitalium.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
@@ -125,6 +126,11 @@ public class ScreenshotParams {
 	 */
 	public List<RectangleArea> getInitialExcludeAreas() {
 		return initialExcludeAreas;
+	}
+
+	@Override
+	public String toString() {
+		return JSONUtils.toString(this);
 	}
 
 }
