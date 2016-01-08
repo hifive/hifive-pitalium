@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
 import com.htmlhifive.pitalium.core.config.ExecMode;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
@@ -113,6 +115,10 @@ public final class TestResultManager {
 		}
 
 		expectedIds = expects;
+
+		LOG.debug("TestResultManager instantiated.");
+		LOG.trace("mode: {}; persister: {}; expectedIds: {}", currentMode, persister.getClass(),
+				JSONUtils.toString(expectedIds));
 	}
 
 	/**
@@ -160,6 +166,7 @@ public final class TestResultManager {
 				throw new TestRuntimeException("TestResult already exists for " + className);
 			}
 
+			LOG.debug("Initialize TestResult for class {}.", className);
 			holders.put(className, new ScreenshotResultHolder());
 		}
 	}
@@ -175,12 +182,18 @@ public final class TestResultManager {
 				throw new TestRuntimeException("TestResult does not exist for " + className);
 			}
 
+			LOG.debug("Export TestResult for class {} start.", className);
+
 			ScreenshotResultHolder holder = holders.get(className);
+			LOG.debug("ScreenshotResultHolder: {}", JSONUtils.toString(holder));
 			ExecResult execResult = null;
 			if (holder.result != null) {
 				execResult = holder.result ? ExecResult.SUCCESS : ExecResult.FAILURE;
 			}
+
 			TestResult result = new TestResult(currentId, execResult, holder.screenshotResults);
+			LOG.debug("Export TestResult: {}", result);
+
 			persister.saveTestResult(new PersistMetadata(currentId, className), result);
 		}
 	}
@@ -197,6 +210,8 @@ public final class TestResultManager {
 				throw new TestRuntimeException("TestResult does not exist for " + className);
 			}
 
+			LOG.debug("Add ScreenshotResult from {}, result: {}", className, result);
+
 			ScreenshotResultHolder holder = holders.get(className);
 			holder.screenshotResults.add(result);
 			if (result.getResult() != null) {
@@ -206,6 +221,7 @@ public final class TestResultManager {
 					}
 				} else {
 					holder.result = false;
+					LOG.debug("Class {} failed by added ScreenshotResult.", className);
 				}
 			}
 		}
@@ -255,6 +271,7 @@ public final class TestResultManager {
 	 */
 	public void updateExpectedId(String className, String methodName) {
 		if (currentMode != ExecMode.SET_EXPECTED) {
+			LOG.trace("ExpectedId was not updated. currentMode: {}", currentMode);
 			return;
 		}
 
@@ -292,6 +309,7 @@ public final class TestResultManager {
 			}
 
 			holder.failed = true;
+			LOG.debug("Update expectedId for {} was cancelled.", className);
 		}
 	}
 
@@ -302,17 +320,18 @@ public final class TestResultManager {
 	 */
 	public void exportExpectedIds(String className) {
 		if (currentMode != ExecMode.SET_EXPECTED) {
+			LOG.trace("ExpectedIds was not exported. currentMode: {}", currentMode);
 			return;
 		}
 
 		synchronized (expectedIdsForUpdate) {
 			if (!expectedIdsForUpdate.containsKey(className)) {
-				throw new TestRuntimeException(String.format("ExpectedId for %s does not exist.", className));
+				throw new TestRuntimeException(String.format(Locale.US, "ExpectedId for %s does not exist.", className));
 			}
 
 			ExpectIdHolder holder = expectedIdsForUpdate.get(className);
 			if (holder.failed) {
-				LOG.debug("TestClass {} was failed. Update ExpectedIds cancelled.");
+				LOG.info("TestClass {} was failed. Update ExpectedIds cancelled.");
 				return;
 			}
 
@@ -323,19 +342,23 @@ public final class TestResultManager {
 			}
 
 			values.putAll(holder.expectIds);
+			LOG.debug("ExpectedIds for {} merged. values: {}", JSONUtils.toString(holder.expectIds));
+			LOG.trace("ExpectedIds merged. {}", JSONUtils.toString(mergedExpectedIds));
+
 			persister.saveExpectedIds(mergedExpectedIds);
+			LOG.info("ExpectedIds for {} updated.", className);
 		}
 	}
 
 	private static class ScreenshotResultHolder {
-		private final List<ScreenshotResult> screenshotResults = new ArrayList<ScreenshotResult>();
-		private Boolean result;
+		public final List<ScreenshotResult> screenshotResults = new ArrayList<ScreenshotResult>();
+		public Boolean result;
 	}
 
 	private static class ExpectIdHolder {
-		private final Map<String, String> expectIds = new HashMap<String, String>();
+		public final Map<String, String> expectIds = new HashMap<String, String>();
 		// テスト成否。初期値はfalse
-		private boolean failed;
+		public boolean failed;
 	}
 
 	//</editor-fold>
