@@ -321,9 +321,11 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 		List<TargetResult> screenshotResults = new ArrayList<TargetResult>();
 		// moveせずに撮る要素を撮影
-		List<TargetResult> nonMoveScreenshots = takeNonMoveScreenshots(hiddenElementSelectors, nonMoveTargetParams,
-				entireScreenshotParams, additionalParams);
-		screenshotResults.addAll(nonMoveScreenshots);
+		if (nonMoveTargetParams.size() > 0) {
+			List<TargetResult> nonMoveScreenshots = takeNonMoveScreenshots(entireScreenshotResult,
+					hiddenElementSelectors, nonMoveTargetParams, entireScreenshotParams, additionalParams);
+			screenshotResults.addAll(nonMoveScreenshots);
+		}
 
 		// moveして撮る要素を撮影
 		for (Pair<CompareTarget, ScreenshotParams> pair : moveTargetParams) {
@@ -343,9 +345,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @param additionalParams 更新用パラメータ
 	 * @return 各ターゲットのTargetResultリスト
 	 */
-	protected List<TargetResult> takeNonMoveScreenshots(List<DomSelector> hiddenElementSelectors,
-			List<Pair<CompareTarget, ScreenshotParams>> targetParams, ScreenshotParams entireScreenshotParams,
-			ScreenshotParams... additionalParams) {
+	protected List<TargetResult> takeNonMoveScreenshots(TargetResult entireScreenshotResult,
+			List<DomSelector> hiddenElementSelectors, List<Pair<CompareTarget, ScreenshotParams>> targetParams,
+			ScreenshotParams entireScreenshotParams, ScreenshotParams... additionalParams) {
 
 		double currentScale = Double.NaN;
 
@@ -391,8 +393,13 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		long partialScrollAmounts[] = new long[targetParams.size()];
 		for (int i = 0; i <= maxPartialScrollNum; i++) {
 			// 全体スクリーンショットを撮影
-			TargetResult entireResult = getTargetResult(new CompareTarget(), hiddenElementSelectors,
-					entireScreenshotParams, additionalParams);
+			TargetResult entireResult;
+			if (maxPartialScrollNum == 0) {
+				entireResult = entireScreenshotResult;
+			} else {
+				entireResult = getTargetResult(new CompareTarget(), hiddenElementSelectors, entireScreenshotParams,
+						additionalParams);
+			}
 			ScreenshotImage entireScreenshotImage = entireResult.getImage();
 
 			// scaleを計算（初回のみ）
