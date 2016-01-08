@@ -17,7 +17,6 @@
 package com.htmlhifive.pitalium.core.selenium;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -103,6 +102,7 @@ public class PtlWebDriverManager {
 		 */
 		public void quit() {
 			if (sessionLevel == WebDriverSessionLevel.TEST_CASE) {
+				LOG.debug("Close WebDriver session ({})", driver);
 				driver.quit();
 			}
 		}
@@ -130,22 +130,28 @@ public class PtlWebDriverManager {
 					if (strategy != null) {
 						switch (strategy.sessionLevel()) {
 							case GLOBAL:
+								LOG.debug("Driver reuse level annotated: {}, {}", WebDriverSessionLevel.GLOBAL, clss);
 								return WebDriverSessionLevel.GLOBAL;
 
 							case TEST_CASE:
+								LOG.debug("Driver reuse level annotated: {}, {}", WebDriverSessionLevel.TEST_CASE, clss);
 								return WebDriverSessionLevel.TEST_CASE;
 
 							case TEST_CLASS:
+								LOG.debug("Driver reuse level annotated: {}, {}", WebDriverSessionLevel.TEST_CLASS,
+										clss);
 								return WebDriverSessionLevel.TEST_CLASS;
 						}
 					}
 
+					LOG.debug("Driver reuse level configured: {}, {}", configSessionLevel, clss);
 					return configSessionLevel;
 				}
 			});
 	private final Map<PtlCapabilities, WebDriver> allClassesDrivers = new HashMap<PtlCapabilities, WebDriver>();
 
-	private WebDriverSessionLevel configSessionLevel = PtlTestConfig.getInstance().getEnvironment().getWebDriverSessionLevel();
+	private WebDriverSessionLevel configSessionLevel = PtlTestConfig.getInstance().getEnvironment()
+			.getWebDriverSessionLevel();
 
 	private PtlWebDriverManager() {
 	}
@@ -182,6 +188,8 @@ public class PtlWebDriverManager {
 			throw new NullPointerException("supplier");
 		}
 
+		LOG.trace("getWebDriver; class: {}, capabilities: {}", clss, capabilities);
+
 		WebDriverSessionLevel level;
 		try {
 			level = driverReuses.get(clss);
@@ -191,18 +199,23 @@ public class PtlWebDriverManager {
 
 		// ドライバーを再利用しない場合はSupplierから取得したドライバーを返す。
 		if (level == WebDriverSessionLevel.TEST_CASE) {
-			return new WebDriverContainer(supplier.get(), WebDriverSessionLevel.TEST_CASE);
+			WebDriver driver = supplier.get();
+			LOG.info("Create a new WebDriver session ({})", driver);
+
+			return new WebDriverContainer(driver, WebDriverSessionLevel.TEST_CASE);
 		}
 
 		DriverKey key = new DriverKey(clss, capabilities);
 		WebDriver driver = drivers.get(key);
 		if (driver != null) {
+			LOG.info("Reuse cached WebDriver session ({})", driver);
 			return new WebDriverContainer(driver, level);
 		}
 
 		// クラス単位
 		if (level == WebDriverSessionLevel.TEST_CLASS) {
 			driver = supplier.get();
+			LOG.info("Create a new WebDriver session for \"{}\" ({})", clss, driver);
 			drivers.put(key, driver);
 			return new WebDriverContainer(driver, level);
 		}
@@ -211,6 +224,7 @@ public class PtlWebDriverManager {
 		driver = allClassesDrivers.get(capabilities);
 		if (driver == null) {
 			driver = supplier.get();
+			LOG.info("Create a new WebDriver session for global ({})", driver);
 			drivers.put(key, driver);
 			allClassesDrivers.put(capabilities, driver);
 		}
@@ -232,6 +246,8 @@ public class PtlWebDriverManager {
 			throw new NullPointerException("capabilities");
 		}
 
+		LOG.trace("closeWebDriverSession; class: {}, capabilities: {}", clss, capabilities);
+
 		WebDriverSessionLevel level;
 		try {
 			level = driverReuses.get(clss);
@@ -240,21 +256,22 @@ public class PtlWebDriverManager {
 		}
 
 		if (level == WebDriverSessionLevel.TEST_CLASS || level == WebDriverSessionLevel.GLOBAL) {
+			LOG.debug("Did not close WebDriver session for \"{}\", level: {}", clss, level);
 			return;
 		}
 
 		DriverKey key = new DriverKey(clss, capabilities);
 		WebDriver driver = drivers.remove(key);
 		if (driver == null) {
-			LOG.debug("No driver entry found for %s:[{}]", clss.getName(), capabilities);
+			LOG.debug("No WebDriver session cached for \"{}\", capabilities: {}", clss, capabilities);
 			return;
 		}
 
 		try {
+			LOG.debug("Close cached WebDriver session for \"{}\" ({})", clss, driver);
 			driver.quit();
 		} catch (Exception e) {
-			LOG.warn(String.format(Locale.US, "Failed to close selenium session for %s:[%s]", clss.getName(),
-					capabilities), e);
+			LOG.warn("Failed to close cached WebDriver session for \"{}\" ({})", clss, driver, e);
 		}
 	}
 

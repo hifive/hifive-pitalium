@@ -50,10 +50,14 @@ public abstract class PtlWebDriverFactory {
 	 * @param capabilities Capability
 	 */
 	protected PtlWebDriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
-								  PtlCapabilities capabilities) {
+			PtlCapabilities capabilities) {
 		this.environmentConfig = environmentConfig;
 		this.testAppConfig = testAppConfig;
 		this.capabilities = capabilities;
+
+		LOG.debug("{} instantiated. {}", getClass().getSimpleName(), capabilities);
+		LOG.trace("environmentConfig: {}; testAppConfig: {}; capabilities: {}", environmentConfig, testAppConfig,
+				capabilities);
 	}
 
 	/**
@@ -131,7 +135,7 @@ public abstract class PtlWebDriverFactory {
 	 */
 	public PtlWebDriver getDriver() {
 		synchronized (PtlWebDriverFactory.class) {
-			LOG.debug("{}: BEGIN create web driver.");
+			LOG.debug("Create a new WebDriver session start.");
 
 			URL url = getGridHubURL();
 			PtlWebDriver driver = createWebDriver(url);
@@ -142,7 +146,7 @@ public abstract class PtlWebDriverFactory {
 						.setSize(new Dimension(testAppConfig.getWindowWidth(), testAppConfig.getWindowHeight()));
 			}
 
-			LOG.debug("{}: END create web driver.");
+			LOG.debug("Create a new WebDriver session finished. ({})", driver);
 			return driver;
 		}
 	}
@@ -206,7 +210,7 @@ public abstract class PtlWebDriverFactory {
 		 * @param capabilities Capability
 		 */
 		public PtlFirefoxWebDriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
-										  PtlCapabilities capabilities) {
+				PtlCapabilities capabilities) {
 			super(environmentConfig, testAppConfig, capabilities);
 		}
 
@@ -234,7 +238,7 @@ public abstract class PtlWebDriverFactory {
 		 * @param capabilities Capability
 		 */
 		public PtlChromeWebDriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
-										 PtlCapabilities capabilities) {
+				PtlCapabilities capabilities) {
 			super(environmentConfig, testAppConfig, capabilities);
 		}
 
@@ -267,7 +271,7 @@ public abstract class PtlWebDriverFactory {
 		 * @param capabilities Capability
 		 */
 		public PtlInternetExplorerDriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
-												PtlCapabilities capabilities) {
+				PtlCapabilities capabilities) {
 			super(environmentConfig, testAppConfig, capabilities);
 
 			if (capabilities.getCapability("chromeWidth") == null) {
@@ -299,7 +303,7 @@ public abstract class PtlWebDriverFactory {
 		 * @param capabilities Capability
 		 */
 		public PtlInternetExplorer7DriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
-												 PtlCapabilities capabilities) {
+				PtlCapabilities capabilities) {
 			super(environmentConfig, testAppConfig, capabilities);
 		}
 
@@ -322,7 +326,7 @@ public abstract class PtlWebDriverFactory {
 		 * @param capabilities Capability
 		 */
 		public PtlInternetExplorer8DriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
-												 PtlCapabilities capabilities) {
+				PtlCapabilities capabilities) {
 			super(environmentConfig, testAppConfig, capabilities);
 		}
 
@@ -345,7 +349,7 @@ public abstract class PtlWebDriverFactory {
 		 * @param capabilities Capability
 		 */
 		public PtlSafariDriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
-									  PtlCapabilities capabilities) {
+				PtlCapabilities capabilities) {
 			super(environmentConfig, testAppConfig, capabilities);
 		}
 
@@ -383,7 +387,7 @@ public abstract class PtlWebDriverFactory {
 		 * @param capabilities Capability
 		 */
 		public PtlIPhoneDriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
-									  PtlCapabilities capabilities) {
+				PtlCapabilities capabilities) {
 			super(environmentConfig, testAppConfig, capabilities);
 
 			if (capabilities.getCapability("headerHeight") == null) {
@@ -429,7 +433,7 @@ public abstract class PtlWebDriverFactory {
 		 * @param capabilities Capability
 		 */
 		public PtlIPadDriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
-									PtlCapabilities capabilities) {
+				PtlCapabilities capabilities) {
 			super(environmentConfig, testAppConfig, capabilities);
 
 			if (capabilities.getCapability("headerHeight") == null) {
@@ -464,7 +468,7 @@ public abstract class PtlWebDriverFactory {
 		 * @param capabilities Capability
 		 */
 		public PtlAndroidDriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
-									   PtlCapabilities capabilities) {
+				PtlCapabilities capabilities) {
 			super(environmentConfig, testAppConfig, capabilities);
 		}
 
@@ -492,7 +496,7 @@ public abstract class PtlWebDriverFactory {
 		 * @param capabilities Capability
 		 */
 		public PtlSelendroidDriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
-										  PtlCapabilities capabilities) {
+				PtlCapabilities capabilities) {
 			super(environmentConfig, testAppConfig, capabilities);
 		}
 
