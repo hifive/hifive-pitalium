@@ -49,10 +49,15 @@ public class CompareTarget implements Serializable {
 	private final boolean moveTarget;
 
 	/**
+	 * 部分スクロールが必要な要素か否か。trueに設定した場合、要素の部分スクロールを展開したスクリーンショットを撮影します。
+	 */
+	private final boolean scrolling;
+
+	/**
 	 * ページ全体をスクリーンショット取得・比較の対象とします。
 	 */
 	public CompareTarget() {
-		this(ScreenArea.of(SelectorType.TAG_NAME, "body"), null, true);
+		this(ScreenArea.of(SelectorType.TAG_NAME, "body"), null, true, false);
 	}
 
 	/**
@@ -61,7 +66,7 @@ public class CompareTarget implements Serializable {
 	 * @param compareArea 指定領域
 	 */
 	public CompareTarget(ScreenArea compareArea) {
-		this(compareArea, null, true);
+		this(compareArea, null, true, false);
 	}
 
 	/**
@@ -73,9 +78,22 @@ public class CompareTarget implements Serializable {
 	 *            ページによっては画面のレイアウトが崩れる場合があります 。
 	 */
 	public CompareTarget(ScreenArea compareArea, ScreenArea[] excludes, boolean moveTarget) {
+		this(compareArea, excludes, moveTarget, false);
+	}
+
+	/**
+	 * 指定領域（{@link #excludes}の領域を除く）をスクリーンショット取得・比較の対象とします。
+	 *
+	 * @param compareArea 指定領域
+	 * @param excludes 比較時に除外する領域
+	 * @param moveTarget スクリーンショット撮影時に指定領域を定位置に移動するか否か。移動する場合はtrueを指定します。trueの場合、レンダリングによって発生する想定外の誤差を抑制しますが、
+	 *            ページによっては画面のレイアウトが崩れる場合があります 。
+	 */
+	public CompareTarget(ScreenArea compareArea, ScreenArea[] excludes, boolean moveTarget, boolean scrolling) {
 		this.compareArea = compareArea;
 		this.excludes = excludes != null ? excludes : new ScreenArea[0];
 		this.moveTarget = moveTarget;
+		this.scrolling = scrolling;
 	}
 
 	/**
@@ -112,6 +130,15 @@ public class CompareTarget implements Serializable {
 	 */
 	public boolean isMoveTarget() {
 		return moveTarget;
+	}
+
+	/**
+	 * 撮影時に要素の部分スクロールが必要か否かの設定を取得します。
+	 *
+	 * @return 部分スクロールが必要か否か。スクロールする場合はtrue。
+	 */
+	public boolean doScroll() {
+		return scrolling;
 	}
 
 	@Override
