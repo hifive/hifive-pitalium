@@ -18,6 +18,9 @@ package com.htmlhifive.pitalium.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
@@ -26,6 +29,8 @@ import com.htmlhifive.pitalium.image.model.RectangleArea;
  * スクリーンショット撮影用のパラメータークラス
  */
 public class ScreenshotParams {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ScreenshotParams.class);
 
 	private final ScreenAreaWrapper target;
 	private final List<ScreenAreaWrapper> excludes;
@@ -63,6 +68,9 @@ public class ScreenshotParams {
 		for (ScreenAreaWrapper exclude : excludes) {
 			initialExcludeAreas.add(exclude.getArea());
 		}
+
+		LOG.trace("Update initial area. target: {}; index: {}; targetArea: {}; excludeAreas: {}", target.getParent(),
+				index, initialTargetArea, initialExcludeAreas);
 	}
 
 	/**

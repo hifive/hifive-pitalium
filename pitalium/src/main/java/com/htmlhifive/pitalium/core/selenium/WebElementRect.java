@@ -17,6 +17,8 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.io.Serializable;
 
+import com.htmlhifive.pitalium.common.util.JSONUtils;
+
 /**
  * DOM要素の矩形領域を表すクラス
  */
@@ -144,6 +146,7 @@ public class WebElementRect implements Serializable {
 
 	@Override
 	public String toString() {
-		return "WebElementRect{" + "left=" + left + ", top=" + top + ", width=" + width + ", height=" + height + '}';
+		return JSONUtils.toString(this);
 	}
+
 }

@@ -17,6 +17,8 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.io.Serializable;
 
+import com.htmlhifive.pitalium.common.util.JSONUtils;
+
 /**
  * DOM要素のマージンを表すクラス
  */
@@ -143,7 +145,7 @@ public class WebElementMargin implements Serializable {
 
 	@Override
 	public String toString() {
-		return "WebElementMargin{" + "top=" + top + ", right=" + right + ", bottom=" + bottom + ", left=" + left + '}';
+		return JSONUtils.toString(this);
 	}
 
 }

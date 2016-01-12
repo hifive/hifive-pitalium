@@ -17,6 +17,8 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.io.Serializable;
 
+import com.htmlhifive.pitalium.common.util.JSONUtils;
+
 /**
  * DOM要素のPaddingを表すクラス
  */
@@ -46,7 +48,7 @@ public class WebElementPadding implements Serializable {
 
 	/**
 	 * 指定したPaddingを持つオブジェクトを生成します。
-	 *
+	 * 
 	 * @param top 上Padding
 	 * @param right 右Padding
 	 * @param bottom 下Padding
@@ -61,7 +63,7 @@ public class WebElementPadding implements Serializable {
 
 	/**
 	 * 上Paddingを取得します。
-	 *
+	 * 
 	 * @return 上Padding
 	 */
 	public double getTop() {
@@ -70,7 +72,7 @@ public class WebElementPadding implements Serializable {
 
 	/**
 	 * 右Paddingを取得します。
-	 *
+	 * 
 	 * @return 右Padding
 	 */
 	public double getRight() {
@@ -79,7 +81,7 @@ public class WebElementPadding implements Serializable {
 
 	/**
 	 * 下Paddingを取得します。
-	 *
+	 * 
 	 * @return 下Padding
 	 */
 	public double getBottom() {
@@ -88,7 +90,7 @@ public class WebElementPadding implements Serializable {
 
 	/**
 	 * 左Paddingを取得します。
-	 *
+	 * 
 	 * @return 左Padding
 	 */
 	public double getLeft() {
@@ -97,7 +99,7 @@ public class WebElementPadding implements Serializable {
 
 	/**
 	 * 同一かどうか調べます。
-	 *
+	 * 
 	 * @param o 比較対象
 	 * @return 上下左右のPaddingの値が一致すればtrue
 	 */
@@ -143,7 +145,7 @@ public class WebElementPadding implements Serializable {
 
 	@Override
 	public String toString() {
-		return "WebElementPadding{" + "top=" + top + ", right=" + right + ", bottom=" + bottom + ", left=" + left + '}';
+		return JSONUtils.toString(this);
 	}
 
 }
