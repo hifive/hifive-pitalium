@@ -27,7 +27,7 @@ import com.google.common.collect.Lists;
 
 /**
  * スクリーンショットを撮影するためのパラメーターを構築するクラス
- * 
+ *
  * @author nakatani
  */
 public class ScreenshotArgumentBuilder {
@@ -36,6 +36,7 @@ public class ScreenshotArgumentBuilder {
 		final ScreenArea target;
 		final List<ScreenArea> excludes = new ArrayList<ScreenArea>();
 		boolean moveTarget = true;
+		boolean scrolling = false;
 
 		public TargetParamHolder(ScreenArea target) {
 			this.target = target;
@@ -58,7 +59,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットIDを設定し、初期化します。
-	 * 
+	 *
 	 * @param screenshotId スクリーンショットID
 	 */
 	protected ScreenshotArgumentBuilder(String screenshotId) {
@@ -80,7 +81,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * このビルダーに対して指定した条件でスクリーンショットを撮影するパラメーターを持つオブジェクトを生成します。
-	 * 
+	 *
 	 * @return スクリーンショット撮影パラメーター
 	 * @throws IllegalStateException スクリーンショットIDが指定されていない場合
 	 */
@@ -94,7 +95,8 @@ public class ScreenshotArgumentBuilder {
 			@Override
 			public CompareTarget apply(TargetParamHolder holder) {
 				return new CompareTarget(holder.target,
-						holder.excludes.toArray(new ScreenArea[holder.excludes.size()]), holder.moveTarget);
+						holder.excludes.toArray(new ScreenArea[holder.excludes.size()]), holder.moveTarget,
+						holder.scrolling);
 			}
 		});
 
@@ -104,7 +106,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットIDを設定します。
-	 * 
+	 *
 	 * @param screenshotId スクリーンショットID
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -117,7 +119,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * &lt;body&gt;タグを対象としたスクリーンショットを撮影する対象を追加します。
-	 * 
+	 *
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder addNewTarget() {
@@ -126,18 +128,18 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * 既存の{@link CompareTarget}を元にスクリーンショットを撮影する対象を追加します。追加された対象には{@code target}で指定したCompareTargetの情報が全て含まれます。
-	 * 
+	 *
 	 * @param target スクリーンショットを取得、比較するための条件
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder addNewTarget(CompareTarget target) {
 		return addNewTarget(target.getCompareArea()).addExcludes(target.getExcludes())
-				.moveTarget(target.isMoveTarget());
+				.moveTarget(target.isMoveTarget()).scrolling(target.doScroll());
 	}
 
 	/**
 	 * 既存の{@link ScreenArea}を元にスクリーンショットを撮影する対象を追加します。
-	 * 
+	 *
 	 * @param target スクリーンショットを取得する対象、または領域の情報
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -148,7 +150,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットを撮影する対象を追加します。
-	 * 
+	 *
 	 * @param type セレクタ種別
 	 * @param value 取得条件
 	 * @return このビルダーオブジェクト自身
@@ -159,7 +161,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットを取得する対象をIDで指定して追加します。
-	 * 
+	 *
 	 * @param value 取得条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -169,7 +171,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットを取得する対象をCSSクラス名で指定して追加します。
-	 * 
+	 *
 	 * @param value 取得条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -179,7 +181,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットを取得する対象をCSSセレクタで指定して追加します。
-	 * 
+	 *
 	 * @param value 取得条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -189,7 +191,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットを取得する対象をリンクの文字列で指定して追加します。
-	 * 
+	 *
 	 * @param value 取得条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -199,7 +201,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットを取得する対象を&lt;input&gt;タグのname属性で指定して追加します。
-	 * 
+	 *
 	 * @param value 取得条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -209,7 +211,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットを取得する対象をリンクの文字列の部分一致で指定して追加します。
-	 * 
+	 *
 	 * @param value 取得条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -219,7 +221,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットを取得する対象をタグ名で指定して追加します。
-	 * 
+	 *
 	 * @param value 取得条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -229,7 +231,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットを取得する対象をXPathで指定して追加します。
-	 * 
+	 *
 	 * @param value 取得条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -239,7 +241,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショットを取得する対象の座標で指定して追加します。
-	 * 
+	 *
 	 * @param x 領域の左上のx座標
 	 * @param y 領域の左上のy座標
 	 * @param width 領域の幅
@@ -256,7 +258,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、除外条件を追加します。
-	 * 
+	 *
 	 * @param type セレクタ種別
 	 * @param value 除外条件
 	 * @return このビルダーオブジェクト自身
@@ -267,7 +269,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、IDを指定して除外条件を追加します。
-	 * 
+	 *
 	 * @param value 除外条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -277,7 +279,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、CSSクラス名を指定して除外条件を追加します。
-	 * 
+	 *
 	 * @param value 除外条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -287,7 +289,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、CSSセレクタを指定して除外条件を追加します。
-	 * 
+	 *
 	 * @param value 除外条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -297,7 +299,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、リンクの文字列を指定して除外条件を追加します。
-	 * 
+	 *
 	 * @param value 除外条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -307,7 +309,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、&lt;input&gt;タグのname属性を指定して除外条件を追加します。
-	 * 
+	 *
 	 * @param value 除外条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -317,7 +319,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、リンクの文字列の部分一致で除外条件を追加します。
-	 * 
+	 *
 	 * @param value 除外条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -327,7 +329,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、タグを指定して除外条件を追加します。
-	 * 
+	 *
 	 * @param value 除外条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -337,7 +339,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、XPathで除外条件を追加します。
-	 * 
+	 *
 	 * @param value 除外条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -347,7 +349,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、除外条件を追加します。
-	 * 
+	 *
 	 * @param exclude 除外条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -359,7 +361,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、座標を指定して除外条件を追加します。
-	 * 
+	 *
 	 * @param x 領域の左上のx座標
 	 * @param y 領域の左上のy座標
 	 * @param width 領域の幅
@@ -372,7 +374,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、既存のセレクタまたは座標のコレクションを除外状件として追加します。
-	 * 
+	 *
 	 * @param excludes セレクタまたは座標のコレクション
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -384,7 +386,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、既存のセレクタまたは座標の配列を除外状件として追加します。
-	 * 
+	 *
 	 * @param excludes セレクタまたは座標の配列
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -398,7 +400,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、スクリーンショット撮影時に指定領域を定位置に移動するか否かを指定します。
-	 * 
+	 *
 	 * @param moveTarget スクリーンショット撮影時に指定領域を定位置に移動するか否か
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -407,11 +409,22 @@ public class ScreenshotArgumentBuilder {
 		return this;
 	}
 
+	/**
+	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、スクロールを展開して撮影するか否かを指定します。
+	 *
+	 * @param scrolling スクロールを展開して撮影するか否か
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder scrolling(boolean scrolling) {
+		getCurrentHolder().scrolling = scrolling;
+		return this;
+	}
+
 	//<editor-fold desc="HiddenElementSelector">
 
 	/**
 	 * スクリーンショット撮影時に非表示にする要素を追加します。
-	 * 
+	 *
 	 * @param type セレクタ種別
 	 * @param value 非表示条件
 	 * @return このビルダーオブジェクト自身
@@ -423,7 +436,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショット撮影時に非表示にする要素をIDを指定して追加します。
-	 * 
+	 *
 	 * @param value 非表示条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -433,7 +446,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショット撮影時に非表示にする要素をCSSクラス名を指定して追加します。
-	 * 
+	 *
 	 * @param value 非表示条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -443,7 +456,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショット撮影時に非表示にする要素をCSSセレクタで追加します。
-	 * 
+	 *
 	 * @param value 非表示条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -453,7 +466,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショット撮影時に非表示にする要素をリンクの文字列を指定して追加します。
-	 * 
+	 *
 	 * @param value 非表示条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -463,7 +476,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショット撮影時に非表示にする要素を&lt;input&gt;タグのname属性を指定して追加します。
-	 * 
+	 *
 	 * @param value 非表示条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -473,7 +486,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショット撮影時に非表示にする要素をリンクの文字列の部分一致で追加します。
-	 * 
+	 *
 	 * @param value 非表示条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -483,7 +496,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショット撮影時に非表示にする要素をタグ名を指定して追加します。
-	 * 
+	 *
 	 * @param value 非表示条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -493,7 +506,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * スクリーンショット撮影時に非表示にする要素をXPathで追加します。
-	 * 
+	 *
 	 * @param value 非表示条件
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -503,7 +516,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * 既存のセレクタまたは座標のコレクションをスクリーンショット撮影時に非表示にする要素に追加します。
-	 * 
+	 *
 	 * @param selectors 非表示にする要素を示すセレクタまたは座標のコレクション
 	 * @return このビルダーオブジェクト自身
 	 */
@@ -514,7 +527,7 @@ public class ScreenshotArgumentBuilder {
 
 	/**
 	 * 既存のセレクタまたは座標の配列をスクリーンショット撮影時に非表示にする要素に追加します。
-	 * 
+	 *
 	 * @param selectors 非表示にする要素を示すセレクタまたは座標の配列
 	 * @return このビルダーオブジェクト自身
 	 */
