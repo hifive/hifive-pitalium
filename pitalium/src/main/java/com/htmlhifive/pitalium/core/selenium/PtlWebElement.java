@@ -182,21 +182,13 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		driver.scrollTo(0d, 0d);
 
 		Map<String, Object> object = driver.executeJavaScript(GET_ELEMENT_RECT_SCRIPT, this);
-		LOG.trace("rectangle JS object: {}", object);
+		LOG.trace("Rect: {}", object);
 
 		double left = getDoubleOrDefault(object.get("left"), 0d);
 		double top = getDoubleOrDefault(object.get("top"), 0d);
 
-		// scrollWidthはdisplay: inlineのときに要素の幅が取得できないため、BoundingClientRect#widthも使う
-		//		double width = getDoubleOrDefault(object.get("scrollWidth"), 0d);
-		//		if (width == 0d) {
-		//			width = getDoubleOrDefault(object.get("width"), 0d);
-		//		}
 		double width = getTagName().equals("body") ? driver.getCurrentPageWidth() : getDoubleOrDefault(
 				object.get("width"), 0d);
-		// widthはボーダーを含める
-		//		WebElementBorderWidth borderWidth = getBorderWidth();
-		//		width += borderWidth.getLeft() + borderWidth.getRight();
 
 		// bodyの場合はページ全体の高さを返す
 		double height = getTagName().equals("body") ? driver.getCurrentPageHeight() : getDoubleOrDefault(
@@ -440,6 +432,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	public int scrollNext() {
 		long initialScrollTop = getCurrentScrollTop();
 		long clientHeight = getClientHeight();
+		LOG.debug("Scroll element to ({}, {}) ({})", 0, initialScrollTop + clientHeight, this);
 		scrollTo(0, initialScrollTop + clientHeight);
 		long currentScrollTop = getCurrentScrollTop();
 		return (int) (currentScrollTop - initialScrollTop);
@@ -537,7 +530,9 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		} else {
 			object = driver.executeJavaScript(SCRIPT_GET_ELEMENT_OVERFLOW, this);
 		}
-		return new String[] { object.get("x").toString(), object.get("y").toString() };
+		String[] result = { object.get("x").toString(), object.get("y").toString() };
+		LOG.debug("Overflow status: {} ({})", result, this);
+		return result;
 	}
 
 	/**

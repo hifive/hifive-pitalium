@@ -53,6 +53,8 @@ public abstract class ImageComparator {
 		if (img1 == null || img2 == null) {
 			throw new TestRuntimeException("Both img1 and img2 is required.");
 		}
+		LOG.trace("Compare. image1[w: {}, h: {}; {}]; images[w: {}, h: {}: {}]", img1.getWidth(), img1.getHeight(),
+				img1Area, img2.getWidth(), img2.getHeight(), img2Area);
 
 		int offsetX = 0;
 		int offsetY = 0;
@@ -92,6 +94,8 @@ public abstract class ImageComparator {
 		int height1 = img1.getHeight();
 		int width2 = img2.getWidth();
 		int height2 = img2.getHeight();
+		LOG.trace("CreateSizeDiffPoints. image1[w: {}, h: {}]; image2[w: {}, h: {}]; offsetX: {}; offsetY: {}", width1,
+				height1, width2, height2, offsetX, offsetY);
 
 		if (width1 == width2 && height1 == height2) {
 			LOG.debug("No size diff points.");

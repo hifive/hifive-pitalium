@@ -15,15 +15,21 @@
  */
 package com.htmlhifive.pitalium.image.util;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 通常の方法で画像比較
  */
 class DefaultImageComparator extends ImageComparator {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultImageComparator.class);
 
 	/**
 	 * コンストラクタ
@@ -33,6 +39,8 @@ class DefaultImageComparator extends ImageComparator {
 
 	@Override
 	protected List<Point> compare(BufferedImage image1, BufferedImage image2, int offsetX, int offsetY) {
+		LOG.trace("compare. image1[w: {}, h: {}]; images[w: {}, h: {}], offset: ({}, {})", image1.getWidth(),
+				image1.getHeight(), image2.getWidth(), image2.getHeight(), offsetX, offsetY);
 		int width = Math.min(image1.getWidth(), image2.getWidth());
 		int height = Math.min(image1.getHeight(), image2.getHeight());
 
@@ -47,9 +55,11 @@ class DefaultImageComparator extends ImageComparator {
 
 				Point diffPoint = new Point(x, y);
 				diffPoints.add(diffPoint);
+				LOG.trace("Diff found @[{}]. {} <=> {}", diffPoint, new Color(rgb1[i]), new Color(rgb2[i]));
 			}
 		}
 
+		LOG.debug("Diff points: {}", diffPoints);
 		return diffPoints;
 	}
 

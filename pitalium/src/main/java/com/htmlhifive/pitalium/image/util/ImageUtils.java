@@ -432,6 +432,10 @@ public final class ImageUtils {
 	public static BufferedImage trim(BufferedImage image, int trimTop, int trimLeft, int trimBottom, int trimRight) {
 		int width = image.getWidth();
 		int height = image.getHeight();
+		LOG.debug(
+				"Trim image(top: {}, left: {}, bottom: {}, right; {}). [w: {}; h: {}] -> [x: {}; y: {}; w: {}; h: {}].",
+				trimTop, trimLeft, trimBottom, trimRight, width, height, trimLeft, trimTop, width - trimLeft
+						- trimRight, height - trimTop - trimBottom);
 		return image.getSubimage(trimLeft, trimTop, width - trimLeft - trimRight, height - trimTop - trimBottom);
 	}
 }

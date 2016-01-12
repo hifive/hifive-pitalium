@@ -106,4 +106,13 @@ public class ScreenshotImage {
 		return new ByteArrayInputStream(bao.toByteArray());
 	}
 
+	@Override
+	public String toString() {
+		if (image == null) {
+			return "ScreenshotImage: not cached.";
+		}
+
+		return "ScreenshotImage[width: " + image.getWidth() + "; height: " + image.getHeight() + "].";
+	}
+
 }

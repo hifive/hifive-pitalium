@@ -163,4 +163,15 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		if (image == null) {
+			return "PersistedScreenshotImage[persister: " + persister.getClass().getSimpleName() + "; metadata: "
+					+ metadata + "]";
+		}
+
+		return "PersistedScreenshotImage[width: " + image.getWidth() + "; height: " + image.getHeight()
+				+ "; persister: " + persister.getClass().getSimpleName() + "; metadata: " + metadata + "]";
+	}
+
 }

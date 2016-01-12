@@ -18,10 +18,12 @@ package com.htmlhifive.pitalium.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
+import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 import com.htmlhifive.pitalium.core.selenium.WebElementRect;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
@@ -218,6 +220,8 @@ public abstract class ScreenAreaWrapper {
 	 */
 	static class DomScreenAreaWrapper extends ScreenAreaWrapper {
 
+		private static final Logger LOG = LoggerFactory.getLogger(DomScreenAreaWrapper.class);
+
 		/**
 		 * DOM要素のセレクタ
 		 */
@@ -254,11 +258,13 @@ public abstract class ScreenAreaWrapper {
 		@Override
 		public void updatePosition(double scale) {
 			WebElementRect rect = element.getRect();
+			LOG.trace("Position update. scale: {}; rect: {} ({})", scale, rect, element);
 
 			area = new RectangleArea(rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight());
 			if (scale != PtlWebDriver.DEFAULT_SCREENSHOT_SCALE) {
 				area = area.applyScale(scale);
 			}
+			LOG.debug("Position updated. {} ({})", area, element);
 		}
 
 		@Override
@@ -280,6 +286,8 @@ public abstract class ScreenAreaWrapper {
 	 * 矩形領域を表現するためのScreenAreaWrapperクラス
 	 */
 	static class RectangleScreenAreaWrapper extends ScreenAreaWrapper {
+
+		private static final Logger LOG = LoggerFactory.getLogger(RectangleScreenAreaWrapper.class);
 
 		/**
 		 * 指定された矩形領域
@@ -317,13 +325,16 @@ public abstract class ScreenAreaWrapper {
 		@Override
 		public void updatePosition(double scale) {
 			area = scale == 0d ? target : target.applyScale(scale);
+			LOG.debug("Position updated. {} ({})", area, target);
 		}
 
 		@Override
 		public void updatePosition(double scale, double moveX, double moveY) {
+			LOG.trace("Position update. scale: {}; x: {}; y: {} ({})", scale, moveX, moveY, element);
 			RectangleArea area = new RectangleArea(target.getX() - moveX, target.getY() - moveX, target.getWidth(),
 					target.getHeight());
 			this.area = scale == PtlWebDriver.DEFAULT_SCREENSHOT_SCALE ? area : area.applyScale(scale);
+			LOG.debug("Position updated. {} ({})", area, target);
 		}
 
 		@Override
