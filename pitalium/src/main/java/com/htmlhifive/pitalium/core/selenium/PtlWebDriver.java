@@ -100,6 +100,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			"} else {" +
 			"  return document.getElementsByTagName('body')[0].clientHeight;" +
 			"}";
+	private static final String GET_BODY_LEFT_SCRIPT = "var _bodyLeft = arguments[0].getBoundingClientRect().left; return _bodyLeft;";
+	private static final String GET_BODY_TOP_SCRIPT = "var _bodyTop = arguments[0].getBoundingClientRect().top; return _bodyTop;";
 	// CHECKSTYLE:ON
 	//@formatter:on
 
@@ -339,6 +341,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	/**
 	 * isMoveがfalseに指定されているターゲットを一括で撮影するメソッド。
 	 *
+	 * @param entireScreenshotResult 予めページ全体を撮影した際のTargetResult
 	 * @param hiddenElementSelectors 撮影時に非表示にする要素のリスト
 	 * @param targetParams 撮影対象のターゲットリスト
 	 * @param entireScreenshotParams ページ全体撮影用のパラメータ
@@ -356,32 +359,35 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		int maxPartialScrollNum = 0;
 		for (int i = 0; i < targetParams.size(); i++) {
 			Pair<CompareTarget, ScreenshotParams> pair = targetParams.get(i);
-			PtlWebElement targetElement = (PtlWebElement) pair.getRight().getTarget().getElement();
+			PtlWebElement targetElement = pair.getRight().getTarget().getElement();
 
-			if (targetElement.getTagName().equals("body") || !pair.getLeft().doScroll()) {
+			// target毎のスクロール回数を確認
+
+			if (targetElement.isBody() || !pair.getLeft().doScroll()) {
 				// bodyの撮影は1回だけで良いため、スクロール回数を0に設定
 				// スクロール指定が無い場合もスクロール回数を0に設定
 				partialScrollNums[i] = 0;
-			} else {
-				// スクロールバーをhiddenにする
-				// スクロールバーの元の状態を覚えておく
-				overflowStatus[i] = targetElement.getOverflowStatus();
-				if (capabilities.getPlatformName() == null || !capabilities.getPlatformName().equals("ANDROID")) {
-					targetElement.hideScrollBar();
-				}
-				// textareaの場合はリサイズ不可にする
-				targetElement.setNoResizable();
+				continue;
+			}
 
-				// 部分スクロールの最大回数を調べる
-				partialScrollNums[i] = targetElement.getScrollNum();
-				if (maxPartialScrollNum < partialScrollNums[i]) {
-					maxPartialScrollNum = partialScrollNums[i];
-				}
+			// スクロールバーをhiddenにする
+			// スクロールバーの元の状態を覚えておく
+			overflowStatus[i] = targetElement.getOverflowStatus();
+			if (!"ANDROID".equals(capabilities.getPlatformName())) {
+				targetElement.hideScrollBar();
+			}
+			// textareaの場合はリサイズ不可にする
+			targetElement.setNoResizable();
 
-				// スクロールありの場合はスクロール位置をリセット
-				if (partialScrollNums[i] > 0) {
-					targetElement.scrollTo(0, 0);
-				}
+			// 部分スクロールの最大回数を調べる
+			partialScrollNums[i] = targetElement.getScrollNum();
+			if (maxPartialScrollNum < partialScrollNums[i]) {
+				maxPartialScrollNum = partialScrollNums[i];
+			}
+
+			// スクロールありの場合はスクロール位置をリセット
+			if (partialScrollNums[i] > 0) {
+				targetElement.scrollTo(0, 0);
 			}
 		}
 
@@ -393,10 +399,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		long partialScrollAmounts[] = new long[targetParams.size()];
 		for (int i = 0; i <= maxPartialScrollNum; i++) {
 			// 全体スクリーンショットを撮影
-			TargetResult entireResult;
-			if (maxPartialScrollNum == 0) {
-				entireResult = entireScreenshotResult;
-			} else {
+			TargetResult entireResult = entireScreenshotResult;
+			if (maxPartialScrollNum != 0) {
 				entireResult = getTargetResult(new CompareTarget(), hiddenElementSelectors, entireScreenshotParams,
 						additionalParams);
 			}
@@ -415,7 +419,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				// 自身の必要スクロール回数に達していなければ切り抜いて保存
 				if (i <= partialScrollNums[j]) {
 					TargetResult targetPartResult = entireResult;
-					if (!targetElement.getTagName().equals("body")) {
+					if (!targetElement.isBody()) {
 						// 全体画像から切り抜く
 						targetPartResult = getTargetResult(pair.getLeft(), hiddenElementSelectors, pair.getRight(),
 								entireScreenshotImage);
@@ -443,22 +447,18 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		// 撮影した全ターゲットの末尾をそれぞれtrim
 		for (int i = 0; i < allTargetScreenshots.size(); i++) {
 			List<TargetResult> targetScreenshots = allTargetScreenshots.get(i);
+			PtlWebElement targetElement = targetParams.get(i).getRight().getTarget().getElement();
 			if (targetScreenshots.size() > 1) {
 				TargetResult lastResult = targetScreenshots.get(targetScreenshots.size() - 1);
 				BufferedImage lastImage = lastResult.getImage().get();
-				PtlWebElement targetElement = (PtlWebElement) (targetParams.get(i).getRight().getTarget().getElement());
-				if (!targetElement.getTagName().equals("body")) {
-					int trimTop = calcTrimTop(lastImage.getHeight(), partialScrollAmounts[i], targetElement);
-					if (trimTop == lastImage.getHeight()) {
-						trimTop = 0;
-					}
-					LOG.debug("trimTop: " + trimTop);
-					targetScreenshots.set(
-							targetScreenshots.size() - 1,
-							new TargetResult(null, lastResult.getTarget(), lastResult.getExcludes(), lastResult
-									.isMoveTarget(), lastResult.getHiddenElementSelectors(), new ScreenshotImage(
-									ImageUtils.trim(lastImage, trimTop, 0, 0, 0)), lastResult.getOptions()));
+				int trimTop = calcTrimTop(lastImage.getHeight(), partialScrollAmounts[i], targetElement);
+				if (trimTop == lastImage.getHeight()) {
+					trimTop = 0;
 				}
+				LOG.debug("trimTop: " + trimTop);
+				targetScreenshots.set(targetScreenshots.size() - 1, new TargetResult(null, lastResult.getTarget(),
+						lastResult.getExcludes(), lastResult.isMoveTarget(), lastResult.getHiddenElementSelectors(),
+						new ScreenshotImage(ImageUtils.trim(lastImage, trimTop, 0, 0, 0)), lastResult.getOptions()));
 			}
 		}
 
@@ -505,9 +505,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		// スクロールバーを元に戻す
 		for (int i = 0; i < targetParams.size(); i++) {
 			Pair<CompareTarget, ScreenshotParams> pair = targetParams.get(i);
-			WebElement el = pair.getRight().getTarget().getElement();
-			if (!el.getTagName().equals("body")) {
-				((PtlWebElement) el).setOverflowStatus(overflowStatus[i][0], overflowStatus[i][1]);
+			PtlWebElement el = (PtlWebElement) pair.getRight().getTarget().getElement();
+			if (!el.isBody()) {
+				el.setOverflowStatus(overflowStatus[i][0], overflowStatus[i][1]);
 			}
 		}
 
@@ -524,149 +524,152 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 */
 	protected TargetResult takeMoveScreenshots(CompareTarget target, List<DomSelector> hiddenElementSelectors,
 			ScreenshotParams params) {
-		// 部分スクロール有りの場合
-		if (target.doScroll()) {
-			WebElement el = params.getTarget().getElement();
-			WebElementPadding targetPadding = ((PtlWebElement) el).getPadding();
 
-			// スクロールバーの元の状態を覚えておく
-			String overflowStatus[] = ((PtlWebElement) el).getOverflowStatus();
+		// 部分スクロールなしの場合
+		if (!target.doScroll()) {
+			return getTargetResult(target, hiddenElementSelectors, params);
+		}
 
-			// スクロールバーをhiddenにする
-			if (capabilities.getPlatformName() == null || !capabilities.getPlatformName().equals("ANDROID")) {
-				((PtlWebElement) el).hideScrollBar();
-			}
-			// textareaの場合はリサイズ不可にする
-			((PtlWebElement) el).setNoResizable();
+		// 部分スクロールありの場合
 
-			// 可視範囲のサイズを調べる
-			long clientHeight = ((PtlWebElement) el).getClientHeight();
-			long clientWidth = ((PtlWebElement) el).getClientWidth();
+		PtlWebElement el = (PtlWebElement) params.getTarget().getElement();
+		WebElementPadding targetPadding = el.getPadding();
 
-			double captureTop = 0d;
-			long scrollTop = -1L;
-			double currentScale = Double.NaN;
-			long currentScrollAmount = -1;
-			List<Double> allCaptureTop = new ArrayList<Double>();
+		// スクロールバーの元の状態を覚えておく
+		String overflowStatus[] = el.getOverflowStatus();
 
-			List<BufferedImage> images = new ArrayList<BufferedImage>();
-			try {
+		// スクロールバーをhiddenにする
+		if (!"ANDROID".equals(capabilities.getPlatformName())) {
+			el.hideScrollBar();
+		}
+		// textareaの場合はリサイズ不可にする
+		el.setNoResizable();
+
+		// 可視範囲のサイズを調べる
+		long clientHeight = el.getClientHeight();
+		long clientWidth = el.getClientWidth();
+
+		double captureTop = 0d;
+		long scrollTop = -1L;
+		double currentScale = Double.NaN;
+		long currentScrollAmount = -1;
+		List<Double> allCaptureTop = new ArrayList<Double>();
+
+		List<BufferedImage> images = new ArrayList<BufferedImage>();
+		try {
+			// 次の撮影位置までスクロール
+			el.scrollTo(0d, 0d);
+			// スクロール完了を待つためのwait
+			Thread.sleep(100L);
+
+			// スクロール位置を確認
+			long currentScrollTop = el.getCurrentScrollTop();
+			while (scrollTop != currentScrollTop) {
+				if (currentScrollAmount < 0) {
+					currentScrollAmount = 0;
+				} else {
+					currentScrollAmount = currentScrollTop - scrollTop;
+				}
+				scrollTop = currentScrollTop;
+
+				// 可視範囲のスクリーンショットを撮影
+				BufferedImage image = getScreenshotImage(params).get();
+				allCaptureTop.add(captureTop);
+
+				// scaleを計算（初回のみ）
+				if (Double.isNaN(currentScale)) {
+					currentScale = calcScale(clientWidth, image.getWidth());
+					scale = currentScale;
+				}
+
+				// 結果セットに追加
+				images.add(image);
+
+				// 次のキャプチャ開始位置を設定
+				double scrollIncrement = 0;
+				scrollIncrement = clientHeight;
+				captureTop += scrollIncrement;
+
 				// 次の撮影位置までスクロール
-				((PtlWebElement) el).scrollTo(0d, 0d);
-				// スクロール完了を待つためのwait
+				el.scrollNext();
 				Thread.sleep(100L);
 
 				// スクロール位置を確認
-				long currentScrollTop = ((PtlWebElement) el).getCurrentScrollTop();
-				while (scrollTop != currentScrollTop) {
-					if (currentScrollAmount < 0) {
-						currentScrollAmount = 0;
-					} else {
-						currentScrollAmount = currentScrollTop - scrollTop;
-					}
-					scrollTop = currentScrollTop;
-
-					// 可視範囲のスクリーンショットを撮影
-					BufferedImage image = getScreenshotImage(params).get();
-					allCaptureTop.add(captureTop);
-
-					// scaleを計算（初回のみ）
-					if (Double.isNaN(currentScale)) {
-						currentScale = calcScale(clientWidth, image.getWidth());
-						scale = currentScale;
-					}
-
-					// 結果セットに追加
-					images.add(image);
-
-					// 次のキャプチャ開始位置を設定
-					double scrollIncrement = 0;
-					scrollIncrement = clientHeight;
-					captureTop += scrollIncrement;
-
-					// 次の撮影位置までスクロール
-					((PtlWebElement) el).scrollNext();
-					Thread.sleep(100L);
-
-					// スクロール位置を確認
-					currentScrollTop = ((PtlWebElement) el).getCurrentScrollTop();
-				}
-			} catch (InterruptedException e) {
-				throw new TestRuntimeException(e);
+				currentScrollTop = el.getCurrentScrollTop();
 			}
-
-			// borderがある場合は切り取る
-			trimMoveBorder(el, images);
-
-			// paddingがある場合は切り取る
-			trimMovePadding(el, images);
-
-			// 画像間の重なりを切り取る
-			if (scale != DEFAULT_SCREENSHOT_SCALE) {
-				for (int i = 0; i < images.size(); i++) {
-					long windowHeight = clientHeight;
-					long windowWidth = clientWidth;
-					if (el.getTagName().equals("textarea") && capabilities.getBrowserName().equals("firefox")) {
-						if (i <= 0) {
-							windowHeight += (int) Math.round(targetPadding.getTop());
-						} else if (i >= images.size() - 1) {
-							windowHeight += (int) Math.round(targetPadding.getBottom());
-						}
-					}
-					images.set(i, trimOverlap(allCaptureTop.get(i), 0, windowHeight, windowWidth, images.get(i)));
-				}
-			}
-
-			// 末尾の重複をトリム
-			if (images.size() > 1) {
-				BufferedImage lastImage = images.get(images.size() - 1);
-				int trimTop = calcTrimTop(lastImage.getHeight(), currentScrollAmount, (PtlWebElement) el);
-				LOG.debug("trimTop: " + trimTop);
-
-				if (trimTop > 0 && trimTop < lastImage.getHeight()) {
-					images.set(images.size() - 1, ImageUtils.trim(lastImage, trimTop, 0, 0, 0));
-				}
-			}
-
-			// 結合後の画像サイズを調べる
-			int totalHeight = 0;
-			int totalWidth = -1;
-			for (BufferedImage image : images) {
-				totalHeight += image.getHeight();
-				if (totalWidth < 0) {
-					totalWidth = image.getWidth();
-				}
-			}
-
-			// 画像の結合
-			BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
-			Graphics graphics = screenshot.getGraphics();
-			int nextTop = 0;
-			for (BufferedImage image : images) {
-				graphics.drawImage(image, 0, nextTop, null);
-				nextTop += image.getHeight();
-			}
-
-			// TargetResult for target area
-			ScreenAreaResult targetAreaResult = createScreenAreaResult(params.getTarget(), params.getIndex());
-			// TargetResult for exclude areas
-			List<ScreenAreaResult> excludes = Lists.transform(params.getExcludes(),
-					new Function<ScreenAreaWrapper, ScreenAreaResult>() {
-						@Override
-						public ScreenAreaResult apply(ScreenAreaWrapper input) {
-							return createScreenAreaResult(input, null);
-						}
-					});
-
-			// スクロールバーを元の状態に戻す
-			((PtlWebElement) el).setOverflowStatus(overflowStatus[0], overflowStatus[1]);
-
-			return new TargetResult(null, targetAreaResult, excludes, params.isMoveTarget(), hiddenElementSelectors,
-					new ScreenshotImage(screenshot), target.getOptions());
-		} else {
-			// 部分スクロールなしの場合
-			return getTargetResult(target, hiddenElementSelectors, params);
+		} catch (InterruptedException e) {
+			throw new TestRuntimeException(e);
 		}
+
+		// borderがある場合は切り取る
+		trimMoveBorder(el, images);
+
+		// paddingがある場合は切り取る
+		trimMovePadding(el, images);
+
+		// 画像間の重なりを切り取る
+		// TODO: ブラウザ別Driverに切り出し
+		if (scale != DEFAULT_SCREENSHOT_SCALE) {
+			for (int i = 0; i < images.size(); i++) {
+				long windowHeight = clientHeight;
+				long windowWidth = clientWidth;
+				if ("textarea".equals(el.getTagName()) && "firefox".equals(capabilities.getBrowserName())) {
+					if (i <= 0) {
+						windowHeight += (int) Math.round(targetPadding.getTop());
+					} else if (i >= images.size() - 1) {
+						windowHeight += (int) Math.round(targetPadding.getBottom());
+					}
+				}
+				images.set(i, trimOverlap(allCaptureTop.get(i), 0, windowHeight, windowWidth, images.get(i)));
+			}
+		}
+
+		// 末尾の重複をトリム
+		if (images.size() > 1) {
+			BufferedImage lastImage = images.get(images.size() - 1);
+			int trimTop = calcTrimTop(lastImage.getHeight(), currentScrollAmount, el);
+			LOG.debug("trimTop: " + trimTop);
+
+			if (trimTop > 0 && trimTop < lastImage.getHeight()) {
+				images.set(images.size() - 1, ImageUtils.trim(lastImage, trimTop, 0, 0, 0));
+			}
+		}
+
+		// 結合後の画像サイズを調べる
+		int totalHeight = 0;
+		int totalWidth = -1;
+		for (BufferedImage image : images) {
+			totalHeight += image.getHeight();
+			if (totalWidth < 0) {
+				totalWidth = image.getWidth();
+			}
+		}
+
+		// 画像の結合
+		BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics graphics = screenshot.getGraphics();
+		int nextTop = 0;
+		for (BufferedImage image : images) {
+			graphics.drawImage(image, 0, nextTop, null);
+			nextTop += image.getHeight();
+		}
+
+		// TargetResult for target area
+		ScreenAreaResult targetAreaResult = createScreenAreaResult(params.getTarget(), params.getIndex());
+		// TargetResult for exclude areas
+		List<ScreenAreaResult> excludes = Lists.transform(params.getExcludes(),
+				new Function<ScreenAreaWrapper, ScreenAreaResult>() {
+					@Override
+					public ScreenAreaResult apply(ScreenAreaWrapper input) {
+						return createScreenAreaResult(input, null);
+					}
+				});
+
+		// スクロールバーを元の状態に戻す
+		el.setOverflowStatus(overflowStatus[0], overflowStatus[1]);
+
+		return new TargetResult(null, targetAreaResult, excludes, params.isMoveTarget(), hiddenElementSelectors,
+				new ScreenshotImage(screenshot), target.getOptions());
 	}
 
 	/**
@@ -735,7 +738,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			List<Pair<CompareTarget, ScreenshotParams>> targetParams) {
 		for (int i = 0; i < allTargetScreenshots.size(); i++) {
 			PtlWebElement targetElement = (PtlWebElement) (targetParams.get(i).getRight().getTarget().getElement());
-			if (!targetElement.getTagName().equals("body") && targetParams.get(i).getLeft().doScroll()) {
+			if (!targetElement.isBody() && targetParams.get(i).getLeft().doScroll()) {
 				List<TargetResult> targetScreenshots = allTargetScreenshots.get(i);
 				for (int j = 0; j < targetScreenshots.size(); j++) {
 					TargetResult oldResult = targetScreenshots.get(j);
@@ -1117,18 +1120,18 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		// Scroll to top
 		scrollTo(0d, 0d);
 
-		double scale = getScreenshotScale();
-		updateScreenWrapperStatus(moveX, moveY, scale, params);
+		double currentScale = getScreenshotScale();
+		updateScreenWrapperStatus(moveX, moveY, currentScale, params);
 		for (ScreenshotParams p : additionalParams) {
-			updateScreenWrapperStatus(moveX, moveY, scale, p);
+			updateScreenWrapperStatus(moveX, moveY, currentScale, p);
 		}
 	}
 
-	private void updateScreenWrapperStatus(double moveX, double moveY, double scale, ScreenshotParams params) {
-		params.getTarget().updatePosition(scale, moveX, moveY);
+	private void updateScreenWrapperStatus(double moveX, double moveY, double currentScale, ScreenshotParams params) {
+		params.getTarget().updatePosition(currentScale, moveX, moveY);
 
 		for (ScreenAreaWrapper wrapper : params.getExcludes()) {
-			wrapper.updatePosition(scale, moveX, moveY);
+			wrapper.updatePosition(currentScale, moveX, moveY);
 		}
 	}
 
@@ -1245,8 +1248,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		// bodyの絶対座標を取得
 		PtlWebElement bodyElement = (PtlWebElement) findElementByTagName("body");
 		scrollTo(0d, 0d);
-		Number bodyLeft = executeJavaScript(
-				"var _bodyLeft = arguments[0].getBoundingClientRect().left; return _bodyLeft;", bodyElement);
+		Number bodyLeft = executeJavaScript(GET_BODY_LEFT_SCRIPT, bodyElement);
 
 		// 一番右までスクロールした状態からbodyの相対座標を取得
 		String scrollWidth = executeScript("return arguments[0].scrollWidth", bodyElement).toString();
@@ -1254,8 +1256,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		// ページの幅 + 小数点以下の誤差対策で+1した座標へスクロール
 		double totalWidth = Double.parseDouble(scrollWidth) + margin.getLeft() + margin.getRight() + 1;
 		scrollTo(totalWidth, 0d);
-		Number relativeBodyLeft = executeJavaScript(
-				"var _bodyLeft = arguments[0].getBoundingClientRect().left; return _bodyLeft;", bodyElement);
+		Number relativeBodyLeft = executeJavaScript(GET_BODY_LEFT_SCRIPT, bodyElement);
 
 		// leftの移動量とウィンドウ幅からページ全体の高さを計算
 		LOG.debug("relativeBodyLeft: {}, bodyLeft: {}, windowWidth: {}, margin: {}", relativeBodyLeft, bodyLeft,
@@ -1281,8 +1282,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		// bodyの絶対座標を取得
 		PtlWebElement bodyElement = (PtlWebElement) findElementByTagName("body");
 		scrollTo(0d, 0d);
-		Number bodyTop = executeJavaScript("var _bodyTop = arguments[0].getBoundingClientRect().top; return _bodyTop;",
-				bodyElement);
+		Number bodyTop = executeJavaScript(GET_BODY_TOP_SCRIPT, bodyElement);
 
 		// 一番下までスクロールした状態からbodyの相対座標を取得
 		String scrollHeight = executeScript("return arguments[0].scrollHeight", bodyElement).toString();
@@ -1290,8 +1290,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		// ページの高さ + 小数点以下の誤差対策で+1した座標へスクロール
 		double totalHeight = Double.parseDouble(scrollHeight) + margin.getTop() + margin.getBottom() + 1;
 		scrollTo(0d, totalHeight);
-		Number relativeBodyTop = executeJavaScript(
-				"var _bodyTop = arguments[0].getBoundingClientRect().top; return _bodyTop;", bodyElement);
+		Number relativeBodyTop = executeJavaScript(GET_BODY_TOP_SCRIPT, bodyElement);
 
 		// topの移動量とウィンドウ高さからページ全体の高さを計算
 		LOG.debug("relativeBodyTop: {}, bodyTop: {}, windowheight: {}, margin: {}", relativeBodyTop, bodyTop,

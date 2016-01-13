@@ -191,15 +191,13 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		//		if (width == 0d) {
 		//			width = getDoubleOrDefault(object.get("width"), 0d);
 		//		}
-		double width = getTagName().equals("body") ? driver.getCurrentPageWidth() : getDoubleOrDefault(
-				object.get("width"), 0d);
+		double width = isBody() ? driver.getCurrentPageWidth() : getDoubleOrDefault(object.get("width"), 0d);
 		// widthはボーダーを含める
 		//		WebElementBorderWidth borderWidth = getBorderWidth();
 		//		width += borderWidth.getLeft() + borderWidth.getRight();
 
 		// bodyの場合はページ全体の高さを返す
-		double height = getTagName().equals("body") ? driver.getCurrentPageHeight() : getDoubleOrDefault(
-				object.get("height"), 0d);
+		double height = isBody() ? driver.getCurrentPageHeight() : getDoubleOrDefault(object.get("height"), 0d);
 
 		// スクロール位置を元に戻す
 		driver.scrollTo(scrollLeft, scrollTop);
@@ -341,8 +339,8 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * 自身の部分スクロールのスクロール回数を返す。<br>
-	 * 部分スクロールがない場合は0を返す。
+	 * 自身の部分スクロールのスクロール回数を返します。<br>
+	 * 部分スクロールがない場合は0を返します。
 	 *
 	 * @return スクロール回数
 	 */
@@ -359,7 +357,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * 要素の可視範囲の高さを取得する。
+	 * 要素の可視範囲の高さを取得します。
 	 *
 	 * @return 高さ（整数px）
 	 */
@@ -370,7 +368,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * 要素の可視範囲の幅を取得する。
+	 * 要素の可視範囲の幅を取得します。
 	 *
 	 * @return 幅（整数px）
 	 */
@@ -381,13 +379,13 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * スクロールを含む要素全体の高さを取得する。
+	 * スクロールを含む要素全体の高さを取得します。
 	 *
 	 * @return 高さ（整数px）
 	 */
 	public long getScrollHeight() {
 		String result;
-		if (getTagName().equals("iframe") || getTagName().equals("frame")) {
+		if (isFrame()) {
 			result = driver.executeScript("return arguments[0].contentWindow.document.documentElement.scrollHeight",
 					this).toString();
 		} else {
@@ -397,13 +395,13 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * スクロールを含む要素全体の幅を取得する。
+	 * スクロールを含む要素全体の幅を取得します。
 	 *
 	 * @return 幅（整数px）
 	 */
 	public long getScrollWidth() {
 		String result;
-		if (getTagName().equals("iframe") || getTagName().equals("frame")) {
+		if (isFrame()) {
 			result = driver.executeScript("return arguments[0].contentWindow.document.documentElement.scrollWidth",
 					this).toString();
 		} else {
@@ -413,7 +411,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * 要素を1回分スクロールする。
+	 * 要素を1回分スクロールします。
 	 *
 	 * @return 今回のスクロール量
 	 */
@@ -426,13 +424,13 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * 現在のスクロール位置（y座標）を取得する。
+	 * 現在のスクロール位置（y座標）を取得します。
 	 *
 	 * @return スクロール位置（実数px）
 	 */
 	long getCurrentScrollTop() {
 		long top = 0;
-		if (getTagName().equals("iframe") || getTagName().equals("frame")) {
+		if (isFrame()) {
 			long max = 0L;
 			for (String value : SCRIPTS_SCROLL_TOP) {
 				long current = Long.parseLong(driver.executeScript("return " + value, this).toString());
@@ -446,13 +444,13 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * 現在のスクロール位置（x座標）を取得する。
+	 * 現在のスクロール位置（x座標）を取得します。
 	 *
 	 * @return スクロール位置（実数px）
 	 */
 	double getCurrentScrollLeft() {
 		double top = 0;
-		if (getTagName().equals("iframe") || getTagName().equals("frame")) {
+		if (isFrame()) {
 			double max = 0d;
 			for (String value : SCRIPTS_SCROLL_LEFT) {
 				double current = Double.parseDouble(driver.executeScript("return " + value, this).toString());
@@ -466,46 +464,49 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * 指定位置までスクロールする。
+	 * 指定位置までスクロールします。
 	 *
 	 * @param x x座標
 	 * @param y y座標
 	 */
 	public void scrollTo(double x, double y) {
-		if (getTagName().equals("iframe") || getTagName().equals("frame")) {
+		// 要素がframeの場合
+		if (isFrame()) {
 			driver.executeScript("arguments[0].contentWindow.scrollTo(arguments[1], arguments[2])", this, x, y);
-		} else {
-			driver.executeScript("arguments[0].scrollLeft = arguments[1]", this, x);
-			driver.executeScript("arguments[0].scrollTop = arguments[1]", this, y);
+			return;
 		}
+
+		// frame以外の場合
+		driver.executeScript("arguments[0].scrollLeft = arguments[1]", this, x);
+		driver.executeScript("arguments[0].scrollTop = arguments[1]", this, y);
 
 	}
 
 	/**
-	 * スクロールバーを非表示にする。
+	 * スクロールバーを非表示にします。
 	 */
 	public void hideScrollBar() {
 		setOverflowStatus("hidden", "hidden");
 	}
 
 	/**
-	 * 要素をリサイズ不可にする。<br>
-	 * 要素がテキストエリア以外の場合はなにもしない。
+	 * 要素をリサイズ不可にします。<br>
+	 * 要素がテキストエリア以外の場合はなにもしません。
 	 */
 	public void setNoResizable() {
-		if (getTagName().equals("textarea")) {
+		if ("textarea".equals(getTagName())) {
 			driver.executeScript(SCRIPT_SET_RESIZE_NONE, this);
 		}
 	}
 
 	/**
-	 * styleに設定されているoverflowの値を返す。
+	 * styleに設定されているoverflowの値を返します。
 	 *
 	 * @return overflowの設定値
 	 */
 	public String[] getOverflowStatus() {
 		Map<String, Object> object;
-		if (getTagName().equals("iframe") || getTagName().equals("frame")) {
+		if (isFrame()) {
 			object = driver.executeJavaScript(SCRIPT_GET_FRAME_OVERFLOW, this);
 		} else {
 			object = driver.executeJavaScript(SCRIPT_GET_ELEMENT_OVERFLOW, this);
@@ -514,17 +515,35 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * Overflowのstyleを設定する。
+	 * Overflowのstyleを設定します。
 	 *
 	 * @param xStatus x方向の設定
 	 * @param yStatus y方向の設定
 	 */
 	public void setOverflowStatus(String xStatus, String yStatus) {
-		if (getTagName().equals("iframe") || getTagName().equals("frame")) {
+		if (isFrame()) {
 			driver.executeScript(SCRIPT_SET_FRAME_OVERFLOW, this, xStatus, yStatus);
 		} else {
 			driver.executeScript(SCRIPT_SET_ELEMENT_OVERFLOW, this, xStatus, yStatus);
 		}
+	}
+
+	/**
+	 * 要素がbody（およびframeset）か否かを返します。
+	 *
+	 * @return この要素がbody（およびframeset）か否か。該当する場合はtrue。
+	 */
+	public boolean isBody() {
+		return "body".equals(getTagName()) || "frameset".equals(getTagName());
+	}
+
+	/**
+	 * 要素がframeおよびifameか否かを返します。
+	 *
+	 * @return この要素がframeおよびiframeか否か。該当する場合はtrue。
+	 */
+	public boolean isFrame() {
+		return "iframe".equals(getTagName()) || "frame".equals(getTagName());
 	}
 
 }

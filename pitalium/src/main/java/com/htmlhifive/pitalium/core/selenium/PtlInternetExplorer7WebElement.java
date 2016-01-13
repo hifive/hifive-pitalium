@@ -24,7 +24,7 @@ class PtlInternetExplorer7WebElement extends PtlInternetExplorerWebElement {
 	public WebElementRect getRect() {
 		// IE7と8はbody以外座標を-2する
 		WebElementRect rect = super.getRect();
-		if ("body".equals(getTagName())) {
+		if (isBody()) {
 			return rect;
 		}
 
@@ -33,7 +33,7 @@ class PtlInternetExplorer7WebElement extends PtlInternetExplorerWebElement {
 
 	@Override
 	public WebElementBorderWidth getBorderWidth() {
-		if (getTagName().equals("iframe")) {
+		if ("iframe".equals(getTagName())) {
 			// IE7・8はiframeのボーダーが2px
 			double top = 2;
 			double left = 2;
