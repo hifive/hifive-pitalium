@@ -32,17 +32,6 @@ import com.google.common.collect.Lists;
  */
 public class ScreenshotArgumentBuilder {
 
-	static class TargetParamHolder {
-		final ScreenArea target;
-		final List<ScreenArea> excludes = new ArrayList<ScreenArea>();
-		boolean moveTarget = true;
-		boolean scrolling = false;
-
-		public TargetParamHolder(ScreenArea target) {
-			this.target = target;
-		}
-	}
-
 	private String screenshotId;
 	private final List<TargetParamHolder> targets = new ArrayList<TargetParamHolder>();
 	private final List<DomSelector> hiddenElementSelectors = new ArrayList<DomSelector>();
@@ -76,7 +65,8 @@ public class ScreenshotArgumentBuilder {
 	}
 
 	private void setCurrentHolder(ScreenArea target) {
-		targets.add(currentHolder = new TargetParamHolder(target));
+		currentHolder = new TargetParamHolder(target);
+		targets.add(currentHolder);
 	}
 
 	/**
@@ -96,7 +86,7 @@ public class ScreenshotArgumentBuilder {
 			public CompareTarget apply(TargetParamHolder holder) {
 				return new CompareTarget(holder.target,
 						holder.excludes.toArray(new ScreenArea[holder.excludes.size()]), holder.moveTarget,
-						holder.scrolling);
+						holder.scrollTarget);
 			}
 		});
 
@@ -107,11 +97,11 @@ public class ScreenshotArgumentBuilder {
 	/**
 	 * スクリーンショットIDを設定します。
 	 *
-	 * @param screenshotId スクリーンショットID
+	 * @param id スクリーンショットID
 	 * @return このビルダーオブジェクト自身
 	 */
-	public ScreenshotArgumentBuilder screenshotId(String screenshotId) {
-		this.screenshotId = screenshotId;
+	public ScreenshotArgumentBuilder screenshotId(String id) {
+		this.screenshotId = id;
 		return this;
 	}
 
@@ -134,7 +124,7 @@ public class ScreenshotArgumentBuilder {
 	 */
 	public ScreenshotArgumentBuilder addNewTarget(CompareTarget target) {
 		return addNewTarget(target.getCompareArea()).addExcludes(target.getExcludes())
-				.moveTarget(target.isMoveTarget()).scrolling(target.doScroll());
+				.moveTarget(target.isMoveTarget()).scrollTarget(target.isScrollTarget());
 	}
 
 	/**
@@ -412,11 +402,11 @@ public class ScreenshotArgumentBuilder {
 	/**
 	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、スクロールを展開して撮影するか否かを指定します。
 	 *
-	 * @param scrolling スクロールを展開して撮影するか否か
+	 * @param scrollTarget スクロールを展開して撮影するか否か
 	 * @return このビルダーオブジェクト自身
 	 */
-	public ScreenshotArgumentBuilder scrolling(boolean scrolling) {
-		getCurrentHolder().scrolling = scrolling;
+	public ScreenshotArgumentBuilder scrollTarget(boolean scrollTarget) {
+		getCurrentHolder().scrollTarget = scrollTarget;
 		return this;
 	}
 
@@ -537,5 +527,36 @@ public class ScreenshotArgumentBuilder {
 	}
 
 	//</editor-fold>
+
+	/**
+	 * パラメータを保持する内部クラス
+	 */
+	static class TargetParamHolder {
+		/**
+		 * スクリーンショット取得対象
+		 */
+		final ScreenArea target;
+		/**
+		 * 比較時に除外する領域
+		 */
+		final List<ScreenArea> excludes = new ArrayList<ScreenArea>();
+		/**
+		 * スクリーンショット取得時に、指定領域を定位置に移動するか否か
+		 */
+		boolean moveTarget = true;
+		/**
+		 * スクリーンショット取得時に、要素を部分スクロールするか否か
+		 */
+		boolean scrollTarget = false;
+
+		/**
+		 * スクリーンショット取得対象を指定してホルダーを生成します。
+		 *
+		 * @param target スクリーンショット取得対象
+		 */
+		public TargetParamHolder(ScreenArea target) {
+			this.target = target;
+		}
+	}
 
 }

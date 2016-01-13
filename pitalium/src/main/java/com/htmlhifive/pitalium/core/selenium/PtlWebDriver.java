@@ -363,7 +363,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 			// target毎のスクロール回数を確認
 
-			if (targetElement.isBody() || !pair.getLeft().doScroll()) {
+			if (targetElement.isBody() || !pair.getLeft().isScrollTarget()) {
 				// bodyの撮影は1回だけで良いため、スクロール回数を0に設定
 				// スクロール指定が無い場合もスクロール回数を0に設定
 				partialScrollNums[i] = 0;
@@ -526,7 +526,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			ScreenshotParams params) {
 
 		// 部分スクロールなしの場合
-		if (!target.doScroll()) {
+		if (!target.isScrollTarget()) {
 			return getTargetResult(target, hiddenElementSelectors, params);
 		}
 
@@ -676,8 +676,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * 要素の部分スクロール時、元画像からボーダーを切り取る。
 	 *
 	 * @param el 対象の要素
-	 * @param originalResult
 	 * @param image 元画像
+	 * @param num 何スクロール目の画像化
+	 * @param size 全体のスクロール数
 	 * @return ボーダーを切り取ったBufferedImage
 	 */
 	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image, int num, int size) {
@@ -738,7 +739,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			List<Pair<CompareTarget, ScreenshotParams>> targetParams) {
 		for (int i = 0; i < allTargetScreenshots.size(); i++) {
 			PtlWebElement targetElement = (PtlWebElement) (targetParams.get(i).getRight().getTarget().getElement());
-			if (!targetElement.isBody() && targetParams.get(i).getLeft().doScroll()) {
+			if (!targetElement.isBody() && targetParams.get(i).getLeft().isScrollTarget()) {
 				List<TargetResult> targetScreenshots = allTargetScreenshots.get(i);
 				for (int j = 0; j < targetScreenshots.size(); j++) {
 					TargetResult oldResult = targetScreenshots.get(j);

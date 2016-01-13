@@ -49,9 +49,9 @@ public class CompareTarget implements Serializable {
 	private final boolean moveTarget;
 
 	/**
-	 * 部分スクロールが必要な要素か否か。trueに設定した場合、要素の部分スクロールを展開したスクリーンショットを撮影します。
+	 * スクリーンショット取得時に、要素を部分スクロールするか否か。trueに設定した場合、要素の部分スクロールを展開したスクリーンショットを撮影します。
 	 */
-	private final boolean scrolling;
+	private final boolean scrollTarget;
 
 	/**
 	 * ページ全体をスクリーンショット取得・比較の対象とします。
@@ -88,12 +88,14 @@ public class CompareTarget implements Serializable {
 	 * @param excludes 比較時に除外する領域
 	 * @param moveTarget スクリーンショット撮影時に指定領域を定位置に移動するか否か。移動する場合はtrueを指定します。trueの場合、レンダリングによって発生する想定外の誤差を抑制しますが、
 	 *            ページによっては画面のレイアウトが崩れる場合があります 。
+	 * @param scrollTarget スクリーンショット取得時に、要素を部分スクロールするか否か。trueに設定した場合、要素の部分スクロールを展開したスクリーンショットを撮影します。
+	 *            対象がbodyの場合は、この値に関わらずスクロールします。
 	 */
-	public CompareTarget(ScreenArea compareArea, ScreenArea[] excludes, boolean moveTarget, boolean scrolling) {
+	public CompareTarget(ScreenArea compareArea, ScreenArea[] excludes, boolean moveTarget, boolean scrollTarget) {
 		this.compareArea = compareArea;
 		this.excludes = excludes != null ? excludes : new ScreenArea[0];
 		this.moveTarget = moveTarget;
-		this.scrolling = scrolling;
+		this.scrollTarget = scrollTarget;
 	}
 
 	/**
@@ -133,12 +135,12 @@ public class CompareTarget implements Serializable {
 	}
 
 	/**
-	 * 撮影時に要素の部分スクロールが必要か否かの設定を取得します。
+	 * スクリーンショット撮影時に要素を部分スクロールするか否かの設定を取得します。
 	 *
-	 * @return 部分スクロールが必要か否か。スクロールする場合はtrue。
+	 * @return 撮影時に要素を部分スクロールするか否か。スクロールする場合はtrue。
 	 */
-	public boolean doScroll() {
-		return scrolling;
+	public boolean isScrollTarget() {
+		return scrollTarget;
 	}
 
 	@Override
@@ -152,6 +154,9 @@ public class CompareTarget implements Serializable {
 
 		CompareTarget that = (CompareTarget) o;
 
+		if (scrollTarget != that.scrollTarget) {
+			return false;
+		}
 		if (moveTarget != that.moveTarget) {
 			return false;
 		}
@@ -173,6 +178,7 @@ public class CompareTarget implements Serializable {
 		result = 31 * result + (options != null ? Arrays.hashCode(options) : 0);
 		result = 31 * result + Arrays.hashCode(excludes);
 		result = 31 * result + (moveTarget ? 1 : 0);
+		result = 31 * result + (scrollTarget ? 1 : 0);
 		return result;
 	}
 
