@@ -30,7 +30,7 @@ class PtlFirefoxWebElement extends PtlWebElement {
 	public long getClientHeight() {
 		long clientHeight = super.getClientHeight();
 		// firefoxのtextareaは上下paddingが常に表示されるため、padding分を除く
-		if (getTagName().equals("textarea")) {
+		if ("textarea".equals(getTagName())) {
 			WebElementPadding padding = getPadding();
 			clientHeight -= (int) Math.round(padding.getTop()) + (int) Math.round(padding.getBottom());
 		}

@@ -24,7 +24,7 @@ class PtlInternetExplorer7Driver extends PtlInternetExplorer8Driver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -50,7 +50,7 @@ class PtlInternetExplorer7Driver extends PtlInternetExplorer8Driver {
 	@Override
 	public long getCurrentPageHeight() {
 		String docMode = executeJavaScript("return document.compatMode;");
-		if (docMode.equals("BackCompat")) {
+		if ("BackCompat".equals(docMode)) {
 			// 互換モード時はbodyのgetBoundingClientRect().topが取得できないため、scrollHeightを返す
 			PtlWebElement bodyElement = (PtlWebElement) findElementByTagName("body");
 			Number scrollHeight = executeJavaScript(
