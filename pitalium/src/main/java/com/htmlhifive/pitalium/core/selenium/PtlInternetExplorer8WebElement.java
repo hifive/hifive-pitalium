@@ -19,4 +19,17 @@ package com.htmlhifive.pitalium.core.selenium;
  * Internet Explorer 8で利用する{@link org.openqa.selenium.WebElement}
  */
 class PtlInternetExplorer8WebElement extends PtlInternetExplorerWebElement {
+
+	@Override
+	public WebElementRect getRect() {
+		WebElementRect rect = super.getRect();
+		double width = rect.getWidth();
+		double height = rect.getHeight();
+		if ("iframe".equals(getTagName())) {
+			width -= 1d;
+			height -= 1d;
+		}
+
+		return new WebElementRect(rect.getLeft(), rect.getTop(), width, height);
+	}
 }

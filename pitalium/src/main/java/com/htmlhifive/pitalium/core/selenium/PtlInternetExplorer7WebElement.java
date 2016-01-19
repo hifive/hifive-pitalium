@@ -22,12 +22,19 @@ class PtlInternetExplorer7WebElement extends PtlInternetExplorerWebElement {
 
 	@Override
 	public WebElementRect getRect() {
-		// IE7と8はbody以外座標を-2する
+		// IE7はbody以外座標を-2する
 		WebElementRect rect = super.getRect();
 		if ("body".equals(getTagName())) {
 			return rect;
 		}
 
-		return new WebElementRect(rect.getLeft() - 2d, rect.getTop() - 2d, rect.getWidth(), rect.getHeight());
+		double width = rect.getWidth();
+		double height = rect.getHeight();
+		if ("iframe".equals(getTagName())) {
+			width -= 1d;
+			height -= 1d;
+		}
+
+		return new WebElementRect(rect.getLeft() - 2d, rect.getTop() - 2d, width, height);
 	}
 }
