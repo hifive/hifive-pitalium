@@ -177,11 +177,20 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	}
 
 	/**
-	 * スクロールバーを非表示にできるブラウザかどうかを取得します。
+	 * bodyのスクロールバーを非表示にできるブラウザかどうかを取得します。
 	 *
 	 * @return 非表示にできる場合はtrue、できない場合はfalse
 	 */
-	protected boolean canHideScrollbar() {
+	protected boolean canHideBodyScrollbar() {
+		return true;
+	}
+
+	/**
+	 * 要素のスクロールバーを非表示にできるブラウザかどうかを取得します。
+	 *
+	 * @return 非表示にできる場合はtrue、できない場合はfalse
+	 */
+	protected boolean canHideElementScrollbar() {
 		return true;
 	}
 
@@ -191,6 +200,15 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @return 非表示にする場合はtrue、しない場合はfalse
 	 */
 	protected boolean isHideElementsRequired() {
+		return true;
+	}
+
+	/**
+	 * 要素をリサイズできるブラウザかどうかを取得します。
+	 *
+	 * @return リサイズできる場合はtrue、できない場合はfalse
+	 */
+	protected boolean canResizeElement() {
 		return true;
 	}
 
@@ -355,6 +373,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		double currentScale = Double.NaN;
 
 		String overflowStatus[][] = new String[targetParams.size()][2];
+		String resizeStatus[] = new String[targetParams.size()];
 		int partialScrollNums[] = new int[targetParams.size()];
 		int maxPartialScrollNum = 0;
 		for (int i = 0; i < targetParams.size(); i++) {
@@ -372,12 +391,16 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 			// スクロールバーをhiddenにする
 			// スクロールバーの元の状態を覚えておく
-			overflowStatus[i] = targetElement.getOverflowStatus();
-			if (!"ANDROID".equals(capabilities.getPlatformName())) {
+			if (canHideElementScrollbar()) {
+				overflowStatus[i] = targetElement.getOverflowStatus();
 				targetElement.hideScrollBar();
 			}
-			// textareaの場合はリサイズ不可にする
-			targetElement.setNoResizable();
+			// リサイズハンドルを消すためリサイズ不可にする
+			// 元の状態を覚えておく
+			if (canResizeElement()) {
+				resizeStatus[i] = targetElement.getResizeStatus();
+				targetElement.setNoResizable();
+			}
 
 			// 部分スクロールの最大回数を調べる
 			partialScrollNums[i] = targetElement.getScrollNum();
@@ -503,11 +526,22 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		}
 
 		// スクロールバーを元に戻す
-		for (int i = 0; i < targetParams.size(); i++) {
-			Pair<CompareTarget, ScreenshotParams> pair = targetParams.get(i);
-			PtlWebElement el = (PtlWebElement) pair.getRight().getTarget().getElement();
-			if (!el.isBody()) {
-				el.setOverflowStatus(overflowStatus[i][0], overflowStatus[i][1]);
+		if (canHideElementScrollbar()) {
+			for (int i = 0; i < targetParams.size(); i++) {
+				PtlWebElement el = targetParams.get(i).getRight().getTarget().getElement();
+				if (!el.isBody()) {
+					el.setOverflowStatus(overflowStatus[i][0], overflowStatus[i][1]);
+				}
+			}
+		}
+
+		// リサイズを元に戻す
+		if (canResizeElement()) {
+			for (int i = 0; i < targetParams.size(); i++) {
+				PtlWebElement el = targetParams.get(i).getRight().getTarget().getElement();
+				if (!el.isBody() && resizeStatus[i] != null) {
+					el.setResizeStatus(resizeStatus[i]);
+				}
 			}
 		}
 
@@ -536,14 +570,21 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		WebElementPadding targetPadding = el.getPadding();
 
 		// スクロールバーの元の状態を覚えておく
-		String overflowStatus[] = el.getOverflowStatus();
-
-		// スクロールバーをhiddenにする
-		if (!"ANDROID".equals(capabilities.getPlatformName())) {
+		String overflowStatus[] = null;
+		if (canHideElementScrollbar()) {
+			String statuses[] = el.getOverflowStatus();
+			overflowStatus = Arrays.copyOf(statuses, statuses.length);
+			// スクロールバーを非表示にする
 			el.hideScrollBar();
 		}
-		// textareaの場合はリサイズ不可にする
-		el.setNoResizable();
+
+		String resizeStatus = null;
+		if (canResizeElement()) {
+			// リサイズの元の状態を覚えておく
+			resizeStatus = el.getResizeStatus();
+			// リサイズ不可にする
+			el.setNoResizable();
+		}
 
 		// 可視範囲のサイズを調べる
 		long clientHeight = el.getClientHeight();
@@ -666,7 +707,14 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				});
 
 		// スクロールバーを元の状態に戻す
-		el.setOverflowStatus(overflowStatus[0], overflowStatus[1]);
+		if (canHideElementScrollbar()) {
+			el.setOverflowStatus(overflowStatus[0], overflowStatus[1]);
+		}
+
+		// リサイズを元の状態に戻す
+		if (canResizeElement() && resizeStatus != null) {
+			el.setResizeStatus(resizeStatus);
+		}
 
 		return new TargetResult(null, targetAreaResult, excludes, params.isMoveTarget(), hiddenElementSelectors,
 				new ScreenshotImage(screenshot), target.getOptions());
@@ -912,7 +960,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		Object documentOverflow = null;
 
 		// Hide scrollbar
-		if (canHideScrollbar()) {
+		if (canHideBodyScrollbar()) {
 			// Backup default overflow value
 			Map<String, Object> object = executeJavaScript(SCRIPT_GET_DEFAULT_DOCUMENT_OVERFLOW);
 			documentOverflow = object.get("overflow");
@@ -926,7 +974,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		// Check target element size
 		RectangleArea area = params.getTarget().getArea().floor();
 		if (area.getWidth() == 0d || area.getHeight() == 0d) {
-			if (canHideScrollbar()) {
+			if (canHideBodyScrollbar()) {
 				executeScript(SCRIPT_SET_DOCUMENT_OVERFLOW, documentOverflow);
 			}
 
@@ -954,7 +1002,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		}
 
 		// Restore scrollbar
-		if (canHideScrollbar()) {
+		if (canHideBodyScrollbar()) {
 			executeScript(SCRIPT_SET_DOCUMENT_OVERFLOW, documentOverflow);
 		}
 

@@ -61,7 +61,7 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 	}
 
 	@Override
-	protected boolean canHideScrollbar() {
+	protected boolean canHideBodyScrollbar() {
 		return false;
 	}
 

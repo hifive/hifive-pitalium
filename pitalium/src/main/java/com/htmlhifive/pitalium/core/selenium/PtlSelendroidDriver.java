@@ -33,7 +33,7 @@ class PtlSelendroidDriver extends PtlAbsAndroidDriver {
 	}
 
 	@Override
-	protected boolean canHideScrollbar() {
+	protected boolean canHideBodyScrollbar() {
 		return false;
 	}
 

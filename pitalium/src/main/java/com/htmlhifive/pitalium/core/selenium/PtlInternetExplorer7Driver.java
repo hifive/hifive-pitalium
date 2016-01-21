@@ -33,7 +33,7 @@ class PtlInternetExplorer7Driver extends PtlInternetExplorer8Driver {
 	}
 
 	@Override
-	protected boolean canHideScrollbar() {
+	protected boolean canHideBodyScrollbar() {
 		return false;
 	}
 
