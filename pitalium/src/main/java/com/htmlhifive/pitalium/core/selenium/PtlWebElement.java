@@ -92,7 +92,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 親driverを設定します。
-	 * 
+	 *
 	 * @param parent 親driver
 	 */
 	@Override
@@ -103,7 +103,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素のタグ名を取得します。
-	 * 
+	 *
 	 * @return タグ名
 	 */
 	@Override
@@ -117,7 +117,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 親driverを取得します。
-	 * 
+	 *
 	 * @return 親driver
 	 */
 	@Override
@@ -127,7 +127,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の位置・サイズを矩形領域として取得します。
-	 * 
+	 *
 	 * @return 矩形領域を表す{@link WebElementRect}オブジェクト
 	 */
 	public WebElementRect getRect() {
@@ -153,9 +153,14 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		WebElementBorderWidth borderWidth = getBorderWidth();
 		width += borderWidth.getLeft() + borderWidth.getRight();
 
-		// bodyの場合はページ全体の高さを返す
-		double height = getTagName().equals("body") ? driver.getCurrentPageHeight() : getDoubleOrDefault(
-				object.get("height"), 0d);
+		double height = 0;
+		if ("body".equals(getTagName())) {
+			// bodyの場合はページ全体の高さを返す
+			height = driver.getCurrentPageHeight();
+		} else {
+			// 小数値による描画ずれ対策として、要素の下端と上端の座標を丸めた値から高さを計算
+			height = Math.round(top + getDoubleOrDefault(object.get("height"), 0d)) - Math.round(top);
+		}
 
 		// スクロール位置を元に戻す
 		driver.scrollTo(scrollLeft, scrollTop);
@@ -165,7 +170,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の四辺のMarginを取得します。
-	 * 
+	 *
 	 * @return 四辺のMarginを表す{@link WebElementMargin}オブジェクト
 	 */
 	public WebElementMargin getMargin() {
@@ -182,7 +187,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の四辺のBorderWidthを取得します。
-	 * 
+	 *
 	 * @return 四辺のBorderWidthを表す{@link WebElementBorderWidth}オブジェクト
 	 */
 	public WebElementBorderWidth getBorderWidth() {
@@ -243,7 +248,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素のvisibilityスタイル値がhiddenかどうかを取得します。
-	 * 
+	 *
 	 * @return visibilityがhiddenの場合true、それ以外の値の場合false
 	 */
 	public boolean isVisibilityHidden() {
@@ -252,7 +257,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 値をdoubleに変換します。変換できない場合は指定されたデフォルト値を返します。
-	 * 
+	 *
 	 * @param object 変換する値
 	 * @param defaultValue デフォルト値
 	 * @return doubleに変換した値。変換できなかった場合はdefaultValue
