@@ -420,6 +420,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			allTargetScreenshots.add(new ArrayList<TargetResult>());
 		}
 		long partialScrollAmounts[] = new long[targetParams.size()];
+		long partialScrollTops[] = new long[targetParams.size()];
 		for (int i = 0; i <= maxPartialScrollNum; i++) {
 			// 全体スクリーンショットを撮影
 			TargetResult entireResult = entireScreenshotResult;
@@ -457,6 +458,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				if (i < partialScrollNums[j]) {
 					int scrollAmount = targetElement.scrollNext();
 					partialScrollAmounts[j] = scrollAmount;
+				} else if (i != 0) {
+					// 最後までスクロールしたらスクロール位置を保持しておく
+					partialScrollTops[j] = targetElement.getCurrentScrollTop();
 				}
 			}
 
@@ -518,6 +522,11 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				nextTop += result.getImage().get().getHeight();
 			}
 			ScreenshotImage image = new ScreenshotImage(screenshot);
+
+			// Exclude領域の座標を更新
+			for (ScreenAreaWrapper wrapper : pair.getRight().getExcludes()) {
+				wrapper.setArea(wrapper.getArea().move(0, partialScrollTops[i]));
+			}
 
 			// 結果セットに追加
 			ScreenAreaResult targetAreaResult = createScreenAreaResult(pair.getRight().getTarget(), pair.getRight()
@@ -709,6 +718,11 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		for (BufferedImage image : images) {
 			graphics.drawImage(image, 0, nextTop, null);
 			nextTop += image.getHeight();
+		}
+
+		// Exclude領域の座標を更新
+		for (ScreenAreaWrapper wrapper : params.getExcludes()) {
+			wrapper.setArea(wrapper.getArea().move(0, scrollTop));
 		}
 
 		// TargetResult for target area
