@@ -439,15 +439,16 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			for (int j = 0; j < targetParams.size(); j++) {
 				Pair<CompareTarget, ScreenshotParams> pair = targetParams.get(j);
 				PtlWebElement targetElement = pair.getRight().getTarget().getElement();
+
+				TargetResult targetPartResult = entireResult;
+				if (!targetElement.isBody()) {
+					// 全体画像から切り抜く（同時に座標値を切り抜き後の値に更新）
+					targetPartResult = getTargetResult(pair.getLeft(), hiddenElementSelectors, pair.getRight(),
+							entireScreenshotImage);
+				}
+
 				// 自身の必要スクロール回数に達していなければ切り抜いて保存
 				if (i <= partialScrollNums[j]) {
-					TargetResult targetPartResult = entireResult;
-					if (!targetElement.isBody()) {
-						// 全体画像から切り抜く
-						targetPartResult = getTargetResult(pair.getLeft(), hiddenElementSelectors, pair.getRight(),
-								entireScreenshotImage);
-					}
-
 					// 結果セットに追加
 					allTargetScreenshots.get(j).add(targetPartResult);
 				}
