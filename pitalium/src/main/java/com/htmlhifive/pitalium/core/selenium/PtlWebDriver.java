@@ -438,7 +438,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			// 各targetの処理
 			for (int j = 0; j < targetParams.size(); j++) {
 				Pair<CompareTarget, ScreenshotParams> pair = targetParams.get(j);
-				PtlWebElement targetElement = (PtlWebElement) (pair.getRight().getTarget().getElement());
+				PtlWebElement targetElement = pair.getRight().getTarget().getElement();
 				// 自身の必要スクロール回数に達していなければ切り抜いて保存
 				if (i <= partialScrollNums[j]) {
 					TargetResult targetPartResult = entireResult;
@@ -499,6 +499,14 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				}
 				imageHeight += result.getImage().get().getHeight();
 			}
+
+			// サイズ情報を結合後の高さに更新する
+			RectangleArea targetPosition = pair.getRight().getTarget().getArea();
+			pair.getRight()
+					.getTarget()
+					.setArea(
+							new RectangleArea(targetPosition.getX(), targetPosition.getY(), targetPosition.getWidth(),
+									imageHeight));
 
 			// 画像の結合
 			BufferedImage screenshot = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
@@ -566,7 +574,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 		// 部分スクロールありの場合
 
-		PtlWebElement el = (PtlWebElement) params.getTarget().getElement();
+		PtlWebElement el = params.getTarget().getElement();
 		WebElementPadding targetPadding = el.getPadding();
 
 		// スクロールバーの元の状態を覚えておく
@@ -685,6 +693,13 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				totalWidth = image.getWidth();
 			}
 		}
+
+		// サイズ情報を結合後の高さに更新する
+		RectangleArea targetPosition = params.getTarget().getArea();
+		params.getTarget()
+				.setArea(
+						new RectangleArea(targetPosition.getX(), targetPosition.getY(), targetPosition.getWidth(),
+								totalHeight));
 
 		// 画像の結合
 		BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
@@ -1023,7 +1038,6 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	private BufferedImage cropScreenshotImage(BufferedImage image, ScreenshotParams params) {
 		RectangleArea targetArea = params.getTarget().getArea();
 		RectangleArea floorTargetArea = targetArea.floor();
-		//		RectangleArea floorTargetArea = targetArea.round();
 
 		// Don't crop image when the target element is "body"
 		if (params.getTarget().isBody()) {
