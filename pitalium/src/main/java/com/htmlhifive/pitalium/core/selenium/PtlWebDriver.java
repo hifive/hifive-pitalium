@@ -442,11 +442,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				PtlWebElement targetElement = pair.getRight().getTarget().getElement();
 
 				TargetResult targetPartResult = entireResult;
-				if (!targetElement.isBody()) {
-					// 全体画像から切り抜く（同時に座標値を切り抜き後の値に更新）
-					targetPartResult = getTargetResult(pair.getLeft(), hiddenElementSelectors, pair.getRight(),
-							entireScreenshotImage);
-				}
+				// 全体画像から切り抜く（同時に座標値を切り抜き後の値に更新）
+				targetPartResult = getTargetResult(pair.getLeft(), hiddenElementSelectors, pair.getRight(),
+						entireScreenshotImage);
 
 				// 自身の必要スクロール回数に達していなければ切り抜いて保存
 				if (i <= partialScrollNums[j]) {
@@ -506,12 +504,14 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			}
 
 			// サイズ情報を結合後の高さに更新する
-			RectangleArea targetPosition = pair.getRight().getTarget().getArea();
-			pair.getRight()
-					.getTarget()
-					.setArea(
-							new RectangleArea(targetPosition.getX(), targetPosition.getY(), targetPosition.getWidth(),
-									imageHeight));
+			if (pair.getLeft().isScrollTarget() && !pair.getRight().getTarget().getElement().isBody()) {
+				RectangleArea targetPosition = pair.getRight().getTarget().getArea();
+				pair.getRight()
+						.getTarget()
+						.setArea(
+								new RectangleArea(targetPosition.getX(), targetPosition.getY(), targetPosition
+										.getWidth(), imageHeight));
+			}
 
 			// 画像の結合
 			BufferedImage screenshot = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
