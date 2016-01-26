@@ -525,7 +525,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 			// Exclude領域の座標を更新
 			for (ScreenAreaWrapper wrapper : pair.getRight().getExcludes()) {
-				wrapper.setArea(wrapper.getArea().move(0, partialScrollTops[i]));
+				wrapper.setArea(wrapper.getArea().move(0, partialScrollTops[i] * scale));
 			}
 
 			// 結果セットに追加
@@ -722,7 +722,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 		// Exclude領域の座標を更新
 		for (ScreenAreaWrapper wrapper : params.getExcludes()) {
-			wrapper.setArea(wrapper.getArea().move(0, scrollTop));
+			wrapper.setArea(wrapper.getArea().move(0, scrollTop * scale));
 		}
 
 		// TargetResult for target area
