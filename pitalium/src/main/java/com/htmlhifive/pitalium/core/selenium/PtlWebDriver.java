@@ -547,7 +547,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		if (canHideElementScrollbar()) {
 			for (int i = 0; i < targetParams.size(); i++) {
 				PtlWebElement el = targetParams.get(i).getRight().getTarget().getElement();
-				if (!el.isBody()) {
+				if (!el.isBody() && targetParams.get(i).getLeft().isScrollTarget()) {
 					el.setOverflowStatus(overflowStatus[i][0], overflowStatus[i][1]);
 				}
 			}
