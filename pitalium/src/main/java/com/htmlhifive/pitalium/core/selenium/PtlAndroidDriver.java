@@ -28,7 +28,7 @@ class PtlAndroidDriver extends PtlAbsAndroidDriver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -37,9 +37,14 @@ class PtlAndroidDriver extends PtlAbsAndroidDriver {
 	}
 
 	@Override
-	protected boolean canHideScrollbar() {
+	protected boolean canHideBodyScrollbar() {
 		return true;
 	}
+
+	@Override
+	protected boolean canHideElementScrollbar() {
+		return false;
+	};
 
 	@Override
 	protected PtlWebElement newPtlWebElement() {

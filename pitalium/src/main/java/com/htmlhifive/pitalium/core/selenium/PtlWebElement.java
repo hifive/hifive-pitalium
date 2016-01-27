@@ -115,8 +115,10 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	private static final String SCRIPT_SET_FRAME_OVERFLOW = "var style = arguments[0].contentWindow.document.documentElement.style;"
 			+ "style.overflowX = arguments[1];"
 			+ "style.overflowY = arguments[2];";
+	private static final String SCRIPT_GET_ELEMENT_RESIZE = "return arguments[0].style.resize";
+	private static final String SCRIPT_SET_ELEMENT_RESIZE = "var style = arguments[0].style;"
+			+ "style.resize = arguments[1]";
 
-	private static final String SCRIPT_SET_RESIZE_NONE = "arguments[0].style.resize='none'";
 	//CHECKSTYLE:ON
 	//@formatter:on
 
@@ -509,20 +511,16 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * 要素をリサイズ不可にします。<br>
-	 * 要素がテキストエリア以外の場合はなにもしません。
+	 * 要素をリサイズ不可にします。
 	 */
 	public void setNoResizable() {
-		if ("textarea".equals(getTagName())) {
-			LOG.debug("Set textarea resize \"none\".");
-			driver.executeScript(SCRIPT_SET_RESIZE_NONE, this);
-		}
+		setResizeStatus("none");
 	}
 
 	/**
 	 * styleに設定されているoverflowの値を返します。
 	 *
-	 * @return overflowの設定値
+	 * @return overflowの設定値 {x, y}
 	 */
 	public String[] getOverflowStatus() {
 		Map<String, Object> object;
@@ -550,6 +548,24 @@ public abstract class PtlWebElement extends RemoteWebElement {
 			driver.executeScript(SCRIPT_SET_ELEMENT_OVERFLOW, this, xStatus, yStatus);
 			LOG.debug("Element overflowX: {}; overflowY: {} ({})", xStatus, yStatus, this);
 		}
+	}
+
+	/**
+	 * styleに設定されているresizeの値を返します。
+	 *
+	 * @return resizeの設定値
+	 */
+	public String getResizeStatus() {
+		return driver.executeScript(SCRIPT_GET_ELEMENT_RESIZE, this).toString();
+	}
+
+	/**
+	 * resizeのstyleを設定します。
+	 *
+	 * @param status resizeの設定
+	 */
+	public void setResizeStatus(String status) {
+		driver.executeScript(SCRIPT_SET_ELEMENT_RESIZE, this, status);
 	}
 
 	/**
