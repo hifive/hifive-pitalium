@@ -118,11 +118,12 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveDiffImage(PersistMetadata metadata, BufferedImage image) {
 		File file = checkParentFileAvailable(getDiffImageFile(metadata));
-		LOG.debug("Save diff image file. metadata: {}; file: {}", metadata, file);
+		LOG.debug("[Save diff image] ({})", file);
+		LOG.trace("[Save diff image] ({})]", metadata);
 		try {
 			ImageIO.write(image, "png", file);
 		} catch (IOException e) {
-			LOG.debug("Failed to save diff image file.", e);
+			LOG.debug("Failed to save diff image.", e);
 			throw new TestRuntimeException(e);
 		}
 	}
@@ -130,11 +131,12 @@ public class FilePersister implements Persister {
 	@Override
 	public BufferedImage loadDiffImage(PersistMetadata metadata) {
 		File file = checkFileAvailable(getDiffImageFile(metadata));
-		LOG.debug("Load diff image file. metadata: {}; file: {}", metadata, file);
+		LOG.debug("[Load diff image] ({})", file);
+		LOG.trace("[Load diff image] ({})", metadata);
 		try {
 			return ImageIO.read(file);
 		} catch (IOException e) {
-			LOG.debug("Failed to load diff image file.", e);
+			LOG.debug("Failed to load diff image.", e);
 			throw new ResourceUnavailableException(e);
 		}
 	}
@@ -142,11 +144,12 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveScreenshot(PersistMetadata metadata, BufferedImage image) {
 		File file = checkParentFileAvailable(getScreenshotImageFile(metadata));
-		LOG.debug("Save screenshot file. metadata: {}; file: {}", metadata, file);
+		LOG.debug("[Save screenshot] ({})", file);
+		LOG.trace("[Save screenshot] ({})", metadata);
 		try {
 			ImageIO.write(image, "png", file);
 		} catch (IOException e) {
-			LOG.debug("Failed to save screenshot file.", e);
+			LOG.debug("Failed to save screenshot.", e);
 			throw new TestRuntimeException(e);
 		}
 	}
@@ -154,7 +157,8 @@ public class FilePersister implements Persister {
 	@Override
 	public InputStream getImageStream(PersistMetadata metadata) {
 		File file = checkFileAvailable(getScreenshotImageFile(metadata));
-		LOG.debug("Load image stream. metadata: {}; file: {}", metadata, file);
+		LOG.debug("[Load image stream] ({})", file);
+		LOG.trace("[Load image stream] ({})", metadata);
 		try {
 			return new BufferedInputStream(new FileInputStream(file));
 		} catch (FileNotFoundException e) {
@@ -166,11 +170,12 @@ public class FilePersister implements Persister {
 	@Override
 	public BufferedImage loadScreenshot(PersistMetadata metadata) {
 		File file = checkFileAvailable(getScreenshotImageFile(metadata));
-		LOG.debug("Load screenshot image. metadata: {}; file: {}", metadata, file);
+		LOG.debug("[Load screenshot] ({})", file);
+		LOG.trace("[Load screenshot] ({})", metadata);
 		try {
 			return ImageIO.read(file);
 		} catch (IOException e) {
-			LOG.debug("Failed to load screenshot image.", e);
+			LOG.debug("Failed to load screenshot.", e);
 			throw new ResourceUnavailableException(e);
 		}
 	}
@@ -178,12 +183,12 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveTargetResults(PersistMetadata metadata, List<TargetResult> results) {
 		File file = checkParentFileAvailable(getTargetResultsFile(metadata));
-		LOG.debug("Save targetResults json. metadata: {}; results: {}; file: {}", metadata,
-				JSONUtils.toString(results), file);
+		LOG.debug("[Save TargetResults] ({})", file);
+		LOG.trace("[Save TargetResults] (results: {}; meta: {})", results, metadata);
 		try {
 			JSONUtils.writeValueWithIndent(file, results);
 		} catch (JSONException e) {
-			LOG.debug("Failed to save targetResults json.", e);
+			LOG.debug("Failed to save TargetResults.", e);
 			throw e;
 		}
 	}
@@ -191,16 +196,16 @@ public class FilePersister implements Persister {
 	@Override
 	public List<TargetResult> loadTargetResults(final PersistMetadata metadata) {
 		File file = checkFileAvailable(getTargetResultsFile(metadata));
-		LOG.debug("Load TargetResults json. metadata: {}: file: {}", metadata, file);
-
+		LOG.debug("[Load TargetResults] ({})", file);
+		LOG.trace("[Load TargetResults] ({})", metadata);
 		try {
 			List<TargetResult> targetResults = JSONUtils.readValue(file, TARGET_RESULTS_REFERENCE);
-			LOG.trace("Loaded TargetResults json: {}", JSONUtils.toString(targetResults));
+			LOG.trace("[Load TargetResults] => {}", targetResults);
 
 			// Build with screenshot image
 			return Collections.unmodifiableList(fillScreenshotImageProperty(targetResults, metadata));
 		} catch (JSONException e) {
-			LOG.debug("Failed to load TargetResults json.", e);
+			LOG.debug("Failed to load TargetResults.", e);
 			throw e;
 		} catch (Exception e) {
 			LOG.debug("Failed to fill TargetResults object.", e);
@@ -232,11 +237,12 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveTestResult(PersistMetadata metadata, TestResult result) {
 		File file = checkParentFileAvailable(getTestResultFile(metadata));
-		LOG.debug("Save TestResult json. metadata: {}; result: {}; file: {}", metadata, result, file);
+		LOG.debug("[Save TestResult] ({})", file);
+		LOG.trace("[Save TestResult] (result: {}; meta: {})", result, metadata);
 		try {
 			JSONUtils.writeValueWithIndent(file, result);
 		} catch (JSONException e) {
-			LOG.debug("Failed to save TestResult json.", e);
+			LOG.debug("Failed to save TestResult.", e);
 			throw e;
 		}
 	}
@@ -244,11 +250,11 @@ public class FilePersister implements Persister {
 	@Override
 	public TestResult loadTestResult(PersistMetadata metadata) {
 		File file = checkFileAvailable(getTestResultFile(metadata));
-		LOG.debug("Load TestResult json. metadata: {}; file: {}", metadata, file);
-
+		LOG.debug("[Load TestResult] ({})", file);
+		LOG.trace("[Load TestResult] ({})", metadata);
 		try {
 			TestResult testResult = JSONUtils.readValue(file, TestResult.class);
-			LOG.trace("Loaded TestResult json: {}", testResult);
+			LOG.trace("[Load TestResult] => {}", testResult);
 
 			// Build with screenshot image
 			List<ScreenshotResult> results = new ArrayList<ScreenshotResult>(testResult.getScreenshotResults().size());
@@ -262,7 +268,7 @@ public class FilePersister implements Persister {
 
 			return new TestResult(testResult.getResultId(), testResult.getResult(), results);
 		} catch (JSONException e) {
-			LOG.debug("Failed to load TestResult json.", e);
+			LOG.debug("Failed to load TestResult.", e);
 			throw e;
 		} catch (Exception e) {
 			LOG.debug("Failed to fill TestResult object.", e);
@@ -273,11 +279,12 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveExpectedIds(Map<String, Map<String, String>> expectedIds) {
 		File file = checkParentFileAvailable(getExpectedIdsFile());
-		LOG.debug("Save expectedIds json. ids: {} file: {}", expectedIds, file);
+		LOG.debug("[Save ExpectedIds] ({})", file);
+		LOG.trace("[Save ExpectedIds] ({})", expectedIds);
 		try {
 			JSONUtils.writeValueWithIndent(file, expectedIds);
 		} catch (JSONException e) {
-			LOG.debug("Failed to save expectedIds json.", e);
+			LOG.debug("Failed to save ExpectedIds.", e);
 			throw e;
 		}
 	}
@@ -285,13 +292,13 @@ public class FilePersister implements Persister {
 	@Override
 	public Map<String, Map<String, String>> loadExpectedIds() {
 		File file = checkFileAvailable(getExpectedIdsFile());
-		LOG.debug("Load ExpectedIds json. file: {}", file);
+		LOG.debug("[Load ExpectedIds] ({})", file);
 		try {
 			Map<String, Map<String, String>> ids = JSONUtils.readValue(file, EXPECTED_IDS_REFERENCE);
-			LOG.trace("Loaded ExpectedIds: {}", JSONUtils.toString(ids));
+			LOG.trace("[Load ExpectedIds] => {}", ids);
 			return ids;
 		} catch (JSONException e) {
-			LOG.debug("Failed to load ExpectedIds json.", e);
+			LOG.debug("Failed to load ExpectedIds.", e);
 			throw e;
 		}
 	}

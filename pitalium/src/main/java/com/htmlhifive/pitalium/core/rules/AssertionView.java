@@ -109,7 +109,7 @@ public class AssertionView extends TestWatcher {
 
 	@Override
 	protected void starting(Description desc) {
-		LOG.info("Test starting @[{}]", desc.getDisplayName());
+		LOG.info("[Testcase start] || {}", desc.getDisplayName());
 
 		description = desc;
 		className = getClassName(desc);
@@ -121,13 +121,13 @@ public class AssertionView extends TestWatcher {
 	@Override
 	protected void failed(Throwable e, Description desc) {
 		if (e instanceof AssertionError) {
-			LOG.info("Test failed by assertion error @[{}]", desc.getDisplayName(), e);
+			LOG.info("[Testcase failed] (assertion error) || {}", desc.getDisplayName(), e);
 		} else if (e instanceof WebDriverException) {
-			LOG.error("Test failed by selenium error @[{}]", desc.getDisplayName(), e);
+			LOG.error("[Testcase failed] (selenium error) || {}", desc.getDisplayName(), e);
 		} else if (e instanceof TestRuntimeException) {
-			LOG.error("Test failed by pitalium runtime error @[{}]", desc.getDisplayName(), e);
+			LOG.error("[Testcase failed] (pitalium runtime error) || {}", desc.getDisplayName(), e);
 		} else {
-			LOG.error("Test failed by unhandled error @[{}]", desc.getDisplayName(), e);
+			LOG.error("[Testcase failed] (unhandled error) || {}", desc.getDisplayName(), e);
 		}
 
 		TestResultManager.getInstance().cancelUpdateExpectedId(className);
@@ -137,12 +137,12 @@ public class AssertionView extends TestWatcher {
 	protected void succeeded(Description desc) {
 		// テストに成功したらExpectedIdを更新
 		if (verifyErrors.isEmpty()) {
-			LOG.info("Test succeeded @[{}]", desc.getDisplayName());
+			LOG.info("[Testcase succeeded] || {}", desc.getDisplayName());
 			TestResultManager.getInstance().updateExpectedId(className, methodName);
 			return;
 		}
 
-		LOG.debug("Verified {} errors @[{}]", verifyErrors.size(), desc.getDisplayName());
+		LOG.info("[Testcase failed] (verified {} errors) || {}", verifyErrors.size(), desc.getDisplayName());
 		TestResultManager.getInstance().cancelUpdateExpectedId(className);
 		String errors = StringUtils.join(
 				FluentIterable.from(verifyErrors).transform(new Function<AssertionError, String>() {
@@ -161,7 +161,7 @@ public class AssertionView extends TestWatcher {
 
 	@Override
 	protected void finished(Description desc) {
-		LOG.info("Test finished @[{}]", desc.getDisplayName());
+		LOG.debug("[Testcase finished] || {}", desc.getDisplayName());
 
 		if (webDriverContainer != null) {
 			webDriverContainer.quit();
@@ -210,7 +210,7 @@ public class AssertionView extends TestWatcher {
 				});
 
 		driver = webDriverContainer.get();
-		LOG.debug("Use driver ({}) @[{}]", driver, description.getDisplayName());
+		LOG.debug("[Get WebDriver] Use session ({}) || {}", driver, description.getDisplayName());
 		return driver;
 	}
 
@@ -349,14 +349,14 @@ public class AssertionView extends TestWatcher {
 
 		// Check screenshotId
 		if (screenshotIds.contains(screenshotId)) {
-			LOG.error("Duplicate screenshotId {}#{} {}", className, methodName, screenshotId);
+			LOG.error("Duplicate screenshotId ({}) || {}", screenshotId, getDisplayName());
 			throw new TestRuntimeException("Duplicate screenshotId");
 		}
 
 		ExecMode execMode = PtlTestConfig.getInstance().getEnvironment().getExecMode();
-		LOG.info("AssertView starting... (ScreenshotId: {}, Mode: {}) @[{}]", screenshotId, execMode, getDisplayName());
+		LOG.info("[AssertView start] (ssid: {}, Mode: {}) || {}", screenshotId, execMode, getDisplayName());
 		LOG.trace("message: {}, screenshotId: {}, compareTargets: {}, hiddenElementSelectors: {}", message,
-				screenshotId, JSONUtils.toString(compareTargets), JSONUtils.toString(hiddenElementsSelectors));
+				screenshotId, compareTargets, hiddenElementsSelectors);
 
 		List<CompareTarget> targets;
 		if (compareTargets == null || compareTargets.isEmpty()) {
@@ -382,18 +382,16 @@ public class AssertionView extends TestWatcher {
 			results.add(screenshotResult);
 
 			if (!validateResult.isValid()) {
-				LOG.info("AssertView validation failed... (ScreenshotId: {}, Mode: {}) @[{}]", screenshotId, execMode,
-						getDisplayName());
+				LOG.info("[AssertView failed] (validation error, ssid: {}) || {}", screenshotId, getDisplayName());
 				throw new AssertionError("Invalid selector found");
 			}
 
-			LOG.info("AssertView finished... (ScreenshotId: {}, Mode: {}) @[{}]", screenshotId, execMode,
-					getDisplayName());
+			LOG.info("[AssertView finished] (ssid: {}) || {}", screenshotId, getDisplayName());
 			return;
 		}
 
 		// RunTest mode
-		LOG.info("AssertView starting comparison... (ScreenshotId: {}) @[{}]", screenshotId, getDisplayName());
+		LOG.info("[AssertView starting comparison] (ssid: {}) || {}", screenshotId, getDisplayName());
 
 		String expectedId = TestResultManager.getInstance().getExpectedId(className, methodName);
 		PersistMetadata expectedMetadata = new PersistMetadata(expectedId, className, methodName, screenshotId,
@@ -406,15 +404,15 @@ public class AssertionView extends TestWatcher {
 		results.add(screenshotResult);
 
 		if (!validateResult.isValid()) {
-			LOG.info("AssertView validation failed... (ScreenshotId: {}) @[{}]", screenshotId, getDisplayName());
+			LOG.info("[AssertView failed] (validation error, ssid: {}) || {}", screenshotId, getDisplayName());
 			throw new AssertionError("Invalid selector found");
 		}
 		if (!screenshotResult.getResult().isSuccess()) {
-			LOG.info("AssertView failed... (ScreenshotId: {}) @[{}]", screenshotId, getDisplayName());
+			LOG.info("[AssertView failed] (ssid: {}) || {}", screenshotId, getDisplayName());
 			throw Strings.isNullOrEmpty(message) ? new AssertionError() : new AssertionError(message);
 		}
 
-		LOG.info("AssertView finished comparison... (ScreenshotId: {}) @[{}]", screenshotId, getDisplayName());
+		LOG.info("[AssertView finished] (ssid: {}) || {}", screenshotId, getDisplayName());
 	}
 
 	/**
@@ -428,9 +426,10 @@ public class AssertionView extends TestWatcher {
 	 */
 	public void verifyView(ScreenshotArgument arg) {
 		try {
+			LOG.info("[VerifyView start] (ssid: {}) || {}", arg.getScreenshotId(), getDisplayName());
 			assertView(arg);
 		} catch (AssertionError e) {
-			LOG.info("VerifyView assertionError (ScreenshotId: {}). @[{}]", arg.getScreenshotId(), getDisplayName());
+			LOG.info("[VerifyView failed] (ssid: {}) || {}", arg.getScreenshotId(), getDisplayName());
 			verifyErrors.add(e);
 		}
 	}
@@ -447,9 +446,10 @@ public class AssertionView extends TestWatcher {
 	 */
 	public void verifyView(String message, ScreenshotArgument arg) {
 		try {
+			LOG.info("[VerifyView start] (ssid: {}) || {}", arg.getScreenshotId(), getDisplayName());
 			assertView(message, arg);
 		} catch (AssertionError e) {
-			LOG.info("VerifyView assertionError (ScreenshotId: {}). @[{}]", arg.getScreenshotId(), getDisplayName());
+			LOG.info("[VerifyView failed] (ssid: {}) || {}", arg.getScreenshotId(), getDisplayName());
 			verifyErrors.add(e);
 		}
 	}
@@ -472,7 +472,7 @@ public class AssertionView extends TestWatcher {
 			IndexDomSelector selector = targetResult.getTarget().getSelector();
 			if (selector != null && (area.getWidth() == 0d || area.getHeight() == 0d)) {
 				selectors.add(selector);
-				LOG.info("Element by selector [{}] has empty size", selector);
+				LOG.error("[Validation error] element has empty size. <{}>", selector);
 			}
 		}
 
@@ -501,7 +501,7 @@ public class AssertionView extends TestWatcher {
 
 			if (!selectors.contains(selector)) {
 				invalidSelectors.add(selector);
-				LOG.error("No element found for selector [{}]", selector);
+				LOG.error("[Validation error] no element found. <{}>", selector);
 			}
 		}
 
@@ -523,13 +523,13 @@ public class AssertionView extends TestWatcher {
 			List<DomSelector> hiddenElementsSelectors) {
 		ScreenshotResult screenshotResult = driver
 				.takeScreenshot(screenshotId, compareTargets, hiddenElementsSelectors);
-		LOG.trace("ScreenshotResult (ScreenshotId: {}): {} @[{}]", screenshotId, screenshotResult, getDisplayName());
+		LOG.trace("(takeCaptureAndPersistImage) (ssid: {}) result: {} || {}", screenshotId, screenshotResult,
+				getDisplayName());
 
 		// Persist all screenshots
 		Persister persister = TestResultManager.getInstance().getPersister();
 		ScreenshotImage entireScreenshotImage = screenshotResult.getEntireScreenshotImage();
 		if (entireScreenshotImage.isImageCached()) {
-			LOG.debug("Persist entire screenshot image. (ScreenshotId: {})", screenshotId);
 			persister.saveScreenshot(new PersistMetadata(currentId, className, methodName, screenshotId, null, null,
 					capabilities), entireScreenshotImage.get());
 		}
@@ -537,7 +537,7 @@ public class AssertionView extends TestWatcher {
 		for (TargetResult targetResult : screenshotResult.getTargetResults()) {
 			ScreenshotImage image = targetResult.getImage();
 			if (!image.isImageCached()) {
-				LOG.debug("Screenshot image was not captured for target [{}]", targetResult.getTarget());
+				LOG.debug("Screenshot image was not captured. ({}) || {}", targetResult.getTarget(), getDisplayName());
 				continue;
 			}
 
@@ -551,7 +551,6 @@ public class AssertionView extends TestWatcher {
 						null, capabilities);
 			}
 
-			LOG.debug("Persist screenshot image for target [{}]", targetResult.getTarget());
 			persister.saveScreenshot(metadata, image.get());
 		}
 
@@ -593,7 +592,7 @@ public class AssertionView extends TestWatcher {
 			if (selector != null && validateResult.noAreaElementSelectors.contains(selector)) {
 				processes.add(new TargetResult(ExecResult.FAILURE, current.getTarget(), current.getExcludes(), current
 						.isMoveTarget(), current.getHiddenElementSelectors()));
-				LOG.debug("Compare TargetResult skipped. Element has empty area. target: [{}]", current.getTarget());
+				LOG.debug("[Comparison skipped] ({}) || {}", current.getTarget(), getDisplayName());
 				continue;
 			}
 
@@ -606,7 +605,8 @@ public class AssertionView extends TestWatcher {
 					}
 				});
 			} catch (NoSuchElementException e) {
-				LOG.info("Compare TargetResult failed. No element found for target [{}].", current.getTarget());
+				LOG.info("[Comparison failed] No element found for target ({}) || {}.", current.getTarget(),
+						getDisplayName());
 				processes.add(new TargetResult(null, current.getTarget(), current.getExcludes(),
 						current.isMoveTarget(), current.getHiddenElementSelectors()));
 				assertFail = true;
@@ -615,16 +615,16 @@ public class AssertionView extends TestWatcher {
 			}
 
 			// 画像比較
-			LOG.debug("Compare TargetResult start. target: {}", current);
+			LOG.debug("[Comparison start] ({}) || {}", current, getDisplayName());
 			ImageRectanglePair currentImage = prepareScreenshotImageForCompare(current);
 			ImageRectanglePair expectedImage = prepareScreenshotImageForCompare(expected);
 			DiffPoints compareResult = ImageUtils.compare(currentImage.image, currentImage.rectangle,
 					expectedImage.image, expectedImage.rectangle, current.getOptions());
 			assertFail |= compareResult.isFailed();
 			if (compareResult.isFailed()) {
-				LOG.debug("Compare TargetResult failed. target: {}", current);
+				LOG.debug("[Comparison failed] ({}) || {}", current, getDisplayName());
 			} else {
-				LOG.debug("Compare TargetResult success. target: {}", current);
+				LOG.debug("[Comparison success] ({}) || {}", current, getDisplayName());
 			}
 
 			processes.add(new TargetResult(compareResult.isSucceeded() ? ExecResult.SUCCESS : ExecResult.FAILURE,
@@ -633,7 +633,7 @@ public class AssertionView extends TestWatcher {
 
 			// 比較でFailだった場合、差分の画像を作成
 			if (compareResult.isFailed()) {
-				LOG.debug("Diff image creation. target: {}", current);
+				LOG.debug("[Create diff image] ({}) || {}", current, getDisplayName());
 				BufferedImage diffImage = ImageUtils.getDiffImage(expectedImage.image, currentImage.image,
 						compareResult);
 
@@ -696,8 +696,7 @@ public class AssertionView extends TestWatcher {
 		ExecMode execMode = PtlTestConfig.getInstance().getEnvironment().getExecMode();
 		String screenshotId = screenshotResult.getScreenshotId();
 		if (!execMode.isRunTest()) {
-			LOG.info("AssertScreenshot does nothing (ScreenshotId: {}, mode: {}). @[{}]", screenshotId, execMode,
-					getDisplayName());
+			LOG.info("[AssertScreenshot skipped] (ssid: {}, mode: {}) || {}", screenshotId, execMode, getDisplayName());
 			return;
 		}
 
@@ -707,16 +706,16 @@ public class AssertionView extends TestWatcher {
 		List<TargetResult> expectedTargetResults = TestResultManager.getInstance().getPersister()
 				.loadTargetResults(expectedMetadata);
 
-		LOG.info("AssertScreenshot comparison start (ScreenshotId: {}). @[{}]", screenshotId, getDisplayName());
+		LOG.info("[AssertScreenshot comparison start] (ssid: {}) || {}", screenshotId, getDisplayName());
 		ScreenshotResult result = compareTargetResults(screenshotId, expectedId, screenshotResult.getTargetResults(),
 				expectedTargetResults, new ValidateResult());
 
 		if (!result.getResult().isSuccess()) {
-			LOG.info("AssertScreenshot comparison failed (ScreenshotId: {}). @[{}]", screenshotId, getDisplayName());
+			LOG.info("[AssertScreenshot failed] (ssid: {}) || {}", screenshotId, getDisplayName());
 			throw Strings.isNullOrEmpty(message) ? new AssertionError() : new AssertionError(message);
 		}
 
-		LOG.info("AssertScreenshot succeeded (ScreenshotId: {}). @[{}]", screenshotId, getDisplayName());
+		LOG.info("[AssertScreenshot succeeded] (ssid: {}) || {}", screenshotId, getDisplayName());
 	}
 
 	/**
@@ -728,10 +727,10 @@ public class AssertionView extends TestWatcher {
 	 */
 	public void verifyScreenshot(ScreenshotResult screenshotResult) {
 		try {
+			LOG.info("[VerifyScreenshot start] (ssid: {}) || {}", screenshotResult.getExpectedId(), getDisplayName());
 			assertScreenshot(screenshotResult);
 		} catch (AssertionError e) {
-			LOG.info("VerifyScreenshot assertionError (ScreenshotId: {}). @[{}]", screenshotResult.getScreenshotId(),
-					getDisplayName());
+			LOG.info("[VerifyScreenshot failed] (ssid: {}) || {}", screenshotResult.getScreenshotId(), getDisplayName());
 			verifyErrors.add(e);
 		}
 	}
@@ -746,10 +745,10 @@ public class AssertionView extends TestWatcher {
 	 */
 	public void verifyScreenshot(String message, ScreenshotResult screenshotResult) {
 		try {
+			LOG.info("[VerifyScreenshot start] (ssid: {}) || {}", screenshotResult.getExpectedId(), getDisplayName());
 			assertScreenshot(message, screenshotResult);
 		} catch (AssertionError e) {
-			LOG.info("VerifyScreenshot assertionError (ScreenshotId: {}). @[{}]", screenshotResult.getScreenshotId(),
-					getDisplayName());
+			LOG.info("[VerifyScreenshot failed] (ssid: {}) || {}", screenshotResult.getScreenshotId(), getDisplayName());
 			verifyErrors.add(e);
 		}
 	}
@@ -778,21 +777,22 @@ public class AssertionView extends TestWatcher {
 	public void assertExist(String message, BufferedImage image) {
 		ExecMode execMode = PtlTestConfig.getInstance().getEnvironment().getExecMode();
 		if (!execMode.isRunTest()) {
-			LOG.info("AssertExist does nothing (mode: {}). @[{}]", execMode, getDisplayName());
+			LOG.info("[AssertExist skipped] (mode: {}) || {}", execMode, getDisplayName());
 			return;
 		}
 
 		// Capture body
-		LOG.debug("AssertExist capture screenshot.");
+		LOG.debug("[AssertExist capture start]");
 		ScreenshotImage screenshot = driver.takeScreenshot("assertExists").getTargetResults().get(0).getImage();
 		BufferedImage entireScreenshotImage = screenshot.get();
+		LOG.debug("[AssertExist capture finished]");
 
 		if (ImageUtils.isContained(entireScreenshotImage, image)) {
-			LOG.info("AssertExist comparison succeeded. @[{}]", getDisplayName());
+			LOG.info("[AssertExist succeeded] || {}", getDisplayName());
 			return;
 		}
 
-		LOG.info("AssertExist comparison failed. @[{}]", getDisplayName());
+		LOG.info("[AssertExist failed] || {}", getDisplayName());
 		throw Strings.isNullOrEmpty(message) ? new AssertionError() : new AssertionError(message);
 	}
 
@@ -806,9 +806,10 @@ public class AssertionView extends TestWatcher {
 	 */
 	public void verifyExists(BufferedImage image) {
 		try {
+			LOG.info("[VerifyExist start] || {}", getDisplayName());
 			assertExist(image);
 		} catch (AssertionError e) {
-			LOG.info("VerifyExist assertionError @[{}]", getDisplayName());
+			LOG.info("[VerifyExist failed] || {}", getDisplayName());
 			verifyErrors.add(e);
 		}
 	}
@@ -824,9 +825,10 @@ public class AssertionView extends TestWatcher {
 	 */
 	public void verifyExists(String message, BufferedImage image) {
 		try {
+			LOG.info("[VerifyExist start] || {}", getDisplayName());
 			assertExist(message, image);
 		} catch (AssertionError e) {
-			LOG.info("VerifyExist assertionError @[{}]", getDisplayName());
+			LOG.info("[VerifyExist failed] || {}", getDisplayName());
 			verifyErrors.add(e);
 		}
 	}

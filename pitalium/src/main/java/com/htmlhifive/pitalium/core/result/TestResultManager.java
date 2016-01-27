@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
-import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
 import com.htmlhifive.pitalium.core.config.ExecMode;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
@@ -109,16 +108,14 @@ public final class TestResultManager {
 
 			expects = Collections.unmodifiableMap(expects);
 		} catch (ResourceUnavailableException e) {
-			LOG.info("ExpectedIds is not exists.");
+			LOG.info("Failed to load ExpectedIds.");
 
 			expects = Collections.emptyMap();
 		}
 
 		expectedIds = expects;
 
-		LOG.debug("TestResultManager instantiated.");
-		LOG.trace("mode: {}; persister: {}; expectedIds: {}", currentMode, persister.getClass(),
-				JSONUtils.toString(expectedIds));
+		LOG.trace("Mode: {}, Persister: {}, ExpectedIds: {}", currentMode, persister.getClass(), expectedIds);
 	}
 
 	/**
@@ -166,7 +163,7 @@ public final class TestResultManager {
 				throw new TestRuntimeException("TestResult already exists for " + className);
 			}
 
-			LOG.debug("Initialize TestResult for class {}.", className);
+			LOG.trace("[Initialize TestResult] ({})", className);
 			holders.put(className, new ScreenshotResultHolder());
 		}
 	}
@@ -182,18 +179,15 @@ public final class TestResultManager {
 				throw new TestRuntimeException("TestResult does not exist for " + className);
 			}
 
-			LOG.debug("Export TestResult for class {} start.", className);
+			LOG.trace("[Export TestResult] ({})", className);
 
 			ScreenshotResultHolder holder = holders.get(className);
-			LOG.debug("ScreenshotResultHolder: {}", JSONUtils.toString(holder));
 			ExecResult execResult = null;
 			if (holder.result != null) {
 				execResult = holder.result ? ExecResult.SUCCESS : ExecResult.FAILURE;
 			}
 
 			TestResult result = new TestResult(currentId, execResult, holder.screenshotResults);
-			LOG.debug("Export TestResult: {}", result);
-
 			persister.saveTestResult(new PersistMetadata(currentId, className), result);
 		}
 	}
@@ -210,7 +204,8 @@ public final class TestResultManager {
 				throw new TestRuntimeException("TestResult does not exist for " + className);
 			}
 
-			LOG.debug("Add ScreenshotResult from {}, result: {}", className, result);
+			LOG.debug("[Add ScreenshotResult] ({})", className);
+			LOG.trace("[Add ScreenshotResult] ({})", result);
 
 			ScreenshotResultHolder holder = holders.get(className);
 			holder.screenshotResults.add(result);
@@ -221,7 +216,7 @@ public final class TestResultManager {
 					}
 				} else {
 					holder.result = false;
-					LOG.debug("Class {} failed by added ScreenshotResult.", className);
+					LOG.debug("Test failed. ({})", className);
 				}
 			}
 		}
@@ -271,7 +266,6 @@ public final class TestResultManager {
 	 */
 	public void updateExpectedId(String className, String methodName) {
 		if (currentMode != ExecMode.SET_EXPECTED) {
-			LOG.trace("ExpectedId was not updated. currentMode: {}", currentMode);
 			return;
 		}
 
@@ -285,7 +279,7 @@ public final class TestResultManager {
 			}
 
 			String oldId = holder.expectIds.put(methodName, currentId);
-			LOG.debug("Update expectedId [{}#{}] {} => {}", className, methodName, oldId, currentId);
+			LOG.debug("[Update ExpectedId] (class: {}, method: {}) ({} => {})", className, methodName, oldId, currentId);
 		}
 	}
 
@@ -309,7 +303,7 @@ public final class TestResultManager {
 			}
 
 			holder.failed = true;
-			LOG.debug("Update expectedId for {} was cancelled.", className);
+			LOG.debug("[Update ExpectedId cancelled] ({})", className);
 		}
 	}
 
@@ -320,7 +314,6 @@ public final class TestResultManager {
 	 */
 	public void exportExpectedIds(String className) {
 		if (currentMode != ExecMode.SET_EXPECTED) {
-			LOG.trace("ExpectedIds was not exported. currentMode: {}", currentMode);
 			return;
 		}
 
@@ -331,7 +324,7 @@ public final class TestResultManager {
 
 			ExpectIdHolder holder = expectedIdsForUpdate.get(className);
 			if (holder.failed) {
-				LOG.info("TestClass {} was failed. Update ExpectedIds cancelled.");
+				LOG.info("[Export ExpectedIds] cancelled. ({})", className);
 				return;
 			}
 
@@ -342,11 +335,11 @@ public final class TestResultManager {
 			}
 
 			values.putAll(holder.expectIds);
-			LOG.debug("ExpectedIds for {} merged. values: {}", JSONUtils.toString(holder.expectIds));
-			LOG.trace("ExpectedIds merged. {}", JSONUtils.toString(mergedExpectedIds));
+			LOG.debug("[Export ExpectedIds] merged. ({})", className);
+			LOG.trace("[Export ExpectedIds] merged. {}", holder.expectIds);
 
+			LOG.info("[Export ExpectedIds] ({})", className);
 			persister.saveExpectedIds(mergedExpectedIds);
-			LOG.info("ExpectedIds for {} updated.", className);
 		}
 	}
 

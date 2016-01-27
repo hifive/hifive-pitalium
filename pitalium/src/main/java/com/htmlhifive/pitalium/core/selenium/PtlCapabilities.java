@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -34,6 +33,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.htmlhifive.pitalium.common.exception.JSONException;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 
 /**
  * テスト実行時に指定したCapabilityを保持するクラス。
@@ -68,7 +68,6 @@ public class PtlCapabilities extends DesiredCapabilities {
 	 * @return Capabilityのリスト
 	 */
 	public static List<PtlCapabilities[]> readCapabilities() {
-
 		synchronized (PtlCapabilities.class) {
 			if (capabilities != null) {
 				return capabilities;
@@ -77,7 +76,8 @@ public class PtlCapabilities extends DesiredCapabilities {
 			String filePath = PtlTestConfig.getInstance().getEnvironment().getCapabilitiesFilePath();
 			List<Map<String, Object>> maps = readCapabilitiesFromFileOrResources(filePath);
 
-			LOG.debug("Read capabilities count: {}", maps.size());
+			LOG.debug("Capabilities loaded. (size: {})", maps.size());
+			LOG.trace("Capabilities: {}", maps);
 
 			List<PtlCapabilities[]> result = new ArrayList<PtlCapabilities[]>(maps.size());
 			for (Map<String, Object> map : maps) {
@@ -97,21 +97,21 @@ public class PtlCapabilities extends DesiredCapabilities {
 	 * @return 読み込んだCapabilities
 	 */
 	static List<Map<String, Object>> readCapabilitiesFromFileOrResources(String filePath) {
+		LOG.trace("Load capabilities. ({})", filePath);
+
 		TypeReference<List<Map<String, Object>>> reference = new TypeReference<List<Map<String, Object>>>() {
 		};
 		try {
 			// Read from file
 			return JSONUtils.readValue(new File(filePath), reference);
 		} catch (JSONException e) {
-			LOG.debug("Capabilities is not file \"{}\"", filePath);
-
 			// Read from resources
 			InputStream in = null;
 			try {
 				in = PtlCapabilities.class.getClassLoader().getResourceAsStream(filePath);
 				return JSONUtils.readValue(in, reference);
 			} catch (Exception e1) {
-				throw new TestRuntimeException("Load capabilities.json error", e1);
+				throw new TestRuntimeException("Failed to load capabilities", e1);
 			} finally {
 				if (in != null) {
 					try {

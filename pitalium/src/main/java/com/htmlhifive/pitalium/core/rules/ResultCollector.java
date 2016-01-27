@@ -33,19 +33,18 @@ public class ResultCollector extends TestWatcher {
 
 	@Override
 	protected void starting(Description description) {
-		String className = description.getTestClass().getSimpleName();
-		LOG.info("Test starting: {}", className);
+		LOG.info("[TestClass start] || {}", description.getTestClass().getName());
 
 		// TestResultManagerに対してテストの初期化を設定します。
-		TestResultManager.getInstance().initializeTestResult(className);
+		TestResultManager.getInstance().initializeTestResult(description.getTestClass().getSimpleName());
 	}
 
 	@Override
 	protected void finished(Description description) {
-		String className = description.getTestClass().getSimpleName();
-		LOG.info("Test finished: {}", className);
+		LOG.info("[TestClass finished] || {}", description.getTestClass().getName());
 
 		// TestResultManagerに対してテスト結果のエクスポートを要求します。
+		String className = description.getTestClass().getSimpleName();
 		TestResultManager resultManager = TestResultManager.getInstance();
 		resultManager.exportTestResult(className);
 		resultManager.exportExpectedIds(className);

@@ -54,10 +54,6 @@ public abstract class PtlWebDriverFactory {
 		this.environmentConfig = environmentConfig;
 		this.testAppConfig = testAppConfig;
 		this.capabilities = capabilities;
-
-		LOG.debug("{} instantiated. {}", getClass().getSimpleName(), capabilities);
-		LOG.trace("environmentConfig: {}; testAppConfig: {}; capabilities: {}", environmentConfig, testAppConfig,
-				capabilities);
 	}
 
 	/**
@@ -135,7 +131,7 @@ public abstract class PtlWebDriverFactory {
 	 */
 	public PtlWebDriver getDriver() {
 		synchronized (PtlWebDriverFactory.class) {
-			LOG.debug("Create a new WebDriver session start.");
+			LOG.debug("[Get WebDriver] create new session.");
 
 			URL url = getGridHubURL();
 			PtlWebDriver driver = createWebDriver(url);
@@ -146,7 +142,7 @@ public abstract class PtlWebDriverFactory {
 						.setSize(new Dimension(testAppConfig.getWindowWidth(), testAppConfig.getWindowHeight()));
 			}
 
-			LOG.debug("Create a new WebDriver session finished. ({})", driver);
+			LOG.debug("[Get WebDriver] new session created. ({})", driver);
 			return driver;
 		}
 	}
