@@ -15,7 +15,6 @@
  */
 package com.htmlhifive.pitalium.image.util;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ class DefaultImageComparator extends ImageComparator {
 
 	@Override
 	protected List<Point> compare(BufferedImage image1, BufferedImage image2, int offsetX, int offsetY) {
-		LOG.trace("compare. image1[w: {}, h: {}]; images[w: {}, h: {}], offset: ({}, {})", image1.getWidth(),
+		LOG.trace("[Compare] image1[w: {}, h: {}], image2[w: {}, h: {}], offset: ({}, {})", image1.getWidth(),
 				image1.getHeight(), image2.getWidth(), image2.getHeight(), offsetX, offsetY);
 		int width = Math.min(image1.getWidth(), image2.getWidth());
 		int height = Math.min(image1.getHeight(), image2.getHeight());
@@ -55,11 +54,14 @@ class DefaultImageComparator extends ImageComparator {
 
 				Point diffPoint = new Point(x, y);
 				diffPoints.add(diffPoint);
-				LOG.trace("Diff found @[{}]. {} <=> {}", diffPoint, new Color(rgb1[i]), new Color(rgb2[i]));
+				LOG.trace("[Compare] Diff found ({}, {}). #{} <=> #{}", diffPoint.x, diffPoint.y,
+						Integer.toHexString(rgb1[i]), Integer.toHexString(rgb2[i]));
 			}
 		}
 
-		LOG.debug("Diff points: {}", diffPoints);
+		if (!diffPoints.isEmpty()) {
+			LOG.debug("[Compare] {} diff found.", diffPoints.size());
+		}
 		return diffPoints;
 	}
 

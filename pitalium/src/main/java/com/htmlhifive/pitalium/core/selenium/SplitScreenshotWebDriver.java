@@ -21,9 +21,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.DomSelector;
@@ -37,13 +34,11 @@ import com.htmlhifive.pitalium.image.util.ImageUtils;
  */
 abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SplitScreenshotWebDriver.class);
-
 	private double scale = DEFAULT_SCREENSHOT_SCALE;
 
 	/**
 	 * コンストラクタ
-	 *
+	 * 
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -60,7 +55,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * ページ全体のスクリーンショットを取得します。スクロール毎にスクリーンショットを撮り、最後に結合した画像を返します。
-	 *
+	 * 
 	 * @return 撮影したスクリーンショット
 	 */
 	@Override
@@ -71,12 +66,14 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	/**
 	 * ページの左上から指定された要素までを含むスクリーンショットを撮影し、{@link BufferedImage}として返します。<br/>
 	 * 要素が指定されていない場合はページ全体を撮影します。
-	 *
+	 * 
 	 * @param params スクリーンショット撮影用パラメータ
 	 * @return 撮影したスクリーンショット
 	 */
 	@Override
 	public BufferedImage getMinimumScreenshot(ScreenshotParams params) {
+		LOG.trace("[GetMinimumScreenshot start]");
+
 		// 可視範囲のサイズを取得
 		long windowWidth = getWindowWidth();
 		long windowHeight = getWindowHeight();
@@ -89,6 +86,8 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 			targetBottom = elementArea.getY() + elementArea.getHeight();
 			targetRight = elementArea.getX() + elementArea.getWidth();
 		}
+		LOG.trace("[GetMinimumScreenshot] window(w: {}, h: {}), target(right: {}, bottom: {})", windowWidth,
+				windowHeight, targetRight, targetBottom);
 
 		long currentVScrollAmount = 0;
 		double captureTop = 0d;
@@ -111,6 +110,8 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 			while (scrollTop != currentScrollTop) {
 				currentVScrollAmount = currentScrollTop - scrollTop;
 				scrollTop = currentScrollTop;
+				LOG.trace("[GetMinimumScreenshot] vertical scrollAmount: {}, scrollTop: {}", currentVScrollAmount,
+						scrollTop);
 
 				int headerHeight = getHeaderHeight(scrollTop);
 				int footerHeight = getFooterHeight(scrollTop, captureTop);
@@ -132,6 +133,8 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				while (scrollLeft != currentScrollLeft) {
 					currentHScrollAmount = currentScrollLeft - scrollLeft;
 					scrollLeft = currentScrollLeft;
+					LOG.trace("[GetMinimumScreenshot] horizontal scrollAmount: {}, scrollLeft: {}",
+							currentHScrollAmount, scrollLeft);
 
 					// 可視範囲のスクリーンショットを撮影
 					BufferedImage image = getScreenshotAsBufferedImage();
@@ -144,6 +147,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 					if (Double.isNaN(currentScale)) {
 						currentScale = calcScale(windowWidth, image.getWidth());
 						scale = currentScale;
+						LOG.trace("[GetMinimumScreenshot] scale: {}", scale);
 					}
 
 					// 次の画像と重なる部分を切り取っておく
@@ -161,8 +165,10 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 					// Targetが写りきっていたら終了
 					if (targetRight > 0 && targetRight < captureLeft) {
+						LOG.trace("[GetMinimumScreenshot] horizontal scroll break");
 						break;
 					}
+					LOG.trace("[GetMinimumScreenshot] horizontal scroll to ({}, {})", captureLeft, captureTop);
 
 					// 次の撮影位置までスクロール
 					scrollTo(captureLeft, captureTop);
@@ -177,7 +183,6 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				if (lineImages.size() > 1) {
 					BufferedImage rImg = lineImages.get(lineImages.size() - 1);
 					int trimLeft = rImg.getWidth() - (int) Math.round(currentHScrollAmount * scale);
-					LOG.debug("trimLeft: " + trimLeft);
 
 					if (trimLeft > 0 && trimLeft < rImg.getWidth()) {
 						lineImages.set(lineImages.size() - 1, ImageUtils.trim(rImg, 0, trimLeft, 0, 0));
@@ -204,8 +209,10 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 				// Targetが写りきっていたら終了
 				if (targetBottom > 0 && targetBottom < captureTop) {
+					LOG.trace("[GetMinimumScreenshot] vertical scroll break");
 					break;
 				}
+				LOG.trace("[GetMinimumScreenshot] vertical scroll to (0, {})", captureTop);
 
 				// 次の撮影位置までスクロール
 				scrollTo(0d, captureTop);
@@ -224,7 +231,6 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 			for (int i = 0; i < images.get(images.size() - 1).size(); i++) {
 				BufferedImage lastImage = images.get(images.size() - 1).get(i);
 				int trimTop = lastImage.getHeight() - (int) Math.round(currentVScrollAmount * scale);
-				LOG.debug("trimTop: " + trimTop);
 
 				if (trimTop > 0 && trimTop < lastImage.getHeight()) {
 					images.get(images.size() - 1).set(i, ImageUtils.trim(lastImage, trimTop, 0, 0, 0));
@@ -236,6 +242,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 		}
 
 		// 全キャプチャを結合
+		LOG.trace("[GetMinimumScreenshot] combined image size [{}, {}]", totalWidth, totalHeight);
 		BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
 		Graphics graphics = screenshot.getGraphics();
 		int nextTop = 0;
@@ -257,12 +264,13 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 		//			nextTop += image.getHeight();
 		//		}
 
+		LOG.trace("[GetMinimumScreenshot finished]");
 		return screenshot;
 	}
 
 	/**
 	 * ヘッダがある場合のスクロール量を計算します。
-	 *
+	 * 
 	 * @param imageHeight 前回撮った画像の高さ
 	 * @param currentScale スケール
 	 * @return スクロール量
@@ -273,7 +281,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * ヘッダがない場合のスクロール量を計算します。
-	 *
+	 * 
 	 * @param windowHeight ウィンドウの高さ
 	 * @return スクロール量
 	 */
@@ -283,7 +291,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * 横スクロール量を計算します。
-	 *
+	 * 
 	 * @param windowWidth ウィンドウの幅
 	 * @return スクロール量
 	 */
@@ -293,7 +301,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * 最下部のスクリーンショットのトリム幅を計算します。
-	 *
+	 * 
 	 * @param imageNum キャプチャした画像の数
 	 * @param windowHeight ウィンドウ（viewport内の表示領域）の幅
 	 * @param pageHeight ページ全体の高さ
@@ -311,7 +319,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * スクリーンショットに含まれるウィンドウのヘッダーの高さを取得します。
-	 *
+	 * 
 	 * @param pageHeight ページの高さ
 	 * @param scrollTop 現在のスクロール位置
 	 * @return ヘッダの高さ（整数px）
@@ -322,7 +330,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * スクリーンショットに含まれるウィンドウのフッタの高さを取得します。
-	 *
+	 * 
 	 * @param pageHeight ページの高さ
 	 * @param scrollTop 現在のスクロール位置
 	 * @return フッタの高さ（整数px）
@@ -333,7 +341,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * 次のキャプチャ開始位置と今回キャプチャした範囲を比較し、重なる部分がある場合は切り取ります。
-	 *
+	 * 
 	 * @param captureTop 今回のキャプチャ開始位置
 	 * @param windowHeight ウィンドウ（viewport内の表示領域）の高さ
 	 * @param currentScale ウィンドウとスクリーンショットのサイズ比
