@@ -30,6 +30,7 @@ public class ScreenshotParams {
 	private final List<ScreenAreaWrapper> excludes;
 	private final List<PtlWebElement> hiddenElements;
 	private final boolean moveTarget;
+	private final boolean scrollTarget;
 	private final Integer index;
 
 	private RectangleArea initialTargetArea;
@@ -37,7 +38,7 @@ public class ScreenshotParams {
 
 	/**
 	 * パラメータオブジェクトを生成します。
-	 * 
+	 *
 	 * @param target 撮影対象の領域
 	 * @param excludes 比較時に除外する領域
 	 * @param hiddenElements 撮影時に非表示にする要素
@@ -45,11 +46,12 @@ public class ScreenshotParams {
 	 * @param index インデックス
 	 */
 	public ScreenshotParams(ScreenAreaWrapper target, List<ScreenAreaWrapper> excludes,
-			List<PtlWebElement> hiddenElements, boolean moveTarget, Integer index) {
+			List<PtlWebElement> hiddenElements, boolean moveTarget, boolean scrollTarget, Integer index) {
 		this.target = target;
 		this.excludes = excludes;
 		this.hiddenElements = hiddenElements;
 		this.moveTarget = moveTarget;
+		this.scrollTarget = scrollTarget;
 		this.index = index;
 	}
 
@@ -66,7 +68,7 @@ public class ScreenshotParams {
 
 	/**
 	 * 撮影対象の領域を取得します。
-	 * 
+	 *
 	 * @return 撮影対象領域
 	 */
 	public ScreenAreaWrapper getTarget() {
@@ -75,7 +77,7 @@ public class ScreenshotParams {
 
 	/**
 	 * 比較時に除外する領域を取得します。
-	 * 
+	 *
 	 * @return 比較時に除外する領域のリスト
 	 */
 	public List<ScreenAreaWrapper> getExcludes() {
@@ -84,7 +86,7 @@ public class ScreenshotParams {
 
 	/**
 	 * 撮影時に非表示にする要素を取得します。
-	 * 
+	 *
 	 * @return 撮影時に非表示にする要素のリスト
 	 */
 	public List<PtlWebElement> getHiddenElements() {
@@ -93,7 +95,7 @@ public class ScreenshotParams {
 
 	/**
 	 * 撮影時に対象を定位置に移動させるか否かを取得します。
-	 * 
+	 *
 	 * @return 移動させる場合はtrue、させない場合はfalse
 	 */
 	public boolean isMoveTarget() {
@@ -101,8 +103,17 @@ public class ScreenshotParams {
 	}
 
 	/**
+	 * 撮影時に対象をスクロールさせるか否かを取得します。
+	 *
+	 * @return スクロールさせる場合はtrue、させない場合はfalse
+	 */
+	public boolean isScrollTarget() {
+		return scrollTarget;
+	}
+
+	/**
 	 * インデックスを取得します。
-	 * 
+	 *
 	 * @return インデックス番号
 	 */
 	public Integer getIndex() {
@@ -111,7 +122,7 @@ public class ScreenshotParams {
 
 	/**
 	 * 撮影の対象となる範囲を取得します。
-	 * 
+	 *
 	 * @return 撮影対象の矩形範囲
 	 */
 	public RectangleArea getInitialTargetArea() {
@@ -120,7 +131,7 @@ public class ScreenshotParams {
 
 	/**
 	 * 比較時に除外する範囲を取得します。
-	 * 
+	 *
 	 * @return 除外範囲のリスト
 	 */
 	public List<RectangleArea> getInitialExcludeAreas() {

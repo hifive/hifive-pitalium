@@ -15,7 +15,6 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ArrayList;
@@ -95,15 +94,11 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 		long scrollTop = -1L;
 		double currentScale = Double.NaN;
 		int imageHeight = -1;
-		int totalHeight = 0;
-		int totalWidth = -1;
 
 		List<List<BufferedImage>> images = new ArrayList<List<BufferedImage>>();
 		try {
 			// 次の撮影位置までスクロール
 			scrollTo(0d, 0d);
-			// Wait until scroll finished
-			Thread.sleep(100L);
 
 			// スクロール位置を確認
 			long currentScrollTop = Math.round(getCurrentScrollTop());
@@ -118,14 +113,11 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				// Horizontal scroll
 				double captureLeft = 0d;
 				long scrollLeft = -1L;
-				int lineWidth = 0;
 				long currentHScrollAmount = 0;
 				List<BufferedImage> lineImages = new ArrayList<BufferedImage>();
 
 				// 次の撮影位置までスクロール
 				scrollTo(0d, scrollTop);
-				// Wait until scroll finished
-				Thread.sleep(100L);
 
 				// スクロール位置を確認
 				long currentScrollLeft = Math.round(getCurrentScrollLeft());
@@ -147,14 +139,15 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 					}
 
 					// 次の画像と重なる部分を切り取っておく
-					image = trimOverlap(captureTop, captureLeft, windowHeight, windowWidth, scale, image);
+					if (scale != DEFAULT_SCREENSHOT_SCALE) {
+						image = trimOverlap(captureTop, captureLeft, windowHeight, windowWidth, scale, image);
+					}
 
 					// 今回撮った画像をリストに追加
 					lineImages.add(image);
 					if (imageHeight < 0) {
 						imageHeight = image.getHeight();
 					}
-					lineWidth += image.getWidth();
 
 					// 次のキャプチャ開始位置を設定
 					captureLeft += calcHorizontalScrollIncrement(windowWidth);
@@ -166,8 +159,6 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 					// 次の撮影位置までスクロール
 					scrollTo(captureLeft, captureTop);
-					// Wait until scroll finished
-					Thread.sleep(100L);
 
 					// スクロール位置を確認
 					currentScrollLeft = Math.round(getCurrentScrollLeft());
@@ -181,15 +172,10 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 					if (trimLeft > 0 && trimLeft < rImg.getWidth()) {
 						lineImages.set(lineImages.size() - 1, ImageUtils.trim(rImg, 0, trimLeft, 0, 0));
-						lineWidth -= trimLeft;
 					}
 				}
 
 				images.add(lineImages);
-				totalHeight += imageHeight;
-				if (totalWidth < 0) {
-					totalWidth = lineWidth;
-				}
 
 				// 次のキャプチャ開始位置を設定
 				double scrollIncrement = 0;
@@ -209,8 +195,6 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 				// 次の撮影位置までスクロール
 				scrollTo(0d, captureTop);
-				// Wait until scroll finished
-				Thread.sleep(100L);
 
 				// スクロール位置を確認
 				currentScrollTop = Math.round(getCurrentScrollTop());
@@ -228,36 +212,11 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 				if (trimTop > 0 && trimTop < lastImage.getHeight()) {
 					images.get(images.size() - 1).set(i, ImageUtils.trim(lastImage, trimTop, 0, 0, 0));
-					if (i == 0) {
-						totalHeight -= trimTop;
-					}
 				}
 			}
 		}
 
-		// 全キャプチャを結合
-		BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
-		Graphics graphics = screenshot.getGraphics();
-		int nextTop = 0;
-		for (List<BufferedImage> lineImage : images) {
-			int imgHeight = -1;
-			int nextLeft = 0;
-			for (BufferedImage img : lineImage) {
-				graphics.drawImage(img, nextLeft, nextTop, null);
-				nextLeft += img.getWidth();
-				if (imgHeight < 0) {
-					imgHeight = img.getHeight();
-				}
-			}
-			nextTop += imgHeight;
-		}
-
-		//		for (BufferedImage image : images) {
-		//			graphics.drawImage(image, 0, nextTop, null);
-		//			nextTop += image.getHeight();
-		//		}
-
-		return screenshot;
+		return ImageUtils.merge(images);
 	}
 
 	/**
@@ -312,7 +271,6 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	/**
 	 * スクリーンショットに含まれるウィンドウのヘッダーの高さを取得します。
 	 *
-	 * @param pageHeight ページの高さ
 	 * @param scrollTop 現在のスクロール位置
 	 * @return ヘッダの高さ（整数px）
 	 */
@@ -323,26 +281,12 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	/**
 	 * スクリーンショットに含まれるウィンドウのフッタの高さを取得します。
 	 *
-	 * @param pageHeight ページの高さ
-	 * @param scrollTop 現在のスクロール位置
+	 * @param scrollTop 現在の（実際の）スクロール位置
+	 * @param captureTop 現在の（計算上の）スクロール位置
 	 * @return フッタの高さ（整数px）
 	 */
 	protected int getFooterHeight(long scrollTop, double captureTop) {
 		return 0;
-	}
-
-	/**
-	 * 次のキャプチャ開始位置と今回キャプチャした範囲を比較し、重なる部分がある場合は切り取ります。
-	 *
-	 * @param captureTop 今回のキャプチャ開始位置
-	 * @param windowHeight ウィンドウ（viewport内の表示領域）の高さ
-	 * @param currentScale ウィンドウとスクリーンショットのサイズ比
-	 * @param img スクリーンショット画像
-	 * @return 重複を切り取った画像
-	 */
-	protected BufferedImage trimOverlap(double captureTop, double captureLeft, long windowHeight, long windowWidth,
-			double currentScale, BufferedImage img) {
-		return img;
 	}
 
 }

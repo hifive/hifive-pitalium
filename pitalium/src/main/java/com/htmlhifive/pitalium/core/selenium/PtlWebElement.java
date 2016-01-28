@@ -28,6 +28,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+
 /**
  * WebElementの実装クラス。{@link org.openqa.selenium.remote.RemoteWebElement}の機能に加え、いくつかの追加情報を提供します。<br/>
  * {@link PtlWebDriver#findElements(org.openqa.selenium.By)}から返されるオブジェクトは、このクラスを拡張しています。
@@ -178,31 +180,31 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		// 現在のスクロール位置を取得
 		double scrollTop = driver.getCurrentScrollTop();
 		double scrollLeft = driver.getCurrentScrollLeft();
+		double left = 0;
+		double top = 0;
+		double width = 0;
+		double height = 0;
 
 		// ページ最上部からの座標を取得
-		driver.scrollTo(0d, 0d);
+		try {
+			driver.scrollTo(0d, 0d);
+			Map<String, Object> object = driver.executeJavaScript(GET_ELEMENT_RECT_SCRIPT, this);
+			LOG.trace("rectangle JS object: {}", object);
 
-		Map<String, Object> object = driver.executeJavaScript(GET_ELEMENT_RECT_SCRIPT, this);
-		LOG.trace("rectangle JS object: {}", object);
+			left = getDoubleOrDefault(object.get("left"), 0d);
+			top = getDoubleOrDefault(object.get("top"), 0d);
 
-		double left = getDoubleOrDefault(object.get("left"), 0d);
-		double top = getDoubleOrDefault(object.get("top"), 0d);
+			// bodyの場合はページ全体の幅を返す
+			width = isBody() ? driver.getCurrentPageWidth() : getDoubleOrDefault(object.get("width"), 0d);
 
-		// scrollWidthはdisplay: inlineのときに要素の幅が取得できないため、BoundingClientRect#widthも使う
-		//		double width = getDoubleOrDefault(object.get("scrollWidth"), 0d);
-		//		if (width == 0d) {
-		//			width = getDoubleOrDefault(object.get("width"), 0d);
-		//		}
-		double width = isBody() ? driver.getCurrentPageWidth() : getDoubleOrDefault(object.get("width"), 0d);
-		// widthはボーダーを含める
-		//		WebElementBorderWidth borderWidth = getBorderWidth();
-		//		width += borderWidth.getLeft() + borderWidth.getRight();
+			// bodyの場合はページ全体の高さを返す
+			height = isBody() ? driver.getCurrentPageHeight() : getDoubleOrDefault(object.get("height"), 0d);
 
-		// bodyの場合はページ全体の高さを返す
-		double height = isBody() ? driver.getCurrentPageHeight() : getDoubleOrDefault(object.get("height"), 0d);
-
-		// スクロール位置を元に戻す
-		driver.scrollTo(scrollLeft, scrollTop);
+			// スクロール位置を元に戻す
+			driver.scrollTo(scrollLeft, scrollTop);
+		} catch (InterruptedException e) {
+			throw new TestRuntimeException(e);
+		}
 
 		return new WebElementRect(left, top, width, height);
 	}
@@ -416,12 +418,13 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * 要素を1回分スクロールします。
 	 *
 	 * @return 今回のスクロール量
+	 * @throws InterruptedException スクロール中に例外が発生した場合
 	 */
-	public int scrollNext() {
-		long initialScrollTop = getCurrentScrollTop();
+	public int scrollNext() throws InterruptedException {
+		long initialScrollTop = (int) Math.round(getCurrentScrollTop());
 		long clientHeight = getClientHeight();
 		scrollTo(0, initialScrollTop + clientHeight);
-		long currentScrollTop = getCurrentScrollTop();
+		long currentScrollTop = (int) Math.round(getCurrentScrollTop());
 		return (int) (currentScrollTop - initialScrollTop);
 	}
 
@@ -430,17 +433,17 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 *
 	 * @return スクロール位置（実数px）
 	 */
-	long getCurrentScrollTop() {
-		long top = 0;
+	double getCurrentScrollTop() {
+		double top = 0;
 		if (isFrame()) {
-			long max = 0L;
+			double max = 0d;
 			for (String value : SCRIPTS_SCROLL_TOP) {
-				long current = Long.parseLong(driver.executeScript("return " + value, this).toString());
+				double current = Double.parseDouble(driver.executeScript("return " + value, this).toString());
 				max = Math.max(max, current);
 			}
 			top = max;
 		} else {
-			top = Long.parseLong(driver.executeScript("return arguments[0].scrollTop", this).toString());
+			top = Double.parseDouble(driver.executeScript("return arguments[0].scrollTop", this).toString());
 		}
 		return top;
 	}
@@ -470,8 +473,9 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 *
 	 * @param x x座標
 	 * @param y y座標
+	 * @throws InterruptedException スクロール中に例外が発生した場合
 	 */
-	public void scrollTo(double x, double y) {
+	public void scrollTo(double x, double y) throws InterruptedException {
 		// 要素がframeの場合
 		if (isFrame()) {
 			driver.executeScript("arguments[0].contentWindow.scrollTo(arguments[1], arguments[2])", this, x, y);
@@ -481,6 +485,8 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		// frame以外の場合
 		driver.executeScript("arguments[0].scrollLeft = arguments[1]", this, x);
 		driver.executeScript("arguments[0].scrollTop = arguments[1]", this, y);
+
+		Thread.sleep(100);
 
 	}
 
@@ -561,6 +567,28 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 */
 	public boolean isFrame() {
 		return "iframe".equals(getTagName()) || "frame".equals(getTagName());
+	}
+
+	/**
+	 * 指定された位置（スクロールi回目）のスクリーンショットに含まれるPaddingの高さを返します。
+	 *
+	 * @param i スクロール位置
+	 * @param size 総スクロール回数
+	 * @return Paddingの高さ
+	 */
+	protected int getContainedPaddingHeight(int i, int size) {
+		return 0;
+	}
+
+	/**
+	 * 指定された位置（スクロールi回目）のスクリーンショットに含まれるPaddingの幅を返します。
+	 *
+	 * @param i スクロール位置
+	 * @param size 総スクロール回数
+	 * @return Paddingの幅
+	 */
+	protected int getContainedPaddingWidth(int i, int size) {
+		return 0;
 	}
 
 }
