@@ -102,8 +102,13 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 			// スクロール位置を確認
 			long currentScrollTop = Math.round(getCurrentScrollTop());
+
+			// スクロール回数を調べておく
+			long scrollNum = getScrollNum();
+			int currentScrollNum = 0;
+
 			// Vertical scroll
-			while (scrollTop != currentScrollTop) {
+			while (scrollTop != currentScrollTop && currentScrollNum <= scrollNum) {
 				currentVScrollAmount = currentScrollTop - scrollTop;
 				scrollTop = currentScrollTop;
 
@@ -195,6 +200,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 				// 次の撮影位置までスクロール
 				scrollTo(0d, captureTop);
+				currentScrollNum++;
 
 				// スクロール位置を確認
 				currentScrollTop = Math.round(getCurrentScrollTop());

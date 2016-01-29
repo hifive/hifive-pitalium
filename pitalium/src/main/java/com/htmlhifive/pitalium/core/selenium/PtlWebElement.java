@@ -351,7 +351,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	public int getScrollNum() {
 
 		double clientHeight = getClientHeight();
-		double scrollHeight = getScrollHeight();
+		double scrollHeight = getScrollHeight() + 1;
 
 		if (clientHeight >= scrollHeight) {
 			return 0;

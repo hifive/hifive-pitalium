@@ -417,8 +417,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		}
 
 		// 部分スクロールを含めたターゲットのスクリーンショットを撮影
-		List<BufferedImage> screenshots = takeScrollTargetScreenshots(hiddenElementSelectors, entireScreenshotParams,
-				targetParams, maxPartialScrollNum, partialScrollNums);
+		List<BufferedImage> screenshots = takeNonMoveScrollTargetScreenshots(hiddenElementSelectors,
+				entireScreenshotParams, targetParams, maxPartialScrollNum, partialScrollNums);
 
 		List<TargetResult> nonMoveNoScrollTargetResults = new ArrayList<TargetResult>();
 		for (int i = 0; i < targetParams.size(); i++) {
@@ -507,7 +507,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		}
 
 		// 部分スクロールを含めたターゲットのスクリーンショットを撮影
-		BufferedImage screenshot = takeScrollTargetScreenshot(target, hiddenElementSelectors, params);
+		BufferedImage screenshot = takeMoveScrollTargetScreenshot(target, hiddenElementSelectors, params);
 
 		// サイズ情報を結合後の高さに更新する
 		RectangleArea targetPosition = params.getTarget().getArea();
@@ -547,7 +547,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @param params 撮影対象のパラメータ
 	 * @return ターゲットの画像
 	 */
-	private List<BufferedImage> takeScrollTargetScreenshots(List<DomSelector> hiddenElementSelectors,
+	private List<BufferedImage> takeNonMoveScrollTargetScreenshots(List<DomSelector> hiddenElementSelectors,
 			ScreenshotParams entireScreenshotParams, List<Pair<CompareTarget, ScreenshotParams>> targetParams,
 			int maxPartialScrollNum, int partialScrollNums[]) {
 
@@ -595,7 +595,12 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				// 必要スクロール回数に達していなければスクロールしておく
 				if (i < partialScrollNums[j]) {
 					try {
-						partialScrollAmounts[j] = targetElement.scrollNext();
+						long currentScrollAmount = targetElement.scrollNext();
+						if (currentScrollAmount == 0) {
+							partialScrollNums[j] = i;
+						} else {
+							partialScrollAmounts[j] = currentScrollAmount;
+						}
 					} catch (InterruptedException e) {
 						throw new TestRuntimeException(e);
 					}
@@ -651,8 +656,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @param params 撮影対象のパラメータ
 	 * @return ターゲットの画像
 	 */
-	private BufferedImage takeScrollTargetScreenshot(CompareTarget target, List<DomSelector> hiddenElementSelectors,
-			ScreenshotParams params) {
+	private BufferedImage takeMoveScrollTargetScreenshot(CompareTarget target,
+			List<DomSelector> hiddenElementSelectors, ScreenshotParams params) {
 
 		PtlWebElement el = params.getTarget().getElement();
 
@@ -673,7 +678,11 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			// スクロール位置を確認
 			long currentScrollTop = Math.round(el.getCurrentScrollTop());
 
-			while (scrollTop != currentScrollTop) {
+			// 要素のスクロール回数を調べておく
+			long scrollNum = el.getScrollNum();
+			int currentScrollNum = 0;
+
+			while (scrollTop != currentScrollTop && currentScrollNum <= scrollNum) {
 				if (currentScrollAmount < 0) {
 					currentScrollAmount = 0;
 				} else {
@@ -701,6 +710,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 				// 次の撮影位置までスクロール
 				el.scrollNext();
+				currentScrollNum++;
 
 				// スクロール位置を確認
 				currentScrollTop = Math.round(el.getCurrentScrollTop());
@@ -1345,6 +1355,22 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	public long getScrollHeight() {
 		PtlWebElement bodyElement = (PtlWebElement) findElementByTagName("body");
 		return executeJavaScript(GET_SCROLL_HEIGHT_SCRIPT, bodyElement);
+	}
+
+	/**
+	 * ページのスクロール回数を取得します。
+	 * 
+	 * @return スクロール回数
+	 */
+	public long getScrollNum() {
+		double clientHeight = getWindowHeight();
+		double scrollHeight = getScrollHeight() + 1;
+
+		if (clientHeight >= scrollHeight) {
+			return 0;
+		}
+
+		return (int) (Math.ceil(scrollHeight / clientHeight)) - 1;
 	}
 
 	/**
