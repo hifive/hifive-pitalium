@@ -103,6 +103,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	private static final String GET_SCROLL_HEIGHT_SCRIPT = "return arguments[0].scrollHeight";
 	private static final String GET_BODY_LEFT_SCRIPT = "var _bodyLeft = arguments[0].getBoundingClientRect().left; return _bodyLeft;";
 	private static final String GET_BODY_TOP_SCRIPT = "var _bodyTop = arguments[0].getBoundingClientRect().top; return _bodyTop;";
+	private static final long SCROLL_WAIT_MS = 100L;
 	// CHECKSTYLE:ON
 	//@formatter:on
 
@@ -329,11 +330,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		}
 
 		// 全体撮影時に渡す追加パラメータ
-		int nonMoveNoScrollTargetSize = nonMoveNoScrollTargetParams.size();
-		ScreenshotParams[] additionalParams = new ScreenshotParams[nonMoveNoScrollTargetSize];
-		for (int i = 0; i < nonMoveNoScrollTargetSize; i++) {
-			additionalParams[i] = nonMoveNoScrollTargetParams.get(i).getRight();
-		}
+		ScreenshotParams[] additionalParams = extractScreenshotParams(nonMoveNoScrollTargetParams);
 
 		// 全体スクリーンショットを取得・非部分スクロール要素のパラメータ更新
 		ScreenshotParams entireScreenshotParams = new ScreenshotParams(ScreenAreaWrapper.fromArea(
@@ -544,14 +541,16 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * ターゲットをスクロールしながら撮影し、結合した画像を返します。
 	 *
 	 * @param hiddenElementSelectors 撮影時に非表示にする要素のリスト
-	 * @param params 撮影対象のパラメータ
-	 * @return ターゲットの画像
+	 * @param entireScreenshotParams ページ全体を撮影するためのパラメータ
+	 * @param targetParams 撮影対象のパラメータ群
+	 * @param maxPartialScrollNum 要素の最大スクロール回数
+	 * @param partialScrollNums 各要素のスクロール回数
+	 * @return ターゲットの画像リスト
 	 */
 	private List<BufferedImage> takeNonMoveScrollTargetScreenshots(List<DomSelector> hiddenElementSelectors,
 			ScreenshotParams entireScreenshotParams, List<Pair<CompareTarget, ScreenshotParams>> targetParams,
 			int maxPartialScrollNum, int partialScrollNums[]) {
 
-		double currentScale = Double.NaN;
 		List<List<BufferedImage>> allTargetScreenshots = new ArrayList<List<BufferedImage>>();
 		int targetSize = targetParams.size();
 		for (int i = 0; i < targetSize; i++) {
@@ -561,10 +560,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		long partialScrollTops[] = new long[targetSize];
 
 		// 全体撮影時に渡す追加パラメータ
-		ScreenshotParams[] additionalParams = new ScreenshotParams[targetSize];
-		for (int i = 0; i < targetSize; i++) {
-			additionalParams[i] = targetParams.get(i).getRight();
-		}
+		ScreenshotParams[] additionalParams = extractScreenshotParams(targetParams);
 
 		// 全てのtargetがスクロールし終わるまで、全体撮影→切り抜き→各targetスクロール を繰り返す
 		for (int i = 0; i <= maxPartialScrollNum; i++) {
@@ -574,9 +570,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			ScreenshotImage entireScreenshotImage = entireResult.getImage();
 
 			// scaleを計算（初回のみ）
-			if (Double.isNaN(currentScale)) {
-				currentScale = calcScale(getCurrentPageWidth(), entireScreenshotImage.get().getWidth());
-				scale = currentScale;
+			if (i == 0) {
+				scale = calcScale(getCurrentPageWidth(), entireScreenshotImage.get().getWidth());
 			}
 
 			// 各targetの処理
@@ -623,15 +618,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		for (int i = 0; i < allTargetScreenshots.size(); i++) {
 			List<BufferedImage> targetScreenshots = allTargetScreenshots.get(i);
 			PtlWebElement targetElement = targetParams.get(i).getRight().getTarget().getElement();
-			if (targetScreenshots.size() > 1) {
-				BufferedImage lastImage = targetScreenshots.get(targetScreenshots.size() - 1);
-				int trimTop = calcTrimTop(lastImage.getHeight(), partialScrollAmounts[i], targetElement);
-				if (trimTop == lastImage.getHeight()) {
-					trimTop = 0;
-				}
-				LOG.debug("trimTop: " + trimTop);
-				targetScreenshots.set(targetScreenshots.size() - 1, ImageUtils.trim(lastImage, trimTop, 0, 0, 0));
-			}
+			trimLastImage(targetScreenshots, partialScrollAmounts[i], targetElement);
 		}
 
 		List<BufferedImage> screenshots = new ArrayList<>();
@@ -653,6 +640,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	/**
 	 * ターゲットをスクロールしながら撮影し、結合した画像を返します。
 	 *
+	 * @param target 撮影対象のターゲット
+	 * @param hiddenElementSelectors 撮影時に非表示にする要素
 	 * @param params 撮影対象のパラメータ
 	 * @return ターゲットの画像
 	 */
@@ -667,7 +656,6 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 		double captureTop = 0d;
 		long scrollTop = -1L;
-		double currentScale = Double.NaN;
 		long currentScrollAmount = -1;
 		List<Double> allCaptureTop = new ArrayList<Double>();
 
@@ -695,9 +683,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				allCaptureTop.add(captureTop);
 
 				// scaleを計算（初回のみ）
-				if (Double.isNaN(currentScale)) {
-					currentScale = calcScale(el.getRect().getWidth(), image.getWidth());
-					scale = currentScale;
+				if (currentScrollNum == 0) {
+					scale = calcScale(el.getRect().getWidth(), image.getWidth());
 				}
 
 				// 結果セットに追加
@@ -725,26 +712,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		// paddingがある場合は切り取る
 		trimMovePadding(el, images);
 
-		// 画像間の重なりを切り取る
-		if (scale != DEFAULT_SCREENSHOT_SCALE) {
-			for (int i = 0; i < images.size(); i++) {
-				long windowHeight = clientHeight + el.getContainedPaddingHeight(i, images.size());
-				long windowWidth = clientWidth + el.getContainedPaddingWidth(i, images.size());
-
-				images.set(i, trimOverlap(allCaptureTop.get(i), 0, windowHeight, windowWidth, scale, images.get(i)));
-			}
-		}
-
 		// 末尾の重複をトリム
-		if (images.size() > 1) {
-			BufferedImage lastImage = images.get(images.size() - 1);
-			int trimTop = calcTrimTop(lastImage.getHeight(), currentScrollAmount, el);
-			LOG.debug("trimTop: " + trimTop);
-
-			if (trimTop > 0 && trimTop < lastImage.getHeight()) {
-				images.set(images.size() - 1, ImageUtils.trim(lastImage, trimTop, 0, 0, 0));
-			}
-		}
+		trimLastImage(images, currentScrollAmount, el);
 
 		// Exclude領域の座標を更新
 		for (ScreenAreaWrapper wrapper : params.getExcludes()) {
@@ -752,6 +721,44 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		}
 
 		return ImageUtils.vertialMerge(images);
+	}
+
+	/**
+	 * 指定されたパラメータ群から、{@link ScreenshotParams}だけを抜き出して配列にします。
+	 *
+	 * @param params 対象のパラメータ群
+	 * @return {@link ScreenshotParams}の配列
+	 */
+	private ScreenshotParams[] extractScreenshotParams(List<Pair<CompareTarget, ScreenshotParams>> params) {
+		int size = params.size();
+		ScreenshotParams[] extractedParams = new ScreenshotParams[size];
+		for (int i = 0; i < size; i++) {
+			extractedParams[i] = params.get(i).getRight();
+		}
+		return extractedParams;
+	}
+
+	/**
+	 * 指定されたリスト内の最後の画像の重複をトリムします。
+	 *
+	 * @param images 対象の画像
+	 * @param lastScrollAmount 最後のスクロール量
+	 * @param el 撮影対象の要素
+	 */
+	private void trimLastImage(List<BufferedImage> images, long lastScrollAmount, PtlWebElement el) {
+		int size = images.size();
+		// 画像が1枚しかないときは何もしない
+		if (size <= 1) {
+			return;
+		}
+
+		BufferedImage lastImage = images.get(size - 1);
+		int trimTop = calcTrimTop(lastImage.getHeight(), lastScrollAmount, el);
+		LOG.debug("trimTop: " + trimTop);
+
+		if (trimTop > 0 && trimTop < lastImage.getHeight()) {
+			images.set(size - 1, ImageUtils.trim(lastImage, trimTop, 0, 0, 0));
+		}
 	}
 
 	/**
@@ -1229,6 +1236,14 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		}
 	}
 
+	/**
+	 * {@code params}、{@code additionalParams}内の座標値を、表示スケール、移動量を加味して更新します。
+	 *
+	 * @param moveX x方向の移動量
+	 * @param moveY y方向の移動量
+	 * @param currentScale 表示スケール
+	 * @param params スクリーンショットの更新元パラメータ
+	 */
 	private void updateScreenWrapperStatus(double moveX, double moveY, double currentScale, ScreenshotParams params) {
 		params.getTarget().updatePosition(currentScale, moveX, moveY);
 
@@ -1359,7 +1374,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * ページのスクロール回数を取得します。
-	 * 
+	 *
 	 * @return スクロール回数
 	 */
 	public long getScrollNum() {
@@ -1456,11 +1471,11 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 *
 	 * @param x スクロール先のx座標（実数px）
 	 * @param y スクロール先のy座標（実数px）
-	 * @throws InterruptedException
+	 * @throws InterruptedException スクロール中に例外が発生した場合
 	 */
 	public void scrollTo(double x, double y) throws InterruptedException {
 		executeScript("window.scrollTo(arguments[0], arguments[1])", x, y);
-		Thread.sleep(100L);
+		Thread.sleep(SCROLL_WAIT_MS);
 	}
 
 	/**
