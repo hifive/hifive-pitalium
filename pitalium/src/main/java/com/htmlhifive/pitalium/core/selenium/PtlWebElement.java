@@ -120,6 +120,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	private static final String SCRIPT_GET_ELEMENT_RESIZE = "return arguments[0].style.resize";
 	private static final String SCRIPT_SET_ELEMENT_RESIZE = "var style = arguments[0].style;"
 			+ "style.resize = arguments[1]";
+	private static final long SCROLL_WAIT_MS = 100L;
 
 	//CHECKSTYLE:ON
 	//@formatter:on
@@ -486,7 +487,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		driver.executeScript("arguments[0].scrollLeft = arguments[1]", this, x);
 		driver.executeScript("arguments[0].scrollTop = arguments[1]", this, y);
 
-		Thread.sleep(100);
+		Thread.sleep(SCROLL_WAIT_MS);
 
 	}
 

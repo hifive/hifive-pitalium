@@ -53,6 +53,14 @@ class DefaultImageComparator extends ImageComparator {
 		return diffPoints;
 	}
 
+	/**
+	 * 指定した画像のRGBベースのピクセル配列を取得します。
+	 *
+	 * @param image 対象の画像
+	 * @param width 読み込む幅
+	 * @param height 読み込む高さ
+	 * @return ピクセル配列
+	 */
 	private int[] getRGB(BufferedImage image, int width, int height) {
 		return image.getRGB(0, 0, width, height, null, 0, width);
 	}

@@ -5,6 +5,9 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Android端末で利用する{@link org.openqa.selenium.WebDriver}の抽象クラス。
+ */
 abstract class PtlAbsAndroidDriver extends SplitScreenshotWebDriver {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PtlAbsAndroidDriver.class);

@@ -61,7 +61,7 @@ public class PtlWebDriverWait extends WebDriverWait {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param driver WebDriver
 	 * @param timeOutInSeconds タイムアウト時間（秒）
 	 */
@@ -72,7 +72,7 @@ public class PtlWebDriverWait extends WebDriverWait {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param driver WebDriver
 	 * @param timeOutInSeconds タイムアウト時間（秒）
 	 * @param sleepInMillis 条件をチェックする時間間隔（ミリ秒）
@@ -113,12 +113,19 @@ public class PtlWebDriverWait extends WebDriverWait {
 		}
 	}
 
+	/**
+	 * 現在のURLを取得します。
+	 * 
+	 * @return 現在のURL
+	 */
 	private String getURL() {
 		return driver.executeJavaScript("return location.href");
 	}
 
 	/**
 	 * 指定したidを持つdiv要素を追加します。
+	 *
+	 * @param id 追加する要素のid
 	 */
 	private void addElement(String id) {
 		driver.executeScript(String.format(LOAD_COMPLETE_SCRIPT, id));
@@ -126,6 +133,8 @@ public class PtlWebDriverWait extends WebDriverWait {
 
 	/**
 	 * 指定したidの要素を削除します。
+	 *
+	 * @param id 削除する要素のid
 	 */
 	private void deleteElement(String id) {
 		driver.executeScript(String.format(DELETE_TAG_SCRIPT, id, id));

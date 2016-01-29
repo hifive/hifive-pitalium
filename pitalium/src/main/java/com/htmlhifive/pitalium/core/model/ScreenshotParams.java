@@ -43,6 +43,7 @@ public class ScreenshotParams {
 	 * @param excludes 比較時に除外する領域
 	 * @param hiddenElements 撮影時に非表示にする要素
 	 * @param moveTarget 撮影時に対象を定位置に移動させるか否か
+	 * @param scrollTarget 撮影時に対象をスクロールさせるか否か
 	 * @param index インデックス
 	 */
 	public ScreenshotParams(ScreenAreaWrapper target, List<ScreenAreaWrapper> excludes,

@@ -37,121 +37,61 @@ import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
 
 /**
  * {@link PtlWebDriver}のインスタンスを管理するクラス
- * 
+ *
  * @author nakatani
  */
-public class PtlWebDriverManager {
-
-	private static class DriverKey {
-		final Class<?> clss;
-		final PtlCapabilities capabilities;
-
-		public DriverKey(Class<?> clss, PtlCapabilities capabilities) {
-			this.clss = clss;
-			this.capabilities = capabilities;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) {
-				return true;
-			}
-			if (o == null || getClass() != o.getClass()) {
-				return false;
-			}
-
-			DriverKey driverKey = (DriverKey) o;
-
-			if (!clss.equals(driverKey.clss)) {
-				return false;
-			}
-			return capabilities.equals(driverKey.capabilities);
-		}
-
-		@Override
-		public int hashCode() {
-			int result = clss.hashCode();
-			result = 31 * result + capabilities.hashCode();
-			return result;
-		}
-	}
-
-	/**
-	 * {@link #getWebDriver(Class, PtlCapabilities, Supplier)}で取得される{@link PtlWebDriver}のコンテナです。<br />
-	 * WebDriverの利用戦略情報を持ち、{@link WebDriver#quit()}を呼び出す判断を行うことができます。
-	 */
-	public static class WebDriverContainer {
-
-		final WebDriver driver;
-		final WebDriverSessionLevel sessionLevel;
-
-		public WebDriverContainer(WebDriver driver, WebDriverSessionLevel sessionLevel) {
-			this.driver = driver;
-			this.sessionLevel = sessionLevel;
-		}
-
-		/**
-		 * {@link PtlWebDriver}を取得します。
-		 */
-		@SuppressWarnings("unchecked")
-		public <T extends WebDriver> T get() {
-			return (T) driver;
-		}
-
-		/**
-		 * {@link WebDriver#quit()}をコールします。
-		 */
-		public void quit() {
-			if (sessionLevel == WebDriverSessionLevel.TEST_CASE) {
-				driver.quit();
-			}
-		}
-
-	}
+public final class PtlWebDriverManager {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PtlWebDriverManager.class);
 
 	private static PtlWebDriverManager instance = new PtlWebDriverManager();
 
-	/**
-	 * {@link PtlWebDriverManager}を取得します。
-	 */
-	public static PtlWebDriverManager getInstance() {
-		return instance;
-	}
-
+	private static final long MAX_CACHE_SIZE = 200L;
 	private final Map<DriverKey, WebDriver> drivers = new HashMap<DriverKey, WebDriver>();
 	private final LoadingCache<Class<?>, WebDriverSessionLevel> driverReuses = CacheBuilder.newBuilder()
-			.maximumSize(200L).build(new CacheLoader<Class<?>, WebDriverSessionLevel>() {
-
+			.maximumSize(MAX_CACHE_SIZE).build(new CacheLoader<Class<?>, WebDriverSessionLevel>() {
 				@Override
 				public WebDriverSessionLevel load(Class<?> clss) throws Exception {
 					PtlWebDriverStrategy strategy = clss.getAnnotation(PtlWebDriverStrategy.class);
 					if (strategy != null) {
 						switch (strategy.sessionLevel()) {
-							case GLOBAL:
-								return WebDriverSessionLevel.GLOBAL;
+						case GLOBAL:
+							return WebDriverSessionLevel.GLOBAL;
 
-							case TEST_CASE:
-								return WebDriverSessionLevel.TEST_CASE;
+						case TEST_CASE:
+							return WebDriverSessionLevel.TEST_CASE;
 
-							case TEST_CLASS:
-								return WebDriverSessionLevel.TEST_CLASS;
+						case TEST_CLASS:
+							return WebDriverSessionLevel.TEST_CLASS;
 						}
 					}
-
 					return configSessionLevel;
 				}
 			});
 	private final Map<PtlCapabilities, WebDriver> allClassesDrivers = new HashMap<PtlCapabilities, WebDriver>();
 
-	private WebDriverSessionLevel configSessionLevel = PtlTestConfig.getInstance().getEnvironment().getWebDriverSessionLevel();
+	private WebDriverSessionLevel configSessionLevel = PtlTestConfig.getInstance().getEnvironment()
+			.getWebDriverSessionLevel();
 
+	/**
+	 * コンストラクタ
+	 */
 	private PtlWebDriverManager() {
 	}
 
 	/**
+	 * {@link PtlWebDriverManager}を取得します。
+	 *
+	 * @return 自身のインスタンス
+	 */
+	public static PtlWebDriverManager getInstance() {
+		return instance;
+	}
+
+	/**
 	 * 内部キャッシュをリセットします。
+	 *
+	 * @param sessionLevel WebDriverのセッションを共有するレベル
 	 */
 	@VisibleForTesting
 	synchronized void resetCache(WebDriverSessionLevel sessionLevel) {
@@ -164,7 +104,7 @@ public class PtlWebDriverManager {
 
 	/**
 	 * クラスとCapabilitiesから登録済みWebDriverのインスタンスを取得します。未登録だった場合は{@code supplier}からWebDriverのインスタンスが生成され、登録されます。
-	 * 
+	 *
 	 * @param clss テスト対象のクラス
 	 * @param capabilities テスト対象のブラウザ情報
 	 * @param supplier WebDriverのインスタンスが未登録の場合のインスタンス生成デリゲート
@@ -220,7 +160,7 @@ public class PtlWebDriverManager {
 
 	/**
 	 * クラスとCapabilitiesから登録済みWebDriverのセッションをクローズします。
-	 * 
+	 *
 	 * @param clss テスト対象のクラス
 	 * @param capabilities テスト対象のブラウザ情報
 	 */
@@ -256,6 +196,86 @@ public class PtlWebDriverManager {
 			LOG.warn(String.format(Locale.US, "Failed to close selenium session for %s:[%s]", clss.getName(),
 					capabilities), e);
 		}
+	}
+
+	private static class DriverKey {
+		private final Class<?> clss;
+		private final PtlCapabilities capabilities;
+
+		/**
+		 * @param clss
+		 * @param capabilities
+		 */
+		public DriverKey(Class<?> clss, PtlCapabilities capabilities) {
+			this.clss = clss;
+			this.capabilities = capabilities;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) {
+				return true;
+			}
+			if (o == null || getClass() != o.getClass()) {
+				return false;
+			}
+
+			DriverKey driverKey = (DriverKey) o;
+
+			if (!clss.equals(driverKey.clss)) {
+				return false;
+			}
+			return capabilities.equals(driverKey.capabilities);
+		}
+
+		@Override
+		public int hashCode() {
+			int result = clss.hashCode();
+			result = 31 * result + capabilities.hashCode();
+			return result;
+		}
+	}
+
+	/**
+	 * {@link #getWebDriver(Class, PtlCapabilities, Supplier)}で取得される{@link PtlWebDriver}のコンテナです。<br />
+	 * WebDriverの利用戦略情報を持ち、{@link WebDriver#quit()}を呼び出す判断を行うことができます。
+	 */
+	public static class WebDriverContainer {
+
+		private final WebDriver driver;
+		private final WebDriverSessionLevel sessionLevel;
+
+		/**
+		 * {@link PtlWebDriver}のコンテナを生成します。
+		 *
+		 * @param driver {@link WebDriver}
+		 * @param sessionLevel WebDriverセッションの利用レベル
+		 */
+		public WebDriverContainer(WebDriver driver, WebDriverSessionLevel sessionLevel) {
+			this.driver = driver;
+			this.sessionLevel = sessionLevel;
+		}
+
+		/**
+		 * {@link WebDriver}を取得します。
+		 *
+		 * @param <T> {@link WebDriver}を継承したWebDriverクラス
+		 * @return 自身の持つ{@link PtlWebDriver}
+		 */
+		@SuppressWarnings("unchecked")
+		public <T extends WebDriver> T get() {
+			return (T) driver;
+		}
+
+		/**
+		 * {@link WebDriver#quit()}をコールします。
+		 */
+		public void quit() {
+			if (sessionLevel == WebDriverSessionLevel.TEST_CASE) {
+				driver.quit();
+			}
+		}
+
 	}
 
 }

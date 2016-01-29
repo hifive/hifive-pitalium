@@ -36,7 +36,13 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PersistedScreenshotImage.class);
 
+	/**
+	 * 保存・読み込みに用いるPersister
+	 */
 	protected final Persister persister;
+	/**
+	 * スクリーンショットのメタデータ
+	 */
 	protected final PersistMetadata metadata;
 
 	/**

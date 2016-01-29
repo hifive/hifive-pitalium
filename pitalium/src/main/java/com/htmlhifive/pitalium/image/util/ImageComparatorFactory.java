@@ -24,12 +24,15 @@ public final class ImageComparatorFactory {
 
 	private static final ImageComparatorFactory INSTANCE = new ImageComparatorFactory();
 
+	/**
+	 * コンストラクタ
+	 */
 	private ImageComparatorFactory() {
 	}
 
 	/**
 	 * ImageComparatorFactoryのインスタンスを取得します。
-	 * 
+	 *
 	 * @return ImageComparatorFactoryのインスタンス（シングルトン）
 	 */
 	public static ImageComparatorFactory getInstance() {
@@ -38,7 +41,7 @@ public final class ImageComparatorFactory {
 
 	/**
 	 * 比較方法に対応したImageComparatorを取得します。
-	 * 
+	 *
 	 * @param options 比較方法（比較オプション）
 	 * @return ImageComparatorオブジェクト
 	 */

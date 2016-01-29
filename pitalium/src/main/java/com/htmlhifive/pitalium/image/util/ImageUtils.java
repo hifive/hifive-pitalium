@@ -51,6 +51,9 @@ public final class ImageUtils {
 	private static final String DIFF_IMAGE_LEFT_LABEL = "expected";
 	private static final String DIFF_IMAGE_RIGHT_LABEL = "actual";
 
+	/**
+	 * コンストラクタ
+	 */
 	private ImageUtils() {
 	}
 
@@ -119,6 +122,12 @@ public final class ImageUtils {
 		return false;
 	}
 
+	/**
+	 * 元画像の積分画像を生成します。
+	 *
+	 * @param source 元画像
+	 * @return 積分結果の配列
+	 */
 	private static double[][] calcIntegralImage(BufferedImage source) {
 		double[][] integralImage = new double[source.getHeight()][source.getWidth()];
 		Raster raster = source.getRaster();
@@ -391,6 +400,8 @@ public final class ImageUtils {
 
 	/**
 	 * マーカー画像を取得します。
+	 *
+	 * @return マーカー画像
 	 */
 	private static BufferedImage getMarkImage() {
 		URL resource = ImageUtils.class.getClassLoader().getResource("mark.png");

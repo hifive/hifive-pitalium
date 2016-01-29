@@ -37,12 +37,15 @@ public final class JSONUtils {
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 	}
 
+	/**
+	 * コンストラクタ
+	 */
 	private JSONUtils() {
 	}
 
 	/**
 	 * ファイルからJSONを読み出し、Beanに変換します。
-	 * 
+	 *
 	 * @param file 読み出し元ファイル
 	 * @param clss 変換後のクラス
 	 * @param <T> 変換後クラスの型
@@ -58,7 +61,7 @@ public final class JSONUtils {
 
 	/**
 	 * ファイルからJSONを読み出し、Beanに変換します。
-	 * 
+	 *
 	 * @param file 読み出し元ファイル
 	 * @param reference 変換後の型
 	 * @param <T> 変換後クラスの型
@@ -74,7 +77,7 @@ public final class JSONUtils {
 
 	/**
 	 * InputStreamからJSONを読み出し、Beanに変換します。
-	 * 
+	 *
 	 * @param in InputStream
 	 * @param reference 変換後の型
 	 * @param <T> 変換後クラスの型
@@ -90,7 +93,7 @@ public final class JSONUtils {
 
 	/**
 	 * InputStreamからJSONを読み出し、Beanに変換します。
-	 * 
+	 *
 	 * @param in InputStream
 	 * @param clss 変換後のクラス
 	 * @param <T> 変換後クラスの型
@@ -106,7 +109,7 @@ public final class JSONUtils {
 
 	/**
 	 * オブジェクトをJSON文字列として取得します
-	 * 
+	 *
 	 * @param object オブジェクト
 	 * @return オブジェクトを表すJSON文字列
 	 */
@@ -120,7 +123,7 @@ public final class JSONUtils {
 
 	/**
 	 * 値をJSONに変換し、ファイルに書き込みます。
-	 * 
+	 *
 	 * @param file 書き込み先ファイル
 	 * @param value 書き込む値
 	 */

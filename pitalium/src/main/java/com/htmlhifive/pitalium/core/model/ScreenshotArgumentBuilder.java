@@ -57,6 +57,9 @@ public class ScreenshotArgumentBuilder {
 
 	//</editor-fold>
 
+	/**
+	 * @return
+	 */
 	private TargetParamHolder getCurrentHolder() {
 		if (currentHolder == null) {
 			throw new IllegalStateException("addNewTarget is not called");
@@ -64,6 +67,9 @@ public class ScreenshotArgumentBuilder {
 		return currentHolder;
 	}
 
+	/**
+	 * @param target
+	 */
 	private void setCurrentHolder(ScreenArea target) {
 		currentHolder = new TargetParamHolder(target);
 		targets.add(currentHolder);
@@ -395,7 +401,8 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder moveTarget(boolean moveTarget) {
-		getCurrentHolder().moveTarget = moveTarget;
+		TargetParamHolder holder = getCurrentHolder();
+		holder.moveTarget = moveTarget;
 		return this;
 	}
 
@@ -406,7 +413,8 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder scrollTarget(boolean scrollTarget) {
-		getCurrentHolder().scrollTarget = scrollTarget;
+		TargetParamHolder holder = getCurrentHolder();
+		holder.scrollTarget = scrollTarget;
 		return this;
 	}
 
@@ -532,22 +540,10 @@ public class ScreenshotArgumentBuilder {
 	 * パラメータを保持する内部クラス
 	 */
 	static class TargetParamHolder {
-		/**
-		 * スクリーンショット取得対象
-		 */
-		final ScreenArea target;
-		/**
-		 * 比較時に除外する領域
-		 */
-		final List<ScreenArea> excludes = new ArrayList<ScreenArea>();
-		/**
-		 * スクリーンショット取得時に、指定領域を定位置に移動するか否か
-		 */
-		boolean moveTarget = true;
-		/**
-		 * スクリーンショット取得時に、要素を部分スクロールするか否か
-		 */
-		boolean scrollTarget = false;
+		private final ScreenArea target;
+		private final List<ScreenArea> excludes = new ArrayList<ScreenArea>();
+		private boolean moveTarget = true;
+		private boolean scrollTarget = false;
 
 		/**
 		 * スクリーンショット取得対象を指定してホルダーを生成します。

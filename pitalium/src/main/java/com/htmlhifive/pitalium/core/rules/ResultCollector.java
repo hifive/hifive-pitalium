@@ -20,12 +20,11 @@ import org.junit.runner.Description;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.result.TestResultManager;
 
 /**
  * テストクラス実行毎に、テスト結果の収集・出力を行う&#064;ClassRule用クラスです。<br/>
- * {@link PtlTestBase}を拡張した場合は、既に定義済みのため指定する必要はありません。
+ * {@link com.htmlhifive.pitalium.core.PtlTestBase}を拡張した場合は、既に定義済みのため指定する必要はありません。
  */
 public class ResultCollector extends TestWatcher {
 
