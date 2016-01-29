@@ -91,12 +91,28 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 		return scrollIncrement - 1;
 	}
 
-	@Override
-	protected int calcTrimTop(int imageNum, long windowHeight, long pageHeight, double scale) {
+	/**
+	 * 下端の切り取り位置を調整します。
+	 *
+	 * @param scrollNum スクロール回数
+	 * @param trimTop 調整前の切り取り量
+	 * @param scale スケール
+	 * @return 調整後の切り取り量
+	 */
+	protected int adjustTrimTop(int scrollNum, int trimTop, double scale) {
 		// スクロール幅をずらした分、切り取り位置を調整する
 		// 1スクロールにつき2pxずつずれていく
-		return (int) Math.round((windowHeight - (pageHeight % windowHeight) - (imageNum - 1) * 2) * scale);
+		return trimTop - (int) Math.round((scrollNum - 1) * 2 * scale);
 	}
+
+	@Override
+	protected int calcSplitScrollTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement,
+			double currentScale, int scrollNum) {
+		int trimTop = super.calcSplitScrollTrimTop(imageHeight, scrollAmount, targetElement, currentScale, scrollNum);
+		trimTop = adjustTrimTop(scrollNum, trimTop, currentScale);
+
+		return trimTop;
+	};
 
 	@Override
 	protected double calcScale(double windowWidth, double imageWidth) {

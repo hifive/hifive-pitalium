@@ -618,7 +618,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		for (int i = 0; i < allTargetScreenshots.size(); i++) {
 			List<BufferedImage> targetScreenshots = allTargetScreenshots.get(i);
 			PtlWebElement targetElement = targetParams.get(i).getRight().getTarget().getElement();
-			trimLastImage(targetScreenshots, partialScrollAmounts[i], targetElement);
+			trimBottomImage(targetScreenshots, partialScrollAmounts[i], targetElement, scale);
 		}
 
 		List<BufferedImage> screenshots = new ArrayList<>();
@@ -652,7 +652,6 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 		// 可視範囲のサイズを調べる
 		long clientHeight = el.getClientHeight();
-		long clientWidth = el.getClientWidth();
 
 		double captureTop = 0d;
 		long scrollTop = -1L;
@@ -713,7 +712,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		trimMovePadding(el, images);
 
 		// 末尾の重複をトリム
-		trimLastImage(images, currentScrollAmount, el);
+		trimBottomImage(images, currentScrollAmount, el, scale);
 
 		// Exclude領域の座標を更新
 		for (ScreenAreaWrapper wrapper : params.getExcludes()) {
@@ -739,13 +738,16 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	}
 
 	/**
-	 * 指定されたリスト内の最後の画像の重複をトリムします。
+	 * 指定されたリスト内の最後の画像の高さ、スクロール量、ボーダー幅から<br>
+	 * トリム量を計算し、縦の重複をトリムします。
 	 *
 	 * @param images 対象の画像
 	 * @param lastScrollAmount 最後のスクロール量
 	 * @param el 撮影対象の要素
+	 * @param currentScale 表示領域とスクリーンショットのサイズ比
 	 */
-	private void trimLastImage(List<BufferedImage> images, long lastScrollAmount, PtlWebElement el) {
+	protected void trimBottomImage(List<BufferedImage> images, long lastScrollAmount, PtlWebElement el,
+			double currentScale) {
 		int size = images.size();
 		// 画像が1枚しかないときは何もしない
 		if (size <= 1) {
@@ -753,11 +755,37 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		}
 
 		BufferedImage lastImage = images.get(size - 1);
-		int trimTop = calcTrimTop(lastImage.getHeight(), lastScrollAmount, el);
+		int trimTop = calcTrimTop(lastImage.getHeight(), lastScrollAmount, el, currentScale);
 		LOG.debug("trimTop: " + trimTop);
 
 		if (trimTop > 0 && trimTop < lastImage.getHeight()) {
 			images.set(size - 1, ImageUtils.trim(lastImage, trimTop, 0, 0, 0));
+		}
+	}
+
+	/**
+	 * 指定されたリスト内の最後の画像の幅、スクロール量、ボーダー幅から<br>
+	 * トリム量を計算し、横の重複をトリムします。
+	 *
+	 * @param images 対象の画像
+	 * @param lastScrollAmount 最後のスクロール量
+	 * @param el 撮影対象の要素
+	 * @param currentScale 表示領域とスクリーンショットのサイズ比
+	 */
+	protected void trimRightImage(List<BufferedImage> images, long lastScrollAmount, PtlWebElement el,
+			double currentScale) {
+		int size = images.size();
+		// 画像が1枚しかないときは何もしない
+		if (size <= 1) {
+			return;
+		}
+
+		BufferedImage lastImage = images.get(size - 1);
+		int trimLeft = calcTrimLeft(lastImage.getWidth(), lastScrollAmount, el, currentScale);
+		LOG.debug("trimLeft: " + trimLeft);
+
+		if (trimLeft > 0 && trimLeft < lastImage.getWidth()) {
+			images.set(size - 1, ImageUtils.trim(lastImage, 0, trimLeft, 0, 0));
 		}
 	}
 
@@ -1490,15 +1518,41 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	}
 
 	/**
+	 * 画像の高さ、スクロール量、要素のボーダー幅から縦のトリム量を計算します。
+	 *
 	 * @param imageHeight 元画像の高さ
 	 * @param scrollAmount 最後のスクロール量
 	 * @param targetElement ターゲット
+	 * @param currentScale 表示領域とスクリーンショットのサイズ比
 	 * @return trim量
 	 */
-	protected int calcTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement) {
-		WebElementBorderWidth border = targetElement.getBorderWidth();
-		int trimTop = imageHeight - (int) Math.round(scrollAmount * scale) - (int) Math.round(border.getTop());
+	protected int calcTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement, double currentScale) {
+		int borderWidth = 0;
+		if (!targetElement.isBody()) {
+			WebElementBorderWidth border = targetElement.getBorderWidth();
+			borderWidth = (int) Math.round(border.getTop());
+		}
+		int trimTop = imageHeight - (int) Math.round(scrollAmount * currentScale) - borderWidth;
 		return trimTop;
+	}
+
+	/**
+	 * 画像の幅、スクロール量、要素のボーダー幅から横のトリム量を計算します。
+	 *
+	 * @param imageWidth 元画像の幅
+	 * @param scrollAmount 最後のスクロール量
+	 * @param targetElement ターゲット（nullの場合は無視）
+	 * @param currentScale 表示領域とスクリーンショットのサイズ比
+	 * @return trim量
+	 */
+	protected int calcTrimLeft(int imageWidth, long scrollAmount, PtlWebElement targetElement, double currentScale) {
+		int borderWidth = 0;
+		if (!targetElement.isBody()) {
+			WebElementBorderWidth border = targetElement.getBorderWidth();
+			borderWidth = (int) Math.round(border.getLeft());
+		}
+		int trimLeft = imageWidth - (int) Math.round(scrollAmount * currentScale) - borderWidth;
+		return trimLeft;
 	}
 
 	/**

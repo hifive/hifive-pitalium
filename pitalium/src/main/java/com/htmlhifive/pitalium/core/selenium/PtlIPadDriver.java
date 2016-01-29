@@ -108,12 +108,9 @@ class PtlIPadDriver extends PtlIPhoneDriver {
 	}
 
 	@Override
-	protected int calcTrimTop(int imageNum, long windowHeight, long pageHeight, double scale) {
+	protected int adjustTrimTop(int scrollNum, int trimTop, double scale) {
 		// スクロール幅をずらした分、切り取り位置を調整する
-		if (getWindowHandles().size() <= 1) {
-			return (int) Math.round((windowHeight - (pageHeight % windowHeight) - (imageNum - 1)) * scale);
-		}
-		return super.calcTrimTop(imageNum, windowHeight, pageHeight, scale);
+		// 1スクロールにつき1pxずつずれていく
+		return trimTop - (int) Math.round((scrollNum - 1) * scale);
 	}
-
 }

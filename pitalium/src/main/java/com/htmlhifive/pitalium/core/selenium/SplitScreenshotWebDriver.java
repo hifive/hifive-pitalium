@@ -89,6 +89,8 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 			targetRight = elementArea.getX() + elementArea.getWidth();
 		}
 
+		PtlWebElement bodyElement = (PtlWebElement) findElementByTagName("body");
+
 		long currentVScrollAmount = 0;
 		double captureTop = 0d;
 		long scrollTop = -1L;
@@ -170,15 +172,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				}
 
 				// 右端の画像の重複部分をトリムする
-				if (lineImages.size() > 1) {
-					BufferedImage rImg = lineImages.get(lineImages.size() - 1);
-					int trimLeft = rImg.getWidth() - (int) Math.round(currentHScrollAmount * scale);
-					LOG.debug("trimLeft: " + trimLeft);
-
-					if (trimLeft > 0 && trimLeft < rImg.getWidth()) {
-						lineImages.set(lineImages.size() - 1, ImageUtils.trim(rImg, 0, trimLeft, 0, 0));
-					}
-				}
+				trimRightImage(lineImages, currentHScrollAmount, bodyElement, scale);
 
 				images.add(lineImages);
 
@@ -187,11 +181,11 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				if (headerHeight > 0) {
 					// HeaderHeightがある場合、画像の高さからスクロール幅を逆算
 					scrollIncrement = calcVerticalScrollIncrementWithHeader(imageHeight, scale);
-					captureTop += scrollIncrement;
 				} else {
 					scrollIncrement = calcVerticalScrollIncrement(windowHeight);
-					captureTop += scrollIncrement;
+
 				}
+				captureTop += scrollIncrement;
 
 				// Targetが写りきっていたら終了
 				if (targetBottom > 0 && targetBottom < captureTop) {
@@ -210,19 +204,53 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 		}
 
 		// 末尾の画像の重複部分をトリムする
-		if (images.size() > 1) {
-			for (int i = 0; i < images.get(images.size() - 1).size(); i++) {
-				BufferedImage lastImage = images.get(images.size() - 1).get(i);
-				int trimTop = lastImage.getHeight() - (int) Math.round(currentVScrollAmount * scale);
-				LOG.debug("trimTop: " + trimTop);
-
-				if (trimTop > 0 && trimTop < lastImage.getHeight()) {
-					images.get(images.size() - 1).set(i, ImageUtils.trim(lastImage, trimTop, 0, 0, 0));
-				}
-			}
-		}
+		trimBottomImages(images, currentVScrollAmount, bodyElement, scale);
 
 		return ImageUtils.merge(images);
+	}
+
+	/**
+	 * 指定されたリスト内の末尾1列の画像の重複部分をトリムします。
+	 *
+	 * @param images 対象のリスト
+	 * @param lastScrollAmount 最後のスクロール量
+	 * @param el 撮影対象の要素
+	 * @param currentScale スケール
+	 */
+	private void trimBottomImages(List<List<BufferedImage>> images, long lastScrollAmount, PtlWebElement el,
+			double currentScale) {
+		int size = images.size();
+		// 画像が1列しかないときは何もしない
+		if (size <= 1) {
+			return;
+		}
+
+		List<BufferedImage> bottomLineImages = images.get(size - 1);
+		for (int i = 0; i < bottomLineImages.size(); i++) {
+			BufferedImage bottomImage = bottomLineImages.get(i);
+			int trimTop = calcSplitScrollTrimTop(bottomImage.getHeight(), lastScrollAmount, el, currentScale, size);
+			LOG.debug("trimTop: " + trimTop);
+
+			if (trimTop > 0 && trimTop < bottomImage.getHeight()) {
+				bottomLineImages.set(i, ImageUtils.trim(bottomImage, trimTop, 0, 0, 0));
+			}
+		}
+	}
+
+	/**
+	 * 画像の高さ、スクロール量、要素のボーダー幅から縦のトリム量を計算します。
+	 *
+	 * @param imageHeight 元画像の高さ
+	 * @param scrollAmount 最後のスクロール量
+	 * @param targetElement ターゲット
+	 * @param currentScale 表示領域とスクリーンショットのサイズ比
+	 * @param scrollNum スクロール回数
+	 * @return trim量
+	 */
+	protected int calcSplitScrollTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement,
+			double currentScale, int scrollNum) {
+		int trimTop = super.calcTrimTop(imageHeight, scrollAmount, targetElement, currentScale);
+		return trimTop;
 	}
 
 	/**
@@ -254,19 +282,6 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	 */
 	protected double calcHorizontalScrollIncrement(long windowWidth) {
 		return windowWidth;
-	}
-
-	/**
-	 * 最下部のスクリーンショットのトリム幅を計算します。
-	 *
-	 * @param imageNum キャプチャした画像の数
-	 * @param windowHeight ウィンドウ（viewport内の表示領域）の幅
-	 * @param pageHeight ページ全体の高さ
-	 * @param currentScale スケール
-	 * @return トリム幅（整数px）
-	 */
-	protected int calcTrimTop(int imageNum, long windowHeight, long pageHeight, double currentScale) {
-		return (int) Math.round((windowHeight - pageHeight % windowHeight) * currentScale);
 	}
 
 	@Override

@@ -72,8 +72,8 @@ class PtlFirefoxDriver extends PtlWebDriver {
 	}
 
 	@Override
-	protected int calcTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement) {
-		int trimTop = super.calcTrimTop(imageHeight, scrollAmount, targetElement);
+	protected int calcTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement, double currentScale) {
+		int trimTop = super.calcTrimTop(imageHeight, scrollAmount, targetElement, currentScale);
 		// firefoxのtextareaは上下paddingが常に表示されるため、上padding分trim量を減らす
 		if ("textarea".equals(targetElement.getTagName())) {
 			WebElementPadding padding = targetElement.getPadding();
