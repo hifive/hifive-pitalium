@@ -10,7 +10,9 @@
 -->
 <module name="Checker">
   <property name="severity" value="warning"/>
+   <module name="SuppressWarningsFilter" />
   <module name="TreeWalker">
+  	<module name="SuppressWarningsHolder" />
     <property name="tabWidth" value="4"/>
     <module name="FileContentsHolder"/>
     <module name="JavadocMethod">
@@ -32,7 +34,7 @@
     <module name="MissingDeprecated"/>
     <module name="MissingOverride"/>
     <module name="SuppressWarnings">
-      <property name="format" value="^unchecked$|^[\w-]+$"/>
+      <property name="format" value="^unchecked$|^checkstyle:.+$|^[\w-]+$"/>
     </module>
     <module name="ClassTypeParameterName">
       <property name="format" value="^([A-Z]|[A-Z][0-9])$"/>
