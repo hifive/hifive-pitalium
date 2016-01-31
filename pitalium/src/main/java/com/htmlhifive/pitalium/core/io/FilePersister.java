@@ -79,7 +79,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param config データ永続化の設定
 	 */
 	public FilePersister(FilePersisterConfig config) {
@@ -213,6 +213,13 @@ public class FilePersister implements Persister {
 		}
 	}
 
+	/**
+	 * {@list TargetResult}のリストに指定されたメタデータを追加します。
+	 *
+	 * @param targetResults 対象の{@list TargetResult}
+	 * @param metadata 追加するメタデータ
+	 * @return メタデータを追加済の{@list TargetResult}のリスト
+	 */
 	private List<TargetResult> fillScreenshotImageProperty(List<TargetResult> targetResults, PersistMetadata metadata) {
 		List<TargetResult> results = new ArrayList<TargetResult>(targetResults.size());
 		for (TargetResult targetResult : targetResults) {
@@ -303,6 +310,13 @@ public class FilePersister implements Persister {
 		}
 	}
 
+	/**
+	 * 指定したファイルの親フォルダが存在し、アクセス可能か否かをチェックします。<br>
+	 * 存在しない場合はフォルダを作成します。
+	 *
+	 * @param file 対象のファイル
+	 * @return 対象のファイル
+	 */
 	private File checkParentFileAvailable(File file) {
 		File parent = file.getParentFile();
 		if (!parent.exists() && !parent.mkdirs()) {
@@ -315,6 +329,12 @@ public class FilePersister implements Persister {
 		return file;
 	}
 
+	/**
+	 * 指定したファイルが存在し、アクセス可能か否かをチェックします。
+	 *
+	 * @param file 対象のファイル
+	 * @return 対象のファイル
+	 */
 	private File checkFileAvailable(File file) {
 		if (!file.exists()) {
 			throw new ResourceUnavailableException(String.format(Locale.UK, "File \"%s\" not found", file));
@@ -328,7 +348,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * 結果を保存する基底ディレクトリを取得します。
-	 * 
+	 *
 	 * @return 結果を保存する基底ディレクトリのパス
 	 */
 	public File getResultDirectoryFile() {
@@ -337,7 +357,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * 期待結果IDが記録されたファイルパスを取得します。
-	 * 
+	 *
 	 * @return 期待結果IDファイルのパス
 	 */
 	public File getExpectedIdsFile() {
@@ -346,7 +366,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * テストクラス実行結果のファイルパスを取得します。
-	 * 
+	 *
 	 * @param metadata メタデータ
 	 * @return テストクラス実行結果ファイルのパス
 	 */
@@ -356,7 +376,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * スクリーンショットの比較結果が記録されたファイルパスを取得します。
-	 * 
+	 *
 	 * @param metadata メタデータ
 	 * @return スクリーンショット比較結果ファイルのパス
 	 */
@@ -366,7 +386,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * スクリーンショットの画像ファイルのパスを取得します。
-	 * 
+	 *
 	 * @param metadata メタデータ
 	 * @return スクリーンショット画像ファイルのパス
 	 */
@@ -376,7 +396,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * 差分画像のファイルパスを取得します。
-	 * 
+	 *
 	 * @param metadata メタデータ
 	 * @return 差分画像のファイルパス
 	 */
@@ -386,7 +406,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * 期待結果IDが記録されたファイル名を取得します。
-	 * 
+	 *
 	 * @return 期待結果ファイルのファイル名
 	 */
 	public String getExpectedIdsFileName() {
@@ -395,7 +415,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * テストクラスの実行結果が記録されたファイル名を取得します。
-	 * 
+	 *
 	 * @return テストクラスの実行結果ファイル名
 	 */
 	public String getTestResultFileName() {
@@ -404,7 +424,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * スクリーンショットの比較結果が記録されたファイル名を取得します。
-	 * 
+	 *
 	 * @param metadata メタデータ
 	 * @return スクリーンショットの比較結果ファイル名
 	 */
@@ -414,7 +434,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * スクリーンショットの画像ファイル名を取得します。
-	 * 
+	 *
 	 * @param metadata メタデータ
 	 * @return スクリーンショット画像のファイル名
 	 */
@@ -424,7 +444,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * 差分画像のファイル名を取得します。
-	 * 
+	 *
 	 * @param metadata メタデータ
 	 * @return 差分画像のファイル名
 	 */
@@ -434,7 +454,7 @@ public class FilePersister implements Persister {
 
 	/**
 	 * メタデータとファイル名から実際のファイルパスを取得します。
-	 * 
+	 *
 	 * @param metadata メタデータ
 	 * @param fileName ファイル名
 	 * @return 実際のファイルパス

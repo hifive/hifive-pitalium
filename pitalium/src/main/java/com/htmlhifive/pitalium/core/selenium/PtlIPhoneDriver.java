@@ -15,7 +15,6 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
-import java.awt.image.BufferedImage;
 import java.net.URL;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
@@ -87,41 +86,33 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 	}
 
 	@Override
-	protected BufferedImage trimOverlap(double captureTop, double captureLeft, long windowHeight, long windowWidth,
-			double scale, BufferedImage img) {
-		BufferedImage image = img;
-		// 下端の推定位置（次スクロール時にトップに来る位置）と、実際のキャプチャに写っている下端の位置を比較
-		long calculatedBottomValue = Math.round((captureTop + windowHeight) * scale);
-		long actualBottomValue = Math.round(captureTop * scale) + img.getHeight();
-		// 余分にキャプチャに写っていたら切り取っておく
-		if (calculatedBottomValue < actualBottomValue) {
-			image = image.getSubimage(0, 0, image.getWidth(),
-					(int) (image.getHeight() - (actualBottomValue - calculatedBottomValue)));
-		}
-
-		long calculatedRightValue = Math.round((captureLeft + windowWidth) * scale);
-		long actualRightValue = Math.round(captureLeft * scale) + img.getWidth();
-		// 余分にキャプチャに写っていたら切り取っておく
-		if (calculatedRightValue < actualRightValue) {
-			image = image.getSubimage(0, 0, (int) (image.getWidth() - (actualRightValue - calculatedRightValue)),
-					image.getHeight());
-		}
-
-		return image;
-	}
-
-	@Override
 	protected double calcVerticalScrollIncrementWithHeader(int imageHeight, double scale) {
 		double scrollIncrement = super.calcVerticalScrollIncrementWithHeader(imageHeight, scale);
 		return scrollIncrement - 1;
 	}
 
-	@Override
-	protected int calcTrimTop(int imageNum, long windowHeight, long pageHeight, double scale) {
+	/**
+	 * 下端の切り取り位置を調整します。
+	 *
+	 * @param scrollNum スクロール回数
+	 * @param trimTop 調整前の切り取り量
+	 * @param scale スケール
+	 * @return 調整後の切り取り量
+	 */
+	protected int adjustTrimTop(int scrollNum, int trimTop, double scale) {
 		// スクロール幅をずらした分、切り取り位置を調整する
 		// 1スクロールにつき2pxずつずれていく
-		return (int) Math.round((windowHeight - (pageHeight % windowHeight) - (imageNum - 1) * 2) * scale);
+		return trimTop - (int) Math.round((scrollNum - 1) * 2 * scale);
 	}
+
+	@Override
+	protected int calcSplitScrollTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement,
+			double currentScale, int scrollNum) {
+		int trimTop = super.calcSplitScrollTrimTop(imageHeight, scrollAmount, targetElement, currentScale, scrollNum);
+		trimTop = adjustTrimTop(scrollNum, trimTop, currentScale);
+
+		return trimTop;
+	};
 
 	@Override
 	protected double calcScale(double windowWidth, double imageWidth) {

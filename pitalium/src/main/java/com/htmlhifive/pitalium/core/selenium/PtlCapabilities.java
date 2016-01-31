@@ -46,7 +46,7 @@ public class PtlCapabilities extends DesiredCapabilities {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param rawMap Capabilityを保持するマップ
 	 */
 	public PtlCapabilities(Map<String, ?> rawMap) {
@@ -55,7 +55,7 @@ public class PtlCapabilities extends DesiredCapabilities {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param other Capability
 	 */
 	public PtlCapabilities(Capabilities other) {
@@ -64,7 +64,7 @@ public class PtlCapabilities extends DesiredCapabilities {
 
 	/**
 	 * Capabilityを取得します。
-	 * 
+	 *
 	 * @return Capabilityのリスト
 	 */
 	public static List<PtlCapabilities[]> readCapabilities() {
@@ -92,7 +92,7 @@ public class PtlCapabilities extends DesiredCapabilities {
 
 	/**
 	 * Capabilitiesをファイルまたはリソースファイルから読み込みます。
-	 * 
+	 *
 	 * @param filePath ファイルパス
 	 * @return 読み込んだCapabilities
 	 */
@@ -126,7 +126,7 @@ public class PtlCapabilities extends DesiredCapabilities {
 
 	/**
 	 * プラットフォーム名を取得します。
-	 * 
+	 *
 	 * @return プラットフォーム名
 	 */
 	public String getPlatformName() {
@@ -140,7 +140,7 @@ public class PtlCapabilities extends DesiredCapabilities {
 
 	/**
 	 * プラットフォームのバージョンを取得します。
-	 * 
+	 *
 	 * @return プラットフォームのバージョン
 	 */
 	public String getPlatformVersion() {
@@ -149,13 +149,19 @@ public class PtlCapabilities extends DesiredCapabilities {
 
 	/**
 	 * デバイス名を取得します。
-	 * 
+	 *
 	 * @return デバイス名
 	 */
 	public String getDeviceName() {
 		return toString(getCapability("deviceName"));
 	}
 
+	/**
+	 * 指定したオブジェクトの文字列表現を取得します。
+	 * 
+	 * @param object 対象のオブジェクト
+	 * @return 指定したオブジェクトの文字列表現
+	 */
 	private static String toString(Object object) {
 		return object == null ? null : object.toString();
 	}

@@ -37,4 +37,17 @@ class PtlFirefoxWebElement extends PtlWebElement {
 		return clientHeight;
 	}
 
+	@Override
+	protected int getContainedPaddingHeight(int i, int size) {
+		int padding = super.getContainedPaddingHeight(i, size);
+		if ("textarea".equals(getTagName())) {
+			WebElementPadding targetPadding = getPadding();
+			if (i <= 0) {
+				padding += (int) Math.round(targetPadding.getTop());
+			} else if (i >= size - 1) {
+				padding += (int) Math.round(targetPadding.getBottom());
+			}
+		}
+		return padding;
+	}
 }

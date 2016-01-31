@@ -28,7 +28,7 @@ import com.htmlhifive.pitalium.junit.ParameterizedTestWatcher;
 /**
  * パラメーター単位でWebDriverを自動クローズするクラス<br />
  * 以下のサンプルの様に利用してください。
- * 
+ *
  * <pre>
  * &#064;RunWith(Parameterized.class)
  * &#064;Parameterized.UseParametersRunnerFactory(PtlBlockJUnit4ClassRunnerWithParametersFactory.class)
@@ -40,7 +40,7 @@ import com.htmlhifive.pitalium.junit.ParameterizedTestWatcher;
  * 
  * }
  * </pre>
- * 
+ *
  * @author nakatani
  */
 public class PtlWebDriverCloser extends ParameterizedTestWatcher {
@@ -49,8 +49,9 @@ public class PtlWebDriverCloser extends ParameterizedTestWatcher {
 
 	@Override
 	protected void finished(Description description, Object[] params) {
-		if (!(params[0] instanceof PtlCapabilities))
+		if (!(params[0] instanceof PtlCapabilities)) {
 			throw new TestRuntimeException("Parameter[0] must be PtlCapabilities.");
+		}
 
 		PtlCapabilities capabilities = (PtlCapabilities) params[0];
 		Class<?> clss = description.getTestClass();

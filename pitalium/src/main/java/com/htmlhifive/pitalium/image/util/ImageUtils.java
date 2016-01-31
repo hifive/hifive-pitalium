@@ -51,12 +51,15 @@ public final class ImageUtils {
 	private static final String DIFF_IMAGE_LEFT_LABEL = "expected";
 	private static final String DIFF_IMAGE_RIGHT_LABEL = "actual";
 
+	/**
+	 * コンストラクタ
+	 */
 	private ImageUtils() {
 	}
 
 	/**
 	 * 2つの画像を比較し、差分を取得します。
-	 * 
+	 *
 	 * @param image1 画像1
 	 * @param imageArea1 画像1の比較範囲
 	 * @param image2 画像2
@@ -72,7 +75,7 @@ public final class ImageUtils {
 
 	/**
 	 * 全体画像の中に指定した部分画像が含まれているかどうかを取得します。
-	 * 
+	 *
 	 * @param entireImage 全体画像
 	 * @param partImage 部分画像
 	 * @return 全体画像の中に部分画像が含まれていればtrue、含まれていなければfalse
@@ -119,6 +122,12 @@ public final class ImageUtils {
 		return false;
 	}
 
+	/**
+	 * 元画像の積分画像を生成します。
+	 *
+	 * @param source 元画像
+	 * @return 積分結果の配列
+	 */
 	private static double[][] calcIntegralImage(BufferedImage source) {
 		double[][] integralImage = new double[source.getHeight()][source.getWidth()];
 		Raster raster = source.getRaster();
@@ -139,7 +148,7 @@ public final class ImageUtils {
 
 	/**
 	 * 画像を比較し、同一であるかどうかを取得します。
-	 * 
+	 *
 	 * @param image1 一つの画像
 	 * @param image2 二つ目のがぞおう
 	 * @return 二つの画像が同一である場合true、異なる画像の場合false
@@ -158,7 +167,7 @@ public final class ImageUtils {
 
 	/**
 	 * 指定エリアをマスクした画像を生成します。
-	 * 
+	 *
 	 * @param image マスクする画像
 	 * @param maskAreas マスクするエリア
 	 * @return 指定エリアをマスクした画像
@@ -182,7 +191,7 @@ public final class ImageUtils {
 
 	/**
 	 * 画像をDeepCopyします。
-	 * 
+	 *
 	 * @param image DeepCopy元の{@link BufferedImage}
 	 * @return DeepCopyされた {@link BufferedImage}
 	 */
@@ -197,7 +206,7 @@ public final class ImageUtils {
 
 	/**
 	 * 指定のポイントをマークした画像を作成します。
-	 * 
+	 *
 	 * @param image 対象の画像
 	 * @param diffPoints マークするポイント
 	 * @return マークした画像
@@ -273,7 +282,7 @@ public final class ImageUtils {
 
 	/**
 	 * diff座標から近似の四角形を作成する。
-	 * 
+	 *
 	 * @param diffPoints 差分データ
 	 * @return 近似の四角形のリスト
 	 */
@@ -285,7 +294,7 @@ public final class ImageUtils {
 
 	/**
 	 * diff座標から近似の四角形を作成する。
-	 * 
+	 *
 	 * @param diffPoints diff座標のリスト
 	 * @return 近似の四角形のリスト
 	 */
@@ -348,7 +357,7 @@ public final class ImageUtils {
 
 	/**
 	 * サイズのdiff座標から近似の四角形を作成する。
-	 * 
+	 *
 	 * @param sizeDiffPoints サイズのdiff座標のリスト
 	 * @return 近似の四角形のリスト
 	 */
@@ -391,6 +400,8 @@ public final class ImageUtils {
 
 	/**
 	 * マーカー画像を取得します。
+	 *
+	 * @return マーカー画像
 	 */
 	private static BufferedImage getMarkImage() {
 		URL resource = ImageUtils.class.getClassLoader().getResource("mark.png");
@@ -408,7 +419,7 @@ public final class ImageUtils {
 
 	/**
 	 * 二つの画像と差分情報から差分確認用画像を取得します。
-	 * 
+	 *
 	 * @param leftImage 左側の画像
 	 * @param rightImage 右側の画像
 	 * @param diffPoints 差分データ
@@ -421,7 +432,7 @@ public final class ImageUtils {
 
 	/**
 	 * 画像を指定の値でトリムします。
-	 * 
+	 *
 	 * @param image 元画像
 	 * @param trimTop 上方向のトリム値
 	 * @param trimLeft 左方向のトリム値
@@ -437,5 +448,75 @@ public final class ImageUtils {
 				trimTop, trimLeft, trimBottom, trimRight, width, height, trimLeft, trimTop, width - trimLeft
 						- trimRight, height - trimTop - trimBottom);
 		return image.getSubimage(trimLeft, trimTop, width - trimLeft - trimRight, height - trimTop - trimBottom);
+	}
+
+	/**
+	 * 画像を縦に結合し、1枚の画像にします。
+	 *
+	 * @param images 結合前の画像群
+	 * @return 結合後の画像
+	 */
+	public static BufferedImage vertialMerge(List<BufferedImage> images) {
+		// 結合後の画像サイズを調べる
+		int totalHeight = 0;
+		int totalWidth = -1;
+		for (BufferedImage image : images) {
+			totalHeight += image.getHeight();
+			if (totalWidth < 0) {
+				totalWidth = image.getWidth();
+			}
+		}
+
+		// 画像の結合
+		BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics graphics = screenshot.getGraphics();
+		int nextTop = 0;
+		for (BufferedImage image : images) {
+			graphics.drawImage(image, 0, nextTop, null);
+			nextTop += image.getHeight();
+		}
+
+		return screenshot;
+	}
+
+	/**
+	 * 画像を結合し、1枚の画像にします。
+	 *
+	 * @param images 結合前の画像群
+	 * @return 結合後の画像
+	 */
+	public static BufferedImage merge(List<List<BufferedImage>> images) {
+		// 結合後の画像サイズを調べる
+		int totalHeight = 0;
+		int totalWidth = -1;
+		for (List<BufferedImage> lineImages : images) {
+			totalHeight += lineImages.get(0).getHeight();
+			if (totalWidth < 0) {
+				int width = 0;
+				for (BufferedImage image : lineImages) {
+					width += image.getWidth();
+				}
+				totalWidth = width;
+			}
+		}
+
+		// 画像の結合
+		BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics graphics = screenshot.getGraphics();
+		int nextTop = 0;
+		for (List<BufferedImage> lineImage : images) {
+			int imgHeight = -1;
+			int nextLeft = 0;
+			for (BufferedImage img : lineImage) {
+				graphics.drawImage(img, nextLeft, nextTop, null);
+				nextLeft += img.getWidth();
+				if (imgHeight < 0) {
+					imgHeight = img.getHeight();
+				}
+			}
+			nextTop += imgHeight;
+		}
+
+		return screenshot;
 	}
 }

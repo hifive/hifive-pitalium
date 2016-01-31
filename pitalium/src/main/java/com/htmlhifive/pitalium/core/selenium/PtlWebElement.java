@@ -28,6 +28,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+
 /**
  * WebElementの実装クラス。{@link org.openqa.selenium.remote.RemoteWebElement}の機能に加え、いくつかの追加情報を提供します。<br/>
  * {@link PtlWebDriver#findElements(org.openqa.selenium.By)}から返されるオブジェクトは、このクラスを拡張しています。
@@ -118,6 +120,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	private static final String SCRIPT_GET_ELEMENT_RESIZE = "return arguments[0].style.resize";
 	private static final String SCRIPT_SET_ELEMENT_RESIZE = "var style = arguments[0].style;"
 			+ "style.resize = arguments[1]";
+	private static final long SCROLL_WAIT_MS = 100L;
 
 	//CHECKSTYLE:ON
 	//@formatter:on
@@ -136,7 +139,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 親driverを設定します。
-	 * 
+	 *
 	 * @param parent 親driver
 	 */
 	@Override
@@ -147,7 +150,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素のタグ名を取得します。
-	 * 
+	 *
 	 * @return タグ名
 	 */
 	@Override
@@ -161,7 +164,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 親driverを取得します。
-	 * 
+	 *
 	 * @return 親driver
 	 */
 	@Override
@@ -171,7 +174,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の位置・サイズを矩形領域として取得します。
-	 * 
+	 *
 	 * @return 矩形領域を表す{@link WebElementRect}オブジェクト
 	 */
 	public WebElementRect getRect() {
@@ -180,22 +183,31 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		double scrollLeft = driver.getCurrentScrollLeft();
 		LOG.trace("(GetRect) current scroll position: (top: {}, left: {})", scrollTop, scrollLeft);
 
+		double left = 0;
+		double top = 0;
+		double width = 0;
+		double height = 0;
+
 		// ページ最上部からの座標を取得
-		driver.scrollTo(0d, 0d);
+		try {
+			driver.scrollTo(0d, 0d);
+			Map<String, Object> object = driver.executeJavaScript(GET_ELEMENT_RECT_SCRIPT, this);
+			LOG.trace("(GetRect) js result: {}", object);
 
-		Map<String, Object> object = driver.executeJavaScript(GET_ELEMENT_RECT_SCRIPT, this);
-		LOG.trace("(GetRect) js result: {}", object);
+			left = getDoubleOrDefault(object.get("left"), 0d);
+			top = getDoubleOrDefault(object.get("top"), 0d);
 
-		double left = getDoubleOrDefault(object.get("left"), 0d);
-		double top = getDoubleOrDefault(object.get("top"), 0d);
+			// bodyの場合はページ全体の幅を返す
+			width = isBody() ? driver.getCurrentPageWidth() : getDoubleOrDefault(object.get("width"), 0d);
 
-		double width = isBody() ? driver.getCurrentPageWidth() : getDoubleOrDefault(object.get("width"), 0d);
+			// bodyの場合はページ全体の高さを返す
+			height = isBody() ? driver.getCurrentPageHeight() : getDoubleOrDefault(object.get("height"), 0d);
 
-		// bodyの場合はページ全体の高さを返す
-		double height = isBody() ? driver.getCurrentPageHeight() : getDoubleOrDefault(object.get("height"), 0d);
-
-		// スクロール位置を元に戻す
-		driver.scrollTo(scrollLeft, scrollTop);
+			// スクロール位置を元に戻す
+			driver.scrollTo(scrollLeft, scrollTop);
+		} catch (InterruptedException e) {
+			throw new TestRuntimeException(e);
+		}
 
 		WebElementRect rect = new WebElementRect(left, top, width, height);
 		LOG.debug("[Element Rect] {} ({})", rect, this);
@@ -204,7 +216,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の四辺のMarginを取得します。
-	 * 
+	 *
 	 * @return 四辺のMarginを表す{@link WebElementMargin}オブジェクト
 	 */
 	public WebElementMargin getMargin() {
@@ -223,7 +235,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の四辺のBorderWidthを取得します。
-	 * 
+	 *
 	 * @return 四辺のBorderWidthを表す{@link WebElementBorderWidth}オブジェクト
 	 */
 	public WebElementBorderWidth getBorderWidth() {
@@ -236,13 +248,13 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		double right = getDoubleOrDefault(object.get("right"), 0d);
 
 		WebElementBorderWidth borderWidth = new WebElementBorderWidth(top, right, bottom, left);
-		LOG.debug("[Element borderWidth] {} ()", borderWidth, this);
+		LOG.debug("[Element BorderWidth] {} ({})", borderWidth, this);
 		return borderWidth;
 	}
 
 	/**
 	 * 要素の四辺のPaddingを取得します。
-	 * 
+	 *
 	 * @return 四辺のPaddingを表す{@link WebElementPadding}オブジェクト
 	 */
 	public WebElementPadding getPadding() {
@@ -255,7 +267,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		double right = getDoubleOrDefault(object.get("right"), 0d);
 
 		WebElementPadding padding = new WebElementPadding(top, right, bottom, left);
-		LOG.debug("[Element padding] {} ({})", padding, this);
+		LOG.debug("[Element Padding] {} ({})", padding, this);
 		return padding;
 	}
 
@@ -309,7 +321,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素のvisibilityスタイル値がhiddenかどうかを取得します。
-	 * 
+	 *
 	 * @return visibilityがhiddenの場合true、それ以外の値の場合false
 	 */
 	public boolean isVisibilityHidden() {
@@ -318,7 +330,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 値をdoubleに変換します。変換できない場合は指定されたデフォルト値を返します。
-	 * 
+	 *
 	 * @param object 変換する値
 	 * @param defaultValue デフォルト値
 	 * @return doubleに変換した値。変換できなかった場合はdefaultValue
@@ -348,12 +360,12 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	/**
 	 * 自身の部分スクロールのスクロール回数を返します。<br>
 	 * 部分スクロールがない場合は0を返します。
-	 * 
+	 *
 	 * @return スクロール回数
 	 */
 	public int getScrollNum() {
 		double clientHeight = getClientHeight();
-		double scrollHeight = getScrollHeight();
+		double scrollHeight = getScrollHeight() + 1;
 
 		if (clientHeight >= scrollHeight) {
 			LOG.trace("(GetScrollNum) [0] ({})", this);
@@ -367,7 +379,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の可視範囲の高さを取得します。
-	 * 
+	 *
 	 * @return 高さ（整数px）
 	 */
 	public long getClientHeight() {
@@ -380,7 +392,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の可視範囲の幅を取得します。
-	 * 
+	 *
 	 * @return 幅（整数px）
 	 */
 	public long getClientWidth() {
@@ -393,7 +405,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * スクロールを含む要素全体の高さを取得します。
-	 * 
+	 *
 	 * @return 高さ（整数px）
 	 */
 	public long getScrollHeight() {
@@ -410,7 +422,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * スクロールを含む要素全体の幅を取得します。
-	 * 
+	 *
 	 * @return 幅（整数px）
 	 */
 	public long getScrollWidth() {
@@ -427,34 +439,35 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素を1回分スクロールします。
-	 * 
+	 *
 	 * @return 今回のスクロール量
+	 * @throws InterruptedException スクロール中に例外が発生した場合
 	 */
-	public int scrollNext() {
-		long initialScrollTop = getCurrentScrollTop();
+	public int scrollNext() throws InterruptedException {
+		long initialScrollTop = (int) Math.round(getCurrentScrollTop());
 		long clientHeight = getClientHeight();
 		LOG.debug("[Scroll element] next to ({}, {}) ({})", 0, initialScrollTop + clientHeight, this);
 		scrollTo(0, initialScrollTop + clientHeight);
-		long currentScrollTop = getCurrentScrollTop();
+		long currentScrollTop = (int) Math.round(getCurrentScrollTop());
 		return (int) (currentScrollTop - initialScrollTop);
 	}
 
 	/**
 	 * 現在のスクロール位置（y座標）を取得します。
-	 * 
+	 *
 	 * @return スクロール位置（実数px）
 	 */
-	long getCurrentScrollTop() {
-		long top = 0;
+	double getCurrentScrollTop() {
+		double top = 0;
 		if (isFrame()) {
-			long max = 0L;
+			double max = 0d;
 			for (String value : SCRIPTS_SCROLL_TOP) {
-				long current = Long.parseLong(driver.executeScript("return " + value, this).toString());
+				double current = Double.parseDouble(driver.executeScript("return " + value, this).toString());
 				max = Math.max(max, current);
 			}
 			top = max;
 		} else {
-			top = Long.parseLong(driver.executeScript("return arguments[0].scrollTop", this).toString());
+			top = Double.parseDouble(driver.executeScript("return arguments[0].scrollTop", this).toString());
 		}
 		LOG.trace("(GetCurrentScrollTop) [{}] ({})", top, this);
 		return top;
@@ -462,7 +475,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 現在のスクロール位置（x座標）を取得します。
-	 * 
+	 *
 	 * @return スクロール位置（実数px）
 	 */
 	double getCurrentScrollLeft() {
@@ -483,11 +496,12 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 指定位置までスクロールします。
-	 * 
+	 *
 	 * @param x x座標
 	 * @param y y座標
+	 * @throws InterruptedException スクロール中に例外が発生した場合
 	 */
-	public void scrollTo(double x, double y) {
+	public void scrollTo(double x, double y) throws InterruptedException {
 		// 要素がframeの場合
 		if (isFrame()) {
 			LOG.debug("[Scroll frame] to ({}, {})", x, y);
@@ -499,6 +513,8 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		LOG.debug("[Scroll element] to ({}, {})", x, y);
 		driver.executeScript("arguments[0].scrollLeft = arguments[1]", this, x);
 		driver.executeScript("arguments[0].scrollTop = arguments[1]", this, y);
+
+		Thread.sleep(SCROLL_WAIT_MS);
 	}
 
 	/**
@@ -517,7 +533,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * styleに設定されているoverflowの値を返します。
-	 * 
+	 *
 	 * @return overflowの設定値 {x, y}
 	 */
 	public String[] getOverflowStatus() {
@@ -534,7 +550,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * Overflowのstyleを設定します。
-	 * 
+	 *
 	 * @param xStatus x方向の設定
 	 * @param yStatus y方向の設定
 	 */
@@ -549,7 +565,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * styleに設定されているresizeの値を返します。
-	 * 
+	 *
 	 * @return resizeの設定値
 	 */
 	public String getResizeStatus() {
@@ -558,7 +574,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * resizeのstyleを設定します。
-	 * 
+	 *
 	 * @param status resizeの設定
 	 */
 	public void setResizeStatus(String status) {
@@ -567,7 +583,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素がbody（およびframeset）か否かを返します。
-	 * 
+	 *
 	 * @return この要素がbody（およびframeset）か否か。該当する場合はtrue。
 	 */
 	public boolean isBody() {
@@ -576,11 +592,33 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素がframeおよびifameか否かを返します。
-	 * 
+	 *
 	 * @return この要素がframeおよびiframeか否か。該当する場合はtrue。
 	 */
 	public boolean isFrame() {
 		return "iframe".equals(getTagName()) || "frame".equals(getTagName());
+	}
+
+	/**
+	 * 指定された位置（スクロールi回目）のスクリーンショットに含まれるPaddingの高さを返します。
+	 *
+	 * @param i スクロール位置
+	 * @param size 総スクロール回数
+	 * @return Paddingの高さ
+	 */
+	protected int getContainedPaddingHeight(int i, int size) {
+		return 0;
+	}
+
+	/**
+	 * 指定された位置（スクロールi回目）のスクリーンショットに含まれるPaddingの幅を返します。
+	 *
+	 * @param i スクロール位置
+	 * @param size 総スクロール回数
+	 * @return Paddingの幅
+	 */
+	protected int getContainedPaddingWidth(int i, int size) {
+		return 0;
 	}
 
 }

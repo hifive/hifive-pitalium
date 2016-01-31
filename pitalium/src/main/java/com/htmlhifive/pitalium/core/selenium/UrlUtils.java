@@ -32,12 +32,15 @@ final class UrlUtils {
 
 	private static final Pattern HTTP_PREFIX_PATTERN = Pattern.compile("^https?://");
 
+	/**
+	 * コンストラクタ
+	 */
 	private UrlUtils() {
 	}
 
 	/**
 	 * BaseURLとpathからURLを取得します。ただし{@code path}がhttp、httpsから始まる場合はBaseURLを使用せずpathをそのまま返します。
-	 * 
+	 *
 	 * @param baseUrl 基本URL
 	 * @param path パス
 	 * @return URL
