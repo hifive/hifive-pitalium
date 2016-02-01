@@ -155,6 +155,7 @@
     <module name="JavaNCSS"/>
     <module name="Indentation">
       <property name="caseIndent" value="0"/>
+      <property name="lineWrappingIndentation" value="2"/>
     </module>
     <module name="TodoComment"/>
     <module name="UpperEll"/>
