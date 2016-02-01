@@ -57,7 +57,7 @@ class PtlInternetExplorerDriver extends PtlWebDriver {
 	public BufferedImage getEntirePageScreenshot() {
 		//Dimension windowDimension = manage().window().getSize();
 		//PtlWebElement bodyElement = (PtlWebElement) findElementByTagName("body");
-		//WebElementRect bodyRect = bodyElement.getRect();
+		//DoubleValueRect bodyRect = bodyElement.getRect();
 		//WebElementMargin bodyMargin = bodyElement.getMargin();
 
 		// スクリーンショット取得前の拡大幅を計算

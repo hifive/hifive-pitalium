@@ -21,14 +21,14 @@ package com.htmlhifive.pitalium.core.selenium;
 class PtlInternetExplorer7WebElement extends PtlInternetExplorerWebElement {
 
 	@Override
-	public WebElementRect getRect() {
+	public DoubleValueRect getDoubleValueRect() {
 		// IE7と8はbody以外座標を-2する
-		WebElementRect rect = super.getRect();
+		DoubleValueRect rect = super.getDoubleValueRect();
 		if (isBody()) {
 			return rect;
 		}
 
-		return new WebElementRect(rect.getLeft() - 2d, rect.getTop() - 2d, rect.getWidth(), rect.getHeight());
+		return new DoubleValueRect(rect.getLeft() - 2d, rect.getTop() - 2d, rect.getWidth(), rect.getHeight());
 	}
 
 	@Override

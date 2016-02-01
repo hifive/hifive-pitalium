@@ -745,7 +745,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 				// scaleを計算（初回のみ）
 				if (currentScrollNum == 0) {
-					scale = calcScale(el.getRect().getWidth(), image.getWidth());
+					scale = calcScale(el.getDoubleValueRect().getWidth(), image.getWidth());
 					LOG.trace("[TakeMoveScreenshot] scale: {}", scale);
 				}
 

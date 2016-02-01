@@ -22,7 +22,7 @@ import com.htmlhifive.pitalium.common.util.JSONUtils;
 /**
  * DOM要素の矩形領域を表すクラス
  */
-public class WebElementRect implements Serializable {
+public class DoubleValueRect implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -51,7 +51,7 @@ public class WebElementRect implements Serializable {
 	 * @param width 要素の幅
 	 * @param height 要素の高さ
 	 */
-	public WebElementRect(double left, double top, double width, double height) {
+	public DoubleValueRect(double left, double top, double width, double height) {
 		this.left = left;
 		this.top = top;
 		this.width = width;
@@ -109,7 +109,7 @@ public class WebElementRect implements Serializable {
 			return false;
 		}
 
-		WebElementRect that = (WebElementRect) o;
+		DoubleValueRect that = (DoubleValueRect) o;
 
 		if (Double.compare(that.left, left) != 0) {
 			return false;

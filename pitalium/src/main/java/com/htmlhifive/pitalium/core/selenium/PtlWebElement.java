@@ -175,9 +175,9 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	/**
 	 * 要素の位置・サイズを矩形領域として取得します。
 	 *
-	 * @return 矩形領域を表す{@link WebElementRect}オブジェクト
+	 * @return 矩形領域を表す{@link DoubleValueRect}オブジェクト
 	 */
-	public WebElementRect getRect() {
+	public DoubleValueRect getDoubleValueRect() {
 		// 現在のスクロール位置を取得
 		double scrollTop = driver.getCurrentScrollTop();
 		double scrollLeft = driver.getCurrentScrollLeft();
@@ -209,7 +209,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 			throw new TestRuntimeException(e);
 		}
 
-		WebElementRect rect = new WebElementRect(left, top, width, height);
+		DoubleValueRect rect = new DoubleValueRect(left, top, width, height);
 		LOG.debug("[Element Rect] {} ({})", rect, this);
 		return rect;
 	}
@@ -383,7 +383,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * @return 高さ（整数px）
 	 */
 	public long getClientHeight() {
-		WebElementRect rect = getRect();
+		DoubleValueRect rect = getDoubleValueRect();
 		WebElementBorderWidth border = getBorderWidth();
 		long height = Math.round(rect.getHeight() - border.getTop() - border.getBottom());
 		LOG.trace("(GetClientHeight) [{}] ({})", height, this);
@@ -396,7 +396,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * @return 幅（整数px）
 	 */
 	public long getClientWidth() {
-		WebElementRect rect = getRect();
+		DoubleValueRect rect = getDoubleValueRect();
 		WebElementBorderWidth border = getBorderWidth();
 		long width = Math.round(rect.getWidth() - border.getLeft() - border.getRight());
 		LOG.trace("(GetClientWidth) [{}] ({})", width, this);

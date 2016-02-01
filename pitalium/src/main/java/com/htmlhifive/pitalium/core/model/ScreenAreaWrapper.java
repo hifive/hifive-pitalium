@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
-import com.htmlhifive.pitalium.core.selenium.WebElementRect;
+import com.htmlhifive.pitalium.core.selenium.DoubleValueRect;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
 /**
@@ -257,7 +257,7 @@ public abstract class ScreenAreaWrapper {
 
 		@Override
 		public void updatePosition(double scale) {
-			WebElementRect rect = element.getRect();
+			DoubleValueRect rect = element.getDoubleValueRect();
 			LOG.trace("Position update. scale: {}; rect: {} ({})", scale, rect, element);
 
 			area = new RectangleArea(rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight());
