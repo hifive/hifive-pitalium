@@ -388,7 +388,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		} else {
 			LOG.debug("[TakeScreenshot (move screenshots start)]");
 			for (Pair<CompareTarget, ScreenshotParams> pair : moveTargetParams) {
-				TargetResult moveScreenshot = takeMoveScreenshots(pair.getLeft(), hiddenElementSelectors, pair.getRight());
+				TargetResult moveScreenshot = takeMoveScreenshots(pair.getLeft(), hiddenElementSelectors,
+						pair.getRight());
 				screenshotResults.add(moveScreenshot);
 			}
 			LOG.debug("[TakeScreenshot (move screenshots finished)]");
@@ -414,9 +415,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				"[TakeNonMoveScrollScreenshots] entireScreenshotResult: {}, hiddenElementSelectors: {}, targetParams: {}, entireScreenshotParams: {}",
 				entireScreenshotResult, hiddenElementSelectors, targetParams, entireScreenshotParams);
 
-		String overflowStatus[][] = new String[targetParams.size()][2];
-		String resizeStatus[] = new String[targetParams.size()];
-		int partialScrollNums[] = new int[targetParams.size()];
+		String[][] overflowStatus = new String[targetParams.size()][2];
+		String[] resizeStatus = new String[targetParams.size()];
+		int[] partialScrollNums = new int[targetParams.size()];
 		int maxPartialScrollNum = 0;
 
 		for (int i = 0; i < targetParams.size(); i++) {
@@ -443,7 +444,6 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			}
 			LOG.trace("[TakeNonMoveScrollScreenshots] Partial scroll {} times. ({})", partialScrollNums[i], pair
 					.getLeft().getCompareArea());
-
 
 			// スクロールありの場合はスクロール位置をリセット
 			if (partialScrollNums[i] > 0) {
@@ -535,9 +535,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		PtlWebElement el = params.getTarget().getElement();
 
 		// スクロールバーの元の状態を覚えておく
-		String overflowStatus[] = null;
+		String[] overflowStatus = null;
 		if (canHideElementScrollbar()) {
-			String statuses[] = el.getOverflowStatus();
+			String[] statuses = el.getOverflowStatus();
 			overflowStatus = Arrays.copyOf(statuses, statuses.length);
 			// スクロールバーを非表示にする
 			el.hideScrollBar();
@@ -560,7 +560,6 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				new RectangleArea(targetPosition.getX(), targetPosition.getY(), targetPosition.getWidth(), screenshot
 						.getHeight()));
 		LOG.trace("[TakeMoveScreenshots] update target position {}", params.getTarget().getArea());
-
 
 		// TargetResult for target area
 		ScreenAreaResult targetAreaResult = createScreenAreaResult(params.getTarget(), params.getIndex());
@@ -599,16 +598,17 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 */
 	private List<BufferedImage> takeNonMoveScrollTargetScreenshots(List<DomSelector> hiddenElementSelectors,
 			ScreenshotParams entireScreenshotParams, List<Pair<CompareTarget, ScreenshotParams>> targetParams,
-			int maxPartialScrollNum, int partialScrollNums[]) {
-		LOG.debug("[TakeNonMoveScrollScreenshots (capture start)] maximum partial scroll times: {}", maxPartialScrollNum);
+			int maxPartialScrollNum, int[] partialScrollNums) {
+		LOG.debug("[TakeNonMoveScrollScreenshots (capture start)] maximum partial scroll times: {}",
+				maxPartialScrollNum);
 
 		List<List<BufferedImage>> allTargetScreenshots = new ArrayList<List<BufferedImage>>();
 		int targetSize = targetParams.size();
 		for (int i = 0; i < targetSize; i++) {
 			allTargetScreenshots.add(new ArrayList<BufferedImage>());
 		}
-		long partialScrollAmounts[] = new long[targetSize];
-		long partialScrollTops[] = new long[targetSize];
+		long[] partialScrollAmounts = new long[targetSize];
+		long[] partialScrollTops = new long[targetSize];
 
 		// 全体撮影時に渡す追加パラメータ
 		ScreenshotParams[] additionalParams = extractScreenshotParams(targetParams);
@@ -1220,17 +1220,17 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			}
 			params.getTarget()
 					.setArea(new RectangleArea(floorTargetArea.getX(), floorTargetArea.getY(), width, height));
-			LOG.trace("[CropScreenshot] Did not crop image (element is body). Image area: {}",
-					params.getTarget().getArea());
+			LOG.trace("[CropScreenshot] Did not crop image (element is body). Image area: {}", params.getTarget()
+					.getArea());
 			return image;
 		}
 
 		// (width + x) と (height + y) が画像サイズを超えないようにする
 		int maxCropWidth = (int) Math.min(floorTargetArea.getX() + floorTargetArea.getWidth(), image.getWidth());
 		int maxCropHeight = (int) Math.min(floorTargetArea.getY() + floorTargetArea.getHeight(), image.getHeight());
-		LOG.trace("[CropScreenshot] ({})",
-				new RectangleArea((int) floorTargetArea.getX(), (int) floorTargetArea.getY(), maxCropWidth
-						- (int) floorTargetArea.getX(), maxCropHeight - (int) floorTargetArea.getY()));
+		LOG.trace("[CropScreenshot] ({})", new RectangleArea((int) floorTargetArea.getX(),
+				(int) floorTargetArea.getY(), maxCropWidth - (int) floorTargetArea.getX(), maxCropHeight
+						- (int) floorTargetArea.getY()));
 
 		BufferedImage targetImage = image.getSubimage((int) floorTargetArea.getX(), (int) floorTargetArea.getY(),
 				maxCropWidth - (int) floorTargetArea.getX(), maxCropHeight - (int) floorTargetArea.getY());
@@ -1603,8 +1603,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			Number relativeBodyTop = executeJavaScript(GET_BODY_TOP_SCRIPT, bodyElement);
 
 			// topの移動量とウィンドウ高さからページ全体の高さを計算
-			LOG.trace("(GetCurrentPageHeight) relativeBodyTop: {}, bodyTop: {}, margin: {}", relativeBodyTop,
-					bodyTop, margin.getTop());
+			LOG.trace("(GetCurrentPageHeight) relativeBodyTop: {}, bodyTop: {}, margin: {}", relativeBodyTop, bodyTop,
+					margin.getTop());
 			pageHeight = -relativeBodyTop.doubleValue() + bodyTop.doubleValue() + getWindowHeight();
 
 			// スクロール位置を元に戻す
