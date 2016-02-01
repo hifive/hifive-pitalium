@@ -506,6 +506,8 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		if (isFrame()) {
 			LOG.debug("[Scroll frame] to ({}, {})", x, y);
 			driver.executeScript("arguments[0].contentWindow.scrollTo(arguments[1], arguments[2])", this, x, y);
+
+			Thread.sleep(SCROLL_WAIT_MS);
 			return;
 		}
 
