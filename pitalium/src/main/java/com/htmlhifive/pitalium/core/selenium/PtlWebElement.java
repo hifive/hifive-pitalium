@@ -201,7 +201,13 @@ public abstract class PtlWebElement extends RemoteWebElement {
 			width = isBody() ? driver.getCurrentPageWidth() : getDoubleOrDefault(object.get("width"), 0d);
 
 			// bodyの場合はページ全体の高さを返す
-			height = isBody() ? driver.getCurrentPageHeight() : getDoubleOrDefault(object.get("height"), 0d);
+			if (isBody()) {
+				// bodyの場合はページ全体の高さを返す
+				height = driver.getCurrentPageHeight();
+			} else {
+				// 小数値による描画ずれ対策として、要素の下端と上端の座標を丸めた値から高さを計算
+				height = Math.round(top + getDoubleOrDefault(object.get("height"), 0d)) - Math.round(top);
+			}
 
 			// スクロール位置を元に戻す
 			driver.scrollTo(scrollLeft, scrollTop);

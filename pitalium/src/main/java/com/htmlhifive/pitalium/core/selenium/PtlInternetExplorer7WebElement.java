@@ -27,8 +27,15 @@ class PtlInternetExplorer7WebElement extends PtlInternetExplorerWebElement {
 		if (isBody()) {
 			return rect;
 		}
+		
+		double width = rect.getWidth();
+		double height = rect.getHeight();
+		if ("iframe".equals(getTagName())) {
+			width -= 1d;
+			height -= 1d;
+		}
 
-		return new DoubleValueRect(rect.getLeft() - 2d, rect.getTop() - 2d, rect.getWidth(), rect.getHeight());
+		return new DoubleValueRect(rect.getLeft() - 2d, rect.getTop() - 2d, width, height);
 	}
 
 	@Override

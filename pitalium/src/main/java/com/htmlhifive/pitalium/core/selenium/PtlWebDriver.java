@@ -1200,7 +1200,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 */
 	private BufferedImage cropScreenshotImage(BufferedImage image, ScreenshotParams params) {
 		RectangleArea targetArea = params.getTarget().getArea();
-		RectangleArea floorTargetArea = targetArea.floor();
+		RectangleArea floorTargetArea = targetArea.round();
 		LOG.debug("[CropScreenshot] image[w: {}, h: {}], target: {} ({})", image.getWidth(), image.getHeight(),
 				floorTargetArea, targetArea);
 

@@ -21,6 +21,19 @@ package com.htmlhifive.pitalium.core.selenium;
 class PtlInternetExplorer8WebElement extends PtlInternetExplorerWebElement {
 
 	@Override
+	public DoubleValueRect getDoubleValueRect() {
+		DoubleValueRect rect = super.getDoubleValueRect();
+		double width = rect.getWidth();
+		double height = rect.getHeight();
+		if ("iframe".equals(getTagName())) {
+			width -= 1d;
+			height -= 1d;
+		}
+
+		return new DoubleValueRect(rect.getLeft(), rect.getTop(), width, height);
+	}
+
+	@Override
 	public WebElementBorderWidth getBorderWidth() {
 		if ("iframe".equals(getTagName())) {
 			// IE7・8はiframeのボーダーが2px
