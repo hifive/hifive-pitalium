@@ -15,10 +15,15 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Firefoxで利用する{@link org.openqa.selenium.WebElement}
  */
 class PtlFirefoxWebElement extends PtlWebElement {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PtlFirefoxWebElement.class);
 
 	/**
 	 * コンストラクタ
@@ -34,6 +39,7 @@ class PtlFirefoxWebElement extends PtlWebElement {
 			WebElementPadding padding = getPadding();
 			clientHeight -= (int) Math.round(padding.getTop()) + (int) Math.round(padding.getBottom());
 		}
+		LOG.trace("(GetClientHeight) [{}] ({})", clientHeight, this);
 		return clientHeight;
 	}
 
@@ -48,6 +54,7 @@ class PtlFirefoxWebElement extends PtlWebElement {
 				padding += (int) Math.round(targetPadding.getBottom());
 			}
 		}
+		LOG.trace("(GetContainedPaddingHeight) [{}] ({})", padding, this);
 		return padding;
 	}
 }

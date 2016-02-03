@@ -55,7 +55,9 @@ class PtlInternetExplorer7Driver extends PtlInternetExplorer8Driver {
 			PtlWebElement bodyElement = (PtlWebElement) findElementByTagName("body");
 			Number scrollHeight = executeJavaScript(
 					"var _scrollHeight = arguments[0].scrollHeight; return _scrollHeight", bodyElement);
-			return scrollHeight.longValue();
+			long result = scrollHeight.longValue();
+			LOG.trace("(GetCurrentPageHeight) [{}]", result);
+			return result;
 		}
 
 		return super.getCurrentPageHeight();

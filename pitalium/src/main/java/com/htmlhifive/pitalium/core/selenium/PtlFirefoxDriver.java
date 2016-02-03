@@ -48,7 +48,7 @@ class PtlFirefoxDriver extends PtlWebDriver {
 	@Override
 	protected void trimNonMovePadding(List<List<BufferedImage>> allTargetScreenshots,
 			List<Pair<CompareTarget, ScreenshotParams>> targetParams) {
-		LOG.debug("Trim non-move elements' padding.");
+		LOG.trace("[Trim non-move elements' padding]");
 		// firefoxのtextareaは上下paddingが常に表示されるため、不要なpaddingを切り取る
 		for (int i = 0; i < allTargetScreenshots.size(); i++) {
 			PtlWebElement targetElement = targetParams.get(i).getRight().getTarget().getElement();
@@ -64,7 +64,7 @@ class PtlFirefoxDriver extends PtlWebDriver {
 
 	@Override
 	protected void trimMovePadding(WebElement el, List<BufferedImage> images) {
-		LOG.debug("Trim move elements' padding.");
+		LOG.trace("[Trim move element's padding]");
 		// firefoxのtextareaは上下paddingが常に表示されるため、不要なpaddingを切り取る
 		if ("textarea".equals(el.getTagName())) {
 			for (int i = 0; i < images.size(); i++) {
@@ -81,7 +81,7 @@ class PtlFirefoxDriver extends PtlWebDriver {
 			WebElementPadding padding = targetElement.getPadding();
 			trimTop -= padding.getTop();
 		}
-		LOG.debug("calcTrimTop: imageHeight: {}; scrollAmount: {}; element: {} -> {}", imageHeight, scrollAmount,
+		LOG.trace("(CalcTrimTop) imageHeight: {}, scrollAmount: {}, element: {} => {}", imageHeight, scrollAmount,
 				targetElement, trimTop);
 		return trimTop;
 	}

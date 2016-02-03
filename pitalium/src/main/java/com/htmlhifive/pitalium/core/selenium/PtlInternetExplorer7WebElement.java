@@ -15,10 +15,15 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Internet Explorer 7で利用する{@link org.openqa.selenium.WebElement}
  */
 class PtlInternetExplorer7WebElement extends PtlInternetExplorerWebElement {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PtlInternetExplorer7WebElement.class);
 
 	@Override
 	public DoubleValueRect getDoubleValueRect() {
@@ -27,7 +32,7 @@ class PtlInternetExplorer7WebElement extends PtlInternetExplorerWebElement {
 		if (isBody()) {
 			return rect;
 		}
-		
+
 		double width = rect.getWidth();
 		double height = rect.getHeight();
 		if ("iframe".equals(getTagName())) {
@@ -35,7 +40,9 @@ class PtlInternetExplorer7WebElement extends PtlInternetExplorerWebElement {
 			height -= 1d;
 		}
 
-		return new DoubleValueRect(rect.getLeft() - 2d, rect.getTop() - 2d, width, height);
+		DoubleValueRect result = new DoubleValueRect(rect.getLeft() - 2d, rect.getTop() - 2d, width, height);
+		LOG.debug("[Element Rect] {} ({})", result, this);
+		return result;
 	}
 
 	@Override
@@ -47,7 +54,9 @@ class PtlInternetExplorer7WebElement extends PtlInternetExplorerWebElement {
 			double bottom = 2;
 			double right = 2;
 
-			return new WebElementBorderWidth(top, right, bottom, left);
+			WebElementBorderWidth borderWidth = new WebElementBorderWidth(top, right, bottom, left);
+			LOG.debug("[Element BorderWidth] {} ({})", borderWidth, this);
+			return borderWidth;
 		}
 		return super.getBorderWidth();
 	}
