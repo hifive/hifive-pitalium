@@ -141,7 +141,7 @@ public final class PtlWebDriverManager {
 		// ドライバーを再利用しない場合はSupplierから取得したドライバーを返す。
 		if (level == WebDriverSessionLevel.TEST_CASE) {
 			WebDriver driver = supplier.get();
-			LOG.info("[Get WebDriver] new session created. ({})", driver);
+			LOG.info("[Get WebDriver] new session created.");
 
 			return new WebDriverContainer(driver, WebDriverSessionLevel.TEST_CASE);
 		}
@@ -149,14 +149,14 @@ public final class PtlWebDriverManager {
 		DriverKey key = new DriverKey(clss, capabilities);
 		WebDriver driver = drivers.get(key);
 		if (driver != null) {
-			LOG.info("[Get WebDriver] use cached session. ({})", driver);
+			LOG.info("[Get WebDriver] use cached session.");
 			return new WebDriverContainer(driver, level);
 		}
 
 		// クラス単位
 		if (level == WebDriverSessionLevel.TEST_CLASS) {
 			driver = supplier.get();
-			LOG.info("[Get WebDriver] new session created ({}). ({})", clss.getName(), driver);
+			LOG.info("[Get WebDriver] new session created ({}).", clss.getName());
 			drivers.put(key, driver);
 			return new WebDriverContainer(driver, level);
 		}
@@ -165,7 +165,7 @@ public final class PtlWebDriverManager {
 		driver = allClassesDrivers.get(capabilities);
 		if (driver == null) {
 			driver = supplier.get();
-			LOG.info("[Get WebDriver] new session created (for global use). ({})", driver);
+			LOG.info("[Get WebDriver] new session created (for global use).");
 			drivers.put(key, driver);
 			allClassesDrivers.put(capabilities, driver);
 		}

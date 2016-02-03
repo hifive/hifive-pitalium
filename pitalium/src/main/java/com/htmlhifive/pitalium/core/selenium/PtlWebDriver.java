@@ -154,8 +154,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	@Override
 	public void get(String url) {
 		String targetUrl = UrlUtils.getTargetUrl(baseUrl, url);
-		LOG.info("[Get] ({})", targetUrl);
-		LOG.debug("[Get] base: {}, url: {}", baseUrl, url);
+		LOG.debug("[Get] ({}, base: {}, url: {})", targetUrl,  baseUrl, url);
 
 		super.get(targetUrl);
 	}
@@ -1292,7 +1291,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @return 撮影したスクリーンショット
 	 */
 	protected BufferedImage getScreenshotInternal(ScreenshotParams params, ScreenshotParams... additionalParams) {
-		LOG.info("[GetMoveScreenshot] target: {}; index: {}", params.getTarget().getParent(), params.getIndex());
+		LOG.debug("[GetMoveScreenshot] target: {}; index: {}", params.getTarget().getParent(), params.getIndex());
 
 		// Backup default body style values
 		Map<String, Object> originalStyle = executeJavaScript(SCRIPT_GET_DEFAULT_BODY_STYLE);
@@ -1309,7 +1308,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		RectangleArea moveAmount = target.getArea();
 
 		// Move body position
-		LOG.info("[GetMoveScreenshot] Move body (amount = x: {}, y: {})", -moveAmount.getY(), -moveAmount.getX());
+		LOG.debug("[GetMoveScreenshot] Move body (amount = x: {}, y: {})", -moveAmount.getY(), -moveAmount.getX());
 		executeScript(SCRIPT_MOVE_BODY, "absolute", String.format("%spx", -moveAmount.getY()),
 				String.format("%spx", -moveAmount.getX()));
 
@@ -1326,8 +1325,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		String top = originalStyle.get("top") == null ? "" : originalStyle.get("top").toString();
 		String left = originalStyle.get("left") == null ? "" : originalStyle.get("left").toString();
 
-		LOG.info("[GetMoveScreenshot] Restore body position.");
-		LOG.debug("[GetMoveScreenshot] Restore value: (width: {}, position: {}, top: {}, left: {})", width, pos, top,
+		LOG.debug("[GetMoveScreenshot] Restore body position. (width: {}, position: {}, top: {}, left: {})", width, pos, top,
 				left);
 		executeScript(SCRIPT_MOVE_BODY, pos, top, left);
 
