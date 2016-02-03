@@ -1,6 +1,6 @@
 {
-	"execMode": "EXEC_TEST",
-	"capabilitiesFilePath": "com\\htmlhifive\\pitalium\\exec\\cap\\capabilities_FileParameterTest.json",
+	"execMode": "RUN_TEST",
+	"capabilitiesFilePath": "com\\htmlhifive\\pitalium\\it\\exec\\param\\capabilities_FileParameterTest.json",
 	"hub": {
 		"hostName": "localhost",
 		"port": 4444

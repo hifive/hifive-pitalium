@@ -68,14 +68,14 @@ public class FileParameterTest extends PtlTestBase {
 
 		// capabilityの内容のチェック
 		PtlCapabilities cap = driver.getCapabilities();
-		assertEquals("com\\htmlhifive\\test\\exec\\cap\\capabilities_FileParameterTest.json",
+		assertEquals("com\\htmlhifive\\pitalium\\it\\exec\\param\\capabilities_FileParameterTest.json",
 				env.getCapabilitiesFilePath());
 		assertEquals(Platform.WINDOWS, cap.getPlatform());
 		assertEquals("WINDOWS", cap.getCapability("os"));
 		assertEquals("firefox", cap.getBrowserName());
 
 		//		assertEquals("WINDOWS", driver.getRemoteStatus().getOsName());
-		assertTrue(((String) driver.executeScript("return navigator.userAgent")).contains("FireFox"));
+		assertTrue(((String) driver.executeScript("return navigator.userAgent")).contains("Firefox"));
 
 		// persisterの内容のチェック
 		// TODO: MrtPersisterConfigに変える

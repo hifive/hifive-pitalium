@@ -22,7 +22,8 @@ public class ItUtils {
 		for (JsonNode jn : results.get("screenshotResults")) {
 			JsonNode capabilitiesNode = jn.get("capabilities");
 			if (methodName.equals(jn.get("testMethod").asText())
-					&& capabilities.getBrowserName().equals(capabilitiesNode.get("browserName").asText())) {
+					&& capabilities.getBrowserName().equals(capabilitiesNode.get("browserName").asText())
+					&& capabilities.getPlatform().toString().equals(capabilitiesNode.get("platform").asText())) {
 				JsonNode version = capabilitiesNode.get("version");
 				if (version == null) {
 					if (StringUtils.isEmpty(capabilities.getVersion())) {
