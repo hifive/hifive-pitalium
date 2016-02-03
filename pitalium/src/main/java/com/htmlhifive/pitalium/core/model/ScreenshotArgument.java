@@ -126,7 +126,7 @@ public class ScreenshotArgument {
 	 * @return スクリーンショットIDが変更された新しいオブジェクト
 	 */
 	public ScreenshotArgument withScreenshotId(String newScreenshotId) {
-		return new ScreenshotArgument(screenshotId, targets, hiddenElementSelectors);
+		return new ScreenshotArgument(newScreenshotId, targets, hiddenElementSelectors);
 	}
 
 	@Override

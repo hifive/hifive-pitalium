@@ -689,7 +689,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			}
 			// 画像の結合
 			List<BufferedImage> targetScreenshots = allTargetScreenshots.get(i);
-			screenshots.add(ImageUtils.vertialMerge(targetScreenshots));
+			screenshots.add(ImageUtils.verticalMerge(targetScreenshots));
 		}
 
 		LOG.debug("[TakeNonMoveScrollScreenshots (image processing finished)]");
@@ -785,7 +785,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		}
 
 		LOG.debug("[TakeMoveScreenshot (image processing start)]");
-		BufferedImage screenshot = ImageUtils.vertialMerge(images);
+		BufferedImage screenshot = ImageUtils.verticalMerge(images);
 		LOG.debug("[TakeMoveScreenshot (image processing finished)]");
 
 		return screenshot;

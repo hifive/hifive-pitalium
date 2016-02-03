@@ -456,7 +456,7 @@ public final class ImageUtils {
 	 * @param images 結合前の画像群
 	 * @return 結合後の画像
 	 */
-	public static BufferedImage vertialMerge(List<BufferedImage> images) {
+	public static BufferedImage verticalMerge(List<BufferedImage> images) {
 		// 結合後の画像サイズを調べる
 		int totalHeight = 0;
 		int totalWidth = -1;
