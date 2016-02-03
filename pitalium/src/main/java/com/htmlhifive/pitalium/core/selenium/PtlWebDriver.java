@@ -190,7 +190,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	@Override
 	public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
 		X screenshot = super.getScreenshotAs(outputType);
-		if (environmentConfig.isDebug()) {
+		if (environmentConfig != null && environmentConfig.isDebug()) {
 			exportDebugScreenshot(screenshot);
 		}
 		return screenshot;
