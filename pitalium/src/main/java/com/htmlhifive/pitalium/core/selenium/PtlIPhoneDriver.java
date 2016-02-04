@@ -15,9 +15,13 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import java.awt.image.BufferedImage;
 import java.net.URL;
 
+import org.openqa.selenium.WebElement;
+
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+import com.htmlhifive.pitalium.image.util.ImageUtils;
 
 /**
  * iPhoneのSafariで利用する{@link org.openqa.selenium.WebDriver}
@@ -91,29 +95,6 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 		return scrollIncrement - 1;
 	}
 
-	/**
-	 * 下端の切り取り位置を調整します。
-	 *
-	 * @param scrollNum スクロール回数
-	 * @param trimTop 調整前の切り取り量
-	 * @param scale スケール
-	 * @return 調整後の切り取り量
-	 */
-	protected int adjustTrimTop(int scrollNum, int trimTop, double scale) {
-		// スクロール幅をずらした分、切り取り位置を調整する
-		// 1スクロールにつき2pxずつずれていく
-		return trimTop - (int) Math.round((scrollNum - 1) * 2 * scale);
-	}
-
-	@Override
-	protected int calcSplitScrollTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement,
-			double currentScale, int scrollNum) {
-		int trimTop = super.calcSplitScrollTrimTop(imageHeight, scrollAmount, targetElement, currentScale, scrollNum);
-		trimTop = adjustTrimTop(scrollNum, trimTop, currentScale);
-
-		return trimTop;
-	};
-
 	@Override
 	protected double calcScale(double windowWidth, double imageWidth) {
 		return imageWidth / windowWidth;
@@ -123,5 +104,82 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 	protected PtlWebElement newPtlWebElement() {
 		return new PtlIPhoneWebElement();
 	}
+
+	@Override
+	protected BufferedImage trimOverlap(double captureTop, double captureLeft, long windowHeight, long windowWidth,
+			double currentScale, BufferedImage img) {
+		LOG.trace("(TrimOverlap) image[w: {}, h:{}], top: {}, left: {}, windowWidth: {}, windowHeight: {}",
+				img.getWidth(), img.getHeight(), captureTop, captureLeft, windowWidth, windowHeight);
+
+		BufferedImage image = img;
+
+		// 右端の推定位置（次スクロール時に左に来る位置）と、実際のキャプチャに写っている右端の位置を比較
+		long calculatedRightValue = Math.round((captureLeft + windowWidth) * currentScale);
+		long actualRightValue = Math.round(captureLeft * currentScale) + img.getWidth();
+		int trimWidth = calculatedRightValue < actualRightValue ? (int) (actualRightValue - calculatedRightValue) : 0;
+
+		// 下端の推定位置（次スクロール時にトップに来る位置）と、実際のキャプチャに写っている下端の位置を比較
+		// 影を切り取った分高さを-1
+		long calculatedBottomValue = Math.round((captureTop + windowHeight - 1) * currentScale);
+		long actualBottomValue = Math.round(captureTop * currentScale) + img.getHeight();
+		int trimHeight = calculatedBottomValue < actualBottomValue ? (int) (actualBottomValue - calculatedBottomValue)
+				: 0;
+
+		// 余分にキャプチャに写っていたら切り取っておく
+		LOG.trace("(TrimOverlap) right(calc: {}, actual: {}), bottom(calc: {}, actual: {})", calculatedRightValue,
+				actualRightValue, calculatedBottomValue, actualBottomValue);
+		if (trimWidth > 0 || trimHeight > 0) {
+			image = image.getSubimage(0, 0, image.getWidth() - trimWidth, image.getHeight() - trimHeight);
+		}
+
+		return image;
+	}
+
+	@Override
+	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image, int num, int size, double currentScale) {
+		LOG.trace("(trimTargetBorder) el: {}; image[w: {}, h: {}], num: {}, size: {}", el, image.getWidth(),
+				image.getHeight(), num, size);
+
+		WebElementBorderWidth targetBorder = ((PtlWebElement) el).getBorderWidth();
+
+		int trimTop = 0;
+		int trimBottom = 0;
+		if (size > 1) {
+			// 外枠の影が入るため1px多く切り取る
+			if (num <= 0) {
+				trimBottom = (int) Math.round(targetBorder.getBottom() * currentScale)
+						+ (int) Math.round(1 * currentScale);
+			} else if (num >= size - 1) {
+				trimTop = (int) Math.round(targetBorder.getTop() * currentScale) + (int) Math.round(1 * currentScale);
+			} else {
+				trimBottom = (int) Math.round(targetBorder.getBottom() * currentScale)
+						+ (int) Math.round(1 * currentScale);
+				trimTop = (int) Math.round(targetBorder.getTop() * currentScale) + (int) Math.round(1 * currentScale);
+			}
+		}
+
+		LOG.trace("(trimTargetBorder) top: {}, bottom: {}", trimTop, trimBottom);
+		return ImageUtils.trim(image, trimTop, 0, trimBottom, 0);
+	}
+
+	/**
+	 * 下端の切り取り位置を調整します。
+	 *
+	 * @param trimTop 調整前の切り取り量
+	 * @param scale スケール
+	 * @return 調整後の切り取り量
+	 */
+	protected int adjustTrimTop(int trimTop, double scale) {
+		// スクロール幅をずらした分、切り取り位置を調整する
+		return trimTop - (int) Math.round(1 * scale);
+	}
+
+	@Override
+	protected int calcTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement, double currentScale) {
+		int trimTop = super.calcTrimTop(imageHeight, scrollAmount, targetElement, currentScale);
+		trimTop = adjustTrimTop(trimTop, currentScale);
+
+		return trimTop;
+	};
 
 }

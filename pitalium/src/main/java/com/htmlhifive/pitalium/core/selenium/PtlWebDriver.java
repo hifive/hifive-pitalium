@@ -666,7 +666,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		LOG.debug("[TakeNonMoveScrollScreenshots (capture finished)]");
 
 		// 必要に応じてborderを切り取る
-		trimNonMoveBorder(allTargetScreenshots, targetParams);
+		trimNonMoveBorder(allTargetScreenshots, targetParams, scale);
 
 		// 必要に応じてpaddingを切り取る
 		trimNonMovePadding(allTargetScreenshots, targetParams);
@@ -771,7 +771,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		LOG.debug("[TakeMoveScreenshot (capture finished)]");
 
 		// borderがある場合は切り取る
-		trimMoveBorder(el, images);
+		trimMoveBorder(el, images, scale);
 
 		// paddingがある場合は切り取る
 		trimMovePadding(el, images);
@@ -873,7 +873,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @param size 全体のスクロール数
 	 * @return ボーダーを切り取ったBufferedImage
 	 */
-	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image, int num, int size) {
+	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image, int num, int size, double currentScale) {
 		LOG.trace("(trimTargetBorder) el: {}; image[w: {}, h: {}], num: {}, size: {}", el, image.getWidth(),
 				image.getHeight(), num, size);
 
@@ -883,12 +883,12 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		int trimBottom = 0;
 		if (size > 1) {
 			if (num <= 0) {
-				trimBottom = (int) Math.round(targetBorder.getBottom() * scale);
+				trimBottom = (int) Math.round(targetBorder.getBottom() * currentScale);
 			} else if (num >= size - 1) {
-				trimTop = (int) Math.round(targetBorder.getTop() * scale);
+				trimTop = (int) Math.round(targetBorder.getTop() * currentScale);
 			} else {
-				trimBottom = (int) Math.round(targetBorder.getBottom() * scale);
-				trimTop = (int) Math.round(targetBorder.getTop() * scale);
+				trimBottom = (int) Math.round(targetBorder.getBottom() * currentScale);
+				trimTop = (int) Math.round(targetBorder.getTop() * currentScale);
 			}
 		}
 
@@ -936,7 +936,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @param targetParams 撮影対象のターゲットリスト
 	 */
 	protected void trimNonMoveBorder(List<List<BufferedImage>> allTargetScreenshots,
-			List<Pair<CompareTarget, ScreenshotParams>> targetParams) {
+			List<Pair<CompareTarget, ScreenshotParams>> targetParams, double currentScale) {
 		LOG.trace("[Trim non-move elements' border]");
 		for (int i = 0; i < allTargetScreenshots.size(); i++) {
 			PtlWebElement targetElement = targetParams.get(i).getRight().getTarget().getElement();
@@ -944,8 +944,10 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			if (!targetElement.isBody() && targetParams.get(i).getLeft().isScrollTarget()) {
 				List<BufferedImage> targetScreenshots = allTargetScreenshots.get(i);
 				for (int j = 0; j < targetScreenshots.size(); j++) {
-					targetScreenshots.set(j,
-							trimTargetBorder(targetElement, targetScreenshots.get(j), j, targetScreenshots.size()));
+					targetScreenshots.set(
+							j,
+							trimTargetBorder(targetElement, targetScreenshots.get(j), j, targetScreenshots.size(),
+									currentScale));
 				}
 			}
 
@@ -958,10 +960,10 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @param el ターゲットの要素
 	 * @param images 撮影したスクリーンショット
 	 */
-	protected void trimMoveBorder(WebElement el, List<BufferedImage> images) {
+	protected void trimMoveBorder(WebElement el, List<BufferedImage> images, double currentScale) {
 		LOG.trace("[Trim move element's border]");
 		for (int i = 0; i < images.size(); i++) {
-			images.set(i, trimTargetBorder(el, images.get(i), i, images.size()));
+			images.set(i, trimTargetBorder(el, images.get(i), i, images.size(), currentScale));
 		}
 	}
 
@@ -1057,7 +1059,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * スクリーンショットを受け取り、ターゲットの領域を切り抜いて{@link TargetResult}として返します。
-	 *
+	 * 
 	 * @param compareTarget 撮影対象の範囲
 	 * @param hiddenElementSelectors 撮影時に非表示にする要素のセレクタのリスト
 	 * @param params スクリーンショットを撮影するためのパラメーター
