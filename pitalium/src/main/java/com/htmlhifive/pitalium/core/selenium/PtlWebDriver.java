@@ -176,7 +176,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	@Override
 	public void get(String url) {
 		String targetUrl = UrlUtils.getTargetUrl(baseUrl, url);
-		LOG.debug("[Get] ({}, base: {}, url: {})", targetUrl,  baseUrl, url);
+		LOG.debug("[Get] ({}, base: {}, url: {})", targetUrl, baseUrl, url);
 
 		super.get(targetUrl);
 	}
@@ -1413,8 +1413,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		String top = originalStyle.get("top") == null ? "" : originalStyle.get("top").toString();
 		String left = originalStyle.get("left") == null ? "" : originalStyle.get("left").toString();
 
-		LOG.debug("[GetMoveScreenshot] Restore body position. (width: {}, position: {}, top: {}, left: {})", width, pos, top,
-				left);
+		LOG.debug("[GetMoveScreenshot] Restore body position. (width: {}, position: {}, top: {}, left: {})", width,
+				pos, top, left);
 		executeScript(SCRIPT_MOVE_BODY, pos, top, left);
 
 		return image;
@@ -1742,7 +1742,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			WebElementBorderWidth border = targetElement.getBorderWidth();
 			borderWidth = (int) Math.round(border.getTop());
 		}
-		int trimTop = imageHeight - (int) Math.round(scrollAmount * currentScale) - borderWidth;
+		int trimTop = imageHeight - (int) Math.round(scrollAmount * currentScale)
+				- (int) Math.round(borderWidth * currentScale);
 		LOG.trace("(CalcTrimTop) imageHeight: {}, scrollAmount: {}, element: {} => {}", imageHeight, scrollAmount,
 				targetElement, trimTop);
 		return trimTop;
@@ -1763,7 +1764,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			WebElementBorderWidth border = targetElement.getBorderWidth();
 			borderWidth = (int) Math.round(border.getLeft());
 		}
-		int trimLeft = imageWidth - (int) Math.round(scrollAmount * currentScale) - borderWidth;
+		int trimLeft = imageWidth - (int) Math.round(scrollAmount * currentScale)
+				- (int) Math.round(borderWidth * currentScale);
 		return trimLeft;
 	}
 
