@@ -17,12 +17,17 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 
 /**
  * iPadのSafariで利用する{@link org.openqa.selenium.WebDriver}
  */
 class PtlIPadDriver extends PtlIPhoneDriver {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PtlIPadDriver.class);
 
 	private final int headerHeight;
 
@@ -59,6 +64,7 @@ class PtlIPadDriver extends PtlIPhoneDriver {
 			// 最上部以外はヘッダを影ごと切り取る
 			currentHeaderHeight += 2;
 		}
+		LOG.trace("(GetHeaderHeight) [{}] ({})", currentHeaderHeight, this);
 		return currentHeaderHeight;
 	}
 
@@ -79,6 +85,8 @@ class PtlIPadDriver extends PtlIPhoneDriver {
 		if (getWindowHandles().size() <= 1) {
 			scrollIncrement -= 1;
 		}
+		LOG.trace("(CalcVerticalScrollIncrementWithHeader) (imageHeight: {}, scale: {}) => {}", imageHeight, scale,
+				scrollIncrement);
 		return scrollIncrement;
 	}
 

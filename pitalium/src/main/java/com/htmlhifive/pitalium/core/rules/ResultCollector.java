@@ -32,7 +32,7 @@ public class ResultCollector extends TestWatcher {
 
 	@Override
 	protected void starting(Description description) {
-		LOG.info("[TestClass start] || {}", description.getTestClass().getName());
+		LOG.info("[TestClass start] (class: {})", description.getTestClass().getName());
 
 		// TestResultManagerに対してテストの初期化を設定します。
 		TestResultManager.getInstance().initializeTestResult(description.getTestClass().getSimpleName());
@@ -40,7 +40,7 @@ public class ResultCollector extends TestWatcher {
 
 	@Override
 	protected void finished(Description description) {
-		LOG.info("[TestClass finished] || {}", description.getTestClass().getName());
+		LOG.info("[TestClass finished] (class: {})", description.getTestClass().getName());
 
 		// TestResultManagerに対してテスト結果のエクスポートを要求します。
 		String className = description.getTestClass().getSimpleName();

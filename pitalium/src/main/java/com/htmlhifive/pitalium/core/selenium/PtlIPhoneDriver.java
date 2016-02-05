@@ -18,6 +18,8 @@ package com.htmlhifive.pitalium.core.selenium;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openqa.selenium.WebElement;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
@@ -27,6 +29,8 @@ import com.htmlhifive.pitalium.image.util.ImageUtils;
  * iPhoneのSafariで利用する{@link org.openqa.selenium.WebDriver}
  */
 class PtlIPhoneDriver extends SplitScreenshotWebDriver {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PtlIPhoneDriver.class);
 
 	private final int headerHeight;
 	private final int footerHeight;
@@ -76,6 +80,7 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 			// 最上部以外はヘッダを影ごと切り取る
 			currentHeaderHeight += 2;
 		}
+		LOG.trace("(GetHeaderHeight) [{}] ({})", currentHeaderHeight, this);
 		return currentHeaderHeight;
 	}
 
@@ -86,13 +91,17 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 			// 最下部以外はフッタを影ごと切り取る
 			currentFooterHeight += 2;
 		}
+		LOG.trace("(GetFooterHeight) [{}] ({})", currentFooterHeight, this);
 		return currentFooterHeight;
 	}
 
 	@Override
 	protected double calcVerticalScrollIncrementWithHeader(int imageHeight, double scale) {
 		double scrollIncrement = super.calcVerticalScrollIncrementWithHeader(imageHeight, scale);
-		return scrollIncrement - 1;
+		double result = scrollIncrement - 1;
+		LOG.trace("(CalcVerticalScrollIncrementWithHeader) (imageHeight: {}, scale: {}) => {}", imageHeight, scale,
+				result);
+		return result;
 	}
 
 	@Override

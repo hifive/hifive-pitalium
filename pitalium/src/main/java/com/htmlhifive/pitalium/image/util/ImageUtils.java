@@ -468,6 +468,7 @@ public final class ImageUtils {
 		}
 
 		// 画像の結合
+		LOG.trace("(VerticalMerge) new image[{}, {}]", totalWidth, totalHeight);
 		BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
 		Graphics graphics = screenshot.getGraphics();
 		int nextTop = 0;
@@ -501,6 +502,7 @@ public final class ImageUtils {
 		}
 
 		// 画像の結合
+		LOG.trace("(Merge) new image[{}, {}]", totalWidth, totalHeight);
 		BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
 		Graphics graphics = screenshot.getGraphics();
 		int nextTop = 0;

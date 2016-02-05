@@ -15,10 +15,15 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Internet Explorer 8で利用する{@link org.openqa.selenium.WebElement}
  */
 class PtlInternetExplorer8WebElement extends PtlInternetExplorerWebElement {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PtlInternetExplorer8WebElement.class);
 
 	@Override
 	public DoubleValueRect getDoubleValueRect() {
@@ -30,7 +35,9 @@ class PtlInternetExplorer8WebElement extends PtlInternetExplorerWebElement {
 			height -= 1d;
 		}
 
-		return new DoubleValueRect(rect.getLeft(), rect.getTop(), width, height);
+		DoubleValueRect result = new DoubleValueRect(rect.getLeft(), rect.getTop(), width, height);
+		LOG.debug("[Element Rect] {} ({})", result, this);
+		return result;
 	}
 
 	@Override
@@ -42,7 +49,9 @@ class PtlInternetExplorer8WebElement extends PtlInternetExplorerWebElement {
 			double bottom = 2;
 			double right = 2;
 
-			return new WebElementBorderWidth(top, right, bottom, left);
+			WebElementBorderWidth borderWidth = new WebElementBorderWidth(top, right, bottom, left);
+			LOG.debug("[Element BorderWidth] {} ({})", borderWidth, this);
+			return borderWidth;
 		}
 		return super.getBorderWidth();
 	}
