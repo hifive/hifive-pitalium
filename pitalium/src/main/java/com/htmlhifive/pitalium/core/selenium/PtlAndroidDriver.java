@@ -97,6 +97,10 @@ class PtlAndroidDriver extends PtlAbsAndroidDriver {
 	@Override
 	protected int calcTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement, double currentScale) {
 		int trimTop = super.calcTrimTop(imageHeight, scrollAmount, targetElement, currentScale);
+		if (targetElement.isBody()) {
+			return trimTop;
+		}
+
 		trimTop = adjustTrimTop(trimTop, currentScale);
 
 		return trimTop;
