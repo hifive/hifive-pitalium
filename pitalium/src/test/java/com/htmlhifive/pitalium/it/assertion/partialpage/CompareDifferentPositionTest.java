@@ -18,7 +18,6 @@ package com.htmlhifive.pitalium.it.assertion.partialpage;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -27,7 +26,9 @@ import org.openqa.selenium.WebElement;
 
 import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
+import com.htmlhifive.pitalium.core.model.DomSelector;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
 
@@ -63,7 +64,8 @@ public class CompareDifferentPositionTest extends PtlTestBase {
 
 		List<CompareTarget> targets = new ArrayList<CompareTarget>();
 		targets.add(new CompareTarget(ScreenArea.of(SelectorType.CSS_SELECTOR, "#about")));
-		assertionView.assertView("compareDifferentFontColor", targets);
+		assertionView.assertView("compareDifferentFontColor", targets.toArray(new CompareTarget[] {}),
+				new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME, "gototop") });
 	}
 
 	/**
@@ -87,7 +89,8 @@ public class CompareDifferentPositionTest extends PtlTestBase {
 
 		List<CompareTarget> targets = new ArrayList<CompareTarget>();
 		targets.add(new CompareTarget(ScreenArea.of(SelectorType.CSS_SELECTOR, "#about"), null, true));
-		assertionView.assertView("compareDifferentFontColor", targets);
+		assertionView.assertView("compareDifferentFontColor", targets.toArray(new CompareTarget[] {}),
+				new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME, "gototop") });
 	}
 
 	/**
@@ -107,12 +110,13 @@ public class CompareDifferentPositionTest extends PtlTestBase {
 			WebElement headerglobal = driver.findElement(By.id("headerglobal"));
 			driver.executeJavaScript("document.getElementById('headerglobal').style.height = '"
 					+ (Integer.parseInt(headerglobal.getAttribute("clientHeight")) + expendHeight) + "';");
-			thrown.expect(AssertionError.class);
+			//			thrown.expect(AssertionError.class);
 		}
 
 		List<CompareTarget> targets = new ArrayList<CompareTarget>();
 		targets.add(new CompareTarget(ScreenArea.of(SelectorType.CSS_SELECTOR, "#about"), null, false));
-		assertionView.assertView("compareDifferentFontColor", targets);
+		assertionView.assertView("compareDifferentFontColor", targets.toArray(new CompareTarget[] {}),
+				new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME, "gototop") });
 	}
 
 	/**
@@ -134,6 +138,7 @@ public class CompareDifferentPositionTest extends PtlTestBase {
 
 		List<CompareTarget> targets = new ArrayList<CompareTarget>();
 		targets.add(new CompareTarget(ScreenArea.of(SelectorType.CSS_SELECTOR, "#about"), null, false));
-		assertionView.assertView("compareDifferentFontColor", targets);
+		assertionView.assertView("compareDifferentFontColor", targets.toArray(new CompareTarget[] {}),
+				new DomSelector[] { new DomSelector(SelectorType.CLASS_NAME, "gototop") });
 	}
 }

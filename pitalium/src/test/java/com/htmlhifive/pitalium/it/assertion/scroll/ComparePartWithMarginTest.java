@@ -50,7 +50,7 @@ public class ComparePartWithMarginTest extends PtlTestBase {
 		}
 
 		List<CompareTarget> targets = new ArrayList<CompareTarget>();
-		targets.add(new CompareTarget(ScreenArea.of(SelectorType.ID, "about-scroll")));
+		targets.add(new CompareTarget(ScreenArea.of(SelectorType.ID, "about-scroll"), null, true, true));
 		assertionView.assertView("compareSame", targets);
 	}
 }

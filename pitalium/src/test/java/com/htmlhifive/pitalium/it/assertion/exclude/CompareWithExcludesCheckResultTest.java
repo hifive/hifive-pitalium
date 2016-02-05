@@ -189,10 +189,10 @@ public class CompareWithExcludesCheckResultTest extends PtlTestBase {
 		assertTrue(fileNameOfSelector + "が存在しません", new File(fileNameOfSelector).exists());
 
 		JsonNode bodyJson = getCoordinateInfo(methodName).get(0);
-		assertCoordinateInfo(bodyJson, selectorType, "specifyTargetBodyWithMargin".equals(methodName));
+		assertCoordinateInfo(bodyJson, selectorType, "excludeForBodyWithMargin".equals(methodName));
 
 		JsonNode screenshotResultJson = ItUtils.getCurrentScreenshotResultJson(methodName, results, capabilities);
-		assertScreenshotResult(screenshotResultJson, selectorType, "specifyTargetBodyWithMargin".equals(methodName));
+		assertScreenshotResult(screenshotResultJson, selectorType, "excludeForBodyWithMargin".equals(methodName));
 	}
 
 	private String getFileName(String methodName) {

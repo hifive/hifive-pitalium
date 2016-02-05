@@ -63,7 +63,7 @@ public class CompareDifferentSizeTest extends PtlTestBase {
 
 		List<CompareTarget> targets = new ArrayList<CompareTarget>();
 		targets.add(new CompareTarget(ScreenArea.of(SelectorType.CSS_SELECTOR, "#about")));
-		assertionView.assertView("compareDifferentFontColor", targets);
+		assertionView.assertView("compareDifferentWidth", targets);
 	}
 
 	/**
@@ -87,6 +87,6 @@ public class CompareDifferentSizeTest extends PtlTestBase {
 
 		List<CompareTarget> targets = new ArrayList<CompareTarget>();
 		targets.add(new CompareTarget(ScreenArea.of(SelectorType.CSS_SELECTOR, "#about")));
-		assertionView.assertView("compareDifferentFontColor", targets);
+		assertionView.assertView("compareDifferentHeight", targets);
 	}
 }
