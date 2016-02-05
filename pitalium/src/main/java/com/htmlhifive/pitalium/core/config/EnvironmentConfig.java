@@ -81,6 +81,11 @@ public class EnvironmentConfig implements Serializable {
 	private WebDriverSessionLevel webDriverSessionLevel = WebDriverSessionLevel.TEST_CASE;
 
 	/**
+	 * デバッグモード実行フラグ
+	 */
+	private boolean debug = false;
+
+	/**
 	 * デフォルトの設定値を持つオブジェクトを生成します。
 	 */
 	public EnvironmentConfig() {
@@ -168,6 +173,15 @@ public class EnvironmentConfig implements Serializable {
 	}
 
 	/**
+	 * デバッグモード実行フラグを取得します。
+	 * 
+	 * @return デバッグモード実行フラグ
+	 */
+	public boolean isDebug() {
+		return debug;
+	}
+
+	/**
 	 * テスト実行モードを設定します。
 	 *
 	 * @param execMode テスト実行モード
@@ -248,6 +262,15 @@ public class EnvironmentConfig implements Serializable {
 		this.webDriverSessionLevel = webDriverSessionLevel;
 	}
 
+	/**
+	 * デバッグモード実行フラグを設定します。
+	 * 
+	 * @param debug デバッグモード実行フラグ
+	 */
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
 	@Override
 	public String toString() {
 		return JSONUtils.toString(this);
@@ -285,6 +308,7 @@ public class EnvironmentConfig implements Serializable {
 			ev.setCapabilitiesFilePath(config.capabilitiesFilePath);
 			ev.setPersister(config.persister);
 			ev.setWebDriverSessionLevel(config.webDriverSessionLevel);
+			ev.setDebug(config.debug);
 			return ev;
 		}
 
@@ -384,6 +408,11 @@ public class EnvironmentConfig implements Serializable {
 		 */
 		public Builder webDriverSessionLevel(WebDriverSessionLevel webDriverSessionLevel) {
 			config.webDriverSessionLevel = webDriverSessionLevel;
+			return this;
+		}
+
+		public Builder debug(boolean debug) {
+			config.debug = debug;
 			return this;
 		}
 

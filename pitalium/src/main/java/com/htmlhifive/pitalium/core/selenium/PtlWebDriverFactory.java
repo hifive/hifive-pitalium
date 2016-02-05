@@ -135,6 +135,7 @@ public abstract class PtlWebDriverFactory {
 
 			URL url = getGridHubURL();
 			PtlWebDriver driver = createWebDriver(url);
+			driver.setEnvironmentConfig(environmentConfig);
 			driver.setBaseUrl(testAppConfig.getBaseUrl());
 			driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS);
 			if (!isMobile()) {
