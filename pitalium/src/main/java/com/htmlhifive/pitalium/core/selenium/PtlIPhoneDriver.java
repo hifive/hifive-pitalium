@@ -82,7 +82,7 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 	@Override
 	protected int getFooterHeight(long scrollTop, double captureTop) {
 		int currentFooterHeight = footerHeight;
-		if (scrollTop < Math.round(captureTop)) {
+		if (scrollTop >= Math.round(captureTop)) {
 			// 最下部以外はフッタを影ごと切り取る
 			currentFooterHeight += 2;
 		}
