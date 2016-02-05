@@ -4,5 +4,6 @@
 	"hub": {
 		"hostName": "localhost",
 		"port": 4444
-	}
+	},
+	"webDriverSessionLevel": "TEST_CLASS"
 }
