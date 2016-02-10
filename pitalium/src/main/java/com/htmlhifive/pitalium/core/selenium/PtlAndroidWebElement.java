@@ -30,9 +30,8 @@ class PtlAndroidWebElement extends PtlWebElement {
 		long initialScrollTop = (int) Math.round(getCurrentScrollTop());
 		long clientHeight = getClientHeight();
 		LOG.debug("[Scroll element] next to ({}, {}) ({})", 0, initialScrollTop + clientHeight, this);
-		// 外枠の影を切り取るので1px少なくスクロール
-		scrollTo(0,
-				initialScrollTop + clientHeight - (int) Math.round(1 * this.getWrappedDriver().getScreenshotScale()));
+		// 外枠の影を切り取るので少なくスクロール
+		scrollTo(0, initialScrollTop + clientHeight - 1);
 		long currentScrollTop = (int) Math.round(getCurrentScrollTop());
 		return (int) (currentScrollTop - initialScrollTop);
 	}
