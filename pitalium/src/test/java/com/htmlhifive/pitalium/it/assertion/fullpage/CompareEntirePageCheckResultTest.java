@@ -87,11 +87,14 @@ public class CompareEntirePageCheckResultTest extends PtlTestBase {
 		assertThat(selectorNode.get("value").asText(), is("body"));
 		assertThat(selectorNode.get("index").asInt(), is(0));
 		JsonNode rectangleNode = targetNode.get("rectangle");
-		int margin = withMargin ? 100 : 0;
-		assertThat(rectangleNode.get("x").asInt(), is(margin));
-		assertThat(rectangleNode.get("y").asInt(), is(margin));
-		assertThat(rectangleNode.get("width").asInt(), not(0));
-		assertThat(rectangleNode.get("height").asInt(), not(0));
+		// TODO: モバイルはscaleのためにマージンが変わるが、テスト側で検知できないので目視確認
+		if (!"iOS".equals(capabilities.getPlatformName()) && !"ANDROID".equals(capabilities.getPlatformName())) {
+			int margin = withMargin ? 100 : 0;
+			assertThat(rectangleNode.get("x").asInt(), is(margin));
+			assertThat(rectangleNode.get("y").asInt(), is(margin));
+			assertThat(rectangleNode.get("width").asInt(), not(0));
+			assertThat(rectangleNode.get("height").asInt(), not(0));
+		}
 		JsonNode screenAreaConditionNode = targetNode.get("screenArea").get("selector");
 		assertThat(screenAreaConditionNode.get("type").asText(), is(selectorType));
 		assertThat(screenAreaConditionNode.get("value").asText(), is("body"));
