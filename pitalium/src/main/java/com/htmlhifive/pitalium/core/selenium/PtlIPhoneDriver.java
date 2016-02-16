@@ -18,11 +18,12 @@ package com.htmlhifive.pitalium.core.selenium;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.openqa.selenium.WebElement;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+import com.htmlhifive.pitalium.core.model.ScreenshotParams;
 import com.htmlhifive.pitalium.image.util.ImageUtils;
 
 /**
@@ -71,6 +72,18 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 	protected boolean canHideBodyScrollbar() {
 		return false;
 	}
+
+	@Override
+	public BufferedImage getMinimumScreenshot(ScreenshotParams params) {
+		// move直後はwindowWidthの値が変わるためwaitを挟む
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			throw new TestRuntimeException(e);
+		}
+
+		return super.getMinimumScreenshot(params);
+	};
 
 	@Override
 	protected int getHeaderHeight(long scrollTop) {
