@@ -1396,7 +1396,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		RectangleArea moveAmount = target.getArea();
 
 		// Move body position
-		LOG.debug("[GetMoveScreenshot] Move body (amount = x: {}, y: {})", -moveAmount.getY(), -moveAmount.getX());
+		LOG.debug("[GetMoveScreenshot] Move body (amount = x: {}, y: {})", -moveAmount.getX(), -moveAmount.getY());
 		executeScript(SCRIPT_MOVE_BODY, "absolute", String.format("%spx", -moveAmount.getY()),
 				String.format("%spx", -moveAmount.getX()));
 
