@@ -29,7 +29,7 @@ import org.junit.runners.parameterized.TestWithParameters;
 
 /**
  * パラメータ付きテストクラスを実行するためのRunner
- *
+ * 
  * @author nakatani
  */
 public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRunnerWithParameters {
@@ -38,7 +38,7 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * コンストラクタ
-	 *
+	 * 
 	 * @param test パラメータ付きテストクラス
 	 * @throws InitializationError 初期化に失敗した場合
 	 */
@@ -58,7 +58,7 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * {@link ParameterizedBeforeClass}が設定されているフィールドをチェックします。
-	 *
+	 * 
 	 * @param errors エラーのリスト。チェックした結果エラーがあった場合、このリストに追加される
 	 */
 	protected void validateParameterizedBeforeClass(List<Throwable> errors) {
@@ -82,7 +82,7 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * {@link ParameterizedAfterClass}が設定されているフィールドをチェックします。
-	 *
+	 * 
 	 * @param errors エラーのリスト。チェックした結果エラーがあった場合、このリストに追加される
 	 */
 	protected void validateParameterizedAfterClass(List<Throwable> errors) {
@@ -106,7 +106,7 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * {@link ParameterizedClassRule}が設定されているフィールドまたはメソッドをチェックします。
-	 *
+	 * 
 	 * @param errors エラーのリスト。チェックした結果エラーがあった場合、このリストに追加される
 	 */
 	protected void validateParameterizedClassRules(List<Throwable> errors) {
@@ -150,7 +150,7 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * テストクラス中の{@link ParameterizedBeforeClass}が付与されたメソッドを含めてテストを実行します。
-	 *
+	 * 
 	 * @param statement 実行用{@link Statement}
 	 * @return {@link ParameterizedBeforeClass}が付与されたメソッドを含めた{@link Statement}
 	 */
@@ -161,7 +161,7 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * テストクラス中の{@link ParameterizedAfterClass}が付与されたメソッドを含めてテストを実行します。
-	 *
+	 * 
 	 * @param statement 実行用{@link Statement}
 	 * @return {@link ParameterizedAfterClass}が付与されたメソッドを含めた{@link Statement}
 	 */
@@ -172,7 +172,7 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * テストクラス中の{@link ParameterizedTestRule}が付与されたメソッドまたはフィールドを含めてテストを実行します。
-	 *
+	 * 
 	 * @param statement 実行用{@link Statement}
 	 * @return {@link ParameterizedTestRule}が付与されたメソッドまたはフィールドを含めた{@link Statement}
 	 */
@@ -184,7 +184,7 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * テストクラス内の{@link ParameterizedClassRule}が付与されたメソッドまたはフィールドを集めて返します。
-	 *
+	 * 
 	 * @return {@link ParameterizedClassRule}が付与されたメソッドまたはフィールドのリスト
 	 */
 	protected List<ParameterizedTestRule> parameterizedClassRules() {
@@ -197,7 +197,7 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * 実行されるテストのdescriptionを取得します。
-	 *
+	 * 
 	 * @return description
 	 */
 	public Description getTestDescription() {

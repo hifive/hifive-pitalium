@@ -14,7 +14,7 @@ abstract class PtlAbsAndroidDriver extends SplitScreenshotWebDriver {
 
 	/**
 	 * コンストラクタ
-	 *
+	 * 
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */

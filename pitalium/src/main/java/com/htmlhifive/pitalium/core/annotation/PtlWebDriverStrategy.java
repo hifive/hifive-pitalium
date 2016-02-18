@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 
 /**
  * {@link com.htmlhifive.pitalium.core.selenium.PtlWebDriver}の利用戦略設定を行います。
- *
+ * 
  * @author nakatani
  */
 @Retention(RetentionPolicy.RUNTIME)

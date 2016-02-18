@@ -139,7 +139,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 親driverを設定します。
-	 *
+	 * 
 	 * @param parent 親driver
 	 */
 	@Override
@@ -150,7 +150,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素のタグ名を取得します。
-	 *
+	 * 
 	 * @return タグ名
 	 */
 	@Override
@@ -164,7 +164,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 親driverを取得します。
-	 *
+	 * 
 	 * @return 親driver
 	 */
 	@Override
@@ -174,7 +174,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の位置・サイズを矩形領域として取得します。
-	 *
+	 * 
 	 * @return 矩形領域を表す{@link DoubleValueRect}オブジェクト
 	 */
 	public DoubleValueRect getDoubleValueRect() {
@@ -222,7 +222,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の四辺のMarginを取得します。
-	 *
+	 * 
 	 * @return 四辺のMarginを表す{@link WebElementMargin}オブジェクト
 	 */
 	public WebElementMargin getMargin() {
@@ -241,7 +241,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の四辺のBorderWidthを取得します。
-	 *
+	 * 
 	 * @return 四辺のBorderWidthを表す{@link WebElementBorderWidth}オブジェクト
 	 */
 	public WebElementBorderWidth getBorderWidth() {
@@ -260,7 +260,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の四辺のPaddingを取得します。
-	 *
+	 * 
 	 * @return 四辺のPaddingを表す{@link WebElementPadding}オブジェクト
 	 */
 	public WebElementPadding getPadding() {
@@ -327,7 +327,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素のvisibilityスタイル値がhiddenかどうかを取得します。
-	 *
+	 * 
 	 * @return visibilityがhiddenの場合true、それ以外の値の場合false
 	 */
 	public boolean isVisibilityHidden() {
@@ -336,7 +336,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 値をdoubleに変換します。変換できない場合は指定されたデフォルト値を返します。
-	 *
+	 * 
 	 * @param object 変換する値
 	 * @param defaultValue デフォルト値
 	 * @return doubleに変換した値。変換できなかった場合はdefaultValue
@@ -366,7 +366,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	/**
 	 * 自身の部分スクロールのスクロール回数を返します。<br>
 	 * 部分スクロールがない場合は0を返します。
-	 *
+	 * 
 	 * @return スクロール回数
 	 */
 	public int getScrollNum() {
@@ -385,7 +385,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の可視範囲の高さを取得します。
-	 *
+	 * 
 	 * @return 高さ（整数px）
 	 */
 	public long getClientHeight() {
@@ -398,7 +398,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素の可視範囲の幅を取得します。
-	 *
+	 * 
 	 * @return 幅（整数px）
 	 */
 	public long getClientWidth() {
@@ -411,7 +411,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * スクロールを含む要素全体の高さを取得します。
-	 *
+	 * 
 	 * @return 高さ（整数px）
 	 */
 	public long getScrollHeight() {
@@ -428,7 +428,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * スクロールを含む要素全体の幅を取得します。
-	 *
+	 * 
 	 * @return 幅（整数px）
 	 */
 	public long getScrollWidth() {
@@ -445,7 +445,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素を1回分スクロールします。
-	 *
+	 * 
 	 * @return 今回のスクロール量
 	 * @throws InterruptedException スクロール中に例外が発生した場合
 	 */
@@ -460,7 +460,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 現在のスクロール位置（y座標）を取得します。
-	 *
+	 * 
 	 * @return スクロール位置（実数px）
 	 */
 	double getCurrentScrollTop() {
@@ -481,7 +481,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 現在のスクロール位置（x座標）を取得します。
-	 *
+	 * 
 	 * @return スクロール位置（実数px）
 	 */
 	double getCurrentScrollLeft() {
@@ -502,7 +502,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 指定位置までスクロールします。
-	 *
+	 * 
 	 * @param x x座標
 	 * @param y y座標
 	 * @throws InterruptedException スクロール中に例外が発生した場合
@@ -541,7 +541,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * styleに設定されているoverflowの値を返します。
-	 *
+	 * 
 	 * @return overflowの設定値 {x, y}
 	 */
 	public String[] getOverflowStatus() {
@@ -558,7 +558,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * Overflowのstyleを設定します。
-	 *
+	 * 
 	 * @param xStatus x方向の設定
 	 * @param yStatus y方向の設定
 	 */
@@ -573,7 +573,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * styleに設定されているresizeの値を返します。
-	 *
+	 * 
 	 * @return resizeの設定値
 	 */
 	public String getResizeStatus() {
@@ -582,7 +582,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * resizeのstyleを設定します。
-	 *
+	 * 
 	 * @param status resizeの設定
 	 */
 	public void setResizeStatus(String status) {
@@ -591,7 +591,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素がbody（およびframeset）か否かを返します。
-	 *
+	 * 
 	 * @return この要素がbody（およびframeset）か否か。該当する場合はtrue。
 	 */
 	public boolean isBody() {
@@ -600,7 +600,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 要素がframeおよびifameか否かを返します。
-	 *
+	 * 
 	 * @return この要素がframeおよびiframeか否か。該当する場合はtrue。
 	 */
 	public boolean isFrame() {
@@ -609,7 +609,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 指定された位置（スクロールi回目）のスクリーンショットに含まれるPaddingの高さを返します。
-	 *
+	 * 
 	 * @param i スクロール位置
 	 * @param size 総スクロール回数
 	 * @return Paddingの高さ
@@ -620,7 +620,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	/**
 	 * 指定された位置（スクロールi回目）のスクリーンショットに含まれるPaddingの幅を返します。
-	 *
+	 * 
 	 * @param i スクロール位置
 	 * @param size 総スクロール回数
 	 * @return Paddingの幅

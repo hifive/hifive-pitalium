@@ -84,7 +84,7 @@ public class CompareTarget implements Serializable {
 
 	/**
 	 * 指定領域（{@link #excludes}の領域を除く）をスクリーンショット取得・比較の対象とします。
-	 *
+	 * 
 	 * @param compareArea 指定領域
 	 * @param excludes 比較時に除外する領域
 	 * @param moveTarget スクリーンショット撮影時に指定領域を定位置に移動するか否か。移動する場合はtrueを指定します。trueの場合、レンダリングによって発生する想定外の誤差を抑制しますが、
@@ -137,7 +137,7 @@ public class CompareTarget implements Serializable {
 
 	/**
 	 * スクリーンショット撮影時に要素を部分スクロールするか否かの設定を取得します。
-	 *
+	 * 
 	 * @return 撮影時に要素を部分スクロールするか否か。スクロールする場合はtrue。
 	 */
 	public boolean isScrollTarget() {

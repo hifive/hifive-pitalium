@@ -191,7 +191,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * {@link org.openqa.selenium.Capabilities}に応じた{@link PtlWebDriver}を作成して返します。
-	 *
+	 * 
 	 * @param cap ブラウザスペック情報
 	 * @return ブラウザに対応するWebDriver
 	 */
@@ -223,7 +223,7 @@ public class AssertionView extends TestWatcher {
 	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
 	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットを識別するID
 	 */
 	public void assertView(String screenshotId) {
@@ -234,7 +234,7 @@ public class AssertionView extends TestWatcher {
 	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
 	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
-	 *
+	 * 
 	 * @param message {@link AssertionError}を識別する文字列
 	 * @param screenshotId スクリーンショットを識別するID
 	 */
@@ -246,7 +246,7 @@ public class AssertionView extends TestWatcher {
 	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
 	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットを識別するID
 	 * @param compareTargets スクリーンショットの撮影、比較条件
 	 */
@@ -258,7 +258,7 @@ public class AssertionView extends TestWatcher {
 	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
 	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットを識別するID
 	 * @param compareTargets スクリーンショットの撮影、比較条件
 	 */
@@ -270,7 +270,7 @@ public class AssertionView extends TestWatcher {
 	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
 	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
-	 *
+	 * 
 	 * @param message {@link AssertionError}を識別する文字列
 	 * @param screenshotId スクリーンショットを識別するID
 	 * @param compareTargets スクリーンショットの撮影、比較条件
@@ -283,7 +283,7 @@ public class AssertionView extends TestWatcher {
 	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
 	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットを識別するID
 	 * @param compareTargets スクリーンショットの撮影、比較条件
 	 * @param hiddenElementsSelectors スクリーンショット撮影時に非表示にするDOMを表すセレクターのコレクション
@@ -296,7 +296,7 @@ public class AssertionView extends TestWatcher {
 	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
 	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットを識別するID
 	 * @param compareTargets スクリーンショットの撮影、比較条件
 	 * @param hiddenElementsSelectors スクリーンショット撮影時に非表示にするDOMを表すセレクターのコレクション
@@ -310,7 +310,7 @@ public class AssertionView extends TestWatcher {
 	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
 	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
-	 *
+	 * 
 	 * @param arg スクリーンショットを撮影するための条件
 	 */
 	public void assertView(ScreenshotArgument arg) {
@@ -321,7 +321,7 @@ public class AssertionView extends TestWatcher {
 	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
 	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
-	 *
+	 * 
 	 * @param message {@link AssertionError}を識別する文字列
 	 * @param arg スクリーンショットを撮影するための条件
 	 */
@@ -333,7 +333,7 @@ public class AssertionView extends TestWatcher {
 	 * 指定の条件でスクリーンショットを撮影します。テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の時は
 	 * 正解状態としてスクリーンショットの画像と座標を保存します。 テスト実行モードが {@link com.htmlhifive.pitalium.core.config.ExecMode#RUN_TEST}の時は、
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。
-	 *
+	 * 
 	 * @param message {@link AssertionError}を識別する文字列
 	 * @param screenshotId スクリーンショットを識別するID
 	 * @param compareTargets スクリーンショットの撮影、比較条件
@@ -424,7 +424,7 @@ public class AssertionView extends TestWatcher {
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。<br />
 	 * <br />
 	 * {@link #assertView(ScreenshotArgument)}との違いは{@code RUN_TEST}時に比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
-	 *
+	 * 
 	 * @param arg スクリーンショットを撮影するための条件
 	 */
 	public void verifyView(ScreenshotArgument arg) {
@@ -443,7 +443,7 @@ public class AssertionView extends TestWatcher {
 	 * {@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}で撮影した状態と比較します。<br />
 	 * <br />
 	 * {@link #assertView(ScreenshotArgument)}との違いは{@code RUN_TEST}時に比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
-	 *
+	 * 
 	 * @param message {@link AssertionError}を識別する文字列
 	 * @param arg スクリーンショットを撮影するための条件
 	 */
@@ -459,7 +459,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * スクリーンショットの撮影結果をチェックします。
-	 *
+	 * 
 	 * @param targetResults 実行結果
 	 * @param compareTargets 指定した{@link CompareTarget}
 	 * @return バリデーション結果
@@ -471,7 +471,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * CompareTargetで指定したセレクタに対応する要素が大きさを持っているかチェックします。
-	 *
+	 * 
 	 * @param targetResults 指定した{@link CompareTarget}
 	 * @return 大きさを持たない要素のセレクタのリスト
 	 */
@@ -491,7 +491,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * CompareTargetで指定したセレクタに対応する要素が存在したかチェックします。
-	 *
+	 * 
 	 * @param targetResults 実行結果
 	 * @param compareTargets 指定した{@link CompareTarget}
 	 * @return 存在しなかった要素のセレクタのリスト
@@ -524,7 +524,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * 1つのスクリーンショットIDに対応する実行結果を保存します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットID
 	 * @param targetResults 実行結果のリスト
 	 */
@@ -541,7 +541,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * スクリーンショットを撮影し、結果画像を保存します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットを識別するID
 	 * @param compareTargets スクリーンショットの撮影、比較条件
 	 * @param hiddenElementsSelectors スクリーンショット撮影時に非表示にするDOMを表すセレクターのコレクション
@@ -586,7 +586,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * Expectedモード時のScreenshotResultを作成します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットID
 	 * @param targetResults 実行結果
 	 * @param validateResult バリデーション結果
@@ -612,7 +612,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * Actualモード時のScreenshotResultを作成します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットID
 	 * @param expectedId 期待結果ID
 	 * @param currents 今回の実行結果
@@ -700,7 +700,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * スクリーンショット比較の前準備として、除外領域をマスクし、座標情報とペアにして返します。
-	 *
+	 * 
 	 * @param target スクリーンショット撮影結果
 	 * @return マスク済の画像と座標情報のペア
 	 */
@@ -723,7 +723,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * すでに取得したスクリーンショットについて、期待画像と一致するか検証します。一致しなければdiff画像を生成し、テストを失敗として中断します。
-	 *
+	 * 
 	 * @param screenshotResult {@link PtlWebDriver#takeScreenshot(String) takeScreenshot}を実行して取得した結果オブジェクト
 	 */
 	public void assertScreenshot(ScreenshotResult screenshotResult) {
@@ -732,7 +732,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * すでに取得したスクリーンショットについて、期待画像と一致するか検証します。一致しなければdiff画像を生成し、テストを失敗として中断します。
-	 *
+	 * 
 	 * @param message 失敗時に表示するメッセージ
 	 * @param screenshotResult {@link PtlWebDriver#takeScreenshot(String) takeScreenshot}を実行して取得した結果オブジェクト
 	 */
@@ -766,7 +766,7 @@ public class AssertionView extends TestWatcher {
 	 * すでに取得したスクリーンショットについて、期待画像と一致するか検証します。一致しなければdiff画像を生成し、テストを失敗とします。<br />
 	 * <br />
 	 * {@link #assertScreenshot(ScreenshotResult)}との違いは比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
-	 *
+	 * 
 	 * @param screenshotResult {@link PtlWebDriver#takeScreenshot(String) takeScreenshot}を実行して取得した結果オブジェクト
 	 */
 	public void verifyScreenshot(ScreenshotResult screenshotResult) {
@@ -783,7 +783,7 @@ public class AssertionView extends TestWatcher {
 	 * すでに取得したスクリーンショットについて、期待画像と一致するか検証します。一致しなければdiff画像を生成し、テストを失敗とします。<br />
 	 * <br />
 	 * {@link #assertScreenshot(ScreenshotResult)}との違いは比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
-	 *
+	 * 
 	 * @param message 失敗時に表示するメッセージ
 	 * @param screenshotResult {@link PtlWebDriver#takeScreenshot(String) takeScreenshot}を実行して取得した結果オブジェクト
 	 */
@@ -804,7 +804,7 @@ public class AssertionView extends TestWatcher {
 	/**
 	 * 画面全体のスクリーンショットを撮影し、指定の画像が現在のページ上に存在するかどうか検証します。<br />
 	 * ただし、テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の場合、検証は行われません。
-	 *
+	 * 
 	 * @param image 検証に使用する画像
 	 */
 	public void assertExist(BufferedImage image) {
@@ -814,7 +814,7 @@ public class AssertionView extends TestWatcher {
 	/**
 	 * 画面全体のスクリーンショットを撮影し、指定の画像が現在のページ上に存在するかどうか検証します。<br />
 	 * ただし、テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の場合、検証は行われません。
-	 *
+	 * 
 	 * @param message {@link AssertionError}を識別する文字列
 	 * @param image 検証に使用する画像
 	 */
@@ -845,7 +845,7 @@ public class AssertionView extends TestWatcher {
 	 * ただし、テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の場合、検証は行われません。<br />
 	 * <br />
 	 * {@link #assertExist(BufferedImage)}との違いは比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
-	 *
+	 * 
 	 * @param image 検証に使用する画像
 	 */
 	public void verifyExists(BufferedImage image) {
@@ -863,7 +863,7 @@ public class AssertionView extends TestWatcher {
 	 * ただし、テスト実行モードが{@link com.htmlhifive.pitalium.core.config.ExecMode#SET_EXPECTED}の場合、検証は行われません。<br />
 	 * <br />
 	 * {@link #assertExist(BufferedImage)}との違いは比較が失敗してもテストの実行を止めず、テストを最後まで実行します。
-	 *
+	 * 
 	 * @param message {@link AssertionError}を識別する文字列
 	 * @param image 検証に使用する画像
 	 */
@@ -881,7 +881,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * 実行中のテストクラス名を取得します。
-	 *
+	 * 
 	 * @param description 実行中のテストのDescription
 	 * @return テストクラス名
 	 */
@@ -891,7 +891,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * 実行中のテストメソッド名を取得します。
-	 *
+	 * 
 	 * @param description 実行中のテストのDescription
 	 * @return テストメソッド名
 	 */
@@ -901,7 +901,7 @@ public class AssertionView extends TestWatcher {
 
 	/**
 	 * 配列をListに変換します。
-	 *
+	 * 
 	 * @param <T> 対象の配列の型
 	 * @param array 変換元配列
 	 * @return 変換後List
@@ -926,7 +926,7 @@ public class AssertionView extends TestWatcher {
 
 		/**
 		 * 画像と矩形情報のペアを持ったオブジェクトを生成します。
-		 *
+		 * 
 		 * @param image 画像
 		 * @param rectangle 矩形情報
 		 */
@@ -961,7 +961,7 @@ public class AssertionView extends TestWatcher {
 		/**
 		 * 大きさが無い要素、存在しない要素を指定したセレクタ一覧を持った<br>
 		 * バリデーション結果オブジェクトを生成します。
-		 *
+		 * 
 		 * @param noAreaElementSelectors 大きさが無い要素を指定したセレクタ一覧
 		 * @param noElementSelectors 存在しない要素を指定したセレクタ一覧
 		 */
@@ -973,7 +973,7 @@ public class AssertionView extends TestWatcher {
 
 		/**
 		 * バリデーションの結果がValidか否かを取得します。
-		 *
+		 * 
 		 * @return Validならtrue、Invalidならfalse
 		 */
 		public boolean isValid() {

@@ -32,7 +32,7 @@ class PtlAndroidDriver extends PtlAbsAndroidDriver {
 
 	/**
 	 * コンストラクタ
-	 *
+	 * 
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -84,7 +84,7 @@ class PtlAndroidDriver extends PtlAbsAndroidDriver {
 
 	/**
 	 * 下端の切り取り位置を調整します。
-	 *
+	 * 
 	 * @param trimTop 調整前の切り取り量
 	 * @param scale スケール
 	 * @return 調整後の切り取り量

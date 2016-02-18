@@ -33,7 +33,7 @@ class PtlIPadDriver extends PtlIPhoneDriver {
 
 	/**
 	 * コンストラクタ
-	 *
+	 * 
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */

@@ -36,7 +36,7 @@ import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
 
 /**
  * {@link PtlWebDriver}のインスタンスを管理するクラス
- *
+ * 
  * @author nakatani
  */
 public final class PtlWebDriverManager {
@@ -88,7 +88,7 @@ public final class PtlWebDriverManager {
 
 	/**
 	 * {@link PtlWebDriverManager}を取得します。
-	 *
+	 * 
 	 * @return 自身のインスタンス
 	 */
 	public static PtlWebDriverManager getInstance() {
@@ -97,7 +97,7 @@ public final class PtlWebDriverManager {
 
 	/**
 	 * 内部キャッシュをリセットします。
-	 *
+	 * 
 	 * @param sessionLevel WebDriverのセッションを共有するレベル
 	 */
 	@VisibleForTesting
@@ -111,7 +111,7 @@ public final class PtlWebDriverManager {
 
 	/**
 	 * クラスとCapabilitiesから登録済みWebDriverのインスタンスを取得します。未登録だった場合は{@code supplier}からWebDriverのインスタンスが生成され、登録されます。
-	 *
+	 * 
 	 * @param clss テスト対象のクラス
 	 * @param capabilities テスト対象のブラウザ情報
 	 * @param supplier WebDriverのインスタンスが未登録の場合のインスタンス生成デリゲート
@@ -175,7 +175,7 @@ public final class PtlWebDriverManager {
 
 	/**
 	 * クラスとCapabilitiesから登録済みWebDriverのセッションをクローズします。
-	 *
+	 * 
 	 * @param clss テスト対象のクラス
 	 * @param capabilities テスト対象のブラウザ情報
 	 */
@@ -265,7 +265,7 @@ public final class PtlWebDriverManager {
 
 		/**
 		 * {@link PtlWebDriver}のコンテナを生成します。
-		 *
+		 * 
 		 * @param driver {@link WebDriver}
 		 * @param sessionLevel WebDriverセッションの利用レベル
 		 */
@@ -276,7 +276,7 @@ public final class PtlWebDriverManager {
 
 		/**
 		 * {@link WebDriver}を取得します。
-		 *
+		 * 
 		 * @param <T> {@link WebDriver}を継承したWebDriverクラス
 		 * @return 自身の持つ{@link PtlWebDriver}
 		 */

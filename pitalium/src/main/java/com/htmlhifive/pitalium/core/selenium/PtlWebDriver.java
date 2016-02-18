@@ -127,7 +127,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * コンストラクタ
-	 *
+	 * 
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -141,7 +141,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * テスト対象アプリケーションのベースURLを取得します。
-	 *
+	 * 
 	 * @see com.htmlhifive.pitalium.core.config.TestAppConfig#baseUrl
 	 * @return テスト対象アプリケーションのベースURL
 	 */
@@ -151,7 +151,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * テスト対象アプリケーションのベースURLを設定します。
-	 *
+	 * 
 	 * @see com.htmlhifive.pitalium.core.config.TestAppConfig#baseUrl
 	 * @param baseUrl テスト対象アプリケーションのベースURL
 	 */
@@ -170,7 +170,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 指定されたURLをブラウザで開きます。urlがhttp://またはhttps://から始まる場合はそのまま、それ以外の場合は{@link #baseUrl} + urlのアドレスを開きます。
-	 *
+	 * 
 	 * @param url 開きたいURL
 	 */
 	@Override
@@ -183,7 +183,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * Capabilityを取得します。
-	 *
+	 * 
 	 * @return Capability
 	 */
 	@Override
@@ -257,7 +257,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 要素を移動可能なブラウザかどうかを取得します。
-	 *
+	 * 
 	 * @return 移動可能なブラウザならtrue、不可ならfalse
 	 */
 	protected boolean canMoveTarget() {
@@ -266,7 +266,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * bodyのスクロールバーを非表示にできるブラウザかどうかを取得します。
-	 *
+	 * 
 	 * @return 非表示にできる場合はtrue、できない場合はfalse
 	 */
 	protected boolean canHideBodyScrollbar() {
@@ -275,7 +275,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 要素のスクロールバーを非表示にできるブラウザかどうかを取得します。
-	 *
+	 * 
 	 * @return 非表示にできる場合はtrue、できない場合はfalse
 	 */
 	protected boolean canHideElementScrollbar() {
@@ -284,7 +284,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 要素を非表示にする必要があるブラウザかどうかを取得します。
-	 *
+	 * 
 	 * @return 非表示にする場合はtrue、しない場合はfalse
 	 */
 	protected boolean isHideElementsRequired() {
@@ -293,7 +293,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 要素をリサイズできるブラウザかどうかを取得します。
-	 *
+	 * 
 	 * @return リサイズできる場合はtrue、できない場合はfalse
 	 */
 	protected boolean canResizeElement() {
@@ -323,7 +323,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 画面全体のスクリーンショットを撮影します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットID
 	 * @return スクリーンショット撮影結果
 	 */
@@ -333,7 +333,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 指定範囲のスクリーンショットを撮影します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットID
 	 * @param compareTargets 撮影対象とする範囲
 	 * @return スクリーンショット撮影結果
@@ -344,7 +344,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 指定範囲のスクリーンショットを撮影します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットID
 	 * @param compareTargets 撮影対象とする範囲
 	 * @return スクリーンショット撮影結果
@@ -355,7 +355,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 撮影時に非表示にする要素を指定し、指定範囲のスクリーンショットを撮影します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットID
 	 * @param compareTargets 撮影対象とする範囲
 	 * @param hiddenElementsSelectors 撮影時に非表示にする要素
@@ -368,7 +368,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * スクリーンショットの撮影条件を指定してスクリーンショットを撮影します。
-	 *
+	 * 
 	 * @param arg スクリーンショット撮影条件
 	 * @return スクリーンショット撮影結果
 	 */
@@ -378,7 +378,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 撮影時に非表示にする要素を指定し、指定範囲のスクリーンショットを撮影します。
-	 *
+	 * 
 	 * @param screenshotId スクリーンショットID
 	 * @param compareTargets 撮影対象とする範囲
 	 * @param hiddenElementSelectors 撮影時に非表示にする要素
@@ -485,7 +485,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * isMoveがfalseに指定されているターゲットを一括で撮影するメソッド。
-	 *
+	 * 
 	 * @param entireScreenshotResult 予めページ全体を撮影した際のTargetResult
 	 * @param hiddenElementSelectors 撮影時に非表示にする要素のリスト
 	 * @param targetParams 撮影対象のターゲットリスト
@@ -597,7 +597,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * isMoveがtrueに指定されているターゲットを撮影するメソッド。
-	 *
+	 * 
 	 * @param target 撮影対象のターゲット
 	 * @param hiddenElementSelectors 撮影時に非表示にする要素のリスト
 	 * @param params 撮影対象のパラメータ
@@ -673,7 +673,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * ターゲットをスクロールしながら撮影し、結合した画像を返します。
-	 *
+	 * 
 	 * @param hiddenElementSelectors 撮影時に非表示にする要素のリスト
 	 * @param entireScreenshotParams ページ全体を撮影するためのパラメータ
 	 * @param targetParams 撮影対象のパラメータ群
@@ -784,7 +784,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * ターゲットをスクロールしながら撮影し、結合した画像を返します。
-	 *
+	 * 
 	 * @param target 撮影対象のターゲット
 	 * @param hiddenElementSelectors 撮影時に非表示にする要素
 	 * @param params 撮影対象のパラメータ
@@ -878,7 +878,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 指定されたパラメータ群から、{@link ScreenshotParams}だけを抜き出して配列にします。
-	 *
+	 * 
 	 * @param params 対象のパラメータ群
 	 * @return {@link ScreenshotParams}の配列
 	 */
@@ -894,7 +894,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	/**
 	 * 指定されたリスト内の最後の画像の高さ、スクロール量、ボーダー幅から<br>
 	 * トリム量を計算し、縦の重複をトリムします。
-	 *
+	 * 
 	 * @param images 対象の画像
 	 * @param lastScrollAmount 最後のスクロール量
 	 * @param el 撮影対象の要素
@@ -923,7 +923,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	/**
 	 * 指定されたリスト内の最後の画像の幅、スクロール量、ボーダー幅から<br>
 	 * トリム量を計算し、横の重複をトリムします。
-	 *
+	 * 
 	 * @param images 対象の画像
 	 * @param lastScrollAmount 最後のスクロール量
 	 * @param el 撮影対象の要素
@@ -951,7 +951,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 要素の部分スクロール時、元画像からボーダーを切り取ります。
-	 *
+	 * 
 	 * @param el 対象の要素
 	 * @param image 元画像
 	 * @param num 何スクロール目の画像化
@@ -984,7 +984,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	/**
 	 * 要素の部分スクロール時、元画像からPaddingを切り取ります。<br>
 	 * スクロール
-	 *
+	 * 
 	 * @param el 対象の要素
 	 * @param image 元画像
 	 * @param num 何スクロール目の画像か
@@ -1016,7 +1016,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * isMoveがfalseのとき、要素のborderを切り取る処理をします。
-	 *
+	 * 
 	 * @param allTargetScreenshots 撮影した全スクリーンショット
 	 * @param targetParams 撮影対象のターゲットリスト
 	 */
@@ -1041,7 +1041,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * isMoveがtrueのとき、要素のborderを切り取る処理をします。
-	 *
+	 * 
 	 * @param el ターゲットの要素
 	 * @param images 撮影したスクリーンショット
 	 */
@@ -1054,7 +1054,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * isMoveがfalseのとき、要素のpaddingを切り取る処理をします。
-	 *
+	 * 
 	 * @param allTargetScreenshots 撮影した全スクリーンショット
 	 * @param targetParams 撮影対象のターゲットリスト
 	 */
@@ -1065,7 +1065,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * isMoveがtrueのとき、要素のpaddingを切り取る処理をします。
-	 *
+	 * 
 	 * @param el ターゲットの要素
 	 * @param images 撮影したスクリーンショット
 	 */
@@ -1075,7 +1075,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 次のキャプチャ開始位置と今回キャプチャした範囲を比較し、重なる部分がある場合は切り取ります。
-	 *
+	 * 
 	 * @param captureTop 今回のキャプチャ開始位置（上）
 	 * @param captureLeft 今回のキャプチャ開始位置（左）
 	 * @param windowHeight ウィンドウ（viewport内の表示領域）の高さ
@@ -1114,7 +1114,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 一つのターゲットに対するスクリーンショットを撮影し、{@link TargetResult}として取得します。
-	 *
+	 * 
 	 * @param compareTarget 撮影対象とする範囲
 	 * @param hiddenElementSelectors 撮影時に非表示にする要素のセレクタのリスト
 	 * @param params スクリーンショットを撮影するためのパラメーター
@@ -1186,7 +1186,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * {@link ScreenAreaWrapper}から{@link ScreenAreaResult}を生成します。
-	 *
+	 * 
 	 * @param target 元となるScreenAreaWrapper
 	 * @param index 対象とする要素のインデックス
 	 * @return {@link ScreenAreaResult}
@@ -1204,7 +1204,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * スクリーンショットを撮影し、{@link ScreenshotImage}として取得します。
-	 *
+	 * 
 	 * @param params スクリーンショット撮影用パラメータ
 	 * @param additionalParams 追加のスクリーンショット撮影用パラメータ。スクリーンショットは{@code params}
 	 *            に設定した情報から撮影しますが、同時にこの引数に設定したパラメータの座標情報が更新されます。
@@ -1280,7 +1280,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * スクリーンショット画像をスクリーンショットパラメータで指定されたターゲット要素を切り抜き、除外領域の座標も切り抜き後の値に更新します。
-	 *
+	 * 
 	 * @param image スクリーンショット画像
 	 * @param params スクリーンショットパラメータ
 	 * @return 切り抜いた画像
@@ -1338,7 +1338,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * スクリーンショット撮影時に、対象領域を定位置に移動させるか否かを調べます。
-	 *
+	 * 
 	 * @param params スクリーンショット撮影用パラメータ
 	 * @return 移動するか否か。移動する場合はtrue。
 	 */
@@ -1348,7 +1348,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * スクリーンショット撮影時に、対象領域をスクロールさせるか否かを調べます。
-	 *
+	 * 
 	 * @param params スクリーンショット撮影用パラメータ
 	 * @return スクロールするか否か。スクロールする場合はtrue。
 	 */
@@ -1358,7 +1358,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 対象領域を移動せずにスクリーンショットを撮影します。
-	 *
+	 * 
 	 * @param params スクリーンショット撮影用パラメータ
 	 * @param additionalParams スクリーンショット撮影用パラメータ
 	 * @return 撮影したスクリーンショット
@@ -1373,7 +1373,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 対象領域を定位置（0, 0)に移動し、スクリーンショットを撮影します。
-	 *
+	 * 
 	 * @param params スクリーンショット撮影用パラメータ
 	 * @param additionalParams スクリーンショット撮影用パラメータ
 	 * @return 撮影したスクリーンショット
@@ -1422,7 +1422,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * {@link DomSelector}を指定して対応する要素の一覧を取得します。
-	 *
+	 * 
 	 * @param selectors 取得する要素のセレクタのリスト
 	 * @return 取得した要素のリスト
 	 */
@@ -1442,7 +1442,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * {@code params}、{@code additionalParams}内の座標値を、表示スケール、移動量を加味して更新します。
-	 *
+	 * 
 	 * @param moveX x方向の移動量
 	 * @param moveY y方向の移動量
 	 * @param params スクリーンショットの更新元パラメータ
@@ -1468,7 +1468,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * {@code params}、{@code additionalParams}内の座標値を、表示スケール、移動量を加味して更新します。
-	 *
+	 * 
 	 * @param moveX x方向の移動量
 	 * @param moveY y方向の移動量
 	 * @param currentScale 表示スケール
@@ -1486,7 +1486,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * スクリーンショットとviewportのサイズ比を取得します。
-	 *
+	 * 
 	 * @return サイズ比。PCの場合は1.0
 	 */
 	protected double getScreenshotScale() {
@@ -1495,7 +1495,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 画面全体のスクリーンショットを撮影し、{@link BufferedImage}として返します。
-	 *
+	 * 
 	 * @return 撮影したスクリーンショット
 	 */
 	public BufferedImage getEntirePageScreenshot() {
@@ -1504,7 +1504,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * パラメータで指定された要素を含む最小範囲でスクリーンショットを撮影し、{@link BufferedImage}として返します。<br>
-	 *
+	 * 
 	 * @param params スクリーンショット撮影用パラメータ
 	 * @return 撮影したスクリーンショット
 	 */
@@ -1514,7 +1514,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * スクリーンショットを撮影し、{@link BufferedImage}として取得します。
-	 *
+	 * 
 	 * @return 撮影したスクリーンショット
 	 */
 	protected final BufferedImage getScreenshotAsBufferedImage() {
@@ -1532,7 +1532,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 現在表示位置の上端座標を取得します。
-	 *
+	 * 
 	 * @return 座標のy値（実数px）
 	 */
 	public double getCurrentScrollTop() {
@@ -1551,7 +1551,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 現在表示位置の左端座標を取得します。
-	 *
+	 * 
 	 * @return 座標のx値（実数px）
 	 */
 	public double getCurrentScrollLeft() {
@@ -1570,7 +1570,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 可視領域の幅を取得します。
-	 *
+	 * 
 	 * @return 可視領域の幅（整数px）
 	 */
 	public long getWindowWidth() {
@@ -1579,7 +1579,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 可視領域の高さを取得します。
-	 *
+	 * 
 	 * @return 可視領域の高さ（整数px）
 	 */
 	public long getWindowHeight() {
@@ -1588,7 +1588,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * ページのscrollWidthを取得します。
-	 *
+	 * 
 	 * @return scrollWidth（整数px）
 	 */
 	public long getScrollWidth() {
@@ -1598,7 +1598,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * ページのscrollHeightを取得します。
-	 *
+	 * 
 	 * @return scrollHeight（整数px）
 	 */
 	public long getScrollHeight() {
@@ -1608,7 +1608,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * ページのスクロール回数を取得します。
-	 *
+	 * 
 	 * @return スクロール回数
 	 */
 	public long getScrollNum() {
@@ -1624,7 +1624,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 現在のページの幅を取得します。
-	 *
+	 * 
 	 * @return ページの幅（整数px）
 	 */
 	public long getCurrentPageWidth() {
@@ -1665,7 +1665,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 現在のページの高さを取得します。
-	 *
+	 * 
 	 * @return ページの高さ（整数px）
 	 */
 	public long getCurrentPageHeight() {
@@ -1706,7 +1706,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 画面上の特定の位置にスクロールします。
-	 *
+	 * 
 	 * @param x スクロール先のx座標（実数px）
 	 * @param y スクロール先のy座標（実数px）
 	 * @throws InterruptedException スクロール中に例外が発生した場合
@@ -1718,7 +1718,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * viewport内の表示領域とスクリーンショットのサイズ比を計算します。
-	 *
+	 * 
 	 * @param windowWidth ウィンドウ（viewport内の表示領域）の幅
 	 * @param imageWidth スクリーンショットの幅
 	 * @return サイズ比。PCの場合は1
@@ -1729,7 +1729,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 画像の高さ、スクロール量、要素のボーダー幅から縦のトリム量を計算します。
-	 *
+	 * 
 	 * @param imageHeight 元画像の高さ
 	 * @param scrollAmount 最後のスクロール量
 	 * @param targetElement ターゲット
@@ -1751,7 +1751,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 画像の幅、スクロール量、要素のボーダー幅から横のトリム量を計算します。
-	 *
+	 * 
 	 * @param imageWidth 元画像の幅
 	 * @param scrollAmount 最後のスクロール量
 	 * @param targetElement ターゲット（nullの場合は無視）
@@ -1771,7 +1771,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * driverに対応するWebElementを生成します。
-	 *
+	 * 
 	 * @return WebElement
 	 */
 	protected abstract PtlWebElement newPtlWebElement();
@@ -1789,7 +1789,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 		/**
 		 * コンストラクタ
-		 *
+		 * 
 		 * @param driver 親WebDriver
 		 */
 		JsonToPtlWebElementConverter(PtlWebDriver driver) {

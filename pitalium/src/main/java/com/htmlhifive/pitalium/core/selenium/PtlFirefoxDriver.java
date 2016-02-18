@@ -32,7 +32,7 @@ class PtlFirefoxDriver extends PtlWebDriver {
 
 	/**
 	 * コンストラクタ
-	 *
+	 * 
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */

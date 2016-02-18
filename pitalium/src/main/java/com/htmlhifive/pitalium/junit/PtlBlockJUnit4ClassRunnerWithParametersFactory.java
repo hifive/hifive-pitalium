@@ -23,7 +23,7 @@ import org.junit.runners.parameterized.TestWithParameters;
 
 /**
  * {@link PtlBlockJUnit4ClassRunnerWithParameters}を生成する{@link ParametersRunnerFactory}
- *
+ * 
  * @author nakatani
  */
 public class PtlBlockJUnit4ClassRunnerWithParametersFactory implements ParametersRunnerFactory {

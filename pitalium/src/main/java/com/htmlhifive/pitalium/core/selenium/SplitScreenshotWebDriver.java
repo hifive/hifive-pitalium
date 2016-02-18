@@ -37,7 +37,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * コンストラクタ
-	 *
+	 * 
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -54,7 +54,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * ページ全体のスクリーンショットを取得します。スクロール毎にスクリーンショットを撮り、最後に結合した画像を返します。
-	 *
+	 * 
 	 * @return 撮影したスクリーンショット
 	 */
 	@Override
@@ -65,7 +65,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	/**
 	 * ページの左上から指定された要素までを含むスクリーンショットを撮影し、{@link BufferedImage}として返します。<br/>
 	 * 要素が指定されていない場合はページ全体を撮影します。
-	 *
+	 * 
 	 * @param params スクリーンショット撮影用パラメータ
 	 * @return 撮影したスクリーンショット
 	 */
@@ -221,7 +221,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * 指定されたリスト内の末尾1列の画像の重複部分をトリムします。
-	 *
+	 * 
 	 * @param images 対象のリスト
 	 * @param lastScrollAmount 最後のスクロール量
 	 * @param el 撮影対象の要素
@@ -248,7 +248,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * ヘッダがある場合のスクロール量を計算します。
-	 *
+	 * 
 	 * @param imageHeight 前回撮った画像の高さ
 	 * @param currentScale スケール
 	 * @return スクロール量
@@ -259,7 +259,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * ヘッダがない場合のスクロール量を計算します。
-	 *
+	 * 
 	 * @param windowHeight ウィンドウの高さ
 	 * @return スクロール量
 	 */
@@ -269,7 +269,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * 横スクロール量を計算します。
-	 *
+	 * 
 	 * @param windowWidth ウィンドウの幅
 	 * @return スクロール量
 	 */
@@ -284,7 +284,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * スクリーンショットに含まれるウィンドウのヘッダーの高さを取得します。
-	 *
+	 * 
 	 * @param scrollTop 現在のスクロール位置
 	 * @return ヘッダの高さ（整数px）
 	 */
@@ -294,7 +294,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 	/**
 	 * スクリーンショットに含まれるウィンドウのフッタの高さを取得します。
-	 *
+	 * 
 	 * @param scrollTop 現在の（実際の）スクロール位置
 	 * @param captureTop 現在の（計算上の）スクロール位置
 	 * @return フッタの高さ（整数px）

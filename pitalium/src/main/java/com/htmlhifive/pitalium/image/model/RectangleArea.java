@@ -111,7 +111,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * 座標・サイズの小数点以下の値を四捨五入した矩形領域を生成します。
-	 *
+	 * 
 	 * @return 小数点以下を四捨五入した値を持つ矩形領域
 	 */
 	public RectangleArea round() {
@@ -120,7 +120,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * 座標・サイズの小数点以下の値を切り上げた矩形領域を生成します。
-	 *
+	 * 
 	 * @return 小数点以下を切り上げた値を持つ矩形領域
 	 */
 	public RectangleArea ceil() {

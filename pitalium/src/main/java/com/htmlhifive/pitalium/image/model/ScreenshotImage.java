@@ -49,7 +49,7 @@ public class ScreenshotImage {
 
 	/**
 	 * 画像を持ったオブジェクトを初期化します。
-	 *
+	 * 
 	 * @param image 画像
 	 */
 	public ScreenshotImage(BufferedImage image) {
@@ -58,7 +58,7 @@ public class ScreenshotImage {
 
 	/**
 	 * 画像がメモリ上にキャッシュされているかどうか取得します。
-	 *
+	 * 
 	 * @return キャッシュされている場合true、されていない場合false
 	 */
 	public boolean isImageCached() {
@@ -67,7 +67,7 @@ public class ScreenshotImage {
 
 	/**
 	 * スクリーンショットの画像を取得します。
-	 *
+	 * 
 	 * @return スクリーンショットの画像
 	 */
 	public BufferedImage get() {
@@ -80,7 +80,7 @@ public class ScreenshotImage {
 
 	/**
 	 * スクリーンショット画像を取得できるストリームを取得します。
-	 *
+	 * 
 	 * @return 画像の入力ストリーム
 	 */
 	public InputStream getAsStream() {
@@ -93,7 +93,7 @@ public class ScreenshotImage {
 
 	/**
 	 * 画像からInputStreamを取得します。
-	 *
+	 * 
 	 * @param image 画像
 	 * @return InputStream
 	 */

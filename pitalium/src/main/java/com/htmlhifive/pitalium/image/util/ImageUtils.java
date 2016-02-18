@@ -59,7 +59,7 @@ public final class ImageUtils {
 
 	/**
 	 * 2つの画像を比較し、差分を取得します。
-	 *
+	 * 
 	 * @param image1 画像1
 	 * @param imageArea1 画像1の比較範囲
 	 * @param image2 画像2
@@ -75,7 +75,7 @@ public final class ImageUtils {
 
 	/**
 	 * 全体画像の中に指定した部分画像が含まれているかどうかを取得します。
-	 *
+	 * 
 	 * @param entireImage 全体画像
 	 * @param partImage 部分画像
 	 * @return 全体画像の中に部分画像が含まれていればtrue、含まれていなければfalse
@@ -124,7 +124,7 @@ public final class ImageUtils {
 
 	/**
 	 * 元画像の積分画像を生成します。
-	 *
+	 * 
 	 * @param source 元画像
 	 * @return 積分結果の配列
 	 */
@@ -148,7 +148,7 @@ public final class ImageUtils {
 
 	/**
 	 * 画像を比較し、同一であるかどうかを取得します。
-	 *
+	 * 
 	 * @param image1 一つの画像
 	 * @param image2 二つ目のがぞおう
 	 * @return 二つの画像が同一である場合true、異なる画像の場合false
@@ -167,7 +167,7 @@ public final class ImageUtils {
 
 	/**
 	 * 指定エリアをマスクした画像を生成します。
-	 *
+	 * 
 	 * @param image マスクする画像
 	 * @param maskAreas マスクするエリア
 	 * @return 指定エリアをマスクした画像
@@ -191,7 +191,7 @@ public final class ImageUtils {
 
 	/**
 	 * 画像をDeepCopyします。
-	 *
+	 * 
 	 * @param image DeepCopy元の{@link BufferedImage}
 	 * @return DeepCopyされた {@link BufferedImage}
 	 */
@@ -206,7 +206,7 @@ public final class ImageUtils {
 
 	/**
 	 * 指定のポイントをマークした画像を作成します。
-	 *
+	 * 
 	 * @param image 対象の画像
 	 * @param diffPoints マークするポイント
 	 * @return マークした画像
@@ -282,7 +282,7 @@ public final class ImageUtils {
 
 	/**
 	 * diff座標から近似の四角形を作成する。
-	 *
+	 * 
 	 * @param diffPoints 差分データ
 	 * @return 近似の四角形のリスト
 	 */
@@ -294,7 +294,7 @@ public final class ImageUtils {
 
 	/**
 	 * diff座標から近似の四角形を作成する。
-	 *
+	 * 
 	 * @param diffPoints diff座標のリスト
 	 * @return 近似の四角形のリスト
 	 */
@@ -357,7 +357,7 @@ public final class ImageUtils {
 
 	/**
 	 * サイズのdiff座標から近似の四角形を作成する。
-	 *
+	 * 
 	 * @param sizeDiffPoints サイズのdiff座標のリスト
 	 * @return 近似の四角形のリスト
 	 */
@@ -400,7 +400,7 @@ public final class ImageUtils {
 
 	/**
 	 * マーカー画像を取得します。
-	 *
+	 * 
 	 * @return マーカー画像
 	 */
 	private static BufferedImage getMarkImage() {
@@ -419,7 +419,7 @@ public final class ImageUtils {
 
 	/**
 	 * 二つの画像と差分情報から差分確認用画像を取得します。
-	 *
+	 * 
 	 * @param leftImage 左側の画像
 	 * @param rightImage 右側の画像
 	 * @param diffPoints 差分データ
@@ -432,7 +432,7 @@ public final class ImageUtils {
 
 	/**
 	 * 画像を指定の値でトリムします。
-	 *
+	 * 
 	 * @param image 元画像
 	 * @param trimTop 上方向のトリム値
 	 * @param trimLeft 左方向のトリム値
@@ -452,7 +452,7 @@ public final class ImageUtils {
 
 	/**
 	 * 画像を縦に結合し、1枚の画像にします。
-	 *
+	 * 
 	 * @param images 結合前の画像群
 	 * @return 結合後の画像
 	 */
@@ -482,7 +482,7 @@ public final class ImageUtils {
 
 	/**
 	 * 画像を結合し、1枚の画像にします。
-	 *
+	 * 
 	 * @param images 結合前の画像群
 	 * @return 結合後の画像
 	 */

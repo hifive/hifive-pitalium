@@ -13,7 +13,7 @@ public class ItUtils {
 
 	/**
 	 * 結果JSONからこのメソッドのスクリーンショットの結果を取得
-	 *
+	 * 
 	 * @param results
 	 * @param capabilities
 	 */

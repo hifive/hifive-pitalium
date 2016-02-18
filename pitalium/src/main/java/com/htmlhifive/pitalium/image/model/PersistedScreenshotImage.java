@@ -47,7 +47,7 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	/**
 	 * メタデータのみを持ったオブジェクトを生成します。
-	 *
+	 * 
 	 * @param persister 保存に用いるPersister
 	 * @param metadata スクリーンショットのメタデータ
 	 */
@@ -57,7 +57,7 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	/**
 	 * メタデータ、画像を持ったオブジェクトを生成します。
-	 *
+	 * 
 	 * @param persister 保存に用いるPersister
 	 * @param metadata スクリーンショットのメタデータ
 	 * @param image スクリーンショット画像
@@ -77,7 +77,7 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	/**
 	 * メタデータを取得します。
-	 *
+	 * 
 	 * @return メタデータ
 	 */
 	public PersistMetadata getMetadata() {
@@ -86,7 +86,7 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	/**
 	 * スクリーンショットの画像を取得します。
-	 *
+	 * 
 	 * @return スクリーンショットの画像
 	 */
 	@Override
@@ -116,7 +116,7 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	/**
 	 * スクリーンショット画像を取得できるストリームを取得します。
-	 *
+	 * 
 	 * @return 画像の入力ストリーム
 	 */
 	@Override
@@ -137,7 +137,7 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	/**
 	 * スクリーンショット画像のストリームを取得します。
-	 *
+	 * 
 	 * @return スクリーンショット画像のストリーム
 	 */
 	protected InputStream getImageStream() {

@@ -27,7 +27,7 @@ class PtlInternetExplorer8Driver extends PtlInternetExplorerDriver {
 
 	/**
 	 * コンストラクタ
-	 *
+	 * 
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */

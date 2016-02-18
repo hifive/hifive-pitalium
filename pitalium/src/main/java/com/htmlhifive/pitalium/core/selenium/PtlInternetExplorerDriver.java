@@ -29,7 +29,7 @@ class PtlInternetExplorerDriver extends PtlWebDriver {
 
 	/**
 	 * コンストラクタ
-	 *
+	 * 
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -76,7 +76,7 @@ class PtlInternetExplorerDriver extends PtlWebDriver {
 
 	/**
 	 * ウィンドウクロムの幅を取得します。
-	 *
+	 * 
 	 * @return クロム幅（整数px）
 	 */
 	public int getChromeWidth() {
