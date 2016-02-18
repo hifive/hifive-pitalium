@@ -1,0 +1,8 @@
+[
+	{
+		"browserName": "firefox"
+	},
+	{
+		"browserName": "chrome"
+	}
+]
