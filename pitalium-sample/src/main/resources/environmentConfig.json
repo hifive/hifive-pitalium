@@ -1,4 +1,4 @@
 {
-	"execMode": "SET_EXPECTED",
+	"execMode": "RUN_TEST",
 	"hubHost":"localhost"
 }
