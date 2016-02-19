@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,20 @@ import org.junit.runners.parameterized.BlockJUnit4ClassRunnerWithParameters;
 import org.junit.runners.parameterized.TestWithParameters;
 
 /**
+ * パラメータ付きテストクラスを実行するためのRunner
+ * 
  * @author nakatani
  */
 public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRunnerWithParameters {
 
 	private final Object[] parameters;
 
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param test パラメータ付きテストクラス
+	 * @throws InitializationError 初期化に失敗した場合
+	 */
 	public PtlBlockJUnit4ClassRunnerWithParameters(TestWithParameters test) throws InitializationError {
 		super(test);
 		parameters = test.getParameters().toArray(new Object[test.getParameters().size()]);
@@ -50,6 +58,8 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * {@link ParameterizedBeforeClass}が設定されているフィールドをチェックします。
+	 * 
+	 * @param errors エラーのリスト。チェックした結果エラーがあった場合、このリストに追加される
 	 */
 	protected void validateParameterizedBeforeClass(List<Throwable> errors) {
 		for (FrameworkMethod method : getTestClass().getAnnotatedMethods(ParameterizedBeforeClass.class)) {
@@ -72,6 +82,8 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * {@link ParameterizedAfterClass}が設定されているフィールドをチェックします。
+	 * 
+	 * @param errors エラーのリスト。チェックした結果エラーがあった場合、このリストに追加される
 	 */
 	protected void validateParameterizedAfterClass(List<Throwable> errors) {
 		for (FrameworkMethod method : getTestClass().getAnnotatedMethods(ParameterizedAfterClass.class)) {
@@ -94,6 +106,8 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * {@link ParameterizedClassRule}が設定されているフィールドまたはメソッドをチェックします。
+	 * 
+	 * @param errors エラーのリスト。チェックした結果エラーがあった場合、このリストに追加される
 	 */
 	protected void validateParameterizedClassRules(List<Throwable> errors) {
 		for (FrameworkMethod method : getTestClass().getAnnotatedMethods(ParameterizedClassRule.class)) {
@@ -136,6 +150,9 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * テストクラス中の{@link ParameterizedBeforeClass}が付与されたメソッドを含めてテストを実行します。
+	 * 
+	 * @param statement 実行用{@link Statement}
+	 * @return {@link ParameterizedBeforeClass}が付与されたメソッドを含めた{@link Statement}
 	 */
 	protected Statement withParameterizedBeforeClasses(Statement statement) {
 		List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(ParameterizedBeforeClass.class);
@@ -144,6 +161,9 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * テストクラス中の{@link ParameterizedAfterClass}が付与されたメソッドを含めてテストを実行します。
+	 * 
+	 * @param statement 実行用{@link Statement}
+	 * @return {@link ParameterizedAfterClass}が付与されたメソッドを含めた{@link Statement}
 	 */
 	protected Statement withParameterizedAfterClasses(Statement statement) {
 		List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(ParameterizedAfterClass.class);
@@ -152,6 +172,9 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * テストクラス中の{@link ParameterizedTestRule}が付与されたメソッドまたはフィールドを含めてテストを実行します。
+	 * 
+	 * @param statement 実行用{@link Statement}
+	 * @return {@link ParameterizedTestRule}が付与されたメソッドまたはフィールドを含めた{@link Statement}
 	 */
 	protected Statement withParameterizedClassRules(Statement statement) {
 		List<ParameterizedTestRule> classRules = parameterizedClassRules();
@@ -161,6 +184,8 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 
 	/**
 	 * テストクラス内の{@link ParameterizedClassRule}が付与されたメソッドまたはフィールドを集めて返します。
+	 * 
+	 * @return {@link ParameterizedClassRule}が付与されたメソッドまたはフィールドのリスト
 	 */
 	protected List<ParameterizedTestRule> parameterizedClassRules() {
 		List<ParameterizedTestRule> result = getTestClass().getAnnotatedMethodValues(null,
@@ -170,6 +195,11 @@ public class PtlBlockJUnit4ClassRunnerWithParameters extends BlockJUnit4ClassRun
 		return result;
 	}
 
+	/**
+	 * 実行されるテストのdescriptionを取得します。
+	 * 
+	 * @return description
+	 */
 	public Description getTestDescription() {
 		Description description = getDescription();
 		Description result = Description.createTestDescription(getTestClass().getJavaClass(), getName(),

@@ -1,7 +1,5 @@
-[
-	{
-		"platform": "WINDOWS",
-		"os": "WINDOWS",
-		"browserName": "chrome"
-	}
-]
+{
+	"baseUrl": "http://localhost:8080/dummyUrl",
+	"windowHeight": 980,
+	"windowWidth": 1200
+}

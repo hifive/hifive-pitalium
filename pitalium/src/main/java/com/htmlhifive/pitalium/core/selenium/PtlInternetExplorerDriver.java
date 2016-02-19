@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ class PtlInternetExplorerDriver extends PtlWebDriver {
 	public BufferedImage getEntirePageScreenshot() {
 		//Dimension windowDimension = manage().window().getSize();
 		//PtlWebElement bodyElement = (PtlWebElement) findElementByTagName("body");
-		//WebElementRect bodyRect = bodyElement.getRect();
+		//DoubleValueRect bodyRect = bodyElement.getRect();
 		//WebElementMargin bodyMargin = bodyElement.getMargin();
 
 		// スクリーンショット取得前の拡大幅を計算
@@ -81,5 +81,10 @@ class PtlInternetExplorerDriver extends PtlWebDriver {
 	 */
 	public int getChromeWidth() {
 		return chromeWidth;
+	}
+
+	@Override
+	protected boolean canResizeElement() {
+		return false;
 	}
 }

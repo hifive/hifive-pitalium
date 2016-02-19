@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,28 +39,23 @@ public @interface PtlWebDriverStrategy {
 		 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses}の設定を利用します。
 		 */
 		USE_CONFIG, /**
-					 * テストケース毎に個別のWebDriverセッションを利用します。テストケース開始時にWebDriverセッションが開始され、テストケース終了時に自動クローズされます。
-					 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses}
-					 * の設定をクラス単位で上書きします。
-					 */
+		 * テストケース毎に個別のWebDriverセッションを利用します。テストケース開始時にWebDriverセッションが開始され、テストケース終了時に自動クローズされます。
+		 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses} の設定をクラス単位で上書きします。
+		 */
 		TEST_CASE, /**
-					 * テストクラス内の全てのテストケースで同一のWebDriverセッションを利用します。テストクラスの開始時にWebDriverセッションが開始され、
-					 * テストクラスの全ケース終了時に自動クローズされます。
-					 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses}
-					 * の設定をクラス単位で上書きします。
-					 */
+		 * テストクラス内の全てのテストケースで同一のWebDriverセッションを利用します。テストクラスの開始時にWebDriverセッションが開始され、
+		 * テストクラスの全ケース終了時に自動クローズされます。
+		 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses} の設定をクラス単位で上書きします。
+		 */
 		TEST_CLASS, /**
-					 * テスト全体を通じて共通のWebDriverセッションを利用します。WebDriverセッションは必要に応じて開始されますが自動でクローズはされません。
-					 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses}
-					 * の設定をクラス単位で上書きします。
-					 */
+		 * テスト全体を通じて共通のWebDriverセッションを利用します。WebDriverセッションは必要に応じて開始されますが自動でクローズはされません。
+		 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses} の設定をクラス単位で上書きします。
+		 */
 		GLOBAL
 	}
 
 	/**
 	 * WebDriverセッションの利用範囲を指定します。
-	 * 
-	 * @return WebDriverセッションの利用範囲
 	 */
 	SessionLevel sessionLevel() default SessionLevel.USE_CONFIG;
 

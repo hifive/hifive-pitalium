@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,9 +81,12 @@ public class CompareWithExcludesCheckResultTest extends PtlTestBase {
 		assertThat(selectorNode.get("value").asText(), is("body"));
 		assertThat(selectorNode.get("index").asInt(), is(0));
 		JsonNode rectangleNode = targetNode.get("rectangle");
-		int margin = withMargin ? 100 : 0;
-		assertThat(rectangleNode.get("x").asInt(), is(margin));
-		assertThat(rectangleNode.get("y").asInt(), is(margin));
+		// TODO: モバイルはscaleのためにマージンが変わるが、テスト側で検知できないので目視確認
+		if (!"iOS".equals(capabilities.getPlatformName()) && !"ANDROID".equals(capabilities.getPlatformName())) {
+			int margin = withMargin ? 100 : 0;
+			assertThat(rectangleNode.get("x").asInt(), is(margin));
+			assertThat(rectangleNode.get("y").asInt(), is(margin));
+		}
 		JsonNode screenAreaConditionNode = targetNode.get("screenArea").get("selector");
 		assertThat(screenAreaConditionNode.get("type").asText(), is(selectorType));
 		assertThat(screenAreaConditionNode.get("value").asText(), is("body"));
@@ -189,10 +192,10 @@ public class CompareWithExcludesCheckResultTest extends PtlTestBase {
 		assertTrue(fileNameOfSelector + "が存在しません", new File(fileNameOfSelector).exists());
 
 		JsonNode bodyJson = getCoordinateInfo(methodName).get(0);
-		assertCoordinateInfo(bodyJson, selectorType, "specifyTargetBodyWithMargin".equals(methodName));
+		assertCoordinateInfo(bodyJson, selectorType, "excludeForBodyWithMargin".equals(methodName));
 
 		JsonNode screenshotResultJson = ItUtils.getCurrentScreenshotResultJson(methodName, results, capabilities);
-		assertScreenshotResult(screenshotResultJson, selectorType, "specifyTargetBodyWithMargin".equals(methodName));
+		assertScreenshotResult(screenshotResultJson, selectorType, "excludeForBodyWithMargin".equals(methodName));
 	}
 
 	private String getFileName(String methodName) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,9 @@ public final class ImageUtils {
 	private static final String DIFF_IMAGE_LEFT_LABEL = "expected";
 	private static final String DIFF_IMAGE_RIGHT_LABEL = "actual";
 
+	/**
+	 * コンストラクタ
+	 */
 	private ImageUtils() {
 	}
 
@@ -119,6 +122,12 @@ public final class ImageUtils {
 		return false;
 	}
 
+	/**
+	 * 元画像の積分画像を生成します。
+	 * 
+	 * @param source 元画像
+	 * @return 積分結果の配列
+	 */
 	private static double[][] calcIntegralImage(BufferedImage source) {
 		double[][] integralImage = new double[source.getHeight()][source.getWidth()];
 		Raster raster = source.getRaster();
@@ -391,6 +400,8 @@ public final class ImageUtils {
 
 	/**
 	 * マーカー画像を取得します。
+	 * 
+	 * @return マーカー画像
 	 */
 	private static BufferedImage getMarkImage() {
 		URL resource = ImageUtils.class.getClassLoader().getResource("mark.png");
@@ -432,6 +443,82 @@ public final class ImageUtils {
 	public static BufferedImage trim(BufferedImage image, int trimTop, int trimLeft, int trimBottom, int trimRight) {
 		int width = image.getWidth();
 		int height = image.getHeight();
+		LOG.trace(
+				"(Trim) image(top: {}, left: {}, bottom: {}, right; {}). [w: {}; h: {}] -> [x: {}; y: {}; w: {}; h: {}].",
+				trimTop, trimLeft, trimBottom, trimRight, width, height, trimLeft, trimTop, width - trimLeft
+						- trimRight, height - trimTop - trimBottom);
 		return image.getSubimage(trimLeft, trimTop, width - trimLeft - trimRight, height - trimTop - trimBottom);
+	}
+
+	/**
+	 * 画像を縦に結合し、1枚の画像にします。
+	 * 
+	 * @param images 結合前の画像群
+	 * @return 結合後の画像
+	 */
+	public static BufferedImage verticalMerge(List<BufferedImage> images) {
+		// 結合後の画像サイズを調べる
+		int totalHeight = 0;
+		int totalWidth = -1;
+		for (BufferedImage image : images) {
+			totalHeight += image.getHeight();
+			if (totalWidth < 0) {
+				totalWidth = image.getWidth();
+			}
+		}
+
+		// 画像の結合
+		LOG.trace("(VerticalMerge) new image[{}, {}]", totalWidth, totalHeight);
+		BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics graphics = screenshot.getGraphics();
+		int nextTop = 0;
+		for (BufferedImage image : images) {
+			graphics.drawImage(image, 0, nextTop, null);
+			nextTop += image.getHeight();
+		}
+
+		return screenshot;
+	}
+
+	/**
+	 * 画像を結合し、1枚の画像にします。
+	 * 
+	 * @param images 結合前の画像群
+	 * @return 結合後の画像
+	 */
+	public static BufferedImage merge(List<List<BufferedImage>> images) {
+		// 結合後の画像サイズを調べる
+		int totalHeight = 0;
+		int totalWidth = -1;
+		for (List<BufferedImage> lineImages : images) {
+			totalHeight += lineImages.get(0).getHeight();
+			if (totalWidth < 0) {
+				int width = 0;
+				for (BufferedImage image : lineImages) {
+					width += image.getWidth();
+				}
+				totalWidth = width;
+			}
+		}
+
+		// 画像の結合
+		LOG.trace("(Merge) new image[{}, {}]", totalWidth, totalHeight);
+		BufferedImage screenshot = new BufferedImage(totalWidth, totalHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics graphics = screenshot.getGraphics();
+		int nextTop = 0;
+		for (List<BufferedImage> lineImage : images) {
+			int imgHeight = -1;
+			int nextLeft = 0;
+			for (BufferedImage img : lineImage) {
+				graphics.drawImage(img, nextLeft, nextTop, null);
+				nextLeft += img.getWidth();
+				if (imgHeight < 0) {
+					imgHeight = img.getHeight();
+				}
+			}
+			nextTop += imgHeight;
+		}
+
+		return screenshot;
 	}
 }

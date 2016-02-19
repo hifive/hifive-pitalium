@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,5 +46,4 @@ class PtlInternetExplorer8Driver extends PtlInternetExplorerDriver {
 		BufferedImage screenshot = super.getEntirePageScreenshot();
 		return ImageUtils.trim(screenshot, 2, 2, 2, 2);
 	}
-
 }

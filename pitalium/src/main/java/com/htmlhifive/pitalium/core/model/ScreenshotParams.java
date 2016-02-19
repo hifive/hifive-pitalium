@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,10 @@ package com.htmlhifive.pitalium.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
@@ -26,10 +30,13 @@ import com.htmlhifive.pitalium.image.model.RectangleArea;
  */
 public class ScreenshotParams {
 
+	private static final Logger LOG = LoggerFactory.getLogger(ScreenshotParams.class);
+
 	private final ScreenAreaWrapper target;
 	private final List<ScreenAreaWrapper> excludes;
 	private final List<PtlWebElement> hiddenElements;
 	private final boolean moveTarget;
+	private final boolean scrollTarget;
 	private final Integer index;
 
 	private RectangleArea initialTargetArea;
@@ -42,14 +49,16 @@ public class ScreenshotParams {
 	 * @param excludes 比較時に除外する領域
 	 * @param hiddenElements 撮影時に非表示にする要素
 	 * @param moveTarget 撮影時に対象を定位置に移動させるか否か
+	 * @param scrollTarget 撮影時に対象をスクロールさせるか否か
 	 * @param index インデックス
 	 */
 	public ScreenshotParams(ScreenAreaWrapper target, List<ScreenAreaWrapper> excludes,
-			List<PtlWebElement> hiddenElements, boolean moveTarget, Integer index) {
+			List<PtlWebElement> hiddenElements, boolean moveTarget, boolean scrollTarget, Integer index) {
 		this.target = target;
 		this.excludes = excludes;
 		this.hiddenElements = hiddenElements;
 		this.moveTarget = moveTarget;
+		this.scrollTarget = scrollTarget;
 		this.index = index;
 	}
 
@@ -62,6 +71,9 @@ public class ScreenshotParams {
 		for (ScreenAreaWrapper exclude : excludes) {
 			initialExcludeAreas.add(exclude.getArea());
 		}
+
+		LOG.trace("Update initial area. target: {}; index: {}; targetArea: {}; excludeAreas: {}", target.getParent(),
+				index, initialTargetArea, initialExcludeAreas);
 	}
 
 	/**
@@ -101,6 +113,15 @@ public class ScreenshotParams {
 	}
 
 	/**
+	 * 撮影時に対象をスクロールさせるか否かを取得します。
+	 * 
+	 * @return スクロールさせる場合はtrue、させない場合はfalse
+	 */
+	public boolean isScrollTarget() {
+		return scrollTarget;
+	}
+
+	/**
 	 * インデックスを取得します。
 	 * 
 	 * @return インデックス番号
@@ -125,6 +146,11 @@ public class ScreenshotParams {
 	 */
 	public List<RectangleArea> getInitialExcludeAreas() {
 		return initialExcludeAreas;
+	}
+
+	@Override
+	public String toString() {
+		return JSONUtils.toString(this);
 	}
 
 }

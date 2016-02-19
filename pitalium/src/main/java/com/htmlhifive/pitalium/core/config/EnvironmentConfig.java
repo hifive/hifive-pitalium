@@ -1,6 +1,5 @@
 /*
- /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,6 +78,11 @@ public class EnvironmentConfig implements Serializable {
 	 * WebDriverセッションの利用レベル
 	 */
 	private WebDriverSessionLevel webDriverSessionLevel = WebDriverSessionLevel.TEST_CASE;
+
+	/**
+	 * デバッグモード実行フラグ
+	 */
+	private boolean debug = false;
 
 	/**
 	 * デフォルトの設定値を持つオブジェクトを生成します。
@@ -168,6 +172,15 @@ public class EnvironmentConfig implements Serializable {
 	}
 
 	/**
+	 * デバッグモード実行フラグを取得します。
+	 * 
+	 * @return デバッグモード実行フラグ
+	 */
+	public boolean isDebug() {
+		return debug;
+	}
+
+	/**
 	 * テスト実行モードを設定します。
 	 * 
 	 * @param execMode テスト実行モード
@@ -248,19 +261,41 @@ public class EnvironmentConfig implements Serializable {
 		this.webDriverSessionLevel = webDriverSessionLevel;
 	}
 
+	/**
+	 * デバッグモード実行フラグを設定します。
+	 * 
+	 * @param debug デバッグモード実行フラグ
+	 */
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
 	@Override
 	public String toString() {
 		return JSONUtils.toString(this);
 	}
 
+	/**
+	 * {@link EnvironmentConfig}を構築するためのビルダーオブジェクトを取得します。
+	 * 
+	 * @return ビルダーオブジェクト
+	 */
 	public static Builder builder() {
 		return new Builder();
 	}
 
+	/**
+	 * 実行環境の設定を構築するクラス。
+	 */
 	public static class Builder {
 
 		private final EnvironmentConfig config = new EnvironmentConfig();
 
+		/**
+		 * このビルダーに対して指定した実行環境の設定を持つオブジェクトを生成します。
+		 * 
+		 * @return 実行環境の設定
+		 */
 		public EnvironmentConfig build() {
 			final EnvironmentConfig ev = new EnvironmentConfig();
 			ev.setExecMode(config.execMode);
@@ -272,51 +307,111 @@ public class EnvironmentConfig implements Serializable {
 			ev.setCapabilitiesFilePath(config.capabilitiesFilePath);
 			ev.setPersister(config.persister);
 			ev.setWebDriverSessionLevel(config.webDriverSessionLevel);
+			ev.setDebug(config.debug);
 			return ev;
 		}
 
+		/**
+		 * テスト実行モードを設定します。
+		 * 
+		 * @param execMode テスト実行モード
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder execMode(ExecMode execMode) {
 			config.execMode = execMode;
 			return this;
 		}
 
+		/**
+		 * Selenium Grid Hubのホスト名、またはIPアドレスを設定します。
+		 * 
+		 * @param hubHost Selenium Grid Hubのホスト名、またはIPアドレス
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder hubHost(String hubHost) {
 			config.hubHost = hubHost;
 			return this;
 		}
 
+		/**
+		 * Selenium Grid Hubのポート番号を設定します。
+		 * 
+		 * @param hubPort Selenium Grid Hubのポート番号
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder hubPort(int hubPort) {
 			config.hubPort = hubPort;
 			return this;
 		}
 
+		/**
+		 * テストスレッドの同時最大実行数を設定します。
+		 * 
+		 * @param maxThreadCount テストスレッドの同時最大実行数
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder maxThreadCount(int maxThreadCount) {
 			config.maxThreadCount = maxThreadCount;
 			return this;
 		}
 
+		/**
+		 * テストスレッドの最大実行時間を設定します。
+		 * 
+		 * @param maxThreadExecuteTime テストスレッドの最大実行時間
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder maxThreadExecuteTime(int maxThreadExecuteTime) {
 			config.maxThreadExecuteTime = maxThreadExecuteTime;
 			return this;
 		}
 
+		/**
+		 * WebDriverによるブラウザ操作の最大待ち時間を設定します。
+		 * 
+		 * @param maxDriverWait WebDriverによるブラウザ操作の最大待ち時間
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder maxDriverWait(int maxDriverWait) {
 			config.maxDriverWait = maxDriverWait;
 			return this;
 		}
 
+		/**
+		 * Capabilitie設定ファイルのファイルパスを設定します。
+		 * 
+		 * @param capabilitiesFilePath Capabilitie設定ファイルのファイルパス
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder capabilitiesFilePath(String capabilitiesFilePath) {
 			config.capabilitiesFilePath = capabilitiesFilePath;
 			return this;
 		}
 
+		/**
+		 * 実行結果保存に用いるPersister名を設定します。
+		 * 
+		 * @param persister 実行結果保存に用いるPersister名
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder persister(String persister) {
 			config.persister = persister;
 			return this;
 		}
 
+		/**
+		 * WebDriverセッションの利用レベルを設定します。
+		 * 
+		 * @param webDriverSessionLevel WebDriverセッションの利用レベル
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder webDriverSessionLevel(WebDriverSessionLevel webDriverSessionLevel) {
 			config.webDriverSessionLevel = webDriverSessionLevel;
+			return this;
+		}
+
+		public Builder debug(boolean debug) {
+			config.debug = debug;
 			return this;
 		}
 

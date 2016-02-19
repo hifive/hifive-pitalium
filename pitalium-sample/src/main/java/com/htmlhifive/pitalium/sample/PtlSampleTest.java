@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.htmlhifive.pitalium.core.PtlTestBase;
-import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.DomSelector;
-import com.htmlhifive.pitalium.core.model.ScreenArea;
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.core.model.SelectorType;
+import com.htmlhifive.pitalium.core.selenium.DoubleValueRect;
 import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 
 /**
@@ -35,25 +35,28 @@ import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
  */
 public class PtlSampleTest extends PtlTestBase {
 
-	private static final DomSelector[] HIDE_ELEMENTS = { new DomSelector(SelectorType.CLASS_NAME, "gototop") };
+	private static final DomSelector GOTOTOP_DOM_ELEMENT = new DomSelector(SelectorType.CLASS_NAME, "gototop");
 
 	@Test
 	public void testCaptureTop() throws Exception {
 		driver.get("");
 
-		CompareTarget[] targets = {
-				new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), new ScreenArea[] { ScreenArea.of(
-						SelectorType.CLASS_NAME, "fb-like-box") }, true),
-				new CompareTarget(ScreenArea.of(SelectorType.ID, "about")) };
+		ScreenshotArgument arg = ScreenshotArgument.builder("sampleCapture")
+				// 撮影対象を指定
+				.addNewTarget()
+					.addExclude(SelectorType.CLASS_NAME, "fb-like-box")
+				.addNewTarget(SelectorType.ID, "about")
+				.build();
 
-		JavascriptExecutor jse = (JavascriptExecutor) driver;
-		jse.executeScript("document.getElementById('about').style.marginTop='20px';");
+		driver.executeScript("document.getElementById('about').style.marginTop='20px';");
 
-		// 画面キャプチャ
+		// ロードの完了を待つ（hifiveサイトではfacebookプラグインの表示）
 		Wait<WebDriver> wait = new WebDriverWait(driver, 30);
-		wait.until(ExpectedConditions.presenceOfElementLocated(By
-				.cssSelector("iframe[title=\"fb:like_box Facebook Social Plugin\"]")));
-		assertionView.assertView("sampleCapture", targets, HIDE_ELEMENTS);
+		wait.until(ExpectedConditions
+				.presenceOfElementLocated(By.cssSelector("iframe[title=\"fb:like_box Facebook Social Plugin\"]")));
+		
+		// 画面キャプチャ
+		assertionView.assertView(arg);
 	}
 
 	@Test
@@ -62,7 +65,14 @@ public class PtlSampleTest extends PtlTestBase {
 		driver.get(url);
 
 		// 画面キャプチャ
-		assertionView.assertView("tutorial13", null, HIDE_ELEMENTS);
+		ScreenshotArgument arg = ScreenshotArgument.builder("tutorial13")
+				// 撮影対象を指定
+				.addNewTarget()
+				.addHiddenElementSelectors(GOTOTOP_DOM_ELEMENT)
+				.build();
+		
+		// 画面キャプチャ
+		assertionView.assertView(arg);
 	}
 
 	@Test
@@ -72,12 +82,19 @@ public class PtlSampleTest extends PtlTestBase {
 
 		PtlWebElement e = (PtlWebElement) driver.findElement(By.cssSelector(".wikimodel-freestanding"));
 
-		JavascriptExecutor jse = (JavascriptExecutor) driver;
-		jse.executeScript("arguments[0].width=arguments[1]", e, e.getRect().getWidth());
-		jse.executeScript("arguments[0].height=arguments[1]", e, e.getRect().getHeight());
-		jse.executeScript("arguments[0].src=''", e);
+		DoubleValueRect rect = e.getDoubleValueRect();
+		driver.executeScript("arguments[0].width=arguments[1]", e, rect.getWidth());
+		driver.executeScript("arguments[0].height=arguments[1]", e, rect.getHeight());
+		driver.executeScript("arguments[0].src=''", e);
 
 		// 画面キャプチャ
-		assertionView.assertView("tutorial13", null, HIDE_ELEMENTS);
+		ScreenshotArgument arg = ScreenshotArgument.builder("tutorialTop")
+				// 撮影対象を指定
+				.addNewTarget()
+				.addHiddenElementSelectors(GOTOTOP_DOM_ELEMENT)
+				.build();
+		
+		// 画面キャプチャ
+		assertionView.assertView(arg);
 	}
 }

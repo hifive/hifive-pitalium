@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -107,12 +108,14 @@ public final class TestResultManager {
 
 			expects = Collections.unmodifiableMap(expects);
 		} catch (ResourceUnavailableException e) {
-			LOG.info("ExpectedIds is not exists.");
+			LOG.info("Failed to load ExpectedIds.");
 
 			expects = Collections.emptyMap();
 		}
 
 		expectedIds = expects;
+
+		LOG.trace("Mode: {}, Persister: {}, ExpectedIds: {}", currentMode, persister.getClass(), expectedIds);
 	}
 
 	/**
@@ -160,6 +163,7 @@ public final class TestResultManager {
 				throw new TestRuntimeException("TestResult already exists for " + className);
 			}
 
+			LOG.trace("[Initialize TestResult] ({})", className);
 			holders.put(className, new ScreenshotResultHolder());
 		}
 	}
@@ -175,11 +179,14 @@ public final class TestResultManager {
 				throw new TestRuntimeException("TestResult does not exist for " + className);
 			}
 
+			LOG.trace("[Export TestResult] ({})", className);
+
 			ScreenshotResultHolder holder = holders.get(className);
 			ExecResult execResult = null;
 			if (holder.result != null) {
 				execResult = holder.result ? ExecResult.SUCCESS : ExecResult.FAILURE;
 			}
+
 			TestResult result = new TestResult(currentId, execResult, holder.screenshotResults);
 			persister.saveTestResult(new PersistMetadata(currentId, className), result);
 		}
@@ -197,6 +204,9 @@ public final class TestResultManager {
 				throw new TestRuntimeException("TestResult does not exist for " + className);
 			}
 
+			LOG.debug("[Add ScreenshotResult] ({})", className);
+			LOG.trace("[Add ScreenshotResult] ({})", result);
+
 			ScreenshotResultHolder holder = holders.get(className);
 			holder.screenshotResults.add(result);
 			if (result.getResult() != null) {
@@ -206,6 +216,7 @@ public final class TestResultManager {
 					}
 				} else {
 					holder.result = false;
+					LOG.debug("Test failed. ({})", className);
 				}
 			}
 		}
@@ -268,7 +279,7 @@ public final class TestResultManager {
 			}
 
 			String oldId = holder.expectIds.put(methodName, currentId);
-			LOG.debug("Update expectedId [{}#{}] {} => {}", className, methodName, oldId, currentId);
+			LOG.debug("[Update ExpectedId] (class: {}, method: {}) ({} => {})", className, methodName, oldId, currentId);
 		}
 	}
 
@@ -292,6 +303,7 @@ public final class TestResultManager {
 			}
 
 			holder.failed = true;
+			LOG.debug("[Update ExpectedId cancelled] ({})", className);
 		}
 	}
 
@@ -307,12 +319,12 @@ public final class TestResultManager {
 
 		synchronized (expectedIdsForUpdate) {
 			if (!expectedIdsForUpdate.containsKey(className)) {
-				throw new TestRuntimeException(String.format("ExpectedId for %s does not exist.", className));
+				throw new TestRuntimeException(String.format(Locale.US, "ExpectedId for %s does not exist.", className));
 			}
 
 			ExpectIdHolder holder = expectedIdsForUpdate.get(className);
 			if (holder.failed) {
-				LOG.debug("TestClass {} was failed. Update ExpectedIds cancelled.");
+				LOG.info("[Export ExpectedIds] cancelled. ({})", className);
 				return;
 			}
 
@@ -323,19 +335,23 @@ public final class TestResultManager {
 			}
 
 			values.putAll(holder.expectIds);
+			LOG.debug("[Export ExpectedIds] merged. ({})", className);
+			LOG.trace("[Export ExpectedIds] merged. {}", holder.expectIds);
+
+			LOG.info("[Export ExpectedIds] ({})", className);
 			persister.saveExpectedIds(mergedExpectedIds);
 		}
 	}
 
 	private static class ScreenshotResultHolder {
-		private final List<ScreenshotResult> screenshotResults = new ArrayList<ScreenshotResult>();
-		private Boolean result;
+		public final List<ScreenshotResult> screenshotResults = new ArrayList<ScreenshotResult>();
+		public Boolean result;
 	}
 
 	private static class ExpectIdHolder {
-		private final Map<String, String> expectIds = new HashMap<String, String>();
+		public final Map<String, String> expectIds = new HashMap<String, String>();
 		// テスト成否。初期値はfalse
-		private boolean failed;
+		public boolean failed;
 	}
 
 	//</editor-fold>

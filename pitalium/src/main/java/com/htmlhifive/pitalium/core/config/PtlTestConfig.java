@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,9 @@ public class PtlTestConfig {
 	private PersisterConfig persisterConfig;
 	private TestAppConfig testApp;
 
+	/**
+	 * コンストラクタ
+	 */
 	private PtlTestConfig() {
 		this(getSystemStartupArguments());
 	}
@@ -124,6 +127,7 @@ public class PtlTestConfig {
 		synchronized (configs) {
 			// Check cached
 			if (configs.containsKey(name)) {
+				LOG.trace("[Load config] use cached ({}).", name);
 				return (T) configs.get(name);
 			}
 
@@ -143,9 +147,12 @@ public class PtlTestConfig {
 			}
 
 			T config = loadConfig(clss, startupArguments.get(argumentName), defaultFileName);
+			LOG.trace("[Load config] original values ({}): {}", name, config);
 			fillConfigProperties(config, startupArguments);
+			LOG.debug("[Load config] ({}): {}", name, config);
 
 			configs.put(name, config);
+			LOG.trace("[Load config] config cached ({})", name);
 			return config;
 		}
 	}
@@ -198,6 +205,8 @@ public class PtlTestConfig {
 				Object applyValue = convertFromString(field.getType(), value);
 				field.setAccessible(true);
 				field.set(object, applyValue);
+				LOG.trace("[Load config] override property ({}). [{} => {}]", clss.getSimpleName(), field.getName(),
+						applyValue);
 			} catch (TestRuntimeException e) {
 				throw e;
 			} catch (Exception e) {
@@ -240,15 +249,12 @@ public class PtlTestConfig {
 	 * @return ツール共通設定
 	 */
 	public EnvironmentConfig getEnvironment() {
-
 		synchronized (this) {
 			if (environment != null) {
 				return environment;
 			}
 
 			environment = getConfig(EnvironmentConfig.class);
-
-			LOG.debug("environment: {}", environment);
 			return environment;
 		}
 	}
@@ -259,15 +265,12 @@ public class PtlTestConfig {
 	 * @return テスト対象ページの共通設定
 	 */
 	public TestAppConfig getTestAppConfig() {
-
 		synchronized (this) {
 			if (testApp != null) {
 				return testApp;
 			}
 
 			testApp = getConfig(TestAppConfig.class);
-
-			LOG.debug("testApp: {}", testApp);
 			return testApp;
 		}
 	}
@@ -278,15 +281,12 @@ public class PtlTestConfig {
 	 * @return 画像やテスト結果の入出力に関する設定
 	 */
 	public PersisterConfig getPersisterConfig() {
-
 		synchronized (this) {
 			if (persisterConfig != null) {
 				return persisterConfig;
 			}
 
 			persisterConfig = getConfig(PersisterConfig.class);
-
-			LOG.debug("persisterConfig: {}", persisterConfig);
 			return persisterConfig;
 		}
 	}
@@ -294,15 +294,19 @@ public class PtlTestConfig {
 	/**
 	 * 設定情報をファイルから読み出します。
 	 * 
+	 * @param <T> 読み出すクラスの型
 	 * @param clss 読み出すクラス
 	 * @param fileName ファイル名
 	 * @param defaultFileName デフォルトのファイル名
+	 * @return 読み出した結果から生成したオブジェクト
 	 */
 	private <T> T loadConfig(Class<T> clss, String fileName, String defaultFileName) {
+		LOG.trace("[Load config] ({}). FileName: {}, DefaultFileName: {}", clss.getSimpleName(), fileName,
+				defaultFileName);
+
 		// ファイル名が指定されている場合、ファイルから設定情報を取得
 		// 取得に失敗した場合エラーを投げる
 		if (!Strings.isNullOrEmpty(fileName)) {
-			LOG.debug("{} fileName: {}", clss.getSimpleName(), fileName);
 			try {
 				return JSONUtils.readValue(new File(fileName), clss);
 			} catch (JSONException e) {
@@ -310,8 +314,8 @@ public class PtlTestConfig {
 					return JSONUtils
 							.readValue(PtlTestConfig.class.getClassLoader().getResourceAsStream(fileName), clss);
 				} catch (JSONException e1) {
-					LOG.error(String.format("Load config file failed. Config: %s, File: %s.", clss.getSimpleName(),
-							fileName), e1);
+					LOG.error("[Load config] failed to load config file. (class: {}, file: {})", clss.getSimpleName(),
+							fileName, e1);
 					throw e1;
 				}
 			}
@@ -322,8 +326,8 @@ public class PtlTestConfig {
 		try {
 			return JSONUtils.readValue(PtlTestConfig.class.getClassLoader().getResourceAsStream(defaultFileName), clss);
 		} catch (JSONException e) {
-			LOG.debug("Load config file failed as \"{}\". Config: {}, File: {}.", e.getMessage(), clss.getSimpleName(),
-					defaultFileName);
+			LOG.debug("[Load config] failed to load config file. ({}) (class: {}, file: {})", e.getMessage(),
+					clss.getSimpleName(), defaultFileName, e);
 		}
 
 		// デフォルトコンストラクタでインスタンス作成

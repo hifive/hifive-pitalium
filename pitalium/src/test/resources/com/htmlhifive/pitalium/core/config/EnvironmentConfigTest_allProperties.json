@@ -6,5 +6,6 @@
 	"maxThreadExecuteTime": 200,
 	"maxDriverWait": 300,
 	"capabilitiesFilePath": "test.json",
-	"persister": "test"
+	"persister": "test",
+	"debug": true
 }

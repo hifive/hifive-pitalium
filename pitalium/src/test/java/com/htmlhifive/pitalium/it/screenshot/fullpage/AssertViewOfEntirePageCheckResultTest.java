@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class AssertViewOfEntirePageCheckResultTest extends PtlTestBase {
 		JsonNode rectangleNode = targetNode.get("rectangle");
 
 		// TODO: モバイルはscaleのためにマージンが変わるが、テスト側で検知できないので目視確認
-		if (!"iOS".equals(capabilities.getPlatformName()) && !"Android".equals(capabilities.getPlatformName())) {
+		if (!"iOS".equals(capabilities.getPlatformName()) && !"ANDROID".equals(capabilities.getPlatformName())) {
 			int margin = withMargin ? 100 : 0;
 			if (capabilities.getBrowserName().equals("internet explorer") && capabilities.getVersion().equals("7")) {
 				margin += 2;

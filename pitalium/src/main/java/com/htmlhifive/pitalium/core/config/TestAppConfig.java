@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,32 +101,66 @@ public class TestAppConfig {
 		return JSONUtils.toString(this);
 	}
 
+	/**
+	 * {@link TestAppConfig}を構築するためのビルダーオブジェクトを取得します。
+	 * 
+	 * @return ビルダーオブジェクト
+	 */
 	public static Builder builder() {
 		return new Builder();
 	}
 
+	/**
+	 * テスト対象アプリケーションの設定を構築するクラス。
+	 */
 	public static class Builder {
 
-		final TestAppConfig config = new TestAppConfig();
+		/**
+		 * 設定を保持するための{@link TestAppConfig}
+		 */
+		private final TestAppConfig config = new TestAppConfig();
 
+		/**
+		 * このビルダーに対して指定したテスト対象アプリケーションの設定を持つオブジェクトを生成します。
+		 * 
+		 * @return テスト対象アプリケーションの設定
+		 */
 		public TestAppConfig build() {
-			TestAppConfig config = new TestAppConfig();
-			config.setBaseUrl(this.config.baseUrl);
-			config.setWindowWidth(this.config.windowWidth);
-			config.setWindowHeight(this.config.windowHeight);
-			return config;
+			TestAppConfig buildConfig = new TestAppConfig();
+			buildConfig.setBaseUrl(this.config.baseUrl);
+			buildConfig.setWindowWidth(this.config.windowWidth);
+			buildConfig.setWindowHeight(this.config.windowHeight);
+			return buildConfig;
 		}
 
+		/**
+		 * テスト対象アプリケーションのベースURLを設定します。
+		 * 
+		 * @param baseUrl ベースURL
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder baseUrl(String baseUrl) {
 			config.baseUrl = baseUrl;
 			return this;
 		}
 
+		/**
+		 * テスト実行時のウィンドウ幅を設定します。
+		 * 
+		 * @param windowWidth ウィンドウ幅
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder windowWidth(int windowWidth) {
 			config.windowWidth = windowWidth;
 			return this;
 		}
 
+		/**
+		 * テスト実行時のウィンドウの高さを設定します。
+		 * 
+		 * @param windowHeight ウィンドウの高さ
+		 * @return このビルダーオブジェクト自身
+		 */
 		public Builder windowHeight(int windowHeight) {
 			config.windowHeight = windowHeight;
 			return this;

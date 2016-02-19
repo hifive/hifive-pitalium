@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.junit.runners.model.Statement;
 
 /**
  * {@link org.junit.runners.Parameterized.Parameters}で設定した値を受け取ることができる{@link org.junit.rules.TestRule}
- *
+ * 
  * @see org.junit.Rule
  * @see org.junit.rules.TestRule
  * @author nakatani

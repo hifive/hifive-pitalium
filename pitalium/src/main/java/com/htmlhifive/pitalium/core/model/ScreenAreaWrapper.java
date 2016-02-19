@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,13 @@ package com.htmlhifive.pitalium.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
-import com.htmlhifive.pitalium.core.selenium.WebElementRect;
+import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
+import com.htmlhifive.pitalium.core.selenium.DoubleValueRect;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
 /**
@@ -50,7 +52,7 @@ public abstract class ScreenAreaWrapper {
 
 	/**
 	 * コンストラクタ
-	 *
+	 * 
 	 * @param parent 生成元のScreenArea
 	 * @param driver WebDriver
 	 * @param element 対応するWebElement
@@ -63,7 +65,7 @@ public abstract class ScreenAreaWrapper {
 
 	/**
 	 * 生成元の{@link ScreenArea}を取得します。
-	 *
+	 * 
 	 * @return ScreenAreaオブジェクト
 	 */
 	public ScreenArea getParent() {
@@ -72,7 +74,7 @@ public abstract class ScreenAreaWrapper {
 
 	/**
 	 * WebDriverを取得します。
-	 *
+	 * 
 	 * @return WebDriver
 	 */
 	public PtlWebDriver getDriver() {
@@ -81,7 +83,7 @@ public abstract class ScreenAreaWrapper {
 
 	/**
 	 * 対応するWebElementを取得します。
-	 *
+	 * 
 	 * @return WebElement
 	 */
 	public PtlWebElement getElement() {
@@ -90,21 +92,21 @@ public abstract class ScreenAreaWrapper {
 
 	/**
 	 * セレクターを取得します。
-	 *
+	 * 
 	 * @return セレクタ
 	 */
 	public abstract DomSelector getSelector();
 
 	/**
 	 * 指定のエリア情報を取得します。
-	 *
+	 * 
 	 * @return 指定されたエリア
 	 */
 	public abstract RectangleArea getTargetArea();
 
 	/**
 	 * スクリーンショット上のエリア情報を取得します。
-	 *
+	 * 
 	 * @return 撮影したエリア
 	 */
 	public RectangleArea getArea() {
@@ -113,7 +115,7 @@ public abstract class ScreenAreaWrapper {
 
 	/**
 	 * 矩形領域を設定します。
-	 *
+	 * 
 	 * @param area 矩形領域
 	 */
 	public void setArea(RectangleArea area) {
@@ -122,21 +124,21 @@ public abstract class ScreenAreaWrapper {
 
 	/**
 	 * 指定対象がbodyであるかどうかを取得します。
-	 *
+	 * 
 	 * @return bodyならtrue、それ以外の場合はfalse
 	 */
 	public abstract boolean isBody();
 
 	/**
 	 * 現在の位置を更新します。
-	 *
+	 * 
 	 * @param scale 表示スケール
 	 */
 	public abstract void updatePosition(double scale);
 
 	/**
 	 * 現在の位置を更新します。
-	 *
+	 * 
 	 * @param scale 表示スケール
 	 * @param moveX X方向の移動量
 	 * @param moveY Y方向の移動量
@@ -145,7 +147,7 @@ public abstract class ScreenAreaWrapper {
 
 	/**
 	 * 対象要素の子要素のラッパーを取得します。
-	 *
+	 * 
 	 * @param target 対象要素
 	 * @return ラッパーのリスト
 	 */
@@ -153,7 +155,7 @@ public abstract class ScreenAreaWrapper {
 
 	/**
 	 * {@link ScreenArea}を受け取ってラッパーを提供します。セレクタに一致する要素が複数ある場合は、その数だけラッパーを生成します。
-	 *
+	 * 
 	 * @param screenArea 対象の{@link ScreenArea}
 	 * @param driver WebDriver
 	 * @param element 親要素。この要素以下でセレクタに一致する要素を探索します。
@@ -169,7 +171,7 @@ public abstract class ScreenAreaWrapper {
 
 	/**
 	 * 矩形領域を表現するためのScreenAreaWrapperクラスを生成します。
-	 *
+	 * 
 	 * @param screenArea 生成元のScreenArea
 	 * @param driver WebDriver
 	 * @param element 対応するWebElement
@@ -184,7 +186,7 @@ public abstract class ScreenAreaWrapper {
 
 	/**
 	 * DOM要素を表現するためのScreenAreaWrapperクラスを生成します。
-	 *
+	 * 
 	 * @param screenArea 生成元のScreenArea
 	 * @param driver WebDriver
 	 * @param element 対応するWebElement
@@ -218,6 +220,8 @@ public abstract class ScreenAreaWrapper {
 	 */
 	static class DomScreenAreaWrapper extends ScreenAreaWrapper {
 
+		private static final Logger LOG = LoggerFactory.getLogger(DomScreenAreaWrapper.class);
+
 		/**
 		 * DOM要素のセレクタ
 		 */
@@ -225,7 +229,7 @@ public abstract class ScreenAreaWrapper {
 
 		/**
 		 * コンストラクタ
-		 *
+		 * 
 		 * @param parent 生成元のScreenArea
 		 * @param driver WebDriver
 		 * @param element 対応するWebElement
@@ -253,12 +257,14 @@ public abstract class ScreenAreaWrapper {
 
 		@Override
 		public void updatePosition(double scale) {
-			WebElementRect rect = element.getRect();
+			DoubleValueRect rect = element.getDoubleValueRect();
+			LOG.trace("Position update. scale: {}; rect: {} ({})", scale, rect, element);
 
 			area = new RectangleArea(rect.getLeft(), rect.getTop(), rect.getWidth(), rect.getHeight());
 			if (scale != PtlWebDriver.DEFAULT_SCREENSHOT_SCALE) {
 				area = area.applyScale(scale);
 			}
+			LOG.debug("Position updated. {} ({})", area, element);
 		}
 
 		@Override
@@ -281,6 +287,8 @@ public abstract class ScreenAreaWrapper {
 	 */
 	static class RectangleScreenAreaWrapper extends ScreenAreaWrapper {
 
+		private static final Logger LOG = LoggerFactory.getLogger(RectangleScreenAreaWrapper.class);
+
 		/**
 		 * 指定された矩形領域
 		 */
@@ -288,7 +296,7 @@ public abstract class ScreenAreaWrapper {
 
 		/**
 		 * コンストラクタ
-		 *
+		 * 
 		 * @param parent 生成元のScreenArea
 		 * @param driver WebDriver
 		 * @param element 対応するWebElement
@@ -317,13 +325,16 @@ public abstract class ScreenAreaWrapper {
 		@Override
 		public void updatePosition(double scale) {
 			area = scale == 0d ? target : target.applyScale(scale);
+			LOG.debug("Position updated. {} ({})", area, target);
 		}
 
 		@Override
 		public void updatePosition(double scale, double moveX, double moveY) {
+			LOG.trace("Position update. scale: {}; x: {}; y: {} ({})", scale, moveX, moveY, element);
 			RectangleArea area = new RectangleArea(target.getX() - moveX, target.getY() - moveX, target.getWidth(),
 					target.getHeight());
 			this.area = scale == PtlWebDriver.DEFAULT_SCREENSHOT_SCALE ? area : area.applyScale(scale);
+			LOG.debug("Position updated. {} ({})", area, target);
 		}
 
 		@Override

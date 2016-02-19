@@ -1,7 +1,4 @@
 results/
-libs/*
-libs/sources/*
-!libs/pitalium-*
-!libs/sources/
+libs/
 target/
-/logs/
+logs/

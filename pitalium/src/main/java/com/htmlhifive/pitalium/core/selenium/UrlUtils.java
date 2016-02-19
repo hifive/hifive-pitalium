@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,9 @@ final class UrlUtils {
 
 	private static final Pattern HTTP_PREFIX_PATTERN = Pattern.compile("^https?://");
 
+	/**
+	 * コンストラクタ
+	 */
 	private UrlUtils() {
 	}
 

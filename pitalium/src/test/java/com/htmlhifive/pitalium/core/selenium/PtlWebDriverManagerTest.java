@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,16 @@
 
 package com.htmlhifive.pitalium.core.selenium;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.powermock.api.mockito.PowerMockito.*;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -30,9 +33,15 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.annotation.PtlWebDriverStrategy;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
@@ -41,6 +50,9 @@ import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
 /**
  * WebDriverManagerとWebDriverStrategy、reuseDriverForAllClassesのテスト
  */
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore("javax.net.ssl.*")
+@PrepareForTest(PtlCapabilities.class)
 public class PtlWebDriverManagerTest {
 
 	//<editor-fold desc="TestClasses">
@@ -138,6 +150,26 @@ public class PtlWebDriverManagerTest {
 
 	@Before
 	public void prepare() throws Exception {
+		// Mock capabilities
+		List<PtlCapabilities[]> mockCapabilities = new ArrayList<PtlCapabilities[]>(2);
+		mockStatic(PtlCapabilities.class);
+		when(PtlCapabilities.readCapabilities()).thenReturn(mockCapabilities);
+
+		// Read capabilities from file
+		InputStream in = null;
+		try {
+			in = getClass().getResourceAsStream("PtlWebDriverManagerTest_capabilities.json");
+			List<Map<String, Object>> maps = JSONUtils.readValue(in, new TypeReference<List<Map<String, Object>>>() {
+			});
+			for (Map<String, Object> map : maps) {
+				mockCapabilities.add(new PtlCapabilities[] { new PtlCapabilities(map) });
+			}
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+		}
+
 		drivers = new HashSet<WebDriver>();
 		driverInstanceIds = new HashMap<Capabilities, Map<Integer, Integer>>();
 		for (PtlCapabilities[] capabilities : PtlCapabilities.readCapabilities()) {
@@ -161,7 +193,8 @@ public class PtlWebDriverManagerTest {
 
 	@AfterClass
 	public static void resetDriverManager() throws Exception {
-		PtlWebDriverManager.getInstance().resetCache(PtlTestConfig.getInstance().getEnvironment().getWebDriverSessionLevel());
+		PtlWebDriverManager.getInstance().resetCache(
+				PtlTestConfig.getInstance().getEnvironment().getWebDriverSessionLevel());
 	}
 
 	/**
@@ -189,8 +222,7 @@ public class PtlWebDriverManagerTest {
 
 			// NO_ANNOTATED_1 - 1,2 / NO_ANNOTATED_2 - 1,2 / ANNOTATED_ONLY - 1,2 /
 			// ANNOTATED_USE_CONFIG - 1,2 / ANNOTATED_GLOBAL - 1,2
-			int[] classIds = { NO_ANNOTATION_1, NO_ANNOTATION_2, ANNOTATED_ONLY, ANNOTATED_USE_CONFIG,
-					ANNOTATED_GLOBAL };
+			int[] classIds = { NO_ANNOTATION_1, NO_ANNOTATION_2, ANNOTATED_ONLY, ANNOTATED_USE_CONFIG, ANNOTATED_GLOBAL };
 
 			int expect1 = instanceIds.get(NO_ANNOTATION_1 | TEST_1);
 			for (int classId : classIds) {
@@ -269,8 +301,7 @@ public class PtlWebDriverManagerTest {
 			assertThat(instanceIds.size(), is(14));
 			assertThat(new HashSet<Integer>(instanceIds.values()).size(), is(12));
 
-			assertThat(instanceIds.get(ANNOTATED_GLOBAL | TEST_1),
-					is(instanceIds.get(ANNOTATED_GLOBAL | TEST_2)));
+			assertThat(instanceIds.get(ANNOTATED_GLOBAL | TEST_1), is(instanceIds.get(ANNOTATED_GLOBAL | TEST_2)));
 			assertThat(instanceIds.get(ANNOTATED_TEST_CLASS | TEST_1),
 					is(instanceIds.get(ANNOTATED_TEST_CLASS | TEST_2)));
 		}

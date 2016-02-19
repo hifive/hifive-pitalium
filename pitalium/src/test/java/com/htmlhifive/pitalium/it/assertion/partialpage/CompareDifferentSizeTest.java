@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class CompareDifferentSizeTest extends PtlTestBase {
 
 		List<CompareTarget> targets = new ArrayList<CompareTarget>();
 		targets.add(new CompareTarget(ScreenArea.of(SelectorType.CSS_SELECTOR, "#about")));
-		assertionView.assertView("compareDifferentFontColor", targets);
+		assertionView.assertView("compareDifferentWidth", targets);
 	}
 
 	/**
@@ -87,6 +87,6 @@ public class CompareDifferentSizeTest extends PtlTestBase {
 
 		List<CompareTarget> targets = new ArrayList<CompareTarget>();
 		targets.add(new CompareTarget(ScreenArea.of(SelectorType.CSS_SELECTOR, "#about")));
-		assertionView.assertView("compareDifferentFontColor", targets);
+		assertionView.assertView("compareDifferentHeight", targets);
 	}
 }

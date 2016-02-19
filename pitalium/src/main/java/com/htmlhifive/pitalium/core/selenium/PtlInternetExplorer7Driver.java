@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ class PtlInternetExplorer7Driver extends PtlInternetExplorer8Driver {
 	}
 
 	@Override
-	protected boolean canHideScrollbar() {
+	protected boolean canHideBodyScrollbar() {
 		return false;
 	}
 
@@ -50,12 +50,14 @@ class PtlInternetExplorer7Driver extends PtlInternetExplorer8Driver {
 	@Override
 	public long getCurrentPageHeight() {
 		String docMode = executeJavaScript("return document.compatMode;");
-		if (docMode.equals("BackCompat")) {
+		if ("BackCompat".equals(docMode)) {
 			// 互換モード時はbodyのgetBoundingClientRect().topが取得できないため、scrollHeightを返す
 			PtlWebElement bodyElement = (PtlWebElement) findElementByTagName("body");
 			Number scrollHeight = executeJavaScript(
 					"var _scrollHeight = arguments[0].scrollHeight; return _scrollHeight", bodyElement);
-			return scrollHeight.longValue();
+			long result = scrollHeight.longValue();
+			LOG.trace("(GetCurrentPageHeight) [{}]", result);
+			return result;
 		}
 
 		return super.getCurrentPageHeight();

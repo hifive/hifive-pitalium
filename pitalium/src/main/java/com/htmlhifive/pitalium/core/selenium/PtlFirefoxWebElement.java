@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,15 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Firefoxで利用する{@link org.openqa.selenium.WebElement}
  */
 class PtlFirefoxWebElement extends PtlWebElement {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PtlFirefoxWebElement.class);
 
 	/**
 	 * コンストラクタ
@@ -26,4 +31,30 @@ class PtlFirefoxWebElement extends PtlWebElement {
 	PtlFirefoxWebElement() {
 	}
 
+	@Override
+	public long getClientHeight() {
+		long clientHeight = super.getClientHeight();
+		// firefoxのtextareaは上下paddingが常に表示されるため、padding分を除く
+		if ("textarea".equals(getTagName())) {
+			WebElementPadding padding = getPadding();
+			clientHeight -= (int) Math.round(padding.getTop()) + (int) Math.round(padding.getBottom());
+		}
+		LOG.trace("(GetClientHeight) [{}] ({})", clientHeight, this);
+		return clientHeight;
+	}
+
+	@Override
+	protected int getContainedPaddingHeight(int i, int size) {
+		int padding = super.getContainedPaddingHeight(i, size);
+		if ("textarea".equals(getTagName())) {
+			WebElementPadding targetPadding = getPadding();
+			if (i <= 0) {
+				padding += (int) Math.round(targetPadding.getTop());
+			} else if (i >= size - 1) {
+				padding += (int) Math.round(targetPadding.getBottom());
+			}
+		}
+		LOG.trace("(GetContainedPaddingHeight) [{}] ({})", padding, this);
+		return padding;
+	}
 }

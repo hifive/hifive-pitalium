@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 
 /**
  * テストクラス全体の実行結果を保持するクラス。
@@ -138,8 +139,7 @@ public class TestResult implements Serializable {
 
 	@Override
 	public String toString() {
-		return "TestResult{" + "resultId='" + resultId + '\'' + ", result=" + result + ", screenshotResults="
-				+ screenshotResults + '}';
+		return JSONUtils.toString(this);
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import com.google.common.base.CaseFormat;
 
+/**
+ * Selendroid（Android>4.3）で利用する{@link org.openqa.selenium.WebElement}
+ */
 class PtlSelendroidWebElement extends PtlAndroidWebElement {
 
 	private static final String GET_CSS_VALUE_SCRIPT = "var _val = arguments[0].style.%s; return _val;";

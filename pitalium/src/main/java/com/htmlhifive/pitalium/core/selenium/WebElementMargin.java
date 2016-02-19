@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package com.htmlhifive.pitalium.core.selenium;
 
 import java.io.Serializable;
+
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 
 /**
  * DOM要素のマージンを表すクラス
@@ -143,7 +145,7 @@ public class WebElementMargin implements Serializable {
 
 	@Override
 	public String toString() {
-		return "WebElementMargin{" + "top=" + top + ", right=" + right + ", bottom=" + bottom + ", left=" + left + '}';
+		return JSONUtils.toString(this);
 	}
 
 }

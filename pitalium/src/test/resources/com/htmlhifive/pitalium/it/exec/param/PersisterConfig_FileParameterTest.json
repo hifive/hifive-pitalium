@@ -1,5 +1,5 @@
 {
 	"file": {
-		"resultFolder": "results_for_FileParameterTest"
+		"resultDirectory": "results_for_FileParameterTest"
 	}
 }

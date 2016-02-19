@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,8 +49,9 @@ public class PtlWebDriverCloser extends ParameterizedTestWatcher {
 
 	@Override
 	protected void finished(Description description, Object[] params) {
-		if (!(params[0] instanceof PtlCapabilities))
+		if (!(params[0] instanceof PtlCapabilities)) {
 			throw new TestRuntimeException("Parameter[0] must be PtlCapabilities.");
+		}
 
 		PtlCapabilities capabilities = (PtlCapabilities) params[0];
 		Class<?> clss = description.getTestClass();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.junit.runners.parameterized.TestWithParameters;
 
 /**
  * {@link PtlBlockJUnit4ClassRunnerWithParameters}を生成する{@link ParametersRunnerFactory}
- *
+ * 
  * @author nakatani
  */
 public class PtlBlockJUnit4ClassRunnerWithParametersFactory implements ParametersRunnerFactory {

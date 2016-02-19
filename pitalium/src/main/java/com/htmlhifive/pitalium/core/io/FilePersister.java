@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,19 +25,21 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Strings;
+import com.htmlhifive.pitalium.common.exception.JSONException;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.config.FilePersisterConfig;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.model.ScreenshotResult;
 import com.htmlhifive.pitalium.core.model.TargetResult;
 import com.htmlhifive.pitalium.core.model.TestResult;
@@ -116,9 +118,12 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveDiffImage(PersistMetadata metadata, BufferedImage image) {
 		File file = checkParentFileAvailable(getDiffImageFile(metadata));
+		LOG.debug("[Save diff image] ({})", file);
+		LOG.trace("[Save diff image] ({})]", metadata);
 		try {
 			ImageIO.write(image, "png", file);
 		} catch (IOException e) {
+			LOG.debug("Failed to save diff image.", e);
 			throw new TestRuntimeException(e);
 		}
 	}
@@ -126,9 +131,12 @@ public class FilePersister implements Persister {
 	@Override
 	public BufferedImage loadDiffImage(PersistMetadata metadata) {
 		File file = checkFileAvailable(getDiffImageFile(metadata));
+		LOG.debug("[Load diff image] ({})", file);
+		LOG.trace("[Load diff image] ({})", metadata);
 		try {
 			return ImageIO.read(file);
 		} catch (IOException e) {
+			LOG.debug("Failed to load diff image.", e);
 			throw new ResourceUnavailableException(e);
 		}
 	}
@@ -136,9 +144,12 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveScreenshot(PersistMetadata metadata, BufferedImage image) {
 		File file = checkParentFileAvailable(getScreenshotImageFile(metadata));
+		LOG.debug("[Save screenshot] ({})", file);
+		LOG.trace("[Save screenshot] ({})", metadata);
 		try {
 			ImageIO.write(image, "png", file);
 		} catch (IOException e) {
+			LOG.debug("Failed to save screenshot.", e);
 			throw new TestRuntimeException(e);
 		}
 	}
@@ -146,19 +157,25 @@ public class FilePersister implements Persister {
 	@Override
 	public InputStream getImageStream(PersistMetadata metadata) {
 		File file = checkFileAvailable(getScreenshotImageFile(metadata));
+		LOG.debug("[Load image stream] ({})", file);
+		LOG.trace("[Load image stream] ({})", metadata);
 		try {
 			return new BufferedInputStream(new FileInputStream(file));
 		} catch (FileNotFoundException e) {
-			throw new ResourceUnavailableException(String.format("File %s not found", file));
+			LOG.debug("Failed to load image stream.", e);
+			throw new ResourceUnavailableException(String.format(Locale.US, "File %s not found", file));
 		}
 	}
 
 	@Override
 	public BufferedImage loadScreenshot(PersistMetadata metadata) {
 		File file = checkFileAvailable(getScreenshotImageFile(metadata));
+		LOG.debug("[Load screenshot] ({})", file);
+		LOG.trace("[Load screenshot] ({})", metadata);
 		try {
 			return ImageIO.read(file);
 		} catch (IOException e) {
+			LOG.debug("Failed to load screenshot.", e);
 			throw new ResourceUnavailableException(e);
 		}
 	}
@@ -166,18 +183,43 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveTargetResults(PersistMetadata metadata, List<TargetResult> results) {
 		File file = checkParentFileAvailable(getTargetResultsFile(metadata));
-		JSONUtils.writeValue(file, results);
+		LOG.debug("[Save TargetResults] ({})", file);
+		LOG.trace("[Save TargetResults] (results: {}; meta: {})", results, metadata);
+		try {
+			JSONUtils.writeValueWithIndent(file, results);
+		} catch (JSONException e) {
+			LOG.debug("Failed to save TargetResults.", e);
+			throw e;
+		}
 	}
 
 	@Override
 	public List<TargetResult> loadTargetResults(final PersistMetadata metadata) {
 		File file = checkFileAvailable(getTargetResultsFile(metadata));
-		List<TargetResult> targetResults = JSONUtils.readValue(file, TARGET_RESULTS_REFERENCE);
+		LOG.debug("[Load TargetResults] ({})", file);
+		LOG.trace("[Load TargetResults] ({})", metadata);
+		try {
+			List<TargetResult> targetResults = JSONUtils.readValue(file, TARGET_RESULTS_REFERENCE);
+			LOG.trace("[Load TargetResults] => {}", targetResults);
 
-		// Build with screenshot image
-		return Collections.unmodifiableList(fillScreenshotImageProperty(targetResults, metadata));
+			// Build with screenshot image
+			return Collections.unmodifiableList(fillScreenshotImageProperty(targetResults, metadata));
+		} catch (JSONException e) {
+			LOG.debug("Failed to load TargetResults.", e);
+			throw e;
+		} catch (Exception e) {
+			LOG.debug("Failed to fill TargetResults object.", e);
+			throw e;
+		}
 	}
 
+	/**
+	 * {@list TargetResult}のリストに指定されたメタデータを追加します。
+	 * 
+	 * @param targetResults 対象の{@list TargetResult}
+	 * @param metadata 追加するメタデータ
+	 * @return メタデータを追加済の{@list TargetResult}のリスト
+	 */
 	private List<TargetResult> fillScreenshotImageProperty(List<TargetResult> targetResults, PersistMetadata metadata) {
 		List<TargetResult> results = new ArrayList<TargetResult>(targetResults.size());
 		for (TargetResult targetResult : targetResults) {
@@ -202,57 +244,103 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveTestResult(PersistMetadata metadata, TestResult result) {
 		File file = checkParentFileAvailable(getTestResultFile(metadata));
-		JSONUtils.writeValue(file, result);
+		LOG.debug("[Save TestResult] ({})", file);
+		LOG.trace("[Save TestResult] (result: {}; meta: {})", result, metadata);
+		try {
+			JSONUtils.writeValueWithIndent(file, result);
+		} catch (JSONException e) {
+			LOG.debug("Failed to save TestResult.", e);
+			throw e;
+		}
 	}
 
 	@Override
 	public TestResult loadTestResult(PersistMetadata metadata) {
 		File file = checkFileAvailable(getTestResultFile(metadata));
-		TestResult testResult = JSONUtils.readValue(file, TestResult.class);
+		LOG.debug("[Load TestResult] ({})", file);
+		LOG.trace("[Load TestResult] ({})", metadata);
+		try {
+			TestResult testResult = JSONUtils.readValue(file, TestResult.class);
+			LOG.trace("[Load TestResult] => {}", testResult);
 
-		// Build with screenshot image
-		List<ScreenshotResult> results = new ArrayList<ScreenshotResult>(testResult.getScreenshotResults().size());
-		for (ScreenshotResult r : testResult.getScreenshotResults()) {
-			PersistMetadata m = new PersistMetadata(metadata.getExpectedId(), metadata.getClassName(),
-					r.getTestMethod(), r.getScreenshotId(), new PtlCapabilities(r.getCapabilities()));
-			List<TargetResult> targetResults = fillScreenshotImageProperty(r.getTargetResults(), m);
-			results.add(new ScreenshotResult(r.getScreenshotId(), r.getResult(), r.getExpectedId(), targetResults, r
-					.getTestClass(), r.getTestMethod(), r.getCapabilities(), null));
+			// Build with screenshot image
+			List<ScreenshotResult> results = new ArrayList<ScreenshotResult>(testResult.getScreenshotResults().size());
+			for (ScreenshotResult r : testResult.getScreenshotResults()) {
+				PersistMetadata m = new PersistMetadata(metadata.getExpectedId(), metadata.getClassName(),
+						r.getTestMethod(), r.getScreenshotId(), new PtlCapabilities(r.getCapabilities()));
+				List<TargetResult> targetResults = fillScreenshotImageProperty(r.getTargetResults(), m);
+				results.add(new ScreenshotResult(r.getScreenshotId(), r.getResult(), r.getExpectedId(), targetResults,
+						r.getTestClass(), r.getTestMethod(), r.getCapabilities(), null));
+			}
+
+			return new TestResult(testResult.getResultId(), testResult.getResult(), results);
+		} catch (JSONException e) {
+			LOG.debug("Failed to load TestResult.", e);
+			throw e;
+		} catch (Exception e) {
+			LOG.debug("Failed to fill TestResult object.", e);
+			throw e;
 		}
-
-		return new TestResult(testResult.getResultId(), testResult.getResult(), results);
 	}
 
 	@Override
 	public void saveExpectedIds(Map<String, Map<String, String>> expectedIds) {
 		File file = checkParentFileAvailable(getExpectedIdsFile());
-		JSONUtils.writeValue(file, expectedIds);
+		LOG.debug("[Save ExpectedIds] ({})", file);
+		LOG.trace("[Save ExpectedIds] ({})", expectedIds);
+		try {
+			JSONUtils.writeValueWithIndent(file, expectedIds);
+		} catch (JSONException e) {
+			LOG.debug("Failed to save ExpectedIds.", e);
+			throw e;
+		}
 	}
 
 	@Override
 	public Map<String, Map<String, String>> loadExpectedIds() {
 		File file = checkFileAvailable(getExpectedIdsFile());
-		return JSONUtils.readValue(file, EXPECTED_IDS_REFERENCE);
+		LOG.debug("[Load ExpectedIds] ({})", file);
+		try {
+			Map<String, Map<String, String>> ids = JSONUtils.readValue(file, EXPECTED_IDS_REFERENCE);
+			LOG.trace("[Load ExpectedIds] => {}", ids);
+			return ids;
+		} catch (JSONException e) {
+			LOG.debug("Failed to load ExpectedIds.", e);
+			throw e;
+		}
 	}
 
+	/**
+	 * 指定したファイルの親フォルダが存在し、アクセス可能か否かをチェックします。<br>
+	 * 存在しない場合はフォルダを作成します。
+	 * 
+	 * @param file 対象のファイル
+	 * @return 対象のファイル
+	 */
 	private File checkParentFileAvailable(File file) {
 		File parent = file.getParentFile();
 		if (!parent.exists() && !parent.mkdirs()) {
-			throw new TestRuntimeException(String.format("mkdir error \"%s\"", parent));
+			throw new TestRuntimeException(String.format(Locale.US, "mkdir error \"%s\"", parent));
 		}
 		if (!parent.canWrite()) {
-			throw new TestRuntimeException(String.format("No write permission at \"%s\"", parent));
+			throw new TestRuntimeException(String.format(Locale.US, "No write permission at \"%s\"", parent));
 		}
 
 		return file;
 	}
 
+	/**
+	 * 指定したファイルが存在し、アクセス可能か否かをチェックします。
+	 * 
+	 * @param file 対象のファイル
+	 * @return 対象のファイル
+	 */
 	private File checkFileAvailable(File file) {
 		if (!file.exists()) {
-			throw new ResourceUnavailableException(String.format("File \"%s\" not found", file));
+			throw new ResourceUnavailableException(String.format(Locale.UK, "File \"%s\" not found", file));
 		}
 		if (!file.canRead()) {
-			throw new ResourceUnavailableException(String.format("File \"%s\" cannot read", file));
+			throw new ResourceUnavailableException(String.format(Locale.UK, "File \"%s\" cannot read", file));
 		}
 
 		return file;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,9 @@ public class ScreenshotImage {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ScreenshotImage.class);
 
+	/**
+	 * スクリーンショット画像
+	 */
 	protected BufferedImage image;
 
 	/**
@@ -104,6 +107,15 @@ public class ScreenshotImage {
 		}
 
 		return new ByteArrayInputStream(bao.toByteArray());
+	}
+
+	@Override
+	public String toString() {
+		if (image == null) {
+			return "ScreenshotImage: not cached.";
+		}
+
+		return "ScreenshotImage[width: " + image.getWidth() + "; height: " + image.getHeight() + "].";
 	}
 
 }

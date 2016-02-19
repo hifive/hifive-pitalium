@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,8 @@ public abstract class ImageComparator {
 		if (img1 == null || img2 == null) {
 			throw new TestRuntimeException("Both img1 and img2 is required.");
 		}
+		LOG.trace("[Compare] image1[w: {}, h: {}; {}]; image2[w: {}, h: {}: {}]", img1.getWidth(), img1.getHeight(),
+				img1Area, img2.getWidth(), img2.getHeight(), img2Area);
 
 		int offsetX = 0;
 		int offsetY = 0;
@@ -70,8 +72,6 @@ public abstract class ImageComparator {
 		} else {
 			image2 = img2;
 		}
-
-		LOG.debug("offsetX: {}; offsetY: {};", offsetX, offsetY);
 
 		List<Point> sizeDiffPoints = createSizeDiffPoints(image1, image2, offsetX, offsetY);
 		List<Point> diffPoints = compare(image1, image2, offsetX, offsetY);
@@ -92,9 +92,11 @@ public abstract class ImageComparator {
 		int height1 = img1.getHeight();
 		int width2 = img2.getWidth();
 		int height2 = img2.getHeight();
+		LOG.trace("[CreateSizeDiffPoints] image1[w: {}, h: {}], image2[w: {}, h: {}]; offset({}, {})", width1, height1,
+				width2, height2, offsetX, offsetY);
 
 		if (width1 == width2 && height1 == height2) {
-			LOG.debug("No size diff points.");
+			LOG.trace("[CreateSizeDiffPoints] Not found.");
 			return new ArrayList<Point>();
 		}
 
@@ -144,8 +146,8 @@ public abstract class ImageComparator {
 			}
 		}
 
-		LOG.debug("Size diff points: {}; startX: {}; endX: {}; startY: {}; endY: {};", diffPoints.size(), startX, endX,
-				startY, endY);
+		LOG.debug("[CreateSizeDiffPoints] {} points found. startX: {}, endX: {}, startY: {}, endY: {}",
+				diffPoints.size(), startX, endX, startY, endY);
 		return diffPoints;
 	}
 

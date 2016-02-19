@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
-import java.awt.image.BufferedImage;
 import java.net.URL;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 
@@ -24,6 +26,8 @@ import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
  * iPadのSafariで利用する{@link org.openqa.selenium.WebDriver}
  */
 class PtlIPadDriver extends PtlIPhoneDriver {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PtlIPadDriver.class);
 
 	private final int headerHeight;
 
@@ -60,6 +64,7 @@ class PtlIPadDriver extends PtlIPhoneDriver {
 			// 最上部以外はヘッダを影ごと切り取る
 			currentHeaderHeight += 2;
 		}
+		LOG.trace("(GetHeaderHeight) [{}] ({})", currentHeaderHeight, this);
 		return currentHeaderHeight;
 	}
 
@@ -69,41 +74,30 @@ class PtlIPadDriver extends PtlIPhoneDriver {
 	}
 
 	@Override
-	protected BufferedImage trimCaptureTop(double captureTop, long windowHeight, double scale, BufferedImage img) {
-		// 下端の推定位置（次スクロール時にトップに来る位置）と、実際のキャプチャに写っている下端の位置を比較
-		long calculatedBottomValue = Math.round((captureTop + windowHeight) * scale);
-		long actualBottomValue = Math.round(captureTop * scale) + img.getHeight();
-		// 余分にキャプチャに写っていたら切り取っておく
-		if (calculatedBottomValue < actualBottomValue) {
-			return img.getSubimage(0, 0, img.getWidth(),
-					(int) (img.getHeight() - (actualBottomValue - calculatedBottomValue)));
-		} else {
-			return img;
-		}
-	}
-
-	@Override
 	protected PtlWebElement newPtlWebElement() {
 		return new PtlIPadWebElement();
 	}
 
 	@Override
-	protected double calcScrollIncrementWithHeader(int imageHeight, double scale) {
-		double scrollIncrement = super.calcScrollIncrementWithHeader(imageHeight, scale);
+	protected double calcVerticalScrollIncrementWithHeader(int imageHeight, double scale) {
+		double scrollIncrement = super.calcVerticalScrollIncrementWithHeader(imageHeight, scale);
 		// タブがないときはヘッダの影が1px写りこむため、スクロール幅を1px少なくする
 		if (getWindowHandles().size() <= 1) {
 			scrollIncrement -= 1;
 		}
+		LOG.trace("(CalcVerticalScrollIncrementWithHeader) (imageHeight: {}, scale: {}) => {}", imageHeight, scale,
+				scrollIncrement);
 		return scrollIncrement;
 	}
 
 	@Override
-	protected int calcTrimTop(int imageNum, long windowHeight, long pageHeight, double scale) {
+	protected int adjustTrimTop(int trimTop, double scale) {
+		int trimHeight = 0;
+
 		// スクロール幅をずらした分、切り取り位置を調整する
 		if (getWindowHandles().size() <= 1) {
-			return (int) Math.round((windowHeight - (pageHeight % windowHeight) - (imageNum - 1)) * scale);
+			trimHeight = (int) Math.round(1 * scale);
 		}
-		return super.calcTrimTop(imageNum, windowHeight, pageHeight, scale);
+		return trimTop - trimHeight;
 	}
-
 }

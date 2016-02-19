@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,44 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Internet Explorer 8で利用する{@link org.openqa.selenium.WebElement}
  */
 class PtlInternetExplorer8WebElement extends PtlInternetExplorerWebElement {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PtlInternetExplorer8WebElement.class);
+
+	@Override
+	public DoubleValueRect getDoubleValueRect() {
+		DoubleValueRect rect = super.getDoubleValueRect();
+		double width = rect.getWidth();
+		double height = rect.getHeight();
+		if ("iframe".equals(getTagName())) {
+			width -= 1d;
+			height -= 1d;
+		}
+
+		DoubleValueRect result = new DoubleValueRect(rect.getLeft(), rect.getTop(), width, height);
+		LOG.debug("[Element Rect] {} ({})", result, this);
+		return result;
+	}
+
+	@Override
+	public WebElementBorderWidth getBorderWidth() {
+		if ("iframe".equals(getTagName())) {
+			// IE7・8はiframeのボーダーが2px
+			double top = 2;
+			double left = 2;
+			double bottom = 2;
+			double right = 2;
+
+			WebElementBorderWidth borderWidth = new WebElementBorderWidth(top, right, bottom, left);
+			LOG.debug("[Element BorderWidth] {} ({})", borderWidth, this);
+			return borderWidth;
+		}
+		return super.getBorderWidth();
+	}
 }

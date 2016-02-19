@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 NS Solutions Corporation
+ * Copyright (C) 2015-2016 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,12 +36,18 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PersistedScreenshotImage.class);
 
+	/**
+	 * 保存・読み込みに用いるPersister
+	 */
 	protected final Persister persister;
+	/**
+	 * スクリーンショットのメタデータ
+	 */
 	protected final PersistMetadata metadata;
 
 	/**
 	 * メタデータのみを持ったオブジェクトを生成します。
-	 *
+	 * 
 	 * @param persister 保存に用いるPersister
 	 * @param metadata スクリーンショットのメタデータ
 	 */
@@ -51,7 +57,7 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	/**
 	 * メタデータ、画像を持ったオブジェクトを生成します。
-	 *
+	 * 
 	 * @param persister 保存に用いるPersister
 	 * @param metadata スクリーンショットのメタデータ
 	 * @param image スクリーンショット画像
@@ -71,7 +77,7 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	/**
 	 * メタデータを取得します。
-	 *
+	 * 
 	 * @return メタデータ
 	 */
 	public PersistMetadata getMetadata() {
@@ -80,7 +86,7 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	/**
 	 * スクリーンショットの画像を取得します。
-	 *
+	 * 
 	 * @return スクリーンショットの画像
 	 */
 	@Override
@@ -110,7 +116,7 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	/**
 	 * スクリーンショット画像を取得できるストリームを取得します。
-	 *
+	 * 
 	 * @return 画像の入力ストリーム
 	 */
 	@Override
@@ -131,7 +137,7 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 
 	/**
 	 * スクリーンショット画像のストリームを取得します。
-	 *
+	 * 
 	 * @return スクリーンショット画像のストリーム
 	 */
 	protected InputStream getImageStream() {
@@ -161,6 +167,17 @@ public class PersistedScreenshotImage extends ScreenshotImage {
 		final int hashPrime = 31;
 		result = hashPrime * result + metadata.hashCode();
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		if (image == null) {
+			return "PersistedScreenshotImage[persister: " + persister.getClass().getSimpleName() + "; metadata: "
+					+ metadata + "]";
+		}
+
+		return "PersistedScreenshotImage[width: " + image.getWidth() + "; height: " + image.getHeight()
+				+ "; persister: " + persister.getClass().getSimpleName() + "; metadata: " + metadata + "]";
 	}
 
 }
