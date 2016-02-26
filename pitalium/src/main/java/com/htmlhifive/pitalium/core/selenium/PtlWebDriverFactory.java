@@ -82,6 +82,11 @@ public abstract class PtlWebDriverFactory {
 			return new PtlInternetExplorerDriverFactory(environmentConfig, testAppConfig, capabilities);
 		}
 
+		// Edge
+		if ("microsoftedge".equals(browserName)) {
+			return new PtlEdgeDriverFactory(environmentConfig, testAppConfig, capabilities);
+		}
+
 		// Android
 		if (capabilities.getPlatform() == Platform.ANDROID) {
 			// Selendroid (Android 2.3+)
@@ -330,6 +335,34 @@ public abstract class PtlWebDriverFactory {
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlInternetExplorer8Driver(url, getCapabilities());
+		}
+	}
+
+	/**
+	 * MicrosoftEdge用WebDriverを生成するファクトリクラス
+	 */
+	static class PtlEdgeDriverFactory extends PtlWebDriverFactory {
+
+		/**
+		 * コンストラクタ
+		 * 
+		 * @param environmentConfig 環境設定
+		 * @param testAppConfig テスト対象アプリケーション設定
+		 * @param capabilities Capability
+		 */
+		public PtlEdgeDriverFactory(EnvironmentConfig environmentConfig, TestAppConfig testAppConfig,
+				PtlCapabilities capabilities) {
+			super(environmentConfig, testAppConfig, capabilities);
+		}
+
+		@Override
+		boolean isMobile() {
+			return false;
+		}
+
+		@Override
+		public PtlWebDriver createWebDriver(URL url) {
+			return new PtlEdgeDriver(url, getCapabilities());
 		}
 	}
 
