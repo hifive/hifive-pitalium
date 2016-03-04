@@ -40,6 +40,11 @@
 		"version": "7"
 	},
 	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "MicrosoftEdge"
+	},
+	{
 		"platform": "MAC",
 		"os": "OS X",
 		"browserName": "firefox"
