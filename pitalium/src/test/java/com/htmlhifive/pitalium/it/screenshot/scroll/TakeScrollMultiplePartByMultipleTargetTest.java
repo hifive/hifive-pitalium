@@ -28,7 +28,7 @@ import com.htmlhifive.pitalium.core.selenium.PtlWebDriverWait;
 /**
  * 複数のセレクタで複数要素選択時にスクリーンショットが正しくとれているかのテスト
  */
-public class TakeMultiplePartByMultipleTargetTest extends PtlTestBase {
+public class TakeScrollMultiplePartByMultipleTargetTest extends PtlTestBase {
 
 	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();

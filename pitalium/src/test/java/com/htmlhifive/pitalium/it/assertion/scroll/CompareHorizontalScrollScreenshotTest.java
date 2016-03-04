@@ -13,43 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.htmlhifive.pitalium.it.screenshot.scroll;
+package com.htmlhifive.pitalium.it.assertion.scroll;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
-import com.htmlhifive.pitalium.core.model.ScreenArea;
-import com.htmlhifive.pitalium.core.model.SelectorType;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriverWait;
 
 /**
- * 複数要素からなるターゲットを1つのセレクタで指定して正しくとれているかのテスト
+ * 横スクロールのスクリーンショットが正しくとれているかのテスト
  */
-public class TakeMultiplePartBySingleTargetTest extends PtlTestBase {
+public class CompareHorizontalScrollScreenshotTest extends PtlTestBase {
 
 	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
 	/**
-	 * 複数要素からなるターゲットを1つのセレクタで指定した時にスクリーンショットが正しくとれているかのテスト<br>
-	 * 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
+	 * 横スクロールのスクリーンショットが正しくとれているかのテスト<br>
+	 * 前提：ウィンドウサイズを横300px未満に設定して実行する 実行環境：IE7～11/FireFox/Chrome/Android 2.3, 4.0, 4.4/iOS 8.1<br>
 	 * 期待結果：テストが正しく実行でき、スクリーンショットが正しくとれていることを目視で確認する
 	 */
 	@Test
-	public void takeMultiplePartBySingleTarget() {
+	public void takeHorizontalScrollScreenshotTest() {
 		driver.get(BASE_URL);
-		List<CompareTarget> targets = new ArrayList<CompareTarget>();
-		targets.add(new CompareTarget(ScreenArea.of(SelectorType.CLASS_NAME, "scroll-box"), null, true, true));
-		assertionView.assertView("MultiplePartBySingleTarget", targets);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
+		wait.untilLoad();
+		CompareTarget[] targets = { new CompareTarget() };
+		assertionView.assertView("HorizontalScrollScreenshot", targets);
 	}
-
 }
