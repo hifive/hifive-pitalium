@@ -43,6 +43,8 @@ public class AssumeCapability extends TestWatcher {
 		}
 
 		// ClassのAnnotation取得
+		// MEMO: LoadingCacheを利用してClass、Annotation単位でFilter情報をキャッシュしても
+		//       参照頻度が多くないため逆に遅くなる
 		List<CapabilityFilter> classFilters = new ArrayList<>();
 		for (Annotation annotation : description.getTestClass().getAnnotations()) {
 			if (annotation instanceof CapabilityFilter) {
@@ -54,16 +56,7 @@ public class AssumeCapability extends TestWatcher {
 				continue;
 			}
 
-			// AnnotationのAnnotation取得
-			for (Annotation a : annotation.annotationType().getDeclaredAnnotations()) {
-				if (a instanceof CapabilityFilter) {
-					classFilters.add((CapabilityFilter) a);
-					continue;
-				}
-				if (a instanceof CapabilityFilters) {
-					Collections.addAll(classFilters, ((CapabilityFilters) a).value());
-				}
-			}
+			getAnnotationFilters(annotation, classFilters);
 		}
 
 		if (!classFilters.isEmpty()) {
@@ -89,16 +82,7 @@ public class AssumeCapability extends TestWatcher {
 				continue;
 			}
 
-			// AnnotationのAnnotation取得
-			for (Annotation a : annotation.annotationType().getDeclaredAnnotations()) {
-				if (a instanceof CapabilityFilter) {
-					methodFilters.add((CapabilityFilter) a);
-					continue;
-				}
-				if (a instanceof CapabilityFilters) {
-					Collections.addAll(methodFilters, ((CapabilityFilters) a).value());
-				}
-			}
+			getAnnotationFilters(annotation, methodFilters);
 		}
 		if (methodFilters.isEmpty()) {
 			return;
@@ -115,7 +99,33 @@ public class AssumeCapability extends TestWatcher {
 		}
 	}
 
+	/**
+	 * Annotationに設定されている{@link CapabilityFilter}一覧を取得し、リストに追加します。
+	 *
+	 * @param annotation 取得対象のAnnotation
+	 * @param filters    取得したCapabilityFilterを追加するリスト
+	 */
+	private static void getAnnotationFilters(Annotation annotation, List<CapabilityFilter> filters) {
+		for (Annotation a : annotation.annotationType().getDeclaredAnnotations()) {
+			if (a instanceof CapabilityFilter) {
+				filters.add((CapabilityFilter) a);
+				continue;
+			}
+			if (a instanceof CapabilityFilters) {
+				Collections.addAll(filters, ((CapabilityFilters) a).value());
+			}
+		}
+	}
+
+	/**
+	 * CapabilitiesをCapabilityFilterでテストします。
+	 *
+	 * @param filter       テスト用のCapabilityFilter
+	 * @param capabilities テスト対象のCapabilities
+	 * @return テストに通過した場合true、通過しない場合false
+	 */
 	private static boolean isMatch(CapabilityFilter filter, Capabilities capabilities) {
+		// FIXME: Java8対応はよ！！
 		if (filter.version().length > 0) {
 			final String version = capabilities.getVersion();
 			boolean result = FluentIterable.of(filter.version()).anyMatch(new Predicate<String>() {
@@ -189,6 +199,12 @@ public class AssumeCapability extends TestWatcher {
 		});
 	}
 
+	/**
+	 * {@link Platform#family()}から辿れるPlatformの親一覧を取得します。
+	 *
+	 * @param platform 対象のPlatform
+	 * @return 引数のPlatformと、引数のPlatformの親Platform一覧
+	 */
 	private static Collection<Platform> toPlatformFamily(Platform platform) {
 		Set<Platform> platforms = EnumSet.noneOf(Platform.class);
 		if (platform == null) {
@@ -203,6 +219,5 @@ public class AssumeCapability extends TestWatcher {
 		}
 		return platforms;
 	}
-
 
 }
