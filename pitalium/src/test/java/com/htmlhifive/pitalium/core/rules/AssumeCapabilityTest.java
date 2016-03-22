@@ -180,13 +180,13 @@ public class AssumeCapabilityTest {
 		@CapabilityFilter(version = "45.0")
 		@Test
 		public void singleParam() throws Exception {
-			assertAssumed(0, 1);
+			assertAssumed(0);
 		}
 
 		@CapabilityFilter(version = {"45.0", "49.0"})
 		@Test
 		public void multipleParam() throws Exception {
-			assertAssumed(0, 1);
+			assertAssumed(0);
 		}
 
 		@CapabilityFilter(version = "45\\..*")
@@ -584,7 +584,7 @@ public class AssumeCapabilityTest {
 		@CapabilityFilter(browserName = BrowserType.CHROME)
 		@Test
 		public void browserChrome() throws Exception {
-			assertAssumed(6);
+			assertAssumed(0, 1, 2, 3, 4, 5, 7, 8);
 		}
 
 	}
