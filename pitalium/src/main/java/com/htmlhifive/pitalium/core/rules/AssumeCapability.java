@@ -45,20 +45,8 @@ public class AssumeCapability extends TestWatcher {
 		// ClassのAnnotation取得
 		// MEMO: LoadingCacheを利用してClass、Annotation単位でFilter情報をキャッシュしても
 		//       参照頻度が多くないため逆に遅くなる
-		List<CapabilityFilter> classFilters = new ArrayList<>();
-		for (Annotation annotation : description.getTestClass().getAnnotations()) {
-			if (annotation instanceof CapabilityFilter) {
-				classFilters.add((CapabilityFilter) annotation);
-				continue;
-			}
-			if (annotation instanceof CapabilityFilters) {
-				Collections.addAll(classFilters, ((CapabilityFilters) annotation).value());
-				continue;
-			}
-
-			getAnnotationFilters(annotation, classFilters);
-		}
-
+		Collection<CapabilityFilter> classFilters =
+				getFilters(Arrays.asList(description.getTestClass().getAnnotations()));
 		if (!classFilters.isEmpty()) {
 			boolean classResult = FluentIterable.from(classFilters).anyMatch(new Predicate<CapabilityFilter>() {
 				@Override
@@ -71,19 +59,7 @@ public class AssumeCapability extends TestWatcher {
 			}
 		}
 
-		List<CapabilityFilter> methodFilters = new ArrayList<>();
-		for (Annotation annotation : description.getAnnotations()) {
-			if (annotation instanceof CapabilityFilter) {
-				methodFilters.add((CapabilityFilter) annotation);
-				continue;
-			}
-			if (annotation instanceof CapabilityFilters) {
-				Collections.addAll(methodFilters, ((CapabilityFilters) annotation).value());
-				continue;
-			}
-
-			getAnnotationFilters(annotation, methodFilters);
-		}
+		Collection<CapabilityFilter> methodFilters = getFilters(description.getAnnotations());
 		if (methodFilters.isEmpty()) {
 			return;
 		}
@@ -100,21 +76,34 @@ public class AssumeCapability extends TestWatcher {
 	}
 
 	/**
-	 * Annotationに設定されている{@link CapabilityFilter}一覧を取得し、リストに追加します。
+	 * アノテーションから{@link CapabilityFilter}一覧を取得します。
 	 *
-	 * @param annotation 取得対象のAnnotation
-	 * @param filters    取得したCapabilityFilterを追加するリスト
+	 * @param annotations アノテーション
+	 * @return アノテーションに含まれるCapabilityFilter一覧
 	 */
-	private static void getAnnotationFilters(Annotation annotation, List<CapabilityFilter> filters) {
-		for (Annotation a : annotation.annotationType().getDeclaredAnnotations()) {
-			if (a instanceof CapabilityFilter) {
-				filters.add((CapabilityFilter) a);
+	private static Collection<CapabilityFilter> getFilters(Iterable<Annotation> annotations) {
+		List<CapabilityFilter> filters = new ArrayList<>();
+		for (Annotation annotation : annotations) {
+			if (annotation instanceof CapabilityFilter) {
+				filters.add((CapabilityFilter) annotation);
 				continue;
 			}
-			if (a instanceof CapabilityFilters) {
-				Collections.addAll(filters, ((CapabilityFilters) a).value());
+			if (annotation instanceof CapabilityFilters) {
+				Collections.addAll(filters, ((CapabilityFilters) annotation).value());
+				continue;
+			}
+
+			for (Annotation a : annotation.annotationType().getDeclaredAnnotations()) {
+				if (a instanceof CapabilityFilter) {
+					filters.add((CapabilityFilter) a);
+					continue;
+				}
+				if (a instanceof CapabilityFilters) {
+					Collections.addAll(filters, ((CapabilityFilters) a).value());
+				}
 			}
 		}
+		return filters;
 	}
 
 	/**
@@ -133,7 +122,7 @@ public class AssumeCapability extends TestWatcher {
 				public boolean apply(String s) {
 					return Strings.isNullOrEmpty(s)
 							? Strings.isNullOrEmpty(version)
-							: Pattern.compile(s).matcher(version).find();
+							: version.matches(s);
 				}
 			});
 			if (!result) {
@@ -176,7 +165,7 @@ public class AssumeCapability extends TestWatcher {
 				public boolean apply(String s) {
 					return Strings.isNullOrEmpty(s)
 							? Strings.isNullOrEmpty(deviceName)
-							: Pattern.compile(s).matcher(deviceName).find();
+							: deviceName.matches(s);
 				}
 			});
 			if (!result) {

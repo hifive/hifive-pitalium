@@ -180,13 +180,13 @@ public class AssumeCapabilityTest {
 		@CapabilityFilter(version = "45.0")
 		@Test
 		public void singleParam() throws Exception {
-			assertAssumed(0);
+			assertAssumed(0, 1);
 		}
 
 		@CapabilityFilter(version = {"45.0", "49.0"})
 		@Test
 		public void multipleParam() throws Exception {
-			assertAssumed(0);
+			assertAssumed(0, 1);
 		}
 
 		@CapabilityFilter(version = "45\\..*")
