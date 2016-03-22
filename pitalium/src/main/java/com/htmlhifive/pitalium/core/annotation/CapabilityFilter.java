@@ -8,7 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO
+ * {@link org.openqa.selenium.Capabilities}に対してフィルターを設定します。<br>
+ * フィルター項目は全て複数個設定可能で、各フィルター項目内ではOR条件、フィルター項目間ではAND条件として扱われます。
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.METHOD})
