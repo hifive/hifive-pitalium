@@ -1,7 +1,14 @@
 package com.htmlhifive.pitalium.core.rules;
 
-import com.htmlhifive.pitalium.core.annotation.CapabilityFilter;
-import com.htmlhifive.pitalium.core.annotation.CapabilityFilters;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.AssumptionViolatedException;
 import org.junit.Before;
@@ -16,14 +23,8 @@ import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.htmlhifive.pitalium.core.annotation.CapabilityFilter;
+import com.htmlhifive.pitalium.core.annotation.CapabilityFilters;
 
 /**
  * {@link AssumeCapability}を適用した時のテスト
@@ -32,7 +33,7 @@ import java.util.Map;
 @RunWith(Enclosed.class)
 public class AssumeCapabilityTest {
 
-//<editor-fold desc="TestBase">
+	//<editor-fold desc="TestBase">
 
 	@RunWith(Parameterized.class)
 	public static abstract class TestCaseBase {
@@ -40,7 +41,7 @@ public class AssumeCapabilityTest {
 		static Iterable<Object[]> parameters(Capabilities... capabilities) {
 			List<Object[]> list = new ArrayList<>();
 			for (int i = 0; i < capabilities.length; i++) {
-				list.add(new Object[] {i, capabilities[i]});
+				list.add(new Object[] { i, capabilities[i] });
 			}
 			return list;
 		}
@@ -49,7 +50,8 @@ public class AssumeCapabilityTest {
 			return capabilities(browserName, version, platform, null, null);
 		}
 
-		static Capabilities capabilities(String browserName, String version, Platform platform, String deviceName, String filterGroup) {
+		static Capabilities capabilities(String browserName, String version, Platform platform, String deviceName,
+				String filterGroup) {
 			Map<String, Object> map = new HashMap<>();
 			if (StringUtils.isNotEmpty(browserName))
 				map.put(CapabilityType.BROWSER_NAME, browserName);
@@ -113,9 +115,9 @@ public class AssumeCapabilityTest {
 
 	}
 
-//</editor-fold>
+	//</editor-fold>
 
-//<editor-fold desc="NotAnnotatedTestCase">
+	//<editor-fold desc="NotAnnotatedTestCase">
 
 	/**
 	 * アノテーション未指定。全て実行される。
@@ -124,11 +126,8 @@ public class AssumeCapabilityTest {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, null, null),
-					capabilities(BrowserType.FIREFOX, null, null),
-					capabilities(BrowserType.CHROME, null, null)
-			);
+			return parameters(capabilities(BrowserType.IE, null, null), capabilities(BrowserType.FIREFOX, null, null),
+					capabilities(BrowserType.CHROME, null, null));
 		}
 
 		@Test
@@ -138,19 +137,16 @@ public class AssumeCapabilityTest {
 
 	}
 
-//</editor-fold>
+	//</editor-fold>
 
-//<editor-fold desc="SingleParamTestCase">
+	//<editor-fold desc="SingleParamTestCase">
 
 	public static class VersionTestCase extends TestCaseBase {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, null, null),
-					capabilities(BrowserType.FIREFOX, "45.0.1", null),
-					capabilities(BrowserType.CHROME, "45.0", null)
-			);
+			return parameters(capabilities(BrowserType.IE, null, null),
+					capabilities(BrowserType.FIREFOX, "45.0.1", null), capabilities(BrowserType.CHROME, "45.0", null));
 		}
 
 		@CapabilityFilter
@@ -165,7 +161,7 @@ public class AssumeCapabilityTest {
 			assertNotAssumed();
 		}
 
-		@CapabilityFilter(version = {""})
+		@CapabilityFilter(version = { "" })
 		@Test
 		public void emptyStringParam() throws Exception {
 			assertAssumed(1, 2);
@@ -183,7 +179,7 @@ public class AssumeCapabilityTest {
 			assertAssumed(0, 1);
 		}
 
-		@CapabilityFilter(version = {"45.0", "49.0"})
+		@CapabilityFilter(version = { "45.0", "49.0" })
 		@Test
 		public void multipleParam() throws Exception {
 			assertAssumed(0, 1);
@@ -201,11 +197,8 @@ public class AssumeCapabilityTest {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, null, null),
-					capabilities(BrowserType.FIREFOX, "45.0.1", null),
-					capabilities(BrowserType.CHROME, "45.0", null)
-			);
+			return parameters(capabilities(BrowserType.IE, null, null),
+					capabilities(BrowserType.FIREFOX, "45.0.1", null), capabilities(BrowserType.CHROME, "45.0", null));
 		}
 
 		@CapabilityFilter
@@ -220,7 +213,7 @@ public class AssumeCapabilityTest {
 			assertNotAssumed();
 		}
 
-		@CapabilityFilter(browserName = {""})
+		@CapabilityFilter(browserName = { "" })
 		@Test
 		public void emptyStringParam() throws Exception {
 			assertAllAssumed();
@@ -238,7 +231,7 @@ public class AssumeCapabilityTest {
 			assertAssumed(1, 2);
 		}
 
-		@CapabilityFilter(browserName = {BrowserType.IE, BrowserType.CHROME})
+		@CapabilityFilter(browserName = { BrowserType.IE, BrowserType.CHROME })
 		@Test
 		public void multipleParam() throws Exception {
 			assertAssumed(1);
@@ -256,13 +249,11 @@ public class AssumeCapabilityTest {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, null, null),
+			return parameters(capabilities(BrowserType.IE, null, null),
 					capabilities(BrowserType.EDGE, null, Platform.WIN10),
 					capabilities(BrowserType.FIREFOX, null, Platform.WINDOWS),
 					capabilities(BrowserType.SAFARI, null, Platform.MAC),
-					capabilities(BrowserType.CHROME, null, Platform.ANDROID)
-			);
+					capabilities(BrowserType.CHROME, null, Platform.ANDROID));
 		}
 
 		@CapabilityFilter
@@ -295,7 +286,7 @@ public class AssumeCapabilityTest {
 			assertAssumed(0, 2, 3, 4);
 		}
 
-		@CapabilityFilter(platform = {Platform.WIN10, Platform.ANDROID})
+		@CapabilityFilter(platform = { Platform.WIN10, Platform.ANDROID })
 		@Test
 		public void multipleParam() throws Exception {
 			assertAssumed(0, 2, 3);
@@ -319,12 +310,10 @@ public class AssumeCapabilityTest {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, null, null, null, null),
+			return parameters(capabilities(BrowserType.IE, null, null, null, null),
 					capabilities(BrowserType.CHROME, null, null, "Nexus 6P", null),
 					capabilities(BrowserType.CHROME, null, null, "Nexus 5X", null),
-					capabilities(BrowserType.CHROME, null, null, "Xperia Z5", null)
-			);
+					capabilities(BrowserType.CHROME, null, null, "Xperia Z5", null));
 		}
 
 		@CapabilityFilter
@@ -339,7 +328,7 @@ public class AssumeCapabilityTest {
 			assertNotAssumed();
 		}
 
-		@CapabilityFilter(deviceName = {""})
+		@CapabilityFilter(deviceName = { "" })
 		@Test
 		public void emptyStringParam() throws Exception {
 			assertAssumed(1, 2, 3);
@@ -357,7 +346,7 @@ public class AssumeCapabilityTest {
 			assertAssumed(0, 2, 3);
 		}
 
-		@CapabilityFilter(deviceName = {"Nexus 6P", "Xperia Z5"})
+		@CapabilityFilter(deviceName = { "Nexus 6P", "Xperia Z5" })
 		@Test
 		public void multipleParam() throws Exception {
 			assertAssumed(0, 2);
@@ -375,11 +364,9 @@ public class AssumeCapabilityTest {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, null, null, null, null),
+			return parameters(capabilities(BrowserType.IE, null, null, null, null),
 					capabilities(BrowserType.FIREFOX, null, null, null, "group1"),
-					capabilities(BrowserType.CHROME, null, null, null, "group2")
-			);
+					capabilities(BrowserType.CHROME, null, null, null, "group2"));
 		}
 
 		@CapabilityFilter
@@ -394,7 +381,7 @@ public class AssumeCapabilityTest {
 			assertNotAssumed();
 		}
 
-		@CapabilityFilter(filterGroup = {""})
+		@CapabilityFilter(filterGroup = { "" })
 		@Test
 		public void emptyStringParam() throws Exception {
 			assertAssumed(1, 2);
@@ -412,7 +399,7 @@ public class AssumeCapabilityTest {
 			assertAssumed(0, 2);
 		}
 
-		@CapabilityFilter(filterGroup = {"group1", "group2"})
+		@CapabilityFilter(filterGroup = { "group1", "group2" })
 		@Test
 		public void multipleParam() throws Exception {
 			assertAssumed(0);
@@ -426,16 +413,15 @@ public class AssumeCapabilityTest {
 
 	}
 
-//</editor-fold>
+	//</editor-fold>
 
-//<editor-fold desc="MultipleParamTestCase">
+	//<editor-fold desc="MultipleParamTestCase">
 
 	public static class MultipleParamTestCase extends TestCaseBase {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
+			return parameters(capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.IE, "10.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.EDGE, null, Platform.WIN10, null, "pc"),
 					capabilities(BrowserType.FIREFOX, "45.0", Platform.VISTA, null, "pc"),
@@ -443,8 +429,7 @@ public class AssumeCapabilityTest {
 					capabilities(BrowserType.SAFARI, "9.1", Platform.EL_CAPITAN, null, "pc"),
 					capabilities(BrowserType.CHROME, "49.0", Platform.ANDROID, "Nexus 6P", "mobile"),
 					capabilities(BrowserType.SAFARI, "9.1", null, "iPhone6S", "mobile"),
-					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile")
-			);
+					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile"));
 		}
 
 		@CapabilityFilter(filterGroup = "pc", browserName = BrowserType.IE)
@@ -453,7 +438,7 @@ public class AssumeCapabilityTest {
 			assertAssumed(2, 3, 4, 5, 6, 7, 8);
 		}
 
-		@CapabilityFilter(platform = Platform.WINDOWS, browserName = {BrowserType.FIREFOX, BrowserType.CHROME})
+		@CapabilityFilter(platform = Platform.WINDOWS, browserName = { BrowserType.FIREFOX, BrowserType.CHROME })
 		@Test
 		public void platformWindows_browserFirefoxChrome() throws Exception {
 			assertAssumed(0, 1, 2, 5, 6, 7, 8);
@@ -461,16 +446,15 @@ public class AssumeCapabilityTest {
 
 	}
 
-//</editor-fold>
+	//</editor-fold>
 
-//<editor-fold desc="MultipleAnnotatedTestCase">
+	//<editor-fold desc="MultipleAnnotatedTestCase">
 
 	public static class MultipleAnnotatedTestCase extends TestCaseBase {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
+			return parameters(capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.IE, "10.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.EDGE, null, Platform.WIN10, null, "pc"),
 					capabilities(BrowserType.FIREFOX, "45.0", Platform.VISTA, null, "pc"),
@@ -478,8 +462,7 @@ public class AssumeCapabilityTest {
 					capabilities(BrowserType.SAFARI, "9.1", Platform.EL_CAPITAN, null, "pc"),
 					capabilities(BrowserType.CHROME, "49.0", Platform.ANDROID, "Nexus 6P", "mobile"),
 					capabilities(BrowserType.SAFARI, "9.1", null, "iPhone6S", "mobile"),
-					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile")
-			);
+					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile"));
 		}
 
 		@CapabilityFilters({})
@@ -496,17 +479,14 @@ public class AssumeCapabilityTest {
 
 		@CapabilityFilters({
 				@CapabilityFilter(filterGroup = "pc", browserName = BrowserType.IE),
-				@CapabilityFilter(platform = Platform.WINDOWS, browserName = {BrowserType.FIREFOX, BrowserType.CHROME})
-		})
+				@CapabilityFilter(platform = Platform.WINDOWS, browserName = { BrowserType.FIREFOX, BrowserType.CHROME }) })
 		@Test
 		public void multipleFilters() throws Exception {
 			assertAssumed(2, 5, 6, 7, 8);
 		}
 
-		@CapabilityFilters({
-				@CapabilityFilter(filterGroup = "pc", browserName = BrowserType.IE),
-				@CapabilityFilter(filterGroup = "pc", browserName = BrowserType.IE)
-		})
+		@CapabilityFilters({ @CapabilityFilter(filterGroup = "pc", browserName = BrowserType.IE),
+				@CapabilityFilter(filterGroup = "pc", browserName = BrowserType.IE) })
 		@Test
 		public void duplicatedFilters() throws Exception {
 			assertAssumed(2, 3, 4, 5, 6, 7, 8);
@@ -514,17 +494,16 @@ public class AssumeCapabilityTest {
 
 	}
 
-//</editor-fold>
+	//</editor-fold>
 
-//<editor-fold desc="ClassAnnotatedTestCase">
+	//<editor-fold desc="ClassAnnotatedTestCase">
 
 	@CapabilityFilter(filterGroup = "mobile")
 	public static class ClassSingleAnnotatedTestCase extends TestCaseBase {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
+			return parameters(capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.IE, "10.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.EDGE, null, Platform.WIN10, null, "pc"),
 					capabilities(BrowserType.FIREFOX, "45.0", Platform.VISTA, null, "pc"),
@@ -532,8 +511,7 @@ public class AssumeCapabilityTest {
 					capabilities(BrowserType.SAFARI, "9.1", Platform.EL_CAPITAN, null, "pc"),
 					capabilities(BrowserType.CHROME, "49.0", Platform.ANDROID, "Nexus 6P", "mobile"),
 					capabilities(BrowserType.SAFARI, "9.1", null, "iPhone6S", "mobile"),
-					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile")
-			);
+					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile"));
 		}
 
 		@Test
@@ -555,16 +533,13 @@ public class AssumeCapabilityTest {
 
 	}
 
-	@CapabilityFilters({
-			@CapabilityFilter(filterGroup = "pc", browserName = BrowserType.IE),
-			@CapabilityFilter(filterGroup = "mobile")
-	})
+	@CapabilityFilters({ @CapabilityFilter(filterGroup = "pc", browserName = BrowserType.IE),
+			@CapabilityFilter(filterGroup = "mobile") })
 	public static class ClassMultipleAnnotatedTestCase extends TestCaseBase {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
+			return parameters(capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.IE, "10.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.EDGE, null, Platform.WIN10, null, "pc"),
 					capabilities(BrowserType.FIREFOX, "45.0", Platform.VISTA, null, "pc"),
@@ -572,8 +547,7 @@ public class AssumeCapabilityTest {
 					capabilities(BrowserType.SAFARI, "9.1", Platform.EL_CAPITAN, null, "pc"),
 					capabilities(BrowserType.CHROME, "49.0", Platform.ANDROID, "Nexus 6P", "mobile"),
 					capabilities(BrowserType.SAFARI, "9.1", null, "iPhone6S", "mobile"),
-					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile")
-			);
+					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile"));
 		}
 
 		@Test
@@ -589,17 +563,15 @@ public class AssumeCapabilityTest {
 
 	}
 
+	//</editor-fold>
 
-//</editor-fold>
-
-//<editor-fold desc="CustomAnnotatedTestCase">
+	//<editor-fold desc="CustomAnnotatedTestCase">
 
 	public static class CustomAnnotatedTestCase extends TestCaseBase {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
+			return parameters(capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.IE, "10.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.EDGE, null, Platform.WIN10, null, "pc"),
 					capabilities(BrowserType.FIREFOX, "45.0", Platform.VISTA, null, "pc"),
@@ -607,8 +579,7 @@ public class AssumeCapabilityTest {
 					capabilities(BrowserType.SAFARI, "9.1", Platform.EL_CAPITAN, null, "pc"),
 					capabilities(BrowserType.CHROME, "49.0", Platform.ANDROID, "Nexus 6P", "mobile"),
 					capabilities(BrowserType.SAFARI, "9.1", null, "iPhone6S", "mobile"),
-					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile")
-			);
+					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile"));
 		}
 
 		@InternetExplorer
@@ -637,8 +608,7 @@ public class AssumeCapabilityTest {
 
 		@Parameterized.Parameters(name = "{0}")
 		public static Iterable<Object[]> parameters() {
-			return parameters(
-					capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
+			return parameters(capabilities(BrowserType.IE, "11.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.IE, "10.0", Platform.VISTA, null, "pc"),
 					capabilities(BrowserType.EDGE, null, Platform.WIN10, null, "pc"),
 					capabilities(BrowserType.FIREFOX, "45.0", Platform.VISTA, null, "pc"),
@@ -646,8 +616,7 @@ public class AssumeCapabilityTest {
 					capabilities(BrowserType.SAFARI, "9.1", Platform.EL_CAPITAN, null, "pc"),
 					capabilities(BrowserType.CHROME, "49.0", Platform.ANDROID, "Nexus 6P", "mobile"),
 					capabilities(BrowserType.SAFARI, "9.1", null, "iPhone6S", "mobile"),
-					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile")
-			);
+					capabilities(BrowserType.SAFARI, "9.1", null, "iPad Air", "mobile"));
 		}
 
 		@InternetExplorer
@@ -671,37 +640,35 @@ public class AssumeCapabilityTest {
 
 	}
 
-//</editor-fold>
+	//</editor-fold>
 
-//<editor-fold desc="Annotation">
+	//<editor-fold desc="Annotation">
 
 	@CapabilityFilter(browserName = BrowserType.IE)
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.TYPE, ElementType.METHOD})
+	@Target({ ElementType.TYPE, ElementType.METHOD })
 	public @interface InternetExplorer {
 	}
 
 	@CapabilityFilter(filterGroup = "pc")
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.TYPE, ElementType.METHOD})
+	@Target({ ElementType.TYPE, ElementType.METHOD })
 	public @interface PC {
 	}
 
 	@CapabilityFilter(filterGroup = "mobile")
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.TYPE, ElementType.METHOD})
+	@Target({ ElementType.TYPE, ElementType.METHOD })
 	public @interface Mobile {
 	}
 
-	@CapabilityFilters({
-			@CapabilityFilter(browserName = BrowserType.CHROME),
-			@CapabilityFilter(browserName = BrowserType.SAFARI, platform = Platform.MAC)
-	})
+	@CapabilityFilters({ @CapabilityFilter(browserName = BrowserType.CHROME),
+			@CapabilityFilter(browserName = BrowserType.SAFARI, platform = Platform.MAC) })
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.TYPE, ElementType.METHOD})
+	@Target({ ElementType.TYPE, ElementType.METHOD })
 	public @interface ChromeAndMacSafari {
 	}
 
-//</editor-fold>
+	//</editor-fold>
 
 }

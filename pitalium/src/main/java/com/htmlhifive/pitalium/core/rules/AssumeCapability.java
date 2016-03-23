@@ -1,10 +1,14 @@
 package com.htmlhifive.pitalium.core.rules;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.collect.FluentIterable;
-import com.htmlhifive.pitalium.core.annotation.CapabilityFilter;
-import com.htmlhifive.pitalium.core.annotation.CapabilityFilters;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -13,9 +17,11 @@ import org.openqa.selenium.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.annotation.Annotation;
-import java.util.*;
-import java.util.regex.Pattern;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.FluentIterable;
+import com.htmlhifive.pitalium.core.annotation.CapabilityFilter;
+import com.htmlhifive.pitalium.core.annotation.CapabilityFilters;
 
 /**
  * {@link CapabilityFilter}および{@link CapabilityFilters}でテスト実行を制限します。
@@ -45,8 +51,8 @@ public class AssumeCapability extends TestWatcher {
 		// ClassのAnnotation取得
 		// MEMO: LoadingCacheを利用してClass、Annotation単位でFilter情報をキャッシュしても
 		//       参照頻度が多くないため逆に遅くなる
-		Collection<CapabilityFilter> classFilters =
-				getFilters(Arrays.asList(description.getTestClass().getAnnotations()));
+		Collection<CapabilityFilter> classFilters = getFilters(Arrays.asList(description.getTestClass()
+				.getAnnotations()));
 		if (!classFilters.isEmpty()) {
 			boolean classResult = FluentIterable.from(classFilters).anyMatch(new Predicate<CapabilityFilter>() {
 				@Override
@@ -77,7 +83,7 @@ public class AssumeCapability extends TestWatcher {
 
 	/**
 	 * アノテーションから{@link CapabilityFilter}一覧を取得します。
-	 *
+	 * 
 	 * @param annotations アノテーション
 	 * @return アノテーションに含まれるCapabilityFilter一覧
 	 */
@@ -108,8 +114,8 @@ public class AssumeCapability extends TestWatcher {
 
 	/**
 	 * CapabilitiesをCapabilityFilterでテストします。
-	 *
-	 * @param filter       テスト用のCapabilityFilter
+	 * 
+	 * @param filter テスト用のCapabilityFilter
 	 * @param capabilities テスト対象のCapabilities
 	 * @return テストに通過した場合true、通過しない場合false
 	 */
@@ -120,9 +126,7 @@ public class AssumeCapability extends TestWatcher {
 			boolean result = FluentIterable.of(filter.version()).anyMatch(new Predicate<String>() {
 				@Override
 				public boolean apply(String s) {
-					return Strings.isNullOrEmpty(s)
-							? Strings.isNullOrEmpty(version)
-							: version.matches(s);
+					return Strings.isNullOrEmpty(s) ? Strings.isNullOrEmpty(version) : version.matches(s);
 				}
 			});
 			if (!result) {
@@ -148,9 +152,7 @@ public class AssumeCapability extends TestWatcher {
 			boolean result = FluentIterable.of(filter.browserName()).anyMatch(new Predicate<String>() {
 				@Override
 				public boolean apply(String s) {
-					return Strings.isNullOrEmpty(s)
-							? Strings.isNullOrEmpty(browserName)
-							: s.equals(browserName);
+					return Strings.isNullOrEmpty(s) ? Strings.isNullOrEmpty(browserName) : s.equals(browserName);
 				}
 			});
 			if (!result) {
@@ -163,9 +165,7 @@ public class AssumeCapability extends TestWatcher {
 			boolean result = FluentIterable.of(filter.deviceName()).anyMatch(new Predicate<String>() {
 				@Override
 				public boolean apply(String s) {
-					return Strings.isNullOrEmpty(s)
-							? Strings.isNullOrEmpty(deviceName)
-							: deviceName.matches(s);
+					return Strings.isNullOrEmpty(s) ? Strings.isNullOrEmpty(deviceName) : deviceName.matches(s);
 				}
 			});
 			if (!result) {
@@ -181,16 +181,14 @@ public class AssumeCapability extends TestWatcher {
 		return FluentIterable.of(filter.filterGroup()).anyMatch(new Predicate<String>() {
 			@Override
 			public boolean apply(String s) {
-				return Strings.isNullOrEmpty(s)
-						? Strings.isNullOrEmpty(filterGroup)
-						: s.equals(filterGroup);
+				return Strings.isNullOrEmpty(s) ? Strings.isNullOrEmpty(filterGroup) : s.equals(filterGroup);
 			}
 		});
 	}
 
 	/**
 	 * {@link Platform#family()}から辿れるPlatformの親一覧を取得します。
-	 *
+	 * 
 	 * @param platform 対象のPlatform
 	 * @return 引数のPlatformと、引数のPlatformの親Platform一覧
 	 */
