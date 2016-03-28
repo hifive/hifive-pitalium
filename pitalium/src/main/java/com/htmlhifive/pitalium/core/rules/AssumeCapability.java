@@ -61,6 +61,7 @@ public class AssumeCapability extends TestWatcher {
 				}
 			});
 			if (!classResult) {
+				LOG.debug("[Testcase assumed] (name: {})", description.getDisplayName());
 				throw new AssumptionViolatedException("AssumeCapability");
 			}
 		}
@@ -77,6 +78,7 @@ public class AssumeCapability extends TestWatcher {
 			}
 		});
 		if (!methodResult) {
+			LOG.debug("[Testcase assumed] (name: {})", description.getDisplayName());
 			throw new AssumptionViolatedException("AssumeCapability");
 		}
 	}
