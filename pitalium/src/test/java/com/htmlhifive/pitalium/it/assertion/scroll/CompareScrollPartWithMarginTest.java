@@ -30,7 +30,7 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * ページの特定要素の比較が正しく行われるかのテスト
  */
-public class ComparePartWithMarginTest extends PtlTestBase {
+public class CompareScrollPartWithMarginTest extends PtlTestBase {
 
 	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.htmlhifive.pitalium.it.assertion.scroll;
+package com.htmlhifive.pitalium.it.screenshot.scroll;
 
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ import com.htmlhifive.pitalium.core.selenium.PtlWebDriverWait;
 /**
  * 横スクロールのスクリーンショットが正しくとれているかのテスト
  */
-public class CompareHorizontalScreenshotTest extends PtlTestBase {
+public class TakeHorizontalScrollScreenshotTest extends PtlTestBase {
 
 	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();

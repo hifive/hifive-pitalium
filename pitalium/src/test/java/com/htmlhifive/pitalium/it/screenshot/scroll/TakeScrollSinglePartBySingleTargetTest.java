@@ -29,7 +29,7 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * ページの特定要素のスクリーンショットが正しくとれているかのテスト
  */
-public class TakeSinglePartBySingleTargetTest extends PtlTestBase {
+public class TakeScrollSinglePartBySingleTargetTest extends PtlTestBase {
 
 	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();

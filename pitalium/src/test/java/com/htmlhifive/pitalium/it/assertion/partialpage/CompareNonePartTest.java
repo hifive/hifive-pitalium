@@ -15,17 +15,16 @@
  */
 package com.htmlhifive.pitalium.it.assertion.partialpage;
 
-import java.awt.image.RasterFormatException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -122,7 +121,6 @@ public class CompareNonePartTest extends PtlTestBase {
 		List<CompareTarget> targets = new ArrayList<CompareTarget>();
 		targets.add(new CompareTarget(ScreenArea.of(SelectorType.CSS_SELECTOR, "#news tr")));
 
-		thrown.expect(RasterFormatException.class);
 		assertionView.assertView("takeIncludeNonePar", targets);
 	}
 }
