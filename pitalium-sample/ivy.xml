@@ -9,21 +9,22 @@
 	</configurations>
 	<dependencies>
 		<dependency org="junit" name="junit" rev="4.12"  conf="default" />
-		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.13" conf="default" />
-		<dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="2.4.1" conf="default"/>
-		<dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.4.1" conf="default" />
-		<dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.4.1" conf="default" />
+		<dependency org="org.apache.commons" name="commons-lang3" rev="3.4" conf="default" />
+		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.21" conf="default" />
+		<dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="2.5" conf="default"/>
+		<dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.5" conf="default" />
+		<dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.5" conf="default" />
 		<dependency org="commons-logging" name="commons-logging" rev="1.2" conf="default" />
-		<dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.6.3" conf="default" />
-		<dependency org="org.seleniumhq.selenium" name="selenium-java" rev="2.50.1" conf="default"/>
+		<dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.7.3" conf="default" />
+		<dependency org="org.seleniumhq.selenium" name="selenium-java" rev="2.53.0" conf="default"/>
 		<!-- ソースが必要な場合は下記のコメントを外してください。 -->
 		<!--
-		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.12" conf="sources" />
-		<dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="2.4.1" conf="sources" />
-		<dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.4.1" conf="sources" />
-		<dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.4.1" conf="sources" />
-		<dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.6.3" conf="sources" />
-		<dependency org="org.seleniumhq.selenium" name="selenium-java" rev="2.50.1" conf="sources"/>
+		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.21" conf="sources" />
+		<dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="2.5" conf="sources" />
+		<dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.5" conf="sources" />
+		<dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.5" conf="sources" />
+		<dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.7.3" conf="sources" />
+		<dependency org="org.seleniumhq.selenium" name="selenium-java" rev="2.53.0" conf="sources"/>
 		-->
 		<exclude artifact="jetty-http" />
 		<exclude artifact="jetty-io" />
