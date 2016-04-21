@@ -556,7 +556,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 		String xStatus;
 		String yStatus;
-		if (object.get("both") != null) {
+		if (object.get("both") != null && !"".equals(object.get("both"))) {
 			xStatus = object.get("both").toString();
 			yStatus = xStatus;
 		} else {
