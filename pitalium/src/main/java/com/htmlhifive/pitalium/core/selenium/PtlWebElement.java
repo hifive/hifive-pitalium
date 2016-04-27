@@ -101,13 +101,15 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	private static final String SCRIPT_GET_ELEMENT_OVERFLOW = "var style = arguments[0].style;"
 			+ "var _obj = {"
 			+ "  \"x\": style.overflowX,"
-			+ "  \"y\": style.overflowY"
+			+ "  \"y\": style.overflowY,"
+			+ "  \"both\": style.overflow"
 			+ "};"
 			+ "return _obj;";
 	private static final String SCRIPT_GET_FRAME_OVERFLOW = "var style = arguments[0].contentWindow.document.documentElement.style;"
 			+ "var _obj = {"
 			+ "  \"x\": style.overflowX,"
-			+ "  \"y\": style.overflowY"
+			+ "  \"y\": style.overflowY,"
+			+ "  \"both\": style.overflow"
 			+ "};"
 			+ "return _obj;";
 
@@ -551,7 +553,18 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		} else {
 			object = driver.executeJavaScript(SCRIPT_GET_ELEMENT_OVERFLOW, this);
 		}
-		String[] result = { object.get("x").toString(), object.get("y").toString() };
+
+		String xStatus;
+		String yStatus;
+		if (object.get("both") != null && !"".equals(object.get("both"))) {
+			xStatus = object.get("both").toString();
+			yStatus = xStatus;
+		} else {
+			xStatus = object.get("x") != null ? object.get("x").toString() : "";
+			yStatus = object.get("y") != null ? object.get("y").toString() : "";
+		}
+
+		String[] result = { xStatus, yStatus };
 		LOG.trace("(GetOverflowStatus) [{}] ({})", result, this);
 		return result;
 	}
@@ -577,7 +590,8 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * @return resizeの設定値
 	 */
 	public String getResizeStatus() {
-		return driver.executeScript(SCRIPT_GET_ELEMENT_RESIZE, this).toString();
+		Object resizeStatus = driver.executeScript(SCRIPT_GET_ELEMENT_RESIZE, this);
+		return resizeStatus != null ? resizeStatus.toString() : "";
 	}
 
 	/**

@@ -56,6 +56,7 @@ public class PtlWebDriverFactoryTest {
 		assertThat(getFactoryName(caps.get(10)), is(containsString("selendroid")));
 		assertThat(getFactoryName(caps.get(11)), is(containsString("ipad")));
 		assertThat(getFactoryName(caps.get(12)), is(containsString("iphone")));
+		assertThat(getFactoryName(caps.get(13)), is(containsString("edge")));
 	}
 
 	private String getFactoryName(PtlCapabilities capabilities) {

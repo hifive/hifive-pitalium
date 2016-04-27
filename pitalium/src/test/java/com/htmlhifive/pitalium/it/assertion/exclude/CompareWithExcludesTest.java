@@ -69,7 +69,7 @@ public class CompareWithExcludesTest extends PtlTestBase {
 		wait.untilLoad();
 
 		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
-			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style.backgroundColor='red'");
 			expectedException.expect(AssertionError.class);
 		}
 
@@ -90,7 +90,7 @@ public class CompareWithExcludesTest extends PtlTestBase {
 		wait.untilLoad();
 
 		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
-			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style.backgroundColor='red'");
 		}
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), EXCLUDES, true) };
@@ -114,7 +114,7 @@ public class CompareWithExcludesTest extends PtlTestBase {
 		driver.executeJavaScript("document.body.style.margin='100px'");
 
 		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
-			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style.backgroundColor='red'");
 		}
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), EXCLUDES, true) };
@@ -141,7 +141,7 @@ public class CompareWithExcludesTest extends PtlTestBase {
 
 		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
 			wait.until(ExpectedConditions.presenceOfElementLocated(By.className("fb-like-box")));
-			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style.backgroundColor='red'");
 		}
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), EXCLUDES, true) };
@@ -162,7 +162,7 @@ public class CompareWithExcludesTest extends PtlTestBase {
 		wait.untilLoad();
 
 		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
-			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='blue'");
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style.backgroundColor='blue'");
 		}
 
 		CompareTarget[] targets = { new CompareTarget(ScreenArea.of(SelectorType.ID, "wrapper"), EXCLUDES, true) };
@@ -184,8 +184,8 @@ public class CompareWithExcludesTest extends PtlTestBase {
 		wait.untilLoad();
 
 		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
-			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style['background-color']='red'");
-			driver.executeJavaScript("document.getElementById('wrapper').style['text-align']='left'");
+			driver.executeJavaScript("document.getElementsByClassName('fb-like-box')[0].style.backgroundColor='red'");
+			driver.executeJavaScript("document.getElementById('wrapper').style.textAlign='left'");
 			expectedException.expect(AssertionError.class);
 		}
 

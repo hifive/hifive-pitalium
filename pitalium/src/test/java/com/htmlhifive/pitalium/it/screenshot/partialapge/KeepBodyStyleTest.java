@@ -21,12 +21,12 @@ import static org.hamcrest.MatcherAssert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.htmlhifive.pitalium.core.PtlTestBase;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenArea;
 import com.htmlhifive.pitalium.core.model.SelectorType;
@@ -107,6 +107,9 @@ public class KeepBodyStyleTest extends PtlTestBase {
 		WebElement body = driver.findElement(By.tagName("body"));
 		//body.getCssValue("position");
 		assertThat(body.getCssValue("position"), is(position));
-		assertThat(body.getCssValue("margin"), is(String.valueOf(marginWidth)));
+		assertThat(body.getCssValue("margin-top"), is(String.valueOf(marginWidth)));
+		assertThat(body.getCssValue("margin-right"), is(String.valueOf(marginWidth)));
+		assertThat(body.getCssValue("margin-bottom"), is(String.valueOf(marginWidth)));
+		assertThat(body.getCssValue("margin-left"), is(String.valueOf(marginWidth)));
 	}
 }

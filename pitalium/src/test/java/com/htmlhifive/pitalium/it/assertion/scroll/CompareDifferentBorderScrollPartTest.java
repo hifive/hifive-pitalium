@@ -32,7 +32,7 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 /**
  * 要素のボーダーが異なる場合に正しく比較が行われるかのテスト
  */
-public class CompareDifferentBorderTest extends PtlTestBase {
+public class CompareDifferentBorderScrollPartTest extends PtlTestBase {
 
 	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();

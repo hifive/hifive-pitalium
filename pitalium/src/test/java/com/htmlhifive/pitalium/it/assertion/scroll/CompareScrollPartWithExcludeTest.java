@@ -53,7 +53,7 @@ public class CompareScrollPartWithExcludeTest extends PtlTestBase {
 		wait.untilLoad();
 
 		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
-			driver.executeJavaScript("document.getElementById('banana').innerHTML='banana'");
+			driver.executeJavaScript("document.getElementById('banana').innerHTML='バナ'");
 			expectedException.expect(AssertionError.class);
 		}
 
@@ -77,7 +77,7 @@ public class CompareScrollPartWithExcludeTest extends PtlTestBase {
 		wait.untilLoad();
 
 		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
-			driver.executeJavaScript("document.getElementById('banana').innerHTML='banana'");
+			driver.executeJavaScript("document.getElementById('banana').innerHTML='バナ'");
 		}
 
 		DomSelector tbodySelector = new DomSelector(SelectorType.CSS_SELECTOR, "#table-scroll tbody");
@@ -101,9 +101,9 @@ public class CompareScrollPartWithExcludeTest extends PtlTestBase {
 		wait.untilLoad();
 
 		if (PtlTestConfig.getInstance().getEnvironment().getExecMode() == ExecMode.RUN_TEST) {
-			driver.executeJavaScript("document.getElementById('banana').innerHTML='banana'");
-			driver.executeJavaScript("document.getElementById('grape').innerHTML='grape'");
-			driver.executeJavaScript("document.getElementById('pineapple').innerHTML='pineapple'");
+			driver.executeJavaScript("document.getElementById('banana').innerHTML='バナ'");
+			driver.executeJavaScript("document.getElementById('grape').innerHTML='ぶど'");
+			driver.executeJavaScript("document.getElementById('pineapple').innerHTML='パイナップ'");
 		}
 
 		DomSelector tbodySelector = new DomSelector(SelectorType.CSS_SELECTOR, "#table-scroll tbody");

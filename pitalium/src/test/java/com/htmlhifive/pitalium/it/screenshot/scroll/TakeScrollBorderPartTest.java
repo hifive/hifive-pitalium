@@ -28,18 +28,18 @@ import com.htmlhifive.pitalium.core.model.SelectorType;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriverWait;
 
 /**
- * Marginありの要素のスクリーンショットが正しくとれているかのテスト
+ * Borderありの要素のスクリーンショットが正しくとれているかのテスト
  */
-public class TakeMarginPartTest extends PtlTestBase {
+public class TakeScrollBorderPartTest extends PtlTestBase {
 
 	private static final PtlTestConfig config = PtlTestConfig.getInstance();
 	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();
 
 	/**
-	 * マージン有りの場合に正しく撮影できるか確認するテスト。
+	 * ボーダー有りの場合に正しく撮影できるか確認するテスト。
 	 */
 	@Test
-	public void takeMarginScreenshotTest() {
+	public void takeBorderScreenshotTest() {
 
 		driver.get(BASE_URL);
 		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
@@ -59,21 +59,20 @@ public class TakeMarginPartTest extends PtlTestBase {
 				new CompareTarget(textScreenArea, null, true, true),
 				new CompareTarget(tbodyScreenArea, null, true, true) };
 
-		// margin: 100px
-		driver.executeScript("document.getElementById('about-scroll').style.margin = '100px';");
-		driver.executeScript("document.getElementById('textarea-scroll').style.margin = '100px';");
+		// border: 1px
+		driver.executeScript("document.getElementById('about-scroll').style.border = 'solid 1px black';");
+		driver.executeScript("document.getElementById('textarea-scroll').style.border = 'solid 1px black';");
 		WebElement tbodyElement = driver.findElement(By.cssSelector("#table-scroll tbody"));
-		driver.executeScript("arguments[0].style.margin = '100px';", tbodyElement);
+		driver.executeScript("arguments[0].style.border = 'solid 1px black';", tbodyElement);
 
-		assertionView.assertView("normalMarginScreenshot", targets);
-
+		assertionView.assertView("normalBorderScreenshot", targets);
 	}
 
 	/**
-	 * マージン無しの場合に正しく撮影できるか確認するテスト。
+	 * 太ボーダー有りの場合に正しく撮影できるか確認するテスト。
 	 */
 	@Test
-	public void takeNoMarginScreenshotTest() {
+	public void takeThickBorderScreenshotTest() {
 
 		driver.get(BASE_URL);
 		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
@@ -95,11 +94,45 @@ public class TakeMarginPartTest extends PtlTestBase {
 
 		WebElement tbodyElement = driver.findElement(By.cssSelector("#table-scroll tbody"));
 
-		// margin: 0px
-		driver.executeScript("document.getElementById('about-scroll').style.margin = '0px';");
-		driver.executeScript("document.getElementById('textarea-scroll').style.margin = '0px';");
-		driver.executeScript("arguments[0].style.margin = '0px';", tbodyElement);
-		assertionView.assertView("noMarginScreenshot", targets);
+		// border: 10px
+		driver.executeScript("document.getElementById('about-scroll').style.border = 'solid 10px black';");
+		driver.executeScript("document.getElementById('textarea-scroll').style.border = 'solid 10px black';");
+		driver.executeScript("arguments[0].style.border = 'solid 10px black';", tbodyElement);
 
+		assertionView.assertView("wideBorderScreenshot", targets);
+	}
+
+	/**
+	 * ボーダーなしの場合に正しく撮影できるか確認するテスト。
+	 */
+	@Test
+	public void takeNoBorderScreenshotTest() {
+
+		driver.get(BASE_URL);
+		PtlWebDriverWait wait = new PtlWebDriverWait(driver, 30);
+		wait.untilLoad();
+
+		// Targetの設定
+		DomSelector divSelector = new DomSelector(SelectorType.ID, "about-scroll");
+		ScreenArea divScreenArea = ScreenArea.of(divSelector.getType(), divSelector.getValue());
+
+		DomSelector textareaSelector = new DomSelector(SelectorType.ID, "textarea-scroll");
+		ScreenArea textScreenArea = ScreenArea.of(textareaSelector.getType(), textareaSelector.getValue());
+
+		DomSelector tbodySelector = new DomSelector(SelectorType.CSS_SELECTOR, "#table-scroll tbody");
+		ScreenArea tbodyScreenArea = ScreenArea.of(tbodySelector.getType(), tbodySelector.getValue());
+
+		CompareTarget[] targets = { new CompareTarget(divScreenArea, null, true, true),
+				new CompareTarget(textScreenArea, null, true, true),
+				new CompareTarget(tbodyScreenArea, null, true, true) };
+
+		WebElement tbodyElement = driver.findElement(By.cssSelector("#table-scroll tbody"));
+
+		// border: 0px
+		driver.executeScript("document.getElementById('about-scroll').style.border = 'solid 0px black';");
+		driver.executeScript("document.getElementById('textarea-scroll').style.border = 'solid 0px black';");
+		driver.executeScript("arguments[0].style.border = 'solid 0px black';", tbodyElement);
+
+		assertionView.assertView("noBorderScreenshot", targets);
 	}
 }

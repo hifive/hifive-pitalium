@@ -66,5 +66,10 @@
 		"platformVersion": "7.1",
 		"deviceName": "iPhone 5S",
 		"browserName": "safari"
+	},
+	{
+		"platform": "WINDOWS",
+		"os": "WINDOWS",
+		"browserName": "MicrosoftEdge"
 	}
 ]
