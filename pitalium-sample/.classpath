@@ -29,6 +29,6 @@
 	<classpathentry kind="lib" path="libs/selenium-remote-driver-2.53.0.jar"/>
 	<classpathentry kind="lib" path="libs/selenium-support-2.53.0.jar"/>
 	<classpathentry kind="lib" path="libs/slf4j-api-1.7.21.jar"/>
-	<classpathentry kind="lib" path="libs/pitalium-1.1.0.jar"/>
+	<classpathentry kind="lib" path="libs/pitalium-1.1.1.jar" sourcepath="libs/sources/pitalium-1.1.1-sources.jar"/>
 	<classpathentry kind="output" path="target"/>
 </classpath>
