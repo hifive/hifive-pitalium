@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="it_run_exec" default="it_exec_test_all">
+
+	 <target name="WithBaseTest">
+	    <mkdir dir="${target.junit.report.dir}"/>
+	    <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+	    	<syspropertyset refid="proxy.settings" />
+	    	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+	        <formatter type="xml"/>
+	        <test name="com.htmlhifive.pitalium.it.exec.base.WithBaseTest" todir="${target.junit.report.dir}"/>
+	        <classpath refid="test.classpath"/>
+	    </junit>
+	    <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+	    	<syspropertyset refid="proxy.settings" />
+	    	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+	        <formatter type="xml"/>
+	        <test name="com.htmlhifive.pitalium.it.exec.base.WithBaseTest" todir="${target.junit.report.dir}"/>
+	        <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=EnvironmentConfig_test.json"/>
+	        <classpath refid="test.classpath"/>
+	    </junit>
+	</target>
+    <target name="WithoutBaseTest">
+        <mkdir dir="${target.junit.report.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.base.WithoutBaseTest" todir="${target.junit.report.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="IllegalBrowserTest">
+        <mkdir dir="${target.junit.report.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.cap.IllegalBrowserTest" todir="${target.junit.report.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_1.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="IllegalBrowserWithAppropriateBrowesersTest">
+        <mkdir dir="${target.junit.report.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.cap.IllegalBrowserWithAppropriateBrowesersTest" todir="${target.junit.report.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_3.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="IllegalBrowserWithAppropriateBroweserTest">
+        <mkdir dir="${target.junit.report.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.cap.IllegalBrowserWithAppropriateBroweserTest" todir="${target.junit.report.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_IllegalBrowserTest_2.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="MultipleBrowserTest">
+        <mkdir dir="${target.junit.report.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.cap.MultipleBrowserTest" todir="${target.junit.report.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_MultipleBrowserTest.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="NoBrowserTest">
+        <mkdir dir="${target.junit.report.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.cap.NoBrowserTest" todir="${target.junit.report.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_NoBrowserTest.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="SingleBrowserTest">
+        <mkdir dir="${target.junit.report.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.cap.SingleBrowserTest" todir="${target.junit.report.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\cap\EnvironmentConfig_SingleBrowserTest.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="MultipleClassTest">
+        <mkdir dir="${target.junit.report.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.multitest.FirstOfMultipleTest" todir="${target.junit.report.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.multitest.SecondOfMultipleTest" todir="${target.junit.report.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.multitest.MultipleClassCheckResultTest" todir="${target.junit.report.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=EnvironmentConfig_test.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+    <target name="MultipleMethodTest">
+        <mkdir dir="${target.junit.report.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.multitest.MultipleMethodTest" todir="${target.junit.report.dir}"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+	<target name="FileParameterTest">
+        <mkdir dir="${target.junit.report.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+        	<syspropertyset refid="proxy.settings" />
+        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+            <formatter type="xml"/>
+            <test name="com.htmlhifive.pitalium.it.exec.param.FileParameterTest" todir="${target.junit.report.dir}"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\param\EnvironmentConfig_FileParameterTest.json"/>
+            <classpath refid="test.classpath"/>
+        </junit>
+    </target>
+	<target name="JVMParameterTest">
+	    <mkdir dir="${target.junit.report.dir}"/>
+	    <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
+	    	<syspropertyset refid="proxy.settings" />
+	    	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+	        <formatter type="xml"/>
+	        <test name="com.htmlhifive.pitalium.it.exec.param.JVMParameterTest" todir="${target.junit.report.dir}"/>
+	        <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=EnvironmentConfig_test.json"/>
+	        <classpath refid="test.classpath"/>
+	    </junit>
+	</target>
+	<target name="it_exec_test_all">
+		<antcall target="WithBaseTest" />
+		<antcall target="WithoutBaseTest" />
+		<antcall target="IllegalBrowserTest" />
+		<antcall target="IllegalBrowserWithAppropriateBrowesersTest" />
+		<antcall target="IllegalBrowserWithAppropriateBroweserTest" />
+		<antcall target="MultipleBrowserTest" />
+		<antcall target="NoBrowserTest" />
+		<antcall target="SingleBrowserTest" />
+		<antcall target="MultipleClassTest" />
+		<antcall target="MultipleMethodTest" />
+		<antcall target="FileParameterTest" />
+		<antcall target="JVMParameterTest" />
+	</target>
+</project>

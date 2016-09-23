@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="it_run_assertion" default="it_assertion_all">
+
+	<target name="assertion_hifive" description="テストを行います。">
+		<mkdir dir="${target.junit.report.dir}" />
+		<junit fork="yes" printsummary="yes" maxmemory="1024m" dir="${target.cobertura.dir}">
+			<syspropertyset refid="proxy.settings" />
+			<jvmarg value="-XX:-UseSplitVerifier" />
+			<jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=${run_test.config.file}"/>
+			<formatter type="xml" />
+			<classpath refid="test.classpath" />
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+
+			<batchtest fork="yes" todir="${target.junit.report.dir}">
+				<fileset dir="${target.test.src.dir}" includes="${it.assertion.includes}" excludes="${it.assertion.excludes}">
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<target name="assertion_scroll" description="テストを行います。">
+		<mkdir dir="${target.junit.report.dir}" />
+		<junit fork="yes" printsummary="yes" maxmemory="1024m" dir="${target.cobertura.dir}">
+			<syspropertyset refid="proxy.settings" />
+			<jvmarg value="-XX:-UseSplitVerifier" />
+			<jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=${run_test.config.file}"/>
+			<jvmarg line="-Dcom.htmlhifive.pitalium.testAppConfig=testAppConfig_scroll.json"/>
+			<formatter type="xml" />
+			<classpath refid="test.classpath" />
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+
+			<batchtest fork="yes" todir="${target.junit.report.dir}">
+				<fileset dir="${target.test.src.dir}" includes="${it.assertion.scroll.includes}" excludes="${it.assertion.scroll.excludes}">
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<target name="it_assertion_all">
+		<antcall target="assertion_hifive" />
+		<antcall target="assertion_scroll" />
+	</target>
+
+</project>
