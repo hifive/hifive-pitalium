@@ -1,4 +1,8 @@
 results/
-libs/
+libs/*
+!libs/sources
+libs/sources/*
+!libs/pitalium-*.jar
+!libs/sources/pitalium-*.jar
 target/
 logs/
