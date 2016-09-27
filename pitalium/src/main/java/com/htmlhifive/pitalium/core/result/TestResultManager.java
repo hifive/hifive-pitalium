@@ -179,6 +179,10 @@ public final class TestResultManager {
 				throw new TestRuntimeException("TestResult does not exist for " + className);
 			}
 
+			if (currentMode.equals(ExecMode.SKIP)) {
+				return;
+			}
+
 			LOG.trace("[Export TestResult] ({})", className);
 
 			ScreenshotResultHolder holder = holders.get(className);
@@ -279,7 +283,8 @@ public final class TestResultManager {
 			}
 
 			String oldId = holder.expectIds.put(methodName, currentId);
-			LOG.debug("[Update ExpectedId] (class: {}, method: {}) ({} => {})", className, methodName, oldId, currentId);
+			LOG.debug("[Update ExpectedId] (class: {}, method: {}) ({} => {})", className, methodName, oldId,
+					currentId);
 		}
 	}
 
@@ -319,7 +324,8 @@ public final class TestResultManager {
 
 		synchronized (expectedIdsForUpdate) {
 			if (!expectedIdsForUpdate.containsKey(className)) {
-				throw new TestRuntimeException(String.format(Locale.US, "ExpectedId for %s does not exist.", className));
+				throw new TestRuntimeException(
+						String.format(Locale.US, "ExpectedId for %s does not exist.", className));
 			}
 
 			ExpectIdHolder holder = expectedIdsForUpdate.get(className);

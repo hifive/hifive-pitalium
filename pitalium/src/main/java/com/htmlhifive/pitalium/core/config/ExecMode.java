@@ -36,7 +36,11 @@ public enum ExecMode {
 		public boolean isRunTest() {
 			return true;
 		}
-	};
+	},
+	/**
+	 * 画像の取得・比較ともに行いません。
+	 */
+	SKIP;
 
 	/**
 	 * 当該モードでは合否判定を行うかどうかを返します。
@@ -46,5 +50,4 @@ public enum ExecMode {
 	public boolean isRunTest() {
 		return false;
 	}
-
 }
