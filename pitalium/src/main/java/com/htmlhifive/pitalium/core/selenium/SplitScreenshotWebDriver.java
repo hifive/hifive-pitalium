@@ -104,12 +104,14 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 			// スクロール位置を確認
 			long currentScrollTop = Math.round(getCurrentScrollTop());
 
-			// スクロール回数を調べておく
-			long scrollNum = getScrollNum();
+			long scrollNum = -1;
 			int currentScrollNum = 0;
 
 			// Vertical scroll
-			while (scrollTop != currentScrollTop && currentScrollNum <= scrollNum) {
+			while (scrollTop != currentScrollTop) {
+				if (scrollNum >= 0 && currentScrollNum > scrollNum) {
+					break;
+				}
 				currentVScrollAmount = currentScrollTop - scrollTop;
 				scrollTop = currentScrollTop;
 				LOG.trace("[GetMinimumScreenshot] vertical scrollAmount: {}, scrollTop: {}", currentVScrollAmount,
@@ -181,6 +183,11 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				trimRightImage(lineImages, currentHScrollAmount, bodyElement, scale);
 
 				images.add(lineImages);
+
+				// 1回目のキャプチャの高さを見てスクロール回数をセット
+				if (scrollNum < 0) {
+					scrollNum = getScrollNum(lineImages.get(0).getHeight());
+				}
 
 				// 次のキャプチャ開始位置を設定
 				double scrollIncrement = 0;

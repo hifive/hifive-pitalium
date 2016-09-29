@@ -28,7 +28,7 @@ import com.htmlhifive.pitalium.core.model.ScreenshotParams;
 /**
  * Firefoxで利用する{@link org.openqa.selenium.WebDriver}
  */
-class PtlFirefoxDriver extends PtlWebDriver {
+class PtlFirefoxDriver extends SplitScreenshotWebDriver {
 
 	/**
 	 * コンストラクタ
