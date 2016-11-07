@@ -128,7 +128,7 @@ public final class ImageUtils {
 	 * @param source 元画像
 	 * @return 積分結果の配列
 	 */
-	private static double[][] calcIntegralImage(BufferedImage source) {
+	public static double[][] calcIntegralImage(BufferedImage source) {
 		double[][] integralImage = new double[source.getHeight()][source.getWidth()];
 		Raster raster = source.getRaster();
 		int[] pixel = new int[raster.getNumDataElements()];
