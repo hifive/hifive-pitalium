@@ -183,4 +183,22 @@ public class ImageUtilsTest {
 
 	//</editor-fold>
 
+	//<editor-fold desc="trim">
+
+	/**
+	 * BufferedImageからRGBのint配列を取得するテスト。
+	 */
+	@Test
+	public void testGetRGB() throws Exception {
+		BufferedImage image = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		int width = image.getWidth();
+		int height = image.getHeight();
+
+		int[] expected = image.getRGB(0, 0, width, height, null, 0, width);
+		int[] actual = ImageUtils.getRGB(image, width, height);
+		assertArrayEquals(expected, actual);
+	}
+
+	//</editor-fold>
+
 }
