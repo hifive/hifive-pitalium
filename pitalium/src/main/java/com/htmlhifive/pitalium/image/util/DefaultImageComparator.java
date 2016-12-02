@@ -43,8 +43,8 @@ class DefaultImageComparator extends ImageComparator {
 		int width = Math.min(image1.getWidth(), image2.getWidth());
 		int height = Math.min(image1.getHeight(), image2.getHeight());
 
-		int[] rgb1 = getRGB(image1, width, height);
-		int[] rgb2 = getRGB(image2, width, height);
+		int[] rgb1 = ImageUtils.getRGB(image1, width, height);
+		int[] rgb2 = ImageUtils.getRGB(image2, width, height);
 
 		List<Point> diffPoints = new ArrayList<Point>();
 		for (int i = 0, length = rgb1.length; i < length; i++) {
@@ -65,15 +65,4 @@ class DefaultImageComparator extends ImageComparator {
 		return diffPoints;
 	}
 
-	/**
-	 * 指定した画像のRGBベースのピクセル配列を取得します。
-	 * 
-	 * @param image 対象の画像
-	 * @param width 読み込む幅
-	 * @param height 読み込む高さ
-	 * @return ピクセル配列
-	 */
-	private int[] getRGB(BufferedImage image, int width, int height) {
-		return image.getRGB(0, 0, width, height, null, 0, width);
-	}
 }

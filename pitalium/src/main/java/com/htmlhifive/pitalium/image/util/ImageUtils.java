@@ -128,7 +128,7 @@ public final class ImageUtils {
 	 * @param source 元画像
 	 * @return 積分結果の配列
 	 */
-	private static double[][] calcIntegralImage(BufferedImage source) {
+	public static double[][] calcIntegralImage(BufferedImage source) {
 		double[][] integralImage = new double[source.getHeight()][source.getWidth()];
 		Raster raster = source.getRaster();
 		int[] pixel = new int[raster.getNumDataElements()];
@@ -161,8 +161,7 @@ public final class ImageUtils {
 
 		int width = image1.getWidth();
 		int height = image1.getHeight();
-		return Arrays.equals(image1.getRGB(0, 0, width, height, null, 0, width),
-				image2.getRGB(0, 0, width, height, null, 0, width));
+		return Arrays.equals(getRGB(image1, width, height), getRGB(image2, width, height));
 	}
 
 	/**
@@ -521,4 +520,17 @@ public final class ImageUtils {
 
 		return screenshot;
 	}
+
+	/**
+	 * 指定した画像のRGBベースのピクセル配列を取得します。
+	 * 
+	 * @param image 対象の画像
+	 * @param width 読み込む幅
+	 * @param height 読み込む高さ
+	 * @return ピクセル配列
+	 */
+	public static int[] getRGB(BufferedImage image, int width, int height) {
+		return image.getRGB(0, 0, width, height, null, 0, width);
+	}
+
 }

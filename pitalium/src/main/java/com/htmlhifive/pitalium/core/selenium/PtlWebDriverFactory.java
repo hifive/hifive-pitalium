@@ -142,7 +142,8 @@ public abstract class PtlWebDriverFactory {
 			PtlWebDriver driver = createWebDriver(url);
 			driver.setEnvironmentConfig(environmentConfig);
 			driver.setBaseUrl(testAppConfig.getBaseUrl());
-			driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS);
+			driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS)
+					.setScriptTimeout(environmentConfig.getScriptTimeout(), TimeUnit.SECONDS);
 			if (!isMobile()) {
 				driver.manage().window()
 						.setSize(new Dimension(testAppConfig.getWindowWidth(), testAppConfig.getWindowHeight()));
