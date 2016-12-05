@@ -15,19 +15,24 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Supplier;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 
 /**
@@ -132,11 +137,30 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 	private PtlWebDriver driver;
 	private String tagName;
+	private PtlWebElement frameParent;
 
 	/**
 	 * コンストラクタ
 	 */
 	protected PtlWebElement() {
+	}
+
+	/**
+	 * 自身がフレーム内コンテンツに所属する場合、該当の親フレーム要素を取得します。
+	 * 
+	 * @return 親フレーム要素
+	 */
+	public PtlWebElement getFrameParent() {
+		return frameParent;
+	}
+
+	/**
+	 * 自身がフレーム内コンテンツに所属する場合、該当の親フレーム要素を設定します。
+	 * 
+	 * @param frameParent 親フレーム要素
+	 */
+	public void setFrameParent(PtlWebElement frameParent) {
+		this.frameParent = frameParent;
 	}
 
 	/**
@@ -172,6 +196,108 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	@Override
 	public PtlWebDriver getWrappedDriver() {
 		return (PtlWebDriver) super.getWrappedDriver();
+	}
+
+	@Override
+	protected Response execute(String command, Map<String, ?> parameters) {
+		if (frameParent == null) {
+			return super.execute(command, parameters);
+		}
+
+		// in frame
+		driver.switchTo().frame(frameParent);
+		try {
+			return super.execute(command, parameters);
+		} finally {
+			driver.switchTo().defaultContent();
+		}
+	}
+
+	@Override
+	protected WebElement findElement(final String using, final String value) {
+		if (!isFrame()) {
+			return super.findElement(using, value);
+		}
+
+		return executeInFrame(new Supplier<WebElement>() {
+			@Override
+			public WebElement get() {
+				try {
+					Method findElement = RemoteWebDriver.class.getDeclaredMethod("findElement", String.class,
+							String.class);
+					findElement.setAccessible(true);
+
+					PtlWebElement element = (PtlWebElement) findElement.invoke(driver, using, value);
+					element.setFrameParent(PtlWebElement.this);
+					return element;
+				} catch (Exception e) {
+					throw new TestRuntimeException(e);
+				}
+			}
+		});
+	}
+
+	@Override
+	protected List<WebElement> findElements(final String using, final String value) {
+		if (!isFrame()) {
+			return super.findElements(using, value);
+		}
+
+		return executeInFrame(new Supplier<List<WebElement>>() {
+			@Override
+			public List<WebElement> get() {
+				try {
+					Method findElement = RemoteWebDriver.class.getDeclaredMethod("findElements", String.class,
+							String.class);
+					findElement.setAccessible(true);
+
+					List<WebElement> elements = PtlWebElement.super.findElements(using, value);
+					for (WebElement element : elements) {
+						((PtlWebElement) element).setFrameParent(PtlWebElement.this);
+					}
+
+					return elements;
+				} catch (Exception e) {
+					throw new TestRuntimeException(e);
+				}
+			}
+		});
+	}
+
+	/**
+	 * frameまたはiframeの要素において、WebDriverのフレームスイッチを行った状態で操作します。
+	 * 
+	 * @param doInFrame 操作内容
+	 */
+	public void executeInFrame(Runnable doInFrame) {
+		if (!isFrame()) {
+			throw new TestRuntimeException("not frame or iframe element. \"" + getTagName() + "\"");
+		}
+
+		driver.switchTo().frame(this);
+		try {
+			doInFrame.run();
+		} finally {
+			driver.switchTo().defaultContent();
+		}
+	}
+
+	/**
+	 * frameまたはiframeの要素において、WebDriverのフレームスイッチを行った状態で操作します。
+	 * 
+	 * @param doInFrame 操作内容
+	 */
+	public <T> T executeInFrame(Supplier<T> doInFrame) {
+		if (!isFrame()) {
+			throw new TestRuntimeException("not frame or iframe element. \"" + getTagName() + "\"");
+		}
+
+		driver.switchTo().frame(this);
+		try {
+			return doInFrame.get();
+		} finally {
+			driver.switchTo().defaultContent();
+		}
 	}
 
 	/**
