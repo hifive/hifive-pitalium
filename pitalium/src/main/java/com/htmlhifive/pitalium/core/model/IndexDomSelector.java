@@ -47,7 +47,18 @@ public class IndexDomSelector extends DomSelector {
 	 * @param index 対象とする要素のインデックス
 	 */
 	public IndexDomSelector(DomSelector selector, Integer index) {
-		this(selector.getType(), selector.getValue(), index);
+		this(selector.getType(), selector.getValue(), selector.getFrameSelector(), index);
+	}
+
+	/**
+	 * DOM要素をセレクタの種別と値で指定します。セレクタに一致する要素のうち、index番目の要素を指定します。
+	 * 
+	 * @param type セレクタの種別
+	 * @param value セレクタの値
+	 * @param index 対象とする要素のインデックス
+	 */
+	public IndexDomSelector(SelectorType type, String value, Integer index) {
+		this(type, value, null, index);
 	}
 
 	/**
@@ -59,8 +70,8 @@ public class IndexDomSelector extends DomSelector {
 	 */
 	@JsonCreator
 	public IndexDomSelector(@JsonProperty("type") SelectorType type, @JsonProperty("value") String value,
-			@JsonProperty("index") Integer index) {
-		super(type, value);
+			@JsonProperty("frameSelector") DomSelector frameSelector, @JsonProperty("index") Integer index) {
+		super(type, value, frameSelector);
 		this.index = index;
 	}
 

@@ -18,12 +18,14 @@ package com.htmlhifive.pitalium.core.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 
 /**
  * DOM要素を指定するためのセレクタを保持するクラス。
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DomSelector implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -39,15 +41,33 @@ public class DomSelector implements Serializable {
 	private final String value;
 
 	/**
+	 * フレームを指定するセレクタ
+	 */
+	private final DomSelector frameSelector;
+
+	/**
 	 * DOM要素をセレクタの種別と値で指定します。
 	 * 
 	 * @param type セレクタの種別
 	 * @param value セレクタの値
 	 */
+	public DomSelector(SelectorType type, String value) {
+		this(type, value, null);
+	}
+
+	/**
+	 * DOM要素をセレクタの種別と値で指定します。
+	 * 
+	 * @param type セレクタの種別
+	 * @param value セレクタの値
+	 * @param frameSelector フレームを指定するセレクタ
+	 */
 	@JsonCreator
-	public DomSelector(@JsonProperty("type") SelectorType type, @JsonProperty("value") String value) {
+	public DomSelector(@JsonProperty("type") SelectorType type, @JsonProperty("value") String value,
+			@JsonProperty("frameSelector") DomSelector frameSelector) {
 		this.type = type;
 		this.value = value;
+		this.frameSelector = frameSelector;
 	}
 
 	/**
@@ -69,33 +89,35 @@ public class DomSelector implements Serializable {
 	}
 
 	/**
-	 * 同じDOMを表すセレクタか否かを調べます。
+	 * フレームを指定するセレクタを取得します。
 	 * 
-	 * @param o 比較対象オブジェクト
-	 * @return セレクタの種別と値が一致すればtrue。
+	 * @return フレームを指定するセレクタ
 	 */
+	public DomSelector getFrameSelector() {
+		return frameSelector;
+	}
+
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) {
+		if (this == o)
 			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
+		if (o == null || getClass() != o.getClass())
 			return false;
-		}
 
 		DomSelector that = (DomSelector) o;
 
-		if (type != that.type) {
+		if (type != that.type)
 			return false;
-		}
-		return value.equals(that.value);
+		if (!value.equals(that.value))
+			return false;
+		return frameSelector != null ? frameSelector.equals(that.frameSelector) : that.frameSelector == null;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = type.hashCode();
-		final int hashPrime = 31;
-		result = hashPrime * result + value.hashCode();
+		result = 31 * result + value.hashCode();
+		result = 31 * result + (frameSelector != null ? frameSelector.hashCode() : 0);
 		return result;
 	}
 

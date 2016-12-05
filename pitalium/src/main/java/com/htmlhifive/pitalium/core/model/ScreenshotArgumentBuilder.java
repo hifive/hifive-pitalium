@@ -156,6 +156,20 @@ public class ScreenshotArgumentBuilder {
 	}
 
 	/**
+	 * スクリーンショットを撮影する対象を追加します。
+	 * 
+	 * @param type セレクタ種別
+	 * @param value 取得条件
+	 * @param frameSelectorType フレームを指定するセレクタの種別
+	 * @param frameSelectorValue フレームを指定するセレクタの値
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder addNewTarget(SelectorType type, String value, SelectorType frameSelectorType,
+			String frameSelectorValue) {
+		return addNewTarget(ScreenArea.of(type, value, frameSelectorType, frameSelectorValue));
+	}
+
+	/**
 	 * スクリーンショットを取得する対象をIDで指定して追加します。
 	 * 
 	 * @param value 取得条件
@@ -261,6 +275,20 @@ public class ScreenshotArgumentBuilder {
 	 */
 	public ScreenshotArgumentBuilder addExclude(SelectorType type, String value) {
 		return addExclude(ScreenArea.of(type, value));
+	}
+
+	/**
+	 * {@link #addNewTarget() addNewTarget}で追加したスクリーンショット取得対象に対して、除外条件を追加します。
+	 * 
+	 * @param type セレクタ種別
+	 * @param value 除外条件
+	 * @param frameSelectorType フレームを指定するセレクタの種別
+	 * @param frameSelectorValue フレームを指定するセレクタの値
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder addExclude(SelectorType type, String value, SelectorType frameSelectorType,
+			String frameSelectorValue) {
+		return addExclude(ScreenArea.of(type, value, frameSelectorType, frameSelectorValue));
 	}
 
 	/**
@@ -429,6 +457,22 @@ public class ScreenshotArgumentBuilder {
 	 */
 	public ScreenshotArgumentBuilder addHiddenElementSelector(SelectorType type, String value) {
 		hiddenElementSelectors.add(new DomSelector(type, value));
+		return this;
+	}
+
+	/**
+	 * スクリーンショット撮影時に非表示にする要素を追加します。
+	 * 
+	 * @param type セレクタ種別
+	 * @param value 非表示条件
+	 * @param frameSelectorType フレームを指定するセレクタの種別
+	 * @param frameSelectorValue フレームを指定するセレクタの値
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder addHiddenElementSelector(SelectorType type, String value,
+			SelectorType frameSelectorType, String frameSelectorValue) {
+		hiddenElementSelectors
+				.add(new DomSelector(type, value, new DomSelector(frameSelectorType, frameSelectorValue)));
 		return this;
 	}
 

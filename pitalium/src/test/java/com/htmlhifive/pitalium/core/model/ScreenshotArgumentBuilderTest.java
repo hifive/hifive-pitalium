@@ -17,7 +17,7 @@
 package com.htmlhifive.pitalium.core.model;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -32,11 +32,17 @@ import org.junit.rules.ExpectedException;
 @SuppressWarnings("all")
 public class ScreenshotArgumentBuilderTest {
 
-	private static final List<Pair<String, SelectorType>> TYPE_MAPPINGS = Arrays.asList(Pair.of("Id", SelectorType.ID),
-			Pair.of("ClassName", SelectorType.CLASS_NAME), Pair.of("CssSelector", SelectorType.CSS_SELECTOR),
-			Pair.of("LinkText", SelectorType.LINK_TEXT), Pair.of("Name", SelectorType.NAME),
-			Pair.of("PartialLinkText", SelectorType.PARTIAL_LINK), Pair.of("TagName", SelectorType.TAG_NAME),
+// @formatter:off
+	private static final List<Pair<String, SelectorType>> TYPE_MAPPINGS = Arrays.asList(
+			Pair.of("Id", SelectorType.ID),
+			Pair.of("ClassName", SelectorType.CLASS_NAME),
+			Pair.of("CssSelector", SelectorType.CSS_SELECTOR),
+			Pair.of("LinkText", SelectorType.LINK_TEXT),
+			Pair.of("Name", SelectorType.NAME),
+			Pair.of("PartialLinkText", SelectorType.PARTIAL_LINK),
+			Pair.of("TagName", SelectorType.TAG_NAME),
 			Pair.of("XPath", SelectorType.XPATH));
+// @formatter:on
 
 	@Rule
 	public ExpectedException expected = ExpectedException.none();
@@ -157,7 +163,7 @@ public class ScreenshotArgumentBuilderTest {
 	}
 
 	/**
-	 * {@link ScreenshotArgumentBuilder#addExclude(SelectorType, String)}
+	 * {@link ScreenshotArgumentBuilder#addNewTarget(SelectorType, String)}
 	 */
 	@Test
 	public void addNewTarget_selector() throws Exception {
@@ -169,6 +175,23 @@ public class ScreenshotArgumentBuilderTest {
 			assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
 
 			assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(type, "target"))));
+		}
+	}
+
+	/**
+	 * {@link ScreenshotArgumentBuilder#addNewTarget(SelectorType, String, SelectorType, String)}
+	 */
+	@Test
+	public void addNewTarget_frame() throws Exception {
+		for (SelectorType type : SelectorType.values()) {
+			ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid").addNewTarget(type, "target", type, "frame")
+					.build();
+
+			assertThat(arg.getScreenshotId(), is("ssid"));
+			assertThat(arg.getTargets().size(), is(1));
+			assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
+
+			assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(type, "target", type, "frame"))));
 		}
 	}
 
@@ -235,9 +258,8 @@ public class ScreenshotArgumentBuilderTest {
 	 */
 	@Test
 	public void addNewTarget_CompareTarget() throws Exception {
-		CompareTarget target = new CompareTarget(ScreenArea.of(SelectorType.ID, "id"),
-				new ScreenArea[] { ScreenArea.of(SelectorType.CSS_SELECTOR, "css"), ScreenArea.of(1d, 2d, 3d, 4d) },
-				false);
+		CompareTarget target = new CompareTarget(ScreenArea.of(SelectorType.ID, "id"), new ScreenArea[] {
+				ScreenArea.of(SelectorType.CSS_SELECTOR, "css"), ScreenArea.of(1d, 2d, 3d, 4d) }, false);
 
 // @formatter:off
 		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
@@ -258,9 +280,8 @@ public class ScreenshotArgumentBuilderTest {
 	 */
 	@Test
 	public void addNewTarget_CompareTarget_edit() throws Exception {
-		CompareTarget target = new CompareTarget(ScreenArea.of(SelectorType.ID, "id"),
-				new ScreenArea[] { ScreenArea.of(SelectorType.CSS_SELECTOR, "css"), ScreenArea.of(1d, 2d, 3d, 4d) },
-				false);
+		CompareTarget target = new CompareTarget(ScreenArea.of(SelectorType.ID, "id"), new ScreenArea[] {
+				ScreenArea.of(SelectorType.CSS_SELECTOR, "css"), ScreenArea.of(1d, 2d, 3d, 4d) }, false);
 
 // @formatter:off
         ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
@@ -274,11 +295,9 @@ public class ScreenshotArgumentBuilderTest {
 		assertThat(arg.getTargets().size(), is(1));
 		assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
 
-		assertThat(arg.getTargets().get(0),
-				is(new CompareTarget(ScreenArea.of(SelectorType.ID, "id"),
-						new ScreenArea[] { ScreenArea.of(SelectorType.CSS_SELECTOR, "css"),
-								ScreenArea.of(1d, 2d, 3d, 4d), ScreenArea.of(SelectorType.PARTIAL_LINK, "partial") },
-				true)));
+		assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(SelectorType.ID, "id"),
+				new ScreenArea[] { ScreenArea.of(SelectorType.CSS_SELECTOR, "css"), ScreenArea.of(1d, 2d, 3d, 4d),
+						ScreenArea.of(SelectorType.PARTIAL_LINK, "partial") }, true)));
 	}
 
 	/**
@@ -318,10 +337,10 @@ public class ScreenshotArgumentBuilderTest {
 	@Test
 	public void addExclude() throws Exception {
 // @formatter:off
-        ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
-                .addNewTargetByName("name")
-                    .addExclude(SelectorType.ID, "ex")
-                .build();
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
+				.addNewTargetByName("name")
+					.addExclude(SelectorType.ID, "ex")
+				.build();
 // @formatter:on
 
 		assertThat(arg.getScreenshotId(), is("ssid"));
@@ -330,6 +349,26 @@ public class ScreenshotArgumentBuilderTest {
 
 		assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(SelectorType.NAME, "name"),
 				new ScreenArea[] { ScreenArea.of(SelectorType.ID, "ex") }, true)));
+	}
+
+	/**
+	 * Excludeを追加する
+	 */
+	@Test
+	public void addExclude_frame() throws Exception {
+// @formatter:off
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
+				.addNewTargetByName("name")
+					.addExclude(SelectorType.ID, "ex", SelectorType.ID, "frame")
+				.build();
+// @formatter:on
+
+		assertThat(arg.getScreenshotId(), is("ssid"));
+		assertThat(arg.getTargets().size(), is(1));
+		assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
+
+		assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(SelectorType.NAME, "name"),
+				new ScreenArea[] { ScreenArea.of(SelectorType.ID, "ex", SelectorType.ID, "frame") }, true)));
 	}
 
 	/**
@@ -391,10 +430,11 @@ public class ScreenshotArgumentBuilderTest {
 		assertThat(arg.getTargets().size(), is(1));
 		assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
 
-		assertThat(arg.getTargets().get(0),
+		assertThat(
+				arg.getTargets().get(0),
 				is(new CompareTarget(ScreenArea.of(SelectorType.CSS_SELECTOR, "css"), new ScreenArea[] {
 						ScreenArea.of(SelectorType.ID, "ex_id"), ScreenArea.of(SelectorType.CSS_SELECTOR, "ex_css") },
-				true)));
+						true)));
 	}
 
 	/**
@@ -421,11 +461,11 @@ public class ScreenshotArgumentBuilderTest {
 		assertThat(arg.getTargets().get(1),
 				is(new CompareTarget(ScreenArea.of(SelectorType.PARTIAL_LINK, "partial_link"),
 						new ScreenArea[] { ScreenArea.of(SelectorType.XPATH, "ex_xpath") }, true)));
-		assertThat(arg.getTargets().get(2),
-				is(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "tag"),
-						new ScreenArea[] { ScreenArea.of(SelectorType.CLASS_NAME, "ex_class"),
-								ScreenArea.of(SelectorType.LINK_TEXT, "ex_link") },
-						true)));
+		assertThat(
+				arg.getTargets().get(2),
+				is(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "tag"), new ScreenArea[] {
+						ScreenArea.of(SelectorType.CLASS_NAME, "ex_class"),
+						ScreenArea.of(SelectorType.LINK_TEXT, "ex_link") }, true)));
 	}
 
 	/**
@@ -442,8 +482,8 @@ public class ScreenshotArgumentBuilderTest {
 		assertThat(arg.getTargets().size(), is(1));
 		assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
 
-		assertThat(arg.getTargets().get(0),
-				is(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), areas, true)));
+		assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), areas,
+				true)));
 	}
 
 	/**
@@ -458,8 +498,8 @@ public class ScreenshotArgumentBuilderTest {
 		assertThat(arg.getTargets().size(), is(1));
 		assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
 
-		assertThat(arg.getTargets().get(0),
-				is(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), areas, true)));
+		assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), areas,
+				true)));
 	}
 
 	/**
@@ -575,8 +615,8 @@ public class ScreenshotArgumentBuilderTest {
 
 		assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(SelectorType.ID, "id"), null, false)));
 		assertThat(arg.getTargets().get(1), is(new CompareTarget(ScreenArea.of(1d, 2d, 3d, 4d), null, true)));
-		assertThat(arg.getTargets().get(2),
-				is(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), null, false)));
+		assertThat(arg.getTargets().get(2), is(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"), null,
+				false)));
 	}
 
 	/**
@@ -584,14 +624,36 @@ public class ScreenshotArgumentBuilderTest {
 	 */
 	@Test
 	public void addHiddenElementSelector() throws Exception {
-		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid").addHiddenElementSelector(SelectorType.ID, "id")
+// @formatter:off
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
+				.addHiddenElementSelector(SelectorType.ID, "id")
 				.build();
+// @formatter:on
 
 		assertThat(arg.getScreenshotId(), is("ssid"));
 		assertThat(arg.getTargets().isEmpty(), is(true));
 		assertThat(arg.getHiddenElementSelectors().size(), is(1));
 
 		assertThat(arg.getHiddenElementSelectors().get(0), is(new DomSelector(SelectorType.ID, "id")));
+	}
+
+	/**
+	 * addHiddenElementSelectorを追加
+	 */
+	@Test
+	public void addHiddenElementSelector_frame() throws Exception {
+// @formatter:off
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
+				.addHiddenElementSelector(SelectorType.ID, "id", SelectorType.ID, "frame")
+				.build();
+// @formatter:on
+
+		assertThat(arg.getScreenshotId(), is("ssid"));
+		assertThat(arg.getTargets().isEmpty(), is(true));
+		assertThat(arg.getHiddenElementSelectors().size(), is(1));
+
+		assertThat(arg.getHiddenElementSelectors().get(0), is(new DomSelector(SelectorType.ID, "id", new DomSelector(
+				SelectorType.ID, "frame"))));
 	}
 
 	/**
@@ -602,8 +664,8 @@ public class ScreenshotArgumentBuilderTest {
 		for (Pair<String, SelectorType> mapping : TYPE_MAPPINGS) {
 			ScreenshotArgumentBuilder builder = new ScreenshotArgumentBuilder("ssid");
 
-			ScreenshotArgumentBuilder.class.getMethod("addHiddenElementsBy" + mapping.getKey(), String.class)
-					.invoke(builder, "value");
+			ScreenshotArgumentBuilder.class.getMethod("addHiddenElementsBy" + mapping.getKey(), String.class).invoke(
+					builder, "value");
 			ScreenshotArgument arg = builder.build();
 
 			assertThat(arg.getScreenshotId(), is("ssid"));
@@ -621,8 +683,8 @@ public class ScreenshotArgumentBuilderTest {
 	public void addHiddenElementSelectors_collection() throws Exception {
 		DomSelector[] selectors = { new DomSelector(SelectorType.ID, "id"),
 				new DomSelector(SelectorType.TAG_NAME, "tag") };
-		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
-				.addHiddenElementSelectors(Arrays.asList(selectors)).build();
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid").addHiddenElementSelectors(
+				Arrays.asList(selectors)).build();
 
 		assertThat(arg.getScreenshotId(), is("ssid"));
 		assertThat(arg.getTargets().isEmpty(), is(true));

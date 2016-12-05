@@ -32,6 +32,8 @@ import com.htmlhifive.pitalium.common.util.JSONUtils;
  */
 public class ScreenshotArgument {
 
+	// TODO 各種APIのフレーム対応
+
 	private final String screenshotId;
 
 	private final List<CompareTarget> targets;
