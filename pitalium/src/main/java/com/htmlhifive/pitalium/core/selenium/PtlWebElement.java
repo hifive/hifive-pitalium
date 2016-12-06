@@ -138,6 +138,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	private PtlWebDriver driver;
 	private String tagName;
 	private PtlWebElement frameParent;
+	private boolean frameSwitching;
 
 	/**
 	 * コンストラクタ
@@ -223,6 +224,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 			@Override
 			public WebElement get() {
 				try {
+					// TODO cache reflection object?
 					Method findElement = RemoteWebDriver.class.getDeclaredMethod("findElement", String.class,
 							String.class);
 					findElement.setAccessible(true);
@@ -247,6 +249,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 			@Override
 			public List<WebElement> get() {
 				try {
+					// TODO cache reflection object?
 					Method findElement = RemoteWebDriver.class.getDeclaredMethod("findElements", String.class,
 							String.class);
 					findElement.setAccessible(true);
@@ -265,39 +268,90 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	/**
-	 * frameまたはiframeの要素において、WebDriverのフレームスイッチを行った状態で操作します。
+	 * frameまたはiframeの要素、またはフレーム内の要素において、WebDriverのフレームスイッチを行った状態で操作します。
 	 * 
 	 * @param doInFrame 操作内容
 	 */
 	public void executeInFrame(Runnable doInFrame) {
-		if (!isFrame()) {
-			throw new TestRuntimeException("not frame or iframe element. \"" + getTagName() + "\"");
+		PtlWebElement parent = getFrameParent();
+		if (!isFrame() && parent == null) {
+			doInFrame.run();
 		}
 
-		driver.switchTo().frame(this);
-		try {
-			doInFrame.run();
-		} finally {
-			driver.switchTo().defaultContent();
-		}
+		executeInFrame(parent != null ? parent : this, doInFrame);
 	}
 
 	/**
-	 * frameまたはiframeの要素において、WebDriverのフレームスイッチを行った状態で操作します。
+	 * frameまたはiframeの要素、またはフレーム内の要素において、WebDriverのフレームスイッチを行った状態で操作します。
 	 * 
 	 * @param doInFrame 操作内容
 	 */
 	public <T> T executeInFrame(Supplier<T> doInFrame) {
-		if (!isFrame()) {
-			throw new TestRuntimeException("not frame or iframe element. \"" + getTagName() + "\"");
+		PtlWebElement parent = getFrameParent();
+		if (!isFrame() && parent == null) {
+			return doInFrame.get();
 		}
 
-		driver.switchTo().frame(this);
+		return executeInFrame(parent != null ? parent : this, doInFrame);
+	}
+
+	private void executeInFrame(WebElement frameElement, Runnable doInFrame) {
+		if (frameSwitching) {
+			LOG.trace("(executeInFrame) already switched");
+			doInFrame.run();
+			return;
+		}
+
+		driver.switchTo().frame(frameElement);
+		frameSwitching = true;
+		LOG.trace("(executeInFrame) switch to frame [{}]", frameElement);
+		try {
+			doInFrame.run();
+		} finally {
+			frameSwitching = false;
+			driver.switchTo().defaultContent();
+			LOG.trace("(executeInFrame) switch to default content");
+		}
+	}
+
+	private <T> T executeInFrame(WebElement frameElement, Supplier<T> doInFrame) {
+		if (frameSwitching) {
+			LOG.trace("(executeInFrame) already switched");
+			return doInFrame.get();
+		}
+
+		driver.switchTo().frame(frameElement);
+		LOG.trace("(executeInFrame) switch to frame [{}]", frameElement);
+		frameSwitching = true;
 		try {
 			return doInFrame.get();
 		} finally {
+			frameSwitching = false;
 			driver.switchTo().defaultContent();
+			LOG.trace("(executeInFrame) switch to default content");
 		}
+	}
+
+	/**
+	 * JavaScriptコードを実行します。フレーム内要素の場合、要素が存在するフレームにスイッチしてから実行します。
+	 * 
+	 * @param script 実行するコード
+	 * @param params 実行パラメータ
+	 * @param <T> 戻り値の型
+	 * @return JavaScriptコードの戻り値
+	 */
+	protected <T> T executeJavaScript(final String script, final Object... params) {
+		PtlWebElement parent = getFrameParent();
+		if (parent == null) {
+			return driver.executeJavaScript(script, params);
+		}
+
+		return executeInFrame(parent, new Supplier<T>() {
+			@Override
+			public T get() {
+				return driver.executeJavaScript(script, params);
+			}
+		});
 	}
 
 	/**
@@ -306,46 +360,51 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * @return 矩形領域を表す{@link DoubleValueRect}オブジェクト
 	 */
 	public DoubleValueRect getDoubleValueRect() {
-		// 現在のスクロール位置を取得
-		double scrollTop = driver.getCurrentScrollTop();
-		double scrollLeft = driver.getCurrentScrollLeft();
-		LOG.trace("(GetRect) current scroll position: (top: {}, left: {})", scrollTop, scrollLeft);
+		return executeInFrame(new Supplier<DoubleValueRect>() {
+			@Override
+			public DoubleValueRect get() {
+				// 現在のスクロール位置を取得
+				double scrollTop = driver.getCurrentScrollTop();
+				double scrollLeft = driver.getCurrentScrollLeft();
+				LOG.trace("(GetRect) current scroll position: (top: {}, left: {})", scrollTop, scrollLeft);
 
-		double left = 0;
-		double top = 0;
-		double width = 0;
-		double height = 0;
+				double left = 0;
+				double top = 0;
+				double width = 0;
+				double height = 0;
 
-		// ページ最上部からの座標を取得
-		try {
-			driver.scrollTo(0d, 0d);
-			Map<String, Object> object = driver.executeJavaScript(GET_ELEMENT_RECT_SCRIPT, this);
-			LOG.trace("(GetRect) js result: {}", object);
+				// ページ最上部からの座標を取得
+				try {
+					driver.scrollTo(0d, 0d);
+					Map<String, Object> object = executeJavaScript(GET_ELEMENT_RECT_SCRIPT, PtlWebElement.this);
+					LOG.trace("(GetRect) js result: {}", object);
 
-			left = getDoubleOrDefault(object.get("left"), 0d);
-			top = getDoubleOrDefault(object.get("top"), 0d);
+					left = getDoubleOrDefault(object.get("left"), 0d);
+					top = getDoubleOrDefault(object.get("top"), 0d);
 
-			// bodyの場合はページ全体の幅を返す
-			width = isBody() ? driver.getCurrentPageWidth() : getDoubleOrDefault(object.get("width"), 0d);
+					// bodyの場合はページ全体の幅を返す
+					width = isBody() ? driver.getCurrentPageWidth() : getDoubleOrDefault(object.get("width"), 0d);
 
-			// bodyの場合はページ全体の高さを返す
-			if (isBody()) {
-				// bodyの場合はページ全体の高さを返す
-				height = driver.getCurrentPageHeight();
-			} else {
-				// 小数値による描画ずれ対策として、要素の下端と上端の座標を丸めた値から高さを計算
-				height = Math.round(top + getDoubleOrDefault(object.get("height"), 0d)) - Math.round(top);
+					// bodyの場合はページ全体の高さを返す
+					if (isBody()) {
+						// bodyの場合はページ全体の高さを返す
+						height = driver.getCurrentPageHeight();
+					} else {
+						// 小数値による描画ずれ対策として、要素の下端と上端の座標を丸めた値から高さを計算
+						height = Math.round(top + getDoubleOrDefault(object.get("height"), 0d)) - Math.round(top);
+					}
+
+					// スクロール位置を元に戻す
+					driver.scrollTo(scrollLeft, scrollTop);
+				} catch (InterruptedException e) {
+					throw new TestRuntimeException(e);
+				}
+
+				DoubleValueRect rect = new DoubleValueRect(left, top, width, height);
+				LOG.debug("[Element Rect] {} ({})", rect, PtlWebElement.this);
+				return rect;
 			}
-
-			// スクロール位置を元に戻す
-			driver.scrollTo(scrollLeft, scrollTop);
-		} catch (InterruptedException e) {
-			throw new TestRuntimeException(e);
-		}
-
-		DoubleValueRect rect = new DoubleValueRect(left, top, width, height);
-		LOG.debug("[Element Rect] {} ({})", rect, this);
-		return rect;
+		});
 	}
 
 	/**
@@ -354,7 +413,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * @return 四辺のMarginを表す{@link WebElementMargin}オブジェクト
 	 */
 	public WebElementMargin getMargin() {
-		Map<String, Object> object = driver.executeJavaScript(GET_ELEMENT_MARGIN_SCRIPT, this);
+		Map<String, Object> object = executeJavaScript(GET_ELEMENT_MARGIN_SCRIPT, this);
 		LOG.trace("(GetMargin) js result: {}", object);
 
 		double top = getDoubleOrDefault(object.get("top"), 0d);
@@ -373,7 +432,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * @return 四辺のBorderWidthを表す{@link WebElementBorderWidth}オブジェクト
 	 */
 	public WebElementBorderWidth getBorderWidth() {
-		Map<String, Object> object = driver.executeJavaScript(GET_ELEMENT_BORDER_WIDTH_SCRIPT, this);
+		Map<String, Object> object = executeJavaScript(GET_ELEMENT_BORDER_WIDTH_SCRIPT, this);
 		LOG.trace("(GetBorderWidth) js result: {}", object);
 
 		double top = getDoubleOrDefault(object.get("top"), 0d);
@@ -392,7 +451,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * @return 四辺のPaddingを表す{@link WebElementPadding}オブジェクト
 	 */
 	public WebElementPadding getPadding() {
-		Map<String, Object> object = driver.executeJavaScript(GET_ELEMENT_PADDING_SCRIPT, this);
+		Map<String, Object> object = executeJavaScript(GET_ELEMENT_PADDING_SCRIPT, this);
 		LOG.trace("(GetPadding) js result: {}", object);
 
 		double top = getDoubleOrDefault(object.get("top"), 0d);
@@ -439,7 +498,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		}
 
 		LOG.debug("[Show element start] ({})", this);
-		driver.executeScript("return arguments[0].style.visibility = 'visible'", this);
+		executeJavaScript("return arguments[0].style.visibility = 'visible'", this);
 		try {
 			new WebDriverWait(driver, SHOW_HIDE_TIMEOUT).until(new ExpectedCondition<Boolean>() {
 				@Override
@@ -459,7 +518,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * @return visibilityがhiddenの場合true、それ以外の値の場合false
 	 */
 	public boolean isVisibilityHidden() {
-		return driver.executeJavaScript("return arguments[0].style.visibility == 'hidden'", this);
+		return executeJavaScript("return arguments[0].style.visibility == 'hidden'", this);
 	}
 
 	/**
@@ -545,10 +604,10 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	public long getScrollHeight() {
 		String result;
 		if (isFrame()) {
-			result = driver.executeScript("return arguments[0].contentWindow.document.documentElement.scrollHeight",
-					this).toString();
+			result = executeJavaScript("return arguments[0].contentWindow.document.documentElement.scrollHeight", this)
+					.toString();
 		} else {
-			result = driver.executeScript("return arguments[0].scrollHeight", this).toString();
+			result = executeJavaScript("return arguments[0].scrollHeight", this).toString();
 		}
 		LOG.trace("(GetScrollHeight) [{}] ({})", result, this);
 		return Long.parseLong(result);
@@ -562,10 +621,10 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	public long getScrollWidth() {
 		String result;
 		if (isFrame()) {
-			result = driver.executeScript("return arguments[0].contentWindow.document.documentElement.scrollWidth",
-					this).toString();
+			result = executeJavaScript("return arguments[0].contentWindow.document.documentElement.scrollWidth", this)
+					.toString();
 		} else {
-			result = driver.executeScript("return arguments[0].scrollWidth", this).toString();
+			result = executeJavaScript("return arguments[0].scrollWidth", this).toString();
 		}
 		LOG.trace("(GetScrollWidth) [{}] ({})", result, this);
 		return Long.parseLong(result);
@@ -596,12 +655,12 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		if (isFrame()) {
 			double max = 0d;
 			for (String value : SCRIPTS_SCROLL_TOP) {
-				double current = Double.parseDouble(driver.executeScript("return " + value, this).toString());
+				double current = Double.parseDouble(executeJavaScript("return " + value, this).toString());
 				max = Math.max(max, current);
 			}
 			top = max;
 		} else {
-			top = Double.parseDouble(driver.executeScript("return arguments[0].scrollTop", this).toString());
+			top = Double.parseDouble(executeJavaScript("return arguments[0].scrollTop", this).toString());
 		}
 		LOG.trace("(GetCurrentScrollTop) [{}] ({})", top, this);
 		return top;
@@ -617,12 +676,12 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		if (isFrame()) {
 			double max = 0d;
 			for (String value : SCRIPTS_SCROLL_LEFT) {
-				double current = Double.parseDouble(driver.executeScript("return " + value, this).toString());
+				double current = Double.parseDouble(executeJavaScript("return " + value, this).toString());
 				max = Math.max(max, current);
 			}
 			top = max;
 		} else {
-			top = Double.parseDouble(driver.executeScript("return arguments[0].scrollLeft", this).toString());
+			top = Double.parseDouble(executeJavaScript("return arguments[0].scrollLeft", this).toString());
 		}
 		LOG.trace("(GetCurrentScrollLeft) [{}] ({})", top, this);
 		return top;
@@ -639,7 +698,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		// 要素がframeの場合
 		if (isFrame()) {
 			LOG.debug("[Scroll frame] to ({}, {})", x, y);
-			driver.executeScript("arguments[0].contentWindow.scrollTo(arguments[1], arguments[2])", this, x, y);
+			executeJavaScript("arguments[0].contentWindow.scrollTo(arguments[1], arguments[2])", this, x, y);
 
 			Thread.sleep(SCROLL_WAIT_MS);
 			return;
@@ -647,8 +706,8 @@ public abstract class PtlWebElement extends RemoteWebElement {
 
 		// frame以外の場合
 		LOG.debug("[Scroll element] to ({}, {})", x, y);
-		driver.executeScript("arguments[0].scrollLeft = arguments[1]", this, x);
-		driver.executeScript("arguments[0].scrollTop = arguments[1]", this, y);
+		executeJavaScript("arguments[0].scrollLeft = arguments[1]", this, x);
+		executeJavaScript("arguments[0].scrollTop = arguments[1]", this, y);
 
 		Thread.sleep(SCROLL_WAIT_MS);
 	}
@@ -675,9 +734,9 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	public String[] getOverflowStatus() {
 		Map<String, Object> object;
 		if (isFrame()) {
-			object = driver.executeJavaScript(SCRIPT_GET_FRAME_OVERFLOW, this);
+			object = executeJavaScript(SCRIPT_GET_FRAME_OVERFLOW, this);
 		} else {
-			object = driver.executeJavaScript(SCRIPT_GET_ELEMENT_OVERFLOW, this);
+			object = executeJavaScript(SCRIPT_GET_ELEMENT_OVERFLOW, this);
 		}
 
 		String xStatus;
@@ -704,9 +763,9 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	public void setOverflowStatus(String xStatus, String yStatus) {
 		LOG.trace("(SetOverflowStatus) overflowX: {}, overflowY: {} ({})", xStatus, yStatus, this);
 		if (isFrame()) {
-			driver.executeScript(SCRIPT_SET_FRAME_OVERFLOW, this, xStatus, yStatus);
+			executeJavaScript(SCRIPT_SET_FRAME_OVERFLOW, this, xStatus, yStatus);
 		} else {
-			driver.executeScript(SCRIPT_SET_ELEMENT_OVERFLOW, this, xStatus, yStatus);
+			executeJavaScript(SCRIPT_SET_ELEMENT_OVERFLOW, this, xStatus, yStatus);
 		}
 	}
 
@@ -716,7 +775,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * @return resizeの設定値
 	 */
 	public String getResizeStatus() {
-		Object resizeStatus = driver.executeScript(SCRIPT_GET_ELEMENT_RESIZE, this);
+		Object resizeStatus = executeJavaScript(SCRIPT_GET_ELEMENT_RESIZE, this);
 		return resizeStatus != null ? resizeStatus.toString() : "";
 	}
 
@@ -726,7 +785,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * @param status resizeの設定
 	 */
 	public void setResizeStatus(String status) {
-		driver.executeScript(SCRIPT_SET_ELEMENT_RESIZE, this, status);
+		executeJavaScript(SCRIPT_SET_ELEMENT_RESIZE, this, status);
 	}
 
 	/**
