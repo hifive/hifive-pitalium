@@ -1452,7 +1452,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		}
 
 		for (DomSelector selector : selectors) {
-			for (WebElement element : selector.getType().findElements(this, selector.getValue())) {
+			for (WebElement element : selector.findElements(this)) {
 				elements.add((PtlWebElement) element);
 			}
 		}

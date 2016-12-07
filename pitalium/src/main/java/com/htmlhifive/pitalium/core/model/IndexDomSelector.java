@@ -15,6 +15,13 @@
  */
 package com.htmlhifive.pitalium.core.model;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsDriver;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
@@ -47,7 +54,7 @@ public class IndexDomSelector extends DomSelector {
 	 * @param index 対象とする要素のインデックス
 	 */
 	public IndexDomSelector(DomSelector selector, Integer index) {
-		this(selector.getType(), selector.getValue(), selector.getFrameSelector(), index);
+		this(selector.getType(), selector.getValue(), selector.getParentSelector(), index);
 	}
 
 	/**
@@ -82,6 +89,34 @@ public class IndexDomSelector extends DomSelector {
 	 */
 	public Integer getIndex() {
 		return index;
+	}
+
+	@Override
+	public WebElement findElement(WebDriver driver) {
+		if (index == null) {
+			return super.findElement(driver);
+		}
+
+		return super.findElements(driver).get(index);
+	}
+
+	@Override
+	public <TElement extends WebElement & WrapsDriver> WebElement findElement(TElement element) {
+		if (index == null) {
+			return super.findElement(element);
+		}
+
+		return super.findElements(element).get(index);
+	}
+
+	@Override
+	public List<WebElement> findElements(WebDriver driver) {
+		return Collections.singletonList(findElement(driver));
+	}
+
+	@Override
+	public <TElement extends WebElement & WrapsDriver> List<WebElement> findElements(TElement element) {
+		return Collections.singletonList(findElement(element));
 	}
 
 	/**

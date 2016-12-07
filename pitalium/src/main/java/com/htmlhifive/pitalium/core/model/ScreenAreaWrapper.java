@@ -22,9 +22,9 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.htmlhifive.pitalium.core.selenium.DoubleValueRect;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
-import com.htmlhifive.pitalium.core.selenium.DoubleValueRect;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
 /**
@@ -197,9 +197,9 @@ public abstract class ScreenAreaWrapper {
 		DomSelector selector = screenArea.getSelector();
 		List<WebElement> elements;
 		if (element == null) {
-			elements = selector.getType().findElements(driver, selector.getValue());
+			elements = selector.findElements(driver);
 		} else {
-			elements = selector.getType().findElements(element, selector.getValue());
+			elements = selector.findElements(element);
 		}
 
 		if (elements.isEmpty()) {

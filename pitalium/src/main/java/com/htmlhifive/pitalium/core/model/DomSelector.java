@@ -16,6 +16,11 @@
 package com.htmlhifive.pitalium.core.model;
 
 import java.io.Serializable;
+import java.util.List;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsDriver;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -43,7 +48,7 @@ public class DomSelector implements Serializable {
 	/**
 	 * フレームを指定するセレクタ
 	 */
-	private final DomSelector frameSelector;
+	private final DomSelector parentSelector;
 
 	/**
 	 * DOM要素をセレクタの種別と値で指定します。
@@ -60,14 +65,14 @@ public class DomSelector implements Serializable {
 	 * 
 	 * @param type セレクタの種別
 	 * @param value セレクタの値
-	 * @param frameSelector フレームを指定するセレクタ
+	 * @param parentSelector フレームを指定するセレクタ
 	 */
 	@JsonCreator
 	public DomSelector(@JsonProperty("type") SelectorType type, @JsonProperty("value") String value,
-			@JsonProperty("frameSelector") DomSelector frameSelector) {
+			@JsonProperty("parentSelector") DomSelector parentSelector) {
 		this.type = type;
 		this.value = value;
-		this.frameSelector = frameSelector;
+		this.parentSelector = parentSelector;
 	}
 
 	/**
@@ -93,31 +98,113 @@ public class DomSelector implements Serializable {
 	 * 
 	 * @return フレームを指定するセレクタ
 	 */
-	public DomSelector getFrameSelector() {
-		return frameSelector;
+	public DomSelector getParentSelector() {
+		return parentSelector;
+	}
+
+	/**
+	 * このDomSelectorが指し示す要素を取得します。
+	 * 
+	 * @param driver WebDriver
+	 * @return このDomSelectorが指し示す要素
+	 */
+	public WebElement findElement(WebDriver driver) {
+		if (parentSelector == null) {
+			return type.findElement(driver, value);
+		}
+
+		WebElement frameElement = parentSelector.findElement(driver);
+		return type.findElement(frameElement, value);
+	}
+
+	/**
+	 * このDomSelectorが指し示す要素を取得します。
+	 * 
+	 * @param element 要素を検索するDOMのルート要素
+	 * @return このDomSelectorが指し示す要素
+	 */
+	public <TElement extends WebElement & WrapsDriver> WebElement findElement(TElement element) {
+		if (parentSelector == null) {
+			return type.findElement(element, value);
+		}
+
+		// parentと引数Elementの関連をチェックしたいが、フレームを越す場合は不可能なので何もしない
+		// チェックする場合は element.findElement(By.xpath("..")) で親をたどる
+		WebElement frameElement = parentSelector.findElement(element.getWrappedDriver());
+		return type.findElement(frameElement, value);
+	}
+
+	/**
+	 * このDomSelectorが指し示す要素を取得します。
+	 * 
+	 * @param driver WebDriver
+	 * @return このDomSelectorが指し示す要素
+	 */
+	@SuppressWarnings("unchecked")
+	public List<WebElement> findElements(WebDriver driver) {
+		if (parentSelector == null) {
+			return type.findElements(driver, value);
+		}
+
+		WebElement frameElement = parentSelector.findElement(driver);
+		return type.findElements(frameElement, value);
+	}
+
+	/**
+	 * このDomSelectorが指し示す要素を取得します。
+	 * 
+	 * @param element 要素を検索するDOMのルート要素
+	 * @return このDomSelectorが指し示す要素
+	 */
+	@SuppressWarnings("unchecked")
+	public <TElement extends WebElement & WrapsDriver> List<WebElement> findElements(TElement element) {
+		if (parentSelector == null) {
+			return type.findElements(element, value);
+		}
+
+		WebElement frameElement = parentSelector.findElement(element.getWrappedDriver());
+		return type.findElements(frameElement, value);
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o)
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (obj == null) {
 			return false;
-
-		DomSelector that = (DomSelector) o;
-
-		if (type != that.type)
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		if (!value.equals(that.value))
+		}
+		DomSelector other = (DomSelector) obj;
+		if (parentSelector == null) {
+			if (other.parentSelector != null) {
+				return false;
+			}
+		} else if (!parentSelector.equals(other.parentSelector)) {
 			return false;
-		return frameSelector != null ? frameSelector.equals(that.frameSelector) : that.frameSelector == null;
+		}
+		if (type != other.type) {
+			return false;
+		}
+		if (value == null) {
+			if (other.value != null) {
+				return false;
+			}
+		} else if (!value.equals(other.value)) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = type.hashCode();
-		result = 31 * result + value.hashCode();
-		result = 31 * result + (frameSelector != null ? frameSelector.hashCode() : 0);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((parentSelector == null) ? 0 : parentSelector.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
 
