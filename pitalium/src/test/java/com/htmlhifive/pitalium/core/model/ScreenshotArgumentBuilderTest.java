@@ -179,23 +179,6 @@ public class ScreenshotArgumentBuilderTest {
 	}
 
 	/**
-	 * {@link ScreenshotArgumentBuilder#addNewTarget(SelectorType, String, SelectorType, String)}
-	 */
-	@Test
-	public void addNewTarget_frame() throws Exception {
-		for (SelectorType type : SelectorType.values()) {
-			ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid").addNewTarget(type, "target", type, "frame")
-					.build();
-
-			assertThat(arg.getScreenshotId(), is("ssid"));
-			assertThat(arg.getTargets().size(), is(1));
-			assertThat(arg.getHiddenElementSelectors().isEmpty(), is(true));
-
-			assertThat(arg.getTargets().get(0), is(new CompareTarget(ScreenArea.of(type, "target", type, "frame"))));
-		}
-	}
-
-	/**
 	 * addNewTargetByXxx系。全てのメソッドのテストは大変なのでリフレクションで。
 	 */
 	@Test
@@ -710,5 +693,127 @@ public class ScreenshotArgumentBuilderTest {
 		assertThat(arg.getHiddenElementSelectors().get(0), is(selectors[0]));
 		assertThat(arg.getHiddenElementSelectors().get(1), is(selectors[1]));
 	}
+
+	//<editor-fold desc="inFrame">
+
+	/**
+	 * exclude + frame
+	 */
+	@Test
+	public void inFrame_exclude() throws Exception {
+		for (Pair<String, SelectorType> mapping : TYPE_MAPPINGS) {
+			ScreenshotArgumentBuilder builder = new ScreenshotArgumentBuilder("ssid").addNewTargetByXPath("xpath")
+					.addExcludeById("id");
+
+			Method method = ScreenshotArgumentBuilder.class.getMethod("inFrameBy" + mapping.getKey(), String.class);
+			method.invoke(builder, "value");
+
+			ScreenshotArgument arg = builder.build();
+
+			ScreenArea[] excludes = arg.getTargets().get(0).getExcludes();
+			assertThat(excludes.length, is(1));
+			assertThat(excludes[0], is(ScreenArea.of(SelectorType.ID, "id", mapping.getRight(), "value")));
+		}
+	}
+
+	/**
+	 * exclude (collection) + frame
+	 */
+	@Test
+	public void inFrame_excludes() throws Exception {
+		// formatter: off
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
+				.addNewTarget()
+				.addExcludes(ScreenArea.of(SelectorType.ID, "id"), ScreenArea.of(SelectorType.TAG_NAME, "body"),
+						ScreenArea.of(0.0, 0.0, 1.0, 1.0)).inFrameById("fid").build();
+		// formatter: on
+
+		ScreenArea[] excludes = arg.getTargets().get(0).getExcludes();
+		assertThat(excludes.length, is(3));
+		assertThat(excludes[0], is(ScreenArea.of(SelectorType.ID, "id", SelectorType.ID, "fid")));
+		assertThat(excludes[1], is(ScreenArea.of(SelectorType.TAG_NAME, "body", SelectorType.ID, "fid")));
+		assertThat(excludes[2], is(ScreenArea.of(0.0, 0.0, 1.0, 1.0)));
+	}
+
+	/**
+	 * hidden + frame
+	 */
+	@Test
+	public void inFrame_hidden() throws Exception {
+		for (Pair<String, SelectorType> mapping : TYPE_MAPPINGS) {
+			ScreenshotArgumentBuilder builder = new ScreenshotArgumentBuilder("ssid").addNewTargetByXPath("xpath")
+					.addHiddenElementsById("id");
+
+			Method method = ScreenshotArgumentBuilder.class.getMethod("inFrameBy" + mapping.getKey(), String.class);
+			method.invoke(builder, "value");
+
+			ScreenshotArgument arg = builder.build();
+
+			List<DomSelector> hidden = arg.getHiddenElementSelectors();
+			assertThat(hidden.size(), is(1));
+			assertThat(hidden.get(0), is(new DomSelector(SelectorType.ID, "id", new DomSelector(mapping.getRight(),
+					"value"))));
+		}
+	}
+
+	/**
+	 * hidden (collection) + frame
+	 */
+	@Test
+	public void inFrame_hiddens() throws Exception {
+		// formatter: off
+		ScreenshotArgument arg = new ScreenshotArgumentBuilder("ssid")
+				.addNewTarget()
+				.addHiddenElementSelectors(new DomSelector(SelectorType.ID, "id"),
+						new DomSelector(SelectorType.TAG_NAME, "body"), new DomSelector(SelectorType.XPATH, "xx"))
+				.inFrameById("fid").build();
+		// formatter: on
+
+		List<DomSelector> hiddens = arg.getHiddenElementSelectors();
+		assertThat(hiddens.size(), is(3));
+		assertThat(hiddens.get(0), is(new DomSelector(SelectorType.ID, "id", new DomSelector(SelectorType.ID, "fid"))));
+		assertThat(hiddens.get(1), is(new DomSelector(SelectorType.TAG_NAME, "body", new DomSelector(SelectorType.ID,
+				"fid"))));
+		assertThat(hiddens.get(2),
+				is(new DomSelector(SelectorType.XPATH, "xx", new DomSelector(SelectorType.ID, "fid"))));
+	}
+
+	/**
+	 * NewTargetの後にinFrameを呼ぶとエラー
+	 */
+	@Test
+	public void inFrame_afterNewTarget() throws Exception {
+		expected.expect(IllegalStateException.class);
+		new ScreenshotArgumentBuilder("ssid").addNewTarget().inFrameById("id");
+	}
+
+	/**
+	 * MoveTargetの後にinFrameを呼ぶとエラー
+	 */
+	@Test
+	public void inFrame_afterMoveTarget() throws Exception {
+		expected.expect(IllegalStateException.class);
+		new ScreenshotArgumentBuilder("ssid").addNewTarget().moveTarget(true).inFrameById("id");
+	}
+
+	/**
+	 * ScrollTargetの後にinFrameを呼ぶとエラー
+	 */
+	@Test
+	public void inFrame_afterScrollTarget() throws Exception {
+		expected.expect(IllegalStateException.class);
+		new ScreenshotArgumentBuilder("ssid").addNewTarget().scrollTarget(true).inFrameById("id");
+	}
+
+	/**
+	 * ScreenshotIdの後にinFrameを呼ぶとエラー
+	 */
+	@Test
+	public void inFrame_afterScreenshotId() throws Exception {
+		expected.expect(IllegalStateException.class);
+		new ScreenshotArgumentBuilder("ssid").addNewTarget().screenshotId("new_id").inFrameById("id");
+	}
+
+	//</editor-fold>
 
 }

@@ -16,6 +16,8 @@
 
 package com.htmlhifive.pitalium.core.model;
 
+import static java.util.Arrays.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,11 +34,48 @@ import com.google.common.collect.Lists;
  */
 public class ScreenshotArgumentBuilder {
 
+	/**
+	 * ビルダーのアクション一覧
+	 */
+	private enum Action {
+		/**
+		 * 新規ターゲット追加
+		 */
+		NEW_TARGET,
+		/**
+		 * 除外設定
+		 */
+		EXCLUDE,
+		/**
+		 * moveフラグ
+		 */
+		MOVE_TARGET,
+		/**
+		 * scrollフラグ
+		 */
+		SCROLL_TARGET,
+		/**
+		 * hidden設定
+		 */
+		HIDDEN,
+		/**
+		 * IDの設定
+		 */
+		ID,
+		/**
+		 * フレームの設定
+		 */
+		FRAME
+	}
+
 	private String screenshotId;
 	private final List<TargetParamHolder> targets = new ArrayList<TargetParamHolder>();
 	private final List<DomSelector> hiddenElementSelectors = new ArrayList<DomSelector>();
 
 	private TargetParamHolder currentHolder;
+	private Action lastAction = Action.ID;
+	private int actionCount = 0;
+	private int actionIncrements = 1;
 
 	//<editor-fold desc="Constructor">
 
@@ -57,9 +96,31 @@ public class ScreenshotArgumentBuilder {
 
 	//</editor-fold>
 
-	/**
-	 * @return
-	 */
+	private int getActionCount() {
+		return actionCount;
+	}
+
+	private int getLastActionIncrements() {
+		return actionIncrements;
+	}
+
+	private void incrementActionCount(int count) {
+		actionCount += (actionIncrements = count);
+	}
+
+	private void setLastAction(Action action) {
+		setLastAction(action, 1);
+	}
+
+	private void setLastAction(Action action, int count) {
+		lastAction = action;
+		incrementActionCount(count);
+	}
+
+	public Action getLastAction() {
+		return lastAction;
+	}
+
 	private TargetParamHolder getCurrentHolder() {
 		if (currentHolder == null) {
 			throw new IllegalStateException("addNewTarget is not called");
@@ -107,6 +168,7 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder screenshotId(String id) {
+		setLastAction(Action.ID);
 		this.screenshotId = id;
 		return this;
 	}
@@ -140,6 +202,7 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder addNewTarget(ScreenArea target) {
+		setLastAction(Action.NEW_TARGET);
 		setCurrentHolder(target);
 		return this;
 	}
@@ -153,20 +216,6 @@ public class ScreenshotArgumentBuilder {
 	 */
 	public ScreenshotArgumentBuilder addNewTarget(SelectorType type, String value) {
 		return addNewTarget(ScreenArea.of(type, value));
-	}
-
-	/**
-	 * スクリーンショットを撮影する対象を追加します。
-	 * 
-	 * @param type セレクタ種別
-	 * @param value 取得条件
-	 * @param frameSelectorType フレームを指定するセレクタの種別
-	 * @param frameSelectorValue フレームを指定するセレクタの値
-	 * @return このビルダーオブジェクト自身
-	 */
-	public ScreenshotArgumentBuilder addNewTarget(SelectorType type, String value, SelectorType frameSelectorType,
-			String frameSelectorValue) {
-		return addNewTarget(ScreenArea.of(type, value, frameSelectorType, frameSelectorValue));
 	}
 
 	/**
@@ -378,6 +427,7 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder addExclude(ScreenArea exclude) {
+		setLastAction(Action.EXCLUDE);
 		TargetParamHolder holder = getCurrentHolder();
 		holder.excludes.add(exclude);
 		return this;
@@ -403,6 +453,7 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder addExcludes(Collection<ScreenArea> excludes) {
+		setLastAction(Action.EXCLUDE, excludes.size());
 		TargetParamHolder holder = getCurrentHolder();
 		holder.excludes.addAll(excludes);
 		return this;
@@ -415,9 +466,7 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder addExcludes(ScreenArea... excludes) {
-		TargetParamHolder holder = getCurrentHolder();
-		Collections.addAll(holder.excludes, excludes);
-		return this;
+		return addExcludes(asList(excludes));
 	}
 
 	//</editor-fold>
@@ -429,6 +478,7 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder moveTarget(boolean moveTarget) {
+		setLastAction(Action.MOVE_TARGET);
 		TargetParamHolder holder = getCurrentHolder();
 		holder.moveTarget = moveTarget;
 		return this;
@@ -441,6 +491,7 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder scrollTarget(boolean scrollTarget) {
+		setLastAction(Action.SCROLL_TARGET);
 		TargetParamHolder holder = getCurrentHolder();
 		holder.scrollTarget = scrollTarget;
 		return this;
@@ -456,6 +507,7 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder addHiddenElementSelector(SelectorType type, String value) {
+		setLastAction(Action.HIDDEN);
 		hiddenElementSelectors.add(new DomSelector(type, value));
 		return this;
 	}
@@ -471,6 +523,7 @@ public class ScreenshotArgumentBuilder {
 	 */
 	public ScreenshotArgumentBuilder addHiddenElementSelector(SelectorType type, String value,
 			SelectorType frameSelectorType, String frameSelectorValue) {
+		setLastAction(Action.HIDDEN);
 		hiddenElementSelectors
 				.add(new DomSelector(type, value, new DomSelector(frameSelectorType, frameSelectorValue)));
 		return this;
@@ -563,6 +616,7 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder addHiddenElementSelectors(Collection<DomSelector> selectors) {
+		setLastAction(Action.HIDDEN, selectors.size());
 		hiddenElementSelectors.addAll(selectors);
 		return this;
 	}
@@ -574,11 +628,136 @@ public class ScreenshotArgumentBuilder {
 	 * @return このビルダーオブジェクト自身
 	 */
 	public ScreenshotArgumentBuilder addHiddenElementSelectors(DomSelector... selectors) {
+		setLastAction(Action.HIDDEN, selectors.length);
 		Collections.addAll(hiddenElementSelectors, selectors);
 		return this;
 	}
 
 	//</editor-fold>
+
+	/**
+	 * 直前に追加した除外要素または非表示にする要素がframe、iframe要素の中に存在する場合は、そのframeまたはiframeを指す要素を指定します。
+	 * 
+	 * @param type セレクタ種別
+	 * @param value 条件
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder inFrame(SelectorType type, String value) {
+		Action action = getLastAction();
+		if (action != Action.EXCLUDE && action != Action.HIDDEN) {
+			throw new IllegalStateException("inFrame must be called just after addExclude or addHidden");
+		}
+
+		int count = getLastActionIncrements();
+
+		setLastAction(Action.FRAME);
+		if (count <= 0) {
+			return this;
+		}
+
+		if (action == Action.EXCLUDE) {
+			List<ScreenArea> excludes = getCurrentHolder().excludes;
+			int size = excludes.size();
+			for (int i = size - count; i < size; i++) {
+				ScreenArea area = excludes.get(i);
+				DomSelector selector = area.getSelector();
+				if (selector != null) {
+					excludes.set(i, ScreenArea.of(selector.getType(), selector.getValue(), type, value));
+				}
+			}
+			return this;
+		}
+
+		int size = hiddenElementSelectors.size();
+		for (int i = size - count; i < size; i++) {
+			DomSelector selector = hiddenElementSelectors.get(i);
+			if (selector != null) {
+				hiddenElementSelectors.set(i, new DomSelector(selector.getType(), selector.getValue(), new DomSelector(
+						type, value)));
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * 直前に追加した除外要素または非表示にする要素がframe、iframe要素の中に存在する場合は、そのframeまたはiframeを指す要素を指定します。
+	 * 
+	 * @param value 条件
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder inFrameById(String value) {
+		return inFrame(SelectorType.ID, value);
+	}
+
+	/**
+	 * 直前に追加した除外要素または非表示にする要素がframe、iframe要素の中に存在する場合は、そのframeまたはiframeを指す要素を指定します。
+	 * 
+	 * @param value 条件
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder inFrameByClassName(String value) {
+		return inFrame(SelectorType.CLASS_NAME, value);
+	}
+
+	/**
+	 * 直前に追加した除外要素または非表示にする要素がframe、iframe要素の中に存在する場合は、そのframeまたはiframeを指す要素を指定します。
+	 * 
+	 * @param value 条件
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder inFrameByCssSelector(String value) {
+		return inFrame(SelectorType.CSS_SELECTOR, value);
+	}
+
+	/**
+	 * 直前に追加した除外要素または非表示にする要素がframe、iframe要素の中に存在する場合は、そのframeまたはiframeを指す要素を指定します。
+	 * 
+	 * @param value 条件
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder inFrameByLinkText(String value) {
+		return inFrame(SelectorType.LINK_TEXT, value);
+	}
+
+	/**
+	 * 直前に追加した除外要素または非表示にする要素がframe、iframe要素の中に存在する場合は、そのframeまたはiframeを指す要素を指定します。
+	 * 
+	 * @param value 条件
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder inFrameByName(String value) {
+		return inFrame(SelectorType.NAME, value);
+	}
+
+	/**
+	 * 直前に追加した除外要素または非表示にする要素がframe、iframe要素の中に存在する場合は、そのframeまたはiframeを指す要素を指定します。
+	 * 
+	 * @param value 条件
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder inFrameByPartialLinkText(String value) {
+		return inFrame(SelectorType.PARTIAL_LINK, value);
+	}
+
+	/**
+	 * 直前に追加した除外要素または非表示にする要素がframe、iframe要素の中に存在する場合は、そのframeまたはiframeを指す要素を指定します。
+	 * 
+	 * @param value 条件
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder inFrameByTagName(String value) {
+		return inFrame(SelectorType.TAG_NAME, value);
+	}
+
+	/**
+	 * 直前に追加した除外要素または非表示にする要素がframe、iframe要素の中に存在する場合は、そのframeまたはiframeを指す要素を指定します。
+	 * 
+	 * @param value 条件
+	 * @return このビルダーオブジェクト自身
+	 */
+	public ScreenshotArgumentBuilder inFrameByXPath(String value) {
+		return inFrame(SelectorType.XPATH, value);
+	}
 
 	/**
 	 * パラメータを保持する内部クラス
@@ -594,7 +773,7 @@ public class ScreenshotArgumentBuilder {
 		 * 
 		 * @param target スクリーンショット取得対象
 		 */
-		public TargetParamHolder(ScreenArea target) {
+		TargetParamHolder(ScreenArea target) {
 			this.target = target;
 		}
 	}
