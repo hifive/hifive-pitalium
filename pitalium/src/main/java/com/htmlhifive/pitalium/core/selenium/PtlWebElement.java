@@ -527,7 +527,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		}
 
 		LOG.debug("[Hide element start] ({})", this);
-		driver.executeScript("return arguments[0].style.visibility = 'hidden'", this);
+		executeJavaScript("return arguments[0].style.visibility = 'hidden'", this);
 		try {
 			new WebDriverWait(driver, SHOW_HIDE_TIMEOUT).until(new ExpectedCondition<Boolean>() {
 				@Override
