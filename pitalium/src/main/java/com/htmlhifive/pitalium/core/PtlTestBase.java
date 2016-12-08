@@ -17,6 +17,7 @@ package com.htmlhifive.pitalium.core;
 
 import java.util.List;
 
+import com.htmlhifive.pitalium.core.rules.AssumeCapability;
 import com.htmlhifive.pitalium.core.rules.PtlWebDriverCloser;
 import com.htmlhifive.pitalium.junit.ParameterizedClassRule;
 import com.htmlhifive.pitalium.junit.PtlBlockJUnit4ClassRunnerWithParametersFactory;
@@ -59,6 +60,12 @@ public abstract class PtlTestBase {
 	public AssertionView assertionView = new AssertionView();
 
 	/**
+	 * &#064;Rule {@link com.htmlhifive.pitalium.core.annotation.CapabilityFilter}を使用してテスト実行のフィルタリングを行う。
+	 */
+	@Rule
+	public AssumeCapability assumeCapability = new AssumeCapability();
+
+	/**
 	 * このインスタンスに割り当てられたcapability
 	 */
 	@Parameterized.Parameter
@@ -85,6 +92,7 @@ public abstract class PtlTestBase {
 	 */
 	@Before
 	public void setUp() {
+		assumeCapability.assumeCapability(capabilities);
 		driver = assertionView.createDriver(capabilities);
 	}
 }
