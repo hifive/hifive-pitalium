@@ -1,10 +1,10 @@
 package com.htmlhifive.pitalium.it.exec.frame;
 
-import com.htmlhifive.pitalium.core.model.DomSelector;
-import com.htmlhifive.pitalium.core.model.SelectorType;
-import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
-import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
-import com.htmlhifive.pitalium.core.selenium.PtlWebDriverFactory;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
+import java.util.concurrent.TimeUnit;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -13,10 +13,11 @@ import org.junit.rules.ExpectedException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-import java.util.concurrent.TimeUnit;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import com.htmlhifive.pitalium.core.model.DomSelector;
+import com.htmlhifive.pitalium.core.model.SelectorType;
+import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
+import com.htmlhifive.pitalium.core.selenium.PtlWebDriverFactory;
 
 public class FrameDomSelectorTest {
 
@@ -67,7 +68,8 @@ public class FrameDomSelectorTest {
 	 */
 	@Test
 	public void findInFrame() throws Exception {
-		DomSelector selector = new DomSelector(SelectorType.ID, "container", new DomSelector(SelectorType.CLASS_NAME, "content"));
+		DomSelector selector = new DomSelector(SelectorType.ID, "container", new DomSelector(SelectorType.CLASS_NAME,
+				"content"));
 		assertThat(selector.findElement(driver).getTagName(), is("div"));
 	}
 
@@ -78,7 +80,8 @@ public class FrameDomSelectorTest {
 	public void findFromDefaultContentBody() throws Exception {
 		expectedException.expect(NoSuchElementException.class);
 
-		DomSelector selector = new DomSelector(SelectorType.ID, "container", new DomSelector(SelectorType.TAG_NAME, "body"));
+		DomSelector selector = new DomSelector(SelectorType.ID, "container", new DomSelector(SelectorType.TAG_NAME,
+				"body"));
 		selector.findElement(driver);
 	}
 
@@ -87,7 +90,8 @@ public class FrameDomSelectorTest {
 	 */
 	@Test
 	public void findFromIFrame() throws Exception {
-		DomSelector selector = new DomSelector(SelectorType.ID, "container", new DomSelector(SelectorType.CLASS_NAME, "content"));
+		DomSelector selector = new DomSelector(SelectorType.ID, "container", new DomSelector(SelectorType.CLASS_NAME,
+				"content"));
 		WebElement defaultContentBody = driver.findElementByTagName("body");
 		assertThat(selector.findElement(defaultContentBody).getTagName(), is("div"));
 	}
