@@ -5,6 +5,7 @@
 	"maxThreadCount": 100,
 	"maxThreadExecuteTime": 200,
 	"maxDriverWait": 300,
+	"scriptTimeout": 10,
 	"capabilitiesFilePath": "test.json",
 	"persister": "test",
 	"debug": true

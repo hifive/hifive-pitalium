@@ -319,6 +319,25 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		return result;
 	}
 
+	/**
+	 * @see org.openqa.selenium.JavascriptExecutor#executeAsyncScript(String, Object...)
+	 * @param script 実行するJavaScript
+	 * @param params スクリプトに渡すパラメータ
+	 * @param <T> 実行結果の型
+	 * @return 実行結果
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T executeAsyncJavaScript(String script, Object... params) {
+		return (T) executeAsyncScript(script, params);
+	}
+
+	@Override
+	public Object executeAsyncScript(String script, Object... args) {
+		Object result = super.executeAsyncScript(script, args);
+		LOG.trace("[Execute async script] [{}] (args: {}, result: {})", script, args, result);
+		return result;
+	}
+
 	//<editor-fold desc="takeScreenshot">
 
 	/**
