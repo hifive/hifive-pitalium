@@ -15,6 +15,7 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -132,6 +133,44 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	//CHECKSTYLE:ON
 	//@formatter:on
 
+	private static final Method WEB_DRIVER_FIND_ELEMENT;
+	private static final Method WEB_DRIVER_FIND_ELEMENTS;
+
+	static {
+		try {
+			WEB_DRIVER_FIND_ELEMENT = RemoteWebDriver.class
+					.getDeclaredMethod("findElement", String.class, String.class);
+			WEB_DRIVER_FIND_ELEMENT.setAccessible(true);
+
+			WEB_DRIVER_FIND_ELEMENTS = RemoteWebDriver.class.getDeclaredMethod("findElements", String.class,
+					String.class);
+			WEB_DRIVER_FIND_ELEMENTS.setAccessible(true);
+		} catch (Exception e) {
+			throw new TestRuntimeException(e);
+		}
+	}
+
+	protected static PtlWebElement findElement(RemoteWebDriver driver, String using, String value) {
+		try {
+			return (PtlWebElement) WEB_DRIVER_FIND_ELEMENT.invoke(driver, using, value);
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new TestRuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	protected static List<WebElement> findElements(RemoteWebDriver driver, String using, String value) {
+		try {
+			return (List<WebElement>) WEB_DRIVER_FIND_ELEMENTS.invoke(driver, using, value);
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new TestRuntimeException(e);
+		}
+	}
+
 	private static final Pattern PATTERN_NUMBER = Pattern.compile("-?[\\d\\.]+");
 	private static final long SHOW_HIDE_TIMEOUT = 30L;
 
@@ -200,102 +239,82 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	}
 
 	@Override
-	protected Response execute(String command, Map<String, ?> parameters) {
-		if (frameParent == null) {
+	protected Response execute(final String command, final Map<String, ?> parameters) {
+		PtlWebElement parent = getFrameParent();
+		if (parent == null) {
 			return super.execute(command, parameters);
 		}
 
 		// in frame
-		driver.switchTo().frame(frameParent);
-		try {
-			return super.execute(command, parameters);
-		} finally {
-			driver.switchTo().defaultContent();
-		}
+		return executeInFrame(parent, new Supplier<Response>() {
+			@Override
+			public Response get() {
+				return PtlWebElement.super.execute(command, parameters);
+			}
+		});
 	}
 
 	@Override
-	protected WebElement findElement(final String using, final String value) {
-		if (!isFrame()) {
+	protected WebElement findElement(String using, String value) {
+		if (!frameSwitching) {
 			return super.findElement(using, value);
 		}
 
-		return executeInFrame(new Supplier<WebElement>() {
-			@Override
-			public WebElement get() {
-				try {
-					// TODO cache reflection object?
-					Method findElement = RemoteWebDriver.class.getDeclaredMethod("findElement", String.class,
-							String.class);
-					findElement.setAccessible(true);
-
-					PtlWebElement element = (PtlWebElement) findElement.invoke(driver, using, value);
-					element.setFrameParent(PtlWebElement.this);
-					return element;
-				} catch (Exception e) {
-					throw new TestRuntimeException(e);
-				}
-			}
-		});
+		PtlWebElement element = findElement(driver, using, value);
+		element.setFrameParent(PtlWebElement.this);
+		return element;
 	}
 
 	@Override
 	protected List<WebElement> findElements(final String using, final String value) {
-		if (!isFrame()) {
+		if (!frameSwitching) {
 			return super.findElements(using, value);
 		}
 
-		return executeInFrame(new Supplier<List<WebElement>>() {
-			@Override
-			public List<WebElement> get() {
-				try {
-					// TODO cache reflection object?
-					Method findElement = RemoteWebDriver.class.getDeclaredMethod("findElements", String.class,
-							String.class);
-					findElement.setAccessible(true);
+		List<WebElement> elements = findElements(driver, using, value);
+		for (WebElement element : elements) {
+			((PtlWebElement) element).setFrameParent(PtlWebElement.this);
+		}
 
-					List<WebElement> elements = PtlWebElement.super.findElements(using, value);
-					for (WebElement element : elements) {
-						((PtlWebElement) element).setFrameParent(PtlWebElement.this);
-					}
-
-					return elements;
-				} catch (Exception e) {
-					throw new TestRuntimeException(e);
-				}
-			}
-		});
+		return elements;
 	}
 
 	/**
-	 * frameまたはiframeの要素、またはフレーム内の要素において、WebDriverのフレームスイッチを行った状態で操作します。
+	 * frameまたはiframeの要素内の要素において、WebDriverのフレームスイッチを行った状態で操作します。
 	 * 
 	 * @param doInFrame 操作内容
 	 */
 	public void executeInFrame(Runnable doInFrame) {
 		PtlWebElement parent = getFrameParent();
-		if (!isFrame() && parent == null) {
+		if (parent == null) {
 			doInFrame.run();
+			return;
 		}
 
-		executeInFrame(parent != null ? parent : this, doInFrame);
+		executeInFrame(parent, doInFrame);
 	}
 
 	/**
-	 * frameまたはiframeの要素、またはフレーム内の要素において、WebDriverのフレームスイッチを行った状態で操作します。
+	 * frameまたはiframe内の要素において、WebDriverのフレームスイッチを行った状態で操作します。
 	 * 
 	 * @param doInFrame 操作内容
 	 */
 	public <T> T executeInFrame(Supplier<T> doInFrame) {
 		PtlWebElement parent = getFrameParent();
-		if (!isFrame() && parent == null) {
+		if (parent == null) {
 			return doInFrame.get();
 		}
 
-		return executeInFrame(parent != null ? parent : this, doInFrame);
+		return executeInFrame(parent, doInFrame);
 	}
 
-	private void executeInFrame(WebElement frameElement, Runnable doInFrame) {
+	/**
+	 * frameまたはiframe内の要素において、WebDriverのフレームスイッチを行った状態で操作します。
+	 * 
+	 * @param frameElement フレーム要素
+	 * @param doInFrame 操作内容
+	 */
+	public void executeInFrame(WebElement frameElement, Runnable doInFrame) {
 		if (frameSwitching) {
 			LOG.trace("(executeInFrame) already switched");
 			doInFrame.run();
@@ -307,6 +326,12 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		LOG.trace("(executeInFrame) switch to frame [{}]", frameElement);
 		try {
 			doInFrame.run();
+		} catch (TestRuntimeException e) {
+			if (e.getCause() == null || !(e.getCause() instanceof InvocationTargetException)) {
+				throw e;
+			}
+
+			throw (RuntimeException) e.getCause().getCause();
 		} finally {
 			frameSwitching = false;
 			driver.switchTo().defaultContent();
@@ -314,7 +339,13 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		}
 	}
 
-	private <T> T executeInFrame(WebElement frameElement, Supplier<T> doInFrame) {
+	/**
+	 * frameまたはiframe内の要素において、WebDriverのフレームスイッチを行った状態で操作します。
+	 * 
+	 * @param frameElement フレーム要素
+	 * @param doInFrame 操作内容
+	 */
+	public <T> T executeInFrame(WebElement frameElement, Supplier<T> doInFrame) {
 		if (frameSwitching) {
 			LOG.trace("(executeInFrame) already switched");
 			return doInFrame.get();
@@ -325,6 +356,12 @@ public abstract class PtlWebElement extends RemoteWebElement {
 		frameSwitching = true;
 		try {
 			return doInFrame.get();
+		} catch (TestRuntimeException e) {
+			if (e.getCause() == null || !(e.getCause() instanceof InvocationTargetException)) {
+				throw e;
+			}
+
+			throw (RuntimeException) e.getCause().getCause();
 		} finally {
 			frameSwitching = false;
 			driver.switchTo().defaultContent();
@@ -360,7 +397,7 @@ public abstract class PtlWebElement extends RemoteWebElement {
 	 * @return 矩形領域を表す{@link DoubleValueRect}オブジェクト
 	 */
 	public DoubleValueRect getDoubleValueRect() {
-		return executeInFrame(new Supplier<DoubleValueRect>() {
+		DoubleValueRect rect = executeInFrame(new Supplier<DoubleValueRect>() {
 			@Override
 			public DoubleValueRect get() {
 				// 現在のスクロール位置を取得
@@ -405,6 +442,22 @@ public abstract class PtlWebElement extends RemoteWebElement {
 				return rect;
 			}
 		});
+
+		// フレーム内要素を考慮
+		PtlWebElement frameParent = getFrameParent();
+		if (frameParent == null) {
+			return rect;
+		}
+
+		DoubleValueRect parentRect = frameParent.getDoubleValueRect();
+		double contentScrollLeft = frameParent.getCurrentScrollLeft();
+		double contentScrollTop = frameParent.getCurrentScrollTop();
+		double scrollLeft = getCurrentScrollLeft();
+		double scrollTop = getCurrentScrollTop();
+
+		double left = -contentScrollLeft - scrollLeft + parentRect.getLeft() + rect.getLeft();
+		double top = -contentScrollTop - scrollTop + parentRect.getTop() + rect.getTop();
+		return new DoubleValueRect(left, top, rect.getWidth(), rect.getHeight());
 	}
 
 	/**

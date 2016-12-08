@@ -15,6 +15,8 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import static com.google.common.collect.Lists.*;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -44,7 +46,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
@@ -566,7 +567,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 		List<TargetResult> nonMoveNoScrollTargetResults = new ArrayList<TargetResult>();
 		for (int i = 0; i < targetParams.size(); i++) {
-			Pair<CompareTarget, ScreenshotParams> pair = targetParams.get(i);
+			final Pair<CompareTarget, ScreenshotParams> pair = targetParams.get(i);
 
 			// サイズ情報を結合後の高さに更新する
 			RectangleArea targetPosition = pair.getRight().getTarget().getArea();
@@ -580,13 +581,14 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			// 結果セットに追加
 			ScreenAreaResult targetAreaResult = createScreenAreaResult(pair.getRight().getTarget(), pair.getRight()
 					.getIndex());
-			List<ScreenAreaResult> excludes = Lists.transform(pair.getRight().getExcludes(),
+			List<ScreenAreaResult> excludes = newArrayList(transform(pair.getRight().getExcludes(),
 					new Function<ScreenAreaWrapper, ScreenAreaResult>() {
 						@Override
 						public ScreenAreaResult apply(ScreenAreaWrapper input) {
-							return createScreenAreaResult(input, null);
+							return pair.getRight().isScrollTarget() ? createScreenAreaResult(input, null)
+									: createExcludeScreenAreaResult(input, null);
 						}
-					});
+					}));
 			TargetResult tResult = new TargetResult(null, targetAreaResult, excludes,
 					isMoveTargetRequired(pair.getRight()), hiddenElementSelectors, new ScreenshotImage(
 							screenshots.get(i)), pair.getLeft().getOptions());
@@ -623,7 +625,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @return ターゲットのTargetResult
 	 */
 	protected TargetResult takeMoveScreenshots(CompareTarget target, List<DomSelector> hiddenElementSelectors,
-			ScreenshotParams params) {
+			final ScreenshotParams params) {
 
 		LOG.trace("[TakeMoveScreenshot] target: {}, hiddenElementSelectors: {}, params: {}", target,
 				hiddenElementSelectors, params);
@@ -668,13 +670,14 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		// TargetResult for target area
 		ScreenAreaResult targetAreaResult = createScreenAreaResult(params.getTarget(), params.getIndex());
 		// TargetResult for exclude areas
-		List<ScreenAreaResult> excludes = Lists.transform(params.getExcludes(),
+		List<ScreenAreaResult> excludes = newArrayList(transform(params.getExcludes(),
 				new Function<ScreenAreaWrapper, ScreenAreaResult>() {
 					@Override
 					public ScreenAreaResult apply(ScreenAreaWrapper input) {
-						return createScreenAreaResult(input, null);
+						return params.isScrollTarget() ? createScreenAreaResult(input, null)
+								: createExcludeScreenAreaResult(input, null);
 					}
-				});
+				}));
 
 		// スクロールバーを元の状態に戻す
 		if (canHideElementScrollbar()) {
@@ -1142,20 +1145,21 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @return スクリーンショット撮影結果
 	 */
 	protected TargetResult getTargetResult(CompareTarget compareTarget, List<DomSelector> hiddenElementSelectors,
-			ScreenshotParams params, ScreenshotParams... additionalParams) {
+			final ScreenshotParams params, ScreenshotParams... additionalParams) {
 		ScreenshotImage image = getScreenshotImage(params, additionalParams);
 
 		// TargetResult for target area
 		ScreenAreaResult targetAreaResult = createScreenAreaResult(params.getTarget(), params.getIndex());
 
 		// TargetResult for exclude areas
-		List<ScreenAreaResult> excludes = Lists.transform(params.getExcludes(),
+		List<ScreenAreaResult> excludes = newArrayList(transform(params.getExcludes(),
 				new Function<ScreenAreaWrapper, ScreenAreaResult>() {
 					@Override
 					public ScreenAreaResult apply(ScreenAreaWrapper input) {
-						return createScreenAreaResult(input, null);
+						return params.isScrollTarget() ? createScreenAreaResult(input, null)
+								: createExcludeScreenAreaResult(input, null);
 					}
-				});
+				}));
 
 		return new TargetResult(null, targetAreaResult, excludes, isMoveTargetRequired(params), hiddenElementSelectors,
 				image, compareTarget.getOptions());
@@ -1171,7 +1175,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @return {@link TargetResult}オブジェクト
 	 */
 	protected TargetResult getTargetResult(CompareTarget compareTarget, List<DomSelector> hiddenElementSelectors,
-			ScreenshotParams params, ScreenshotImage image) {
+			final ScreenshotParams params, ScreenshotImage image) {
 		BufferedImage bi = image.get();
 		ScreenshotImage targetImage;
 		RectangleArea targetArea = params.getTarget().getArea();
@@ -1191,13 +1195,14 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		ScreenAreaResult targetAreaResult = createScreenAreaResult(params.getTarget(), params.getIndex());
 
 		// TargetResult for exclude areas
-		List<ScreenAreaResult> excludes = Lists.transform(params.getExcludes(),
+		List<ScreenAreaResult> excludes = newArrayList(transform(params.getExcludes(),
 				new Function<ScreenAreaWrapper, ScreenAreaResult>() {
 					@Override
 					public ScreenAreaResult apply(ScreenAreaWrapper input) {
-						return createScreenAreaResult(input, null);
+						return params.isScrollTarget() ? createScreenAreaResult(input, null)
+								: createExcludeScreenAreaResult(input, null);
 					}
-				});
+				}));
 
 		return new TargetResult(null, targetAreaResult, excludes, isMoveTargetRequired(params), hiddenElementSelectors,
 				targetImage, compareTarget.getOptions());
@@ -1219,6 +1224,32 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 		// DOM
 		return new ScreenAreaResult(new IndexDomSelector(selector, index), target.getArea(), target.getParent());
+	}
+
+	protected ScreenAreaResult createExcludeScreenAreaResult(ScreenAreaWrapper target, Integer index) {
+		ScreenAreaResult result = createScreenAreaResult(target, index);
+		DomSelector selector = target.getSelector();
+		if (selector == null || selector.getParentSelector() == null) {
+			return result;
+		}
+
+		// 親セレクタが指定されている、かつ、親ScreenAreaと同一要素の場合、何もしない
+		if (target.getParentElement() == null) {
+			return result;
+		}
+
+		PtlWebElement parent = (PtlWebElement) selector.getParentSelector().findElement(target.getParentElement());
+
+		// 親セレクタが指定されている場合、親要素に収まる範囲に切り抜く
+		DoubleValueRect r = parent.getDoubleValueRect();
+		RectangleArea a = result.getRectangle();
+		double left = Math.max(r.getLeft(), a.getX());
+		double top = Math.max(r.getTop(), a.getY());
+		double right = Math.min(r.getLeft() + r.getWidth(), a.getX() + a.getWidth());
+		double bottom = Math.min(r.getTop() + r.getHeight(), a.getY() + a.getHeight());
+		RectangleArea newArea = new RectangleArea(left, top, right - left, bottom - top);
+		LOG.debug("[createExcludeScreenAreaResult] parent: {}, exclude: {} -> {}", r, a, newArea);
+		return new ScreenAreaResult(result.getSelector(), newArea, result.getScreenArea());
 	}
 
 	/**
