@@ -22,12 +22,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsDriver;
 
 public class DomSelectorTest {
 
-	interface MockWebElement extends WebElement, WrapsDriver {
-	}
+	// TODO フレームを挟む複雑なテストは、実際のWebDriverを使用する
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
@@ -39,36 +37,32 @@ public class DomSelectorTest {
 	 * body
 	 */
 	@Mock
-	private MockWebElement defaultContentElement;
+	private WebElement defaultContentElement;
 
 	/**
 	 * body > #parent
 	 */
 	@Mock
-	private MockWebElement parentElement;
+	private WebElement parentElement;
 
 	/**
 	 * body > #parent > .child
 	 */
 	@Mock
-	private MockWebElement childElement;
+	private WebElement childElement;
 
 	@Before
 	public void initializeMock() throws Exception {
 		MockitoAnnotations.initMocks(this);
-
-		when(defaultContentElement.getWrappedDriver()).thenReturn(driver);
-		when(parentElement.getWrappedDriver()).thenReturn(driver);
-		when(childElement.getWrappedDriver()).thenReturn(driver);
 
 		final By byTagNameBody = By.tagName("body");
 		final By byIdMain = By.id("main");
 		final By byClassNameChild = By.className("child");
 
 		// Driver
-		when(driver.findElement((By) any())).thenAnswer(new Answer<MockWebElement>() {
+		when(driver.findElement((By) any())).thenAnswer(new Answer<WebElement>() {
 			@Override
-			public MockWebElement answer(InvocationOnMock invocation) throws Throwable {
+			public WebElement answer(InvocationOnMock invocation) throws Throwable {
 				Object by = invocation.getArguments()[0];
 				if (by.equals(byTagNameBody)) {
 					return defaultContentElement;
@@ -81,9 +75,9 @@ public class DomSelectorTest {
 				}
 			}
 		});
-		when(driver.findElements((By) any())).thenAnswer(new Answer<List<MockWebElement>>() {
+		when(driver.findElements((By) any())).thenAnswer(new Answer<List<WebElement>>() {
 			@Override
-			public List<MockWebElement> answer(InvocationOnMock invocation) throws Throwable {
+			public List<WebElement> answer(InvocationOnMock invocation) throws Throwable {
 				Object by = invocation.getArguments()[0];
 				if (by.equals(byTagNameBody)) {
 					return newArrayList(defaultContentElement);
@@ -98,9 +92,9 @@ public class DomSelectorTest {
 		});
 
 		// Body element
-		when(defaultContentElement.findElement((By) any())).thenAnswer(new Answer<MockWebElement>() {
+		when(defaultContentElement.findElement((By) any())).thenAnswer(new Answer<WebElement>() {
 			@Override
-			public MockWebElement answer(InvocationOnMock invocation) throws Throwable {
+			public WebElement answer(InvocationOnMock invocation) throws Throwable {
 				Object by = invocation.getArguments()[0];
 				if (by.equals(byIdMain)) {
 					return parentElement;
@@ -111,9 +105,9 @@ public class DomSelectorTest {
 				}
 			}
 		});
-		when(defaultContentElement.findElements((By) any())).thenAnswer(new Answer<List<MockWebElement>>() {
+		when(defaultContentElement.findElements((By) any())).thenAnswer(new Answer<List<WebElement>>() {
 			@Override
-			public List<MockWebElement> answer(InvocationOnMock invocation) throws Throwable {
+			public List<WebElement> answer(InvocationOnMock invocation) throws Throwable {
 				Object by = invocation.getArguments()[0];
 				if (by.equals(byIdMain)) {
 					return newArrayList(parentElement);
@@ -126,9 +120,9 @@ public class DomSelectorTest {
 		});
 
 		// #main element
-		when(parentElement.findElement((By) any())).thenAnswer(new Answer<MockWebElement>() {
+		when(parentElement.findElement((By) any())).thenAnswer(new Answer<WebElement>() {
 			@Override
-			public MockWebElement answer(InvocationOnMock invocation) throws Throwable {
+			public WebElement answer(InvocationOnMock invocation) throws Throwable {
 				Object by = invocation.getArguments()[0];
 				if (by.equals(byClassNameChild)) {
 					return childElement;
@@ -137,9 +131,9 @@ public class DomSelectorTest {
 				}
 			}
 		});
-		when(parentElement.findElements((By) any())).thenAnswer(new Answer<List<MockWebElement>>() {
+		when(parentElement.findElements((By) any())).thenAnswer(new Answer<List<WebElement>>() {
 			@Override
-			public List<MockWebElement> answer(InvocationOnMock invocation) throws Throwable {
+			public List<WebElement> answer(InvocationOnMock invocation) throws Throwable {
 				Object by = invocation.getArguments()[0];
 				if (by.equals(byClassNameChild)) {
 					return newArrayList(childElement);
@@ -160,7 +154,7 @@ public class DomSelectorTest {
 	@Test
 	public void findElement_driver() throws Exception {
 		DomSelector selector = new DomSelector(SelectorType.TAG_NAME, "body");
-		assertThat(selector.findElement(driver), is((WebElement) defaultContentElement));
+		assertThat(selector.findElement(driver), is(defaultContentElement));
 	}
 
 	/**
@@ -169,7 +163,7 @@ public class DomSelectorTest {
 	@Test
 	public void findElements_driver() throws Exception {
 		DomSelector selector = new DomSelector(SelectorType.TAG_NAME, "body");
-		assertThat(selector.findElements(driver), is(singletonList((WebElement) defaultContentElement)));
+		assertThat(selector.findElements(driver), is(singletonList(defaultContentElement)));
 	}
 
 	/**
@@ -198,7 +192,7 @@ public class DomSelectorTest {
 	@Test
 	public void findElement_element() throws Exception {
 		DomSelector selector = new DomSelector(SelectorType.ID, "main");
-		assertThat(selector.findElement(defaultContentElement), is((WebElement) parentElement));
+		assertThat(selector.findElement(defaultContentElement), is(parentElement));
 	}
 
 	/**
@@ -207,7 +201,7 @@ public class DomSelectorTest {
 	@Test
 	public void findElements_element() throws Exception {
 		DomSelector selector = new DomSelector(SelectorType.ID, "main");
-		assertThat(selector.findElements(defaultContentElement), is(singletonList((WebElement) parentElement)));
+		assertThat(selector.findElements(defaultContentElement), is(singletonList(parentElement)));
 	}
 
 	/**
@@ -236,7 +230,7 @@ public class DomSelectorTest {
 	@Test
 	public void findElement_driver_nested() throws Exception {
 		DomSelector selector = new DomSelector(SelectorType.ID, "main", new DomSelector(SelectorType.TAG_NAME, "body"));
-		assertThat(selector.findElement(driver), is((WebElement) parentElement));
+		assertThat(selector.findElement(driver), is(parentElement));
 	}
 
 	/**
@@ -245,7 +239,7 @@ public class DomSelectorTest {
 	@Test
 	public void findElements_driver_nested() throws Exception {
 		DomSelector selector = new DomSelector(SelectorType.ID, "main", new DomSelector(SelectorType.TAG_NAME, "body"));
-		assertThat(selector.findElements(driver), is(singletonList((WebElement) parentElement)));
+		assertThat(selector.findElements(driver), is(singletonList(parentElement)));
 	}
 
 	/**
@@ -264,8 +258,10 @@ public class DomSelectorTest {
 	 */
 	@Test
 	public void findElements_driver_nested_notFound() throws Exception {
+		expectedException.expect(NoSuchElementException.class);
+
 		DomSelector selector = new DomSelector(SelectorType.ID, "none", new DomSelector(SelectorType.TAG_NAME, "body"));
-		assertThat(selector.findElements(defaultContentElement), is(Collections.<WebElement> emptyList()));
+		selector.findElements(defaultContentElement);
 	}
 
 	/**
@@ -275,7 +271,7 @@ public class DomSelectorTest {
 	public void findElement_element_nested() throws Exception {
 		DomSelector selector = new DomSelector(SelectorType.CLASS_NAME, "child", new DomSelector(SelectorType.ID,
 				"main"));
-		assertThat(selector.findElement(defaultContentElement), is((WebElement) childElement));
+		assertThat(selector.findElement(defaultContentElement), is(childElement));
 	}
 
 	/**
@@ -285,7 +281,7 @@ public class DomSelectorTest {
 	public void findElements_element_nested() throws Exception {
 		DomSelector selector = new DomSelector(SelectorType.CLASS_NAME, "child", new DomSelector(SelectorType.ID,
 				"main"));
-		assertThat(selector.findElements(defaultContentElement), is(singletonList((WebElement) childElement)));
+		assertThat(selector.findElements(defaultContentElement), is(singletonList(childElement)));
 	}
 
 	/**

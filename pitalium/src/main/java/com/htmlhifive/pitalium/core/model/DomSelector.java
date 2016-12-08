@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsDriver;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -123,14 +122,12 @@ public class DomSelector implements Serializable {
 	 * @param element 要素を検索するDOMのルート要素
 	 * @return このDomSelectorが指し示す要素
 	 */
-	public <TElement extends WebElement & WrapsDriver> WebElement findElement(TElement element) {
+	public WebElement findElement(WebElement element) {
 		if (parentSelector == null) {
 			return type.findElement(element, value);
 		}
 
-		// parentと引数Elementの関連をチェックしたいが、フレームを越す場合は不可能なので何もしない
-		// チェックする場合は element.findElement(By.xpath("..")) で親をたどる
-		WebElement frameElement = parentSelector.findElement(element.getWrappedDriver());
+		WebElement frameElement = parentSelector.findElement(element);
 		return type.findElement(frameElement, value);
 	}
 
@@ -157,12 +154,12 @@ public class DomSelector implements Serializable {
 	 * @return このDomSelectorが指し示す要素
 	 */
 	@SuppressWarnings("unchecked")
-	public <TElement extends WebElement & WrapsDriver> List<WebElement> findElements(TElement element) {
+	public List<WebElement> findElements(WebElement element) {
 		if (parentSelector == null) {
 			return type.findElements(element, value);
 		}
 
-		WebElement frameElement = parentSelector.findElement(element.getWrappedDriver());
+		WebElement frameElement = parentSelector.findElement(element);
 		return type.findElements(frameElement, value);
 	}
 

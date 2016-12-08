@@ -15,12 +15,12 @@
  */
 package com.htmlhifive.pitalium.core.model;
 
-import java.util.Collections;
+import static java.util.Collections.*;
+
 import java.util.List;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsDriver;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -93,30 +93,22 @@ public class IndexDomSelector extends DomSelector {
 
 	@Override
 	public WebElement findElement(WebDriver driver) {
-		if (index == null) {
-			return super.findElement(driver);
-		}
-
-		return super.findElements(driver).get(index);
+		return index == null ? super.findElement(driver) : super.findElements(driver).get(index);
 	}
 
 	@Override
-	public <TElement extends WebElement & WrapsDriver> WebElement findElement(TElement element) {
-		if (index == null) {
-			return super.findElement(element);
-		}
-
-		return super.findElements(element).get(index);
+	public WebElement findElement(WebElement element) {
+		return index == null ? super.findElement(element) : super.findElements(element).get(index);
 	}
 
 	@Override
 	public List<WebElement> findElements(WebDriver driver) {
-		return Collections.singletonList(findElement(driver));
+		return index == null ? super.findElements(driver) : singletonList(findElement(driver));
 	}
 
 	@Override
-	public <TElement extends WebElement & WrapsDriver> List<WebElement> findElements(TElement element) {
-		return Collections.singletonList(findElement(element));
+	public List<WebElement> findElements(WebElement element) {
+		return index == null ? super.findElements(element) : singletonList(findElement(element));
 	}
 
 	/**
