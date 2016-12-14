@@ -22,9 +22,9 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.htmlhifive.pitalium.core.selenium.DoubleValueRect;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
-import com.htmlhifive.pitalium.core.selenium.DoubleValueRect;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 
 /**
@@ -44,6 +44,10 @@ public abstract class ScreenAreaWrapper {
 	 * ScreenAreaに対応するWebElement
 	 */
 	protected final PtlWebElement element;
+	/**
+	 * parentに対応するWebElement
+	 */
+	protected final PtlWebElement parentElement;
 
 	/**
 	 * ScreenAreaの矩形領域
@@ -56,11 +60,14 @@ public abstract class ScreenAreaWrapper {
 	 * @param parent 生成元のScreenArea
 	 * @param driver WebDriver
 	 * @param element 対応するWebElement
+	 * @param parentElement parentに対応するWebElement
 	 */
-	protected ScreenAreaWrapper(ScreenArea parent, PtlWebDriver driver, PtlWebElement element) {
+	protected ScreenAreaWrapper(ScreenArea parent, PtlWebDriver driver, PtlWebElement element,
+			PtlWebElement parentElement) {
 		this.parent = parent;
 		this.driver = driver;
 		this.element = element;
+		this.parentElement = parentElement;
 	}
 
 	/**
@@ -88,6 +95,15 @@ public abstract class ScreenAreaWrapper {
 	 */
 	public PtlWebElement getElement() {
 		return element;
+	}
+
+	/**
+	 * parentに対応するWebElementを取得します。
+	 * 
+	 * @return WebElement
+	 */
+	public PtlWebElement getParentElement() {
+		return parentElement;
 	}
 
 	/**
@@ -197,9 +213,9 @@ public abstract class ScreenAreaWrapper {
 		DomSelector selector = screenArea.getSelector();
 		List<WebElement> elements;
 		if (element == null) {
-			elements = selector.getType().findElements(driver, selector.getValue());
+			elements = selector.findElements(driver);
 		} else {
-			elements = selector.getType().findElements(element, selector.getValue());
+			elements = selector.findElements(element);
 		}
 
 		if (elements.isEmpty()) {
@@ -208,7 +224,7 @@ public abstract class ScreenAreaWrapper {
 
 		List<ScreenAreaWrapper> results = new ArrayList<ScreenAreaWrapper>(elements.size());
 		for (WebElement el : elements) {
-			results.add(new DomScreenAreaWrapper(screenArea, driver, (PtlWebElement) el));
+			results.add(new DomScreenAreaWrapper(screenArea, driver, (PtlWebElement) el, element));
 		}
 
 		return results;
@@ -233,9 +249,10 @@ public abstract class ScreenAreaWrapper {
 		 * @param parent 生成元のScreenArea
 		 * @param driver WebDriver
 		 * @param element 対応するWebElement
+		 * @param parentElement parentに対応するWebElement
 		 */
-		DomScreenAreaWrapper(ScreenArea parent, PtlWebDriver driver, PtlWebElement element) {
-			super(parent, driver, element);
+		DomScreenAreaWrapper(ScreenArea parent, PtlWebDriver driver, PtlWebElement element, PtlWebElement parentElement) {
+			super(parent, driver, element, parentElement);
 
 			selector = parent.getSelector();
 		}
@@ -302,7 +319,7 @@ public abstract class ScreenAreaWrapper {
 		 * @param element 対応するWebElement
 		 */
 		RectangleScreenAreaWrapper(ScreenArea parent, PtlWebDriver driver, PtlWebElement element) {
-			super(parent, driver, element);
+			super(parent, driver, element, null);
 
 			target = parent.getRectangle();
 		}

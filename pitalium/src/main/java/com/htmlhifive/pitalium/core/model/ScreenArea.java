@@ -73,6 +73,20 @@ public class ScreenArea implements Serializable {
 	}
 
 	/**
+	 * セレクタを使用して画面上の領域を指定します。
+	 * 
+	 * @param type セレクタの種別
+	 * @param value セレクタの値
+	 * @param frameSelectorType フレームを指定するセレクタの種別
+	 * @param frameSelectorValue フレームを指定するセレクタの値
+	 * @return 画面上の領域を表すオブジェクト
+	 */
+	public static ScreenArea of(SelectorType type, String value, SelectorType frameSelectorType,
+			String frameSelectorValue) {
+		return new ScreenArea(new DomSelector(type, value, new DomSelector(frameSelectorType, frameSelectorValue)));
+	}
+
+	/**
 	 * 座標を直接指定して画面上の領域を指定します。
 	 * 
 	 * @param x 領域の左上のx座標

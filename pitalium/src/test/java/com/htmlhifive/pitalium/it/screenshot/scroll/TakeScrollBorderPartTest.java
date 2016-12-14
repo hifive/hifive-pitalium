@@ -33,7 +33,7 @@ import com.htmlhifive.pitalium.core.selenium.PtlWebDriverWait;
 public class TakeScrollBorderPartTest extends PtlTestBase {
 
 	private static final PtlTestConfig config = PtlTestConfig.getInstance();
-	private static final String BASE_URL = config.getTestAppConfig().getBaseUrl();
+	private static final String BASE_URL = "scroll-01.html";
 
 	/**
 	 * ボーダー有りの場合に正しく撮影できるか確認するテスト。
