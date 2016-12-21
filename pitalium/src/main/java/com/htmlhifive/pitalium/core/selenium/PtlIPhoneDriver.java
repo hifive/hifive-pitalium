@@ -202,6 +202,11 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 		trimTop = adjustTrimTop(trimTop, currentScale);
 
 		return trimTop;
-	};
+	}
+
+	@Override
+	long getScrollNum(double clientHeight) {
+		return super.getScrollNum();
+	}
 
 }
