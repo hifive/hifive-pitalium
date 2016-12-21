@@ -23,6 +23,7 @@
 	<classpathentry kind="lib" path="libs/jackson-annotations-2.7.0.jar"/>
 	<classpathentry kind="lib" path="libs/jackson-core-2.7.3.jar"/>
 	<classpathentry kind="lib" path="libs/jackson-databind-2.7.3.jar"/>
+	<classpathentry kind="lib" path="libs/java-hamcrest-2.0.0.0.jar" />
 	<classpathentry kind="lib" path="libs/javassist-3.20.0-GA.jar"/>
 	<classpathentry kind="lib" path="libs/jna-4.1.0.jar"/>
 	<classpathentry kind="lib" path="libs/junit-4.12.jar"/>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Pitalium Test (Scroll)</title>
+
+  <link rel="stylesheet" href="css/common.css">
+
+  <style type="text/css">
+    .empty {
+      height: 40px;
+    }
+
+    #table-scroll tr,
+    #table-scroll td {
+      width: 300px;
+      height: 20px;
+    }
+  </style>
+
+</head>
+<body>
+
+<div id="container" style="margin: 16px;">
+
+  <div id="div-scroll" class="scroll-box" style="width: 300px; height: 150px; border: 1px solid; overflow: scroll">
+    <div id="div-scroll-inner" style="width: 100%; height: 400px; position: relative;"></div>
+  </div>
+
+  <div class="empty"></div>
+
+  <textarea rows="6" cols="40" id="textarea-scroll" class="scroll-box">
+りんご
+みかん
+バナナ
+いちご
+なし
+メロン
+スイカ
+もも
+ぶどう
+キウイ
+柿
+デコポン
+グレープフルーツ
+パイナップル
+マスカット
+  </textarea>
+
+  <div class="empty"></div>
+
+  <table id="table-scroll" border="0" cellspacing="0">
+    <tbody class="scroll-box" style="display: block; width: 300px; height: 150px; overflow-y: scroll"></tbody>
+  </table>
+
+  <div class="empty"></div>
+
+  <iframe src="gradation.html?width=296px&height=400px" name="iframe-scroll" frameborder="1"
+          style="width: 300px; height: 150px;"></iframe>
+
+  <div class="empty"></div>
+
+  <div id="no-overflow" class="noscroll-box" style="width: 300px; border: 1px solid;">
+    <div id="no-overflow-inner" style="width: 100%; height: 400px; position: relative; overflow: hidden;"></div>
+  </div>
+
+  <div class="empty"></div>
+
+  <div id="no-scroll" class="noscroll-box"
+       style="width: 300px; height: 150px; border: 1px black solid; overflow: visible;">
+    <div id="no-scroll-inner" style="width: 100%; height: 400px; position: relative; overflow: hidden;"></div>
+  </div>
+
+</div>
+
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript">
+  (function () {
+    'use strict';
+
+    // DIV
+    fillGradation(document.getElementById('div-scroll-inner'), 255);
+    fillGradation(document.getElementById('no-overflow-inner'), 255);
+    fillGradation(document.getElementById('no-scroll-inner'), 255);
+
+    // TABLE
+    var table = document.getElementsByTagName('tbody')[0];
+    var ti = 0;
+    while (ti < 0xff) {
+      var tr = document.createElement('tr');
+      var td = document.createElement('td');
+      td.style.background = 'rgb(' + ti + ',' + ti + ',' + ti + ')';
+      td.innerHTML = '&nbsp;' + String.fromCharCode('a'.charCodeAt(0) + ti / 16);
+      td.className = 'table-data';
+
+      tr.appendChild(td);
+      table.appendChild(tr);
+
+      ti += 16;
+    }
+  })();
+</script>
+
+</body>
+</html>

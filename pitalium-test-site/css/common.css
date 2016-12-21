@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.gradation-row {
+  position: absolute;
+  width: 100%;
+  height: 20px;
+}
+
+.gradation-column {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+}
