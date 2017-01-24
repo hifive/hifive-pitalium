@@ -211,28 +211,58 @@ public class PtlItTestBase extends PtlTestBase {
 		return driver.executeJavaScript("return window.innerWidth < 768;");
 	}
 
+	/**
+	 * devicePixelRatioからピクセル換算した要素の座標と大きさを取得します。
+	 * 
+	 * @param id 要素のID
+	 * @return ピクセル換算した要素の座標と大きさ
+	 */
 	public Rect getPixelRectById(String id) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var id = arguments[0];"
 				+ "var element = document.getElementById(id);" + "return element.getPixelRect();", id);
 		return getPixelRect(rect);
 	}
 
+	/**
+	 * devicePixelRatioからピクセル換算した要素の座標と大きさを取得します。
+	 * 
+	 * @param selector 要素を示すセレクタ
+	 * @return ピクセル換算した要素の座標と大きさ
+	 */
 	public Rect getPixelRectBySelector(String selector) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var selector = arguments[0];"
 				+ "var element = document.querySelector(selector);" + "return element.getPixelRect();", selector);
 		return getPixelRect(rect);
 	}
 
+	/**
+	 * devicePixelRatioからピクセル換算した要素の座標と大きさを取得します。
+	 * 
+	 * @param element 要素
+	 * @return ピクセル換算した要素の座標と大きさ
+	 */
 	public Rect getPixelRect(WebElement element) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var element = arguments[0];"
 				+ "return element.getPixelRect();", element);
 		return getPixelRect(rect);
 	}
 
+	/**
+	 * devicePixelRatioからピクセル換算した要素の座標と大きさを取得します。
+	 * 
+	 * @param rect 座標と大きさを含んだマップ
+	 * @return ピクセル換算した要素の座標と大きさ
+	 */
 	public Rect getPixelRect(Map<String, Number> rect) {
 		return getRect(rect);
 	}
 
+	/**
+	 * 要素の座標と大きさを取得します。
+	 * 
+	 * @param id 要素のID
+	 * @return 要素の座標と大きさ
+	 */
 	public Rect getRectById(String id) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var id = arguments[0];"
 				+ "var element = document.getElementById(id);" + "var rect = element.getBoundingClientRect();"
@@ -241,6 +271,12 @@ public class PtlItTestBase extends PtlTestBase {
 		return getRect(rect);
 	}
 
+	/**
+	 * 要素の座標と大きさを取得します。
+	 * 
+	 * @param selector 要素を示すセレクタ
+	 * @return 要素の座標と大きさ
+	 */
 	public Rect getRectBySelector(String selector) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var selector = arguments[0];"
 				+ "var element = document.querySelector(selector);" + "var rect = element.getBoundingClientRect();"
@@ -249,6 +285,12 @@ public class PtlItTestBase extends PtlTestBase {
 		return getRect(rect);
 	}
 
+	/**
+	 * 要素の座標と大きさを取得します。
+	 * 
+	 * @param element 要素
+	 * @return 要素の座標と大きさ
+	 */
 	public Rect getRect(WebElement element) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var element = arguments[0];"
 				+ "var rect = element.getBoundingClientRect();" + "var result = {" + "  x: rect.left,"
@@ -257,6 +299,12 @@ public class PtlItTestBase extends PtlTestBase {
 		return getRect(rect);
 	}
 
+	/**
+	 * 要素の座標と大きさを取得します。
+	 * 
+	 * @param rect 座標と大きさを含んだマップ
+	 * @return 要素の座標と大きさ
+	 */
 	public Rect getRect(Map<String, Number> rect) {
 		double x = rect.get("x").doubleValue();
 		double y = rect.get("y").doubleValue();
@@ -265,11 +313,26 @@ public class PtlItTestBase extends PtlTestBase {
 		return new Rect(x, y, width, height);
 	}
 
+	/**
+	 * 要素の座標と大きさ
+	 */
 	public static class Rect {
 
+		/**
+		 * 要素の左上のX座標
+		 */
 		public final double x;
+		/**
+		 * 要素の左上のY座標
+		 */
 		public final double y;
+		/**
+		 * 要素の幅
+		 */
 		public final double width;
+		/**
+		 * 要素の高さ
+		 */
 		public final double height;
 
 		public Rect(double x, double y, double width, double height) {
@@ -279,6 +342,9 @@ public class PtlItTestBase extends PtlTestBase {
 			this.height = height;
 		}
 
+		/**
+		 * 各値を四捨五入します。
+		 */
 		public Rect round() {
 			double x = Math.round(this.x);
 			double y = Math.round(this.y);
@@ -287,6 +353,9 @@ public class PtlItTestBase extends PtlTestBase {
 			return new Rect(x, y, width, height);
 		}
 
+		/**
+		 * RectangleAreaへ変換します。
+		 */
 		public RectangleArea toRectangleArea() {
 			return new RectangleArea(x, y, width, height);
 		}
@@ -443,6 +512,9 @@ public class PtlItTestBase extends PtlTestBase {
 
 	//<editor-fold desc="Matcher">
 
+	/**
+	 * Imageが等しいかどうかをチェックするMatcher
+	 */
 	public static class IsImage extends TypeSafeDiagnosingMatcher<BufferedImage> {
 
 		public static IsImage image(BufferedImage image) {
@@ -486,29 +558,55 @@ public class PtlItTestBase extends PtlTestBase {
 		}
 	}
 
+	/**
+	 * グラデーションかどうかをチェックするMatcher
+	 */
 	public static class IsGradation extends TypeSafeDiagnosingMatcher<BufferedImage> {
 
 		public static IsGradation gradation() {
 			return new IsGradation();
 		}
 
-		public static IsGradation gradation(double aspectRatio) {
-			return new IsGradation(aspectRatio);
+		/**
+		 * グラデーションかどうかをチェックします。
+		 * 
+		 * @param pixelRatio 論理ピクセル比率
+		 */
+		public static IsGradation gradation(double pixelRatio) {
+			return new IsGradation(pixelRatio);
 		}
 
-		public static IsGradation gradationWithBorder(double aspectRatio) {
-			return new IsGradation(aspectRatio, 20, Color.valueOf("#444"), 20);
+		/**
+		 * ボーダー付のグラデーションかどうかをチェックします。
+		 * 
+		 * @param pixelRatio 論理ピクセル比率
+		 */
+		public static IsGradation gradationWithBorder(double pixelRatio) {
+			return new IsGradation(pixelRatio, 20, Color.valueOf("#444"), 20);
 		}
 
-		public static IsGradation gradationWithBorder(double aspectRatio, int borderStroke) {
-			return new IsGradation(aspectRatio, 20, Color.valueOf("#444"), borderStroke);
+		/**
+		 * ボーダー付のグラデーションかどうかをチェックします。
+		 * 
+		 * @param pixelRatio 論理ピクセル比率
+		 * @param borderStroke ボーダーの幅
+		 */
+		public static IsGradation gradationWithBorder(double pixelRatio, int borderStroke) {
+			return new IsGradation(pixelRatio, 20, Color.valueOf("#444"), borderStroke);
 		}
 
-		public static IsGradation gradationWithBorder(double aspectRatio, Color color, int borderStroke) {
-			return new IsGradation(aspectRatio, 20, color, borderStroke);
+		/**
+		 * ボーダー付のグラデーションかどうかをチェックします。
+		 * 
+		 * @param pixelRatio 論理ピクセル比率
+		 * @param color ボーダーの色
+		 * @param borderStroke ボーダーの幅
+		 */
+		public static IsGradation gradationWithBorder(double pixelRatio, Color color, int borderStroke) {
+			return new IsGradation(pixelRatio, 20, color, borderStroke);
 		}
 
-		private final double aspectRatio;
+		private final double pixelRatio;
 		private final int blockSize;
 		private final Color borderColor;
 		private final int borderStroke;
@@ -517,16 +615,16 @@ public class PtlItTestBase extends PtlTestBase {
 			this(1.0);
 		}
 
-		public IsGradation(double aspectRatio) {
-			this(aspectRatio, 20);
+		public IsGradation(double pixelRatio) {
+			this(pixelRatio, 20);
 		}
 
-		public IsGradation(double aspectRatio, int blockSize) {
-			this(aspectRatio, blockSize, null, 0);
+		public IsGradation(double pixelRatio, int blockSize) {
+			this(pixelRatio, blockSize, null, 0);
 		}
 
-		public IsGradation(double aspectRatio, int blockSize, Color borderColor, int borderStroke) {
-			this.aspectRatio = aspectRatio;
+		public IsGradation(double pixelRatio, int blockSize, Color borderColor, int borderStroke) {
+			this.pixelRatio = pixelRatio;
 			this.blockSize = blockSize;
 			this.borderColor = borderColor;
 			this.borderStroke = borderStroke;
@@ -538,7 +636,7 @@ public class PtlItTestBase extends PtlTestBase {
 			// Border
 			int width = image.getWidth();
 			int height = image.getHeight();
-			int border = (int) Math.round(borderStroke * aspectRatio);
+			int border = (int) Math.round(borderStroke * pixelRatio);
 			if (border > 0.0) {
 				int centerX = width / 2;
 				int centerY = height / 2;
@@ -569,7 +667,7 @@ public class PtlItTestBase extends PtlTestBase {
 				int x = border + i;
 				int y = border;
 				Color actual = Color.valueOf(image.getRGB(x, y));
-				Color expected = Color.rgb((((int) Math.floor(i / aspectRatio) / blockSize) % (0x1 << 5)) * 8, 0, 0xff);
+				Color expected = Color.rgb((((int) Math.floor(i / pixelRatio) / blockSize) % (0x1 << 5)) * 8, 0, 0xff);
 				if (!actual.equals(expected)) {
 					mismatch.appendText(String.format("%s @horizontal (%d, %d), expect=%s\n", actual, x, y, expected));
 					return false;
@@ -581,7 +679,7 @@ public class PtlItTestBase extends PtlTestBase {
 				int x = border;
 				int y = border + i;
 				Color actual = Color.valueOf(image.getRGB(x, y));
-				Color expected = Color.rgb(0, (((int) Math.floor(i / aspectRatio) / blockSize) % (0x1 << 5)) * 8, 0xff);
+				Color expected = Color.rgb(0, (((int) Math.floor(i / pixelRatio) / blockSize) % (0x1 << 5)) * 8, 0xff);
 				if (!actual.equals(expected)) {
 					mismatch.appendText(String.format("%s @vertical (%d, %d), expect=%s\n", actual, x, y, expected));
 					return false;
@@ -594,7 +692,7 @@ public class PtlItTestBase extends PtlTestBase {
 		@Override
 		public void describeTo(Description description) {
 			description.appendText(String.format(
-					"gradation page (aspectRatio=%f, blockSize=%d, borderColor=%s, borderStroke=%d)", aspectRatio,
+					"gradation page (pixelRatio=%f, blockSize=%d, borderColor=%s, borderStroke=%d)", pixelRatio,
 					blockSize, borderColor, borderStroke));
 		}
 

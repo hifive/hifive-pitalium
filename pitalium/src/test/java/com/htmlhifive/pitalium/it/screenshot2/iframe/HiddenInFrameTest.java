@@ -25,12 +25,18 @@ import java.awt.image.BufferedImage;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * iframe内の要素を非表示設定とするテスト
  */
 public class HiddenInFrameTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * BODYを撮影する際に、IFRAME内の要素を非表示に設定する。
+	 * 
+	 * @ptl.expect 非表示に設定した要素が写っていないこと。
+	 */
 	@Test
 	public void captureBody() throws Exception {
 		openIFramePage();
@@ -53,6 +59,11 @@ public class HiddenInFrameTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * IFRAMEを撮影する際に、IFRAME内の要素を非表示に設定する。
+	 * 
+	 * @ptl.expect 非表示に設定した要素が写っていないこと。
+	 */
 	@Test
 	public void captureIFrame() throws Exception {
 		openIFramePage();
@@ -75,6 +86,11 @@ public class HiddenInFrameTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * BODYを撮影する際に、IFRAME内の存在しない要素を非表示に設定する。
+	 * 
+	 * @ptl.expect エラーが発生しないこと。
+	 */
 	@Test
 	public void captureBody_hiddenNotExistElement() throws Exception {
 		openIFramePage();
@@ -84,8 +100,14 @@ public class HiddenInFrameTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 
 		// エラーにならない
+		assertTrue(true);
 	}
 
+	/**
+	 * IFRAMEを撮影する際に、IFRAME内の存在しない要素を非表示に設定する。
+	 * 
+	 * @ptl.expect エラーが発生しないこと。
+	 */
 	@Test
 	public void captureIFrame_hiddenNotExistElement() throws Exception {
 		openIFramePage();
@@ -95,6 +117,7 @@ public class HiddenInFrameTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 
 		// エラーにならない
+		assertTrue(true);
 	}
 
 }

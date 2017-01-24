@@ -33,6 +33,11 @@ import static org.junit.Assert.assertThat;
  */
 public class PositionFixedElementTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * position: fixedが指定された要素を撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	public void moveFixedElement() throws Exception {
 		openBasicColorPage();
@@ -51,13 +56,12 @@ public class PositionFixedElementTest extends PtlItScreenshotTestBase {
 		assertThat(afterStyles, is(beforeStyles));
 
 		// Check screenshot
-		Map<String, Number> size = driver
-				.executeJavaScript("return document.getElementById('colorColumn2').getPixelSize();");
+		Rect rect = getPixelRectById("colorColumn2");
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		int width = image.getWidth();
 		int height = image.getHeight();
-		assertThat((double) width, is(closeTo(size.get("width").doubleValue(), 1.0)));
-		assertThat((double) height, is(closeTo(size.get("height").doubleValue(), 1.0)));
+		assertThat((double) width, is(closeTo(rect.width, 1.0)));
+		assertThat((double) height, is(closeTo(rect.height, 1.0)));
 
 		Color expect = Color.BLUE;
 		for (int y = 0; y < height; y++) {

@@ -32,6 +32,11 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * テキストの座標を変更し、移動オプションを指定して比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareTextWithMoveOption() throws Exception {
 		openBasicTextPage();
@@ -46,6 +51,11 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * テキストの座標を変更し、移動オプションを指定せずに比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareTextWithoutMoveOption() throws Exception {
 		openBasicTextPage();
@@ -68,8 +78,13 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 画像の座標を変更し、移動オプションを指定して比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
-	public void compareImageWithMoveOption() throws Exception {
+	public void compareImage0WithMoveOption() throws Exception {
 		openBasicImagePage();
 
 		if (isRunTest()) {
@@ -82,8 +97,51 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 画像の座標を変更し、移動オプションを指定して比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
-	public void compareImageWithoutMoveOption() throws Exception {
+	public void compareImage1WithMoveOption() throws Exception {
+		openBasicImagePage();
+
+		if (isRunTest()) {
+			driver.executeJavaScript("" + "var element = document.querySelector('#imageColumn1 img');"
+					+ "var style = element.style;" + "style.marginTop = '5.5px';" + "style.marginLeft = '5.5px'");
+		}
+
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#imageColumn1 img")
+				.moveTarget(true).build();
+		assertionView.assertView(arg);
+	}
+
+	/**
+	 * 画像の座標を変更し、移動オプションを指定して比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
+	@Test
+	public void compareImage2WithMoveOption() throws Exception {
+		openBasicImagePage();
+
+		if (isRunTest()) {
+			driver.executeJavaScript("" + "var element = document.querySelector('#imageColumn2 img');"
+					+ "var style = element.style;" + "style.marginTop = '5.5px';" + "style.marginLeft = '5.5px'");
+		}
+
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#imageColumn2 img")
+				.moveTarget(true).build();
+		assertionView.assertView(arg);
+	}
+
+	/**
+	 * 画像の座標を変更し、移動オプションを指定せずに比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
+	@Test
+	public void compareImage0WithoutMoveOption() throws Exception {
 		openBasicImagePage();
 
 		if (isRunTest()) {
@@ -104,6 +162,65 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 画像の座標を変更し、移動オプションを指定せずに比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
+	@Test
+	public void compareImage1WithoutMoveOption() throws Exception {
+		openBasicImagePage();
+
+		if (isRunTest()) {
+			driver.executeJavaScript("" + "var element = document.querySelector('#imageColumn1 img');"
+					+ "var style = element.style;" + "style.marginTop = '5.5px';" + "style.marginLeft = '5.5px'");
+		}
+
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#imageColumn1 img")
+				.moveTarget(false).build();
+
+		if (isRunTest()) {
+			expectedException.expect(AssertionError.class);
+			assertionView.assertView(arg);
+			fail();
+			return;
+		}
+
+		assertionView.assertView(arg);
+	}
+
+	/**
+	 * 画像の座標を変更し、移動オプションを指定せずに比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
+	@Test
+	public void compareImage2WithoutMoveOption() throws Exception {
+		openBasicImagePage();
+
+		if (isRunTest()) {
+			driver.executeJavaScript("" + "var element = document.querySelector('#imageColumn2 img');"
+					+ "var style = element.style;" + "style.marginTop = '5.5px';" + "style.marginLeft = '5.5px'");
+		}
+
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#imageColumn2 img")
+				.moveTarget(false).build();
+
+		if (isRunTest()) {
+			expectedException.expect(AssertionError.class);
+			assertionView.assertView(arg);
+			fail();
+			return;
+		}
+
+		assertionView.assertView(arg);
+	}
+
+	/**
+	 * 要素の座標を入れ替え、移動オプションを指定して比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareElementsWhichAreReplacedWithMoveOption() throws Exception {
 		openBasicTextPage();
@@ -122,6 +239,11 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 要素の座標を入れ替え、移動オプションを指定せずに比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareElementsWhichAreReplacedWithoutMoveOption() throws Exception {
 		openBasicTextPage();

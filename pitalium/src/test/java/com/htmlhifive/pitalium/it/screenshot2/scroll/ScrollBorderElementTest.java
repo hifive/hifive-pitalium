@@ -32,6 +32,11 @@ import static org.junit.Assert.assertThat;
  */
 public class ScrollBorderElementTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 要素内スクロール、ボーダーがあるDIV要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void borderDivElement() throws Exception {
 		openScrollPage();
@@ -46,6 +51,11 @@ public class ScrollBorderElementTest extends PtlItScreenshotTestBase {
 		validateHasBorder();
 	}
 
+	/**
+	 * 要素内スクロール、ボーダーがあるTEXTAREA要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void borderTextareaElement() throws Exception {
 		openScrollPage();
@@ -60,6 +70,11 @@ public class ScrollBorderElementTest extends PtlItScreenshotTestBase {
 		validateHasBorder();
 	}
 
+	/**
+	 * 要素内スクロール、ボーダーがあるTABLE要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void borderTableElement() throws Exception {
 		openScrollPage();
@@ -74,6 +89,11 @@ public class ScrollBorderElementTest extends PtlItScreenshotTestBase {
 		validateHasBorder();
 	}
 
+	/**
+	 * 要素内スクロール、ボーダーがあるIFRAME要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void borderIFrameElement() throws Exception {
 		openScrollPage();

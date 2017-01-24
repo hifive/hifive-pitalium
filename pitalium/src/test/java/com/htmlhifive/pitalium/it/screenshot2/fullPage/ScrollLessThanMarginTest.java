@@ -30,6 +30,11 @@ import static org.junit.Assert.assertThat;
  */
 public class ScrollLessThanMarginTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 縦方向のスクロールが、BODYに設定されたマージンよりも小さい場合。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void scrollLessThanMarginVertical() throws Exception {
 		openGradationPage("100%", "90%");
@@ -53,6 +58,11 @@ public class ScrollLessThanMarginTest extends PtlItScreenshotTestBase {
 		assertThat(gradationImage, is(gradationWithBorder(ratio)));
 	}
 
+	/**
+	 * 横方向のスクロールが、BODYに設定されたマージンよりも小さい場合。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void scrollLessThanMarginHorizontal() throws Exception {
 		openGradationPage("90%", "100%");

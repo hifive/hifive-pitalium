@@ -25,6 +25,11 @@ import org.junit.Test;
  */
 public class CompareScrollMarginElementTest extends PtlItAssertionTestBase {
 
+	/**
+	 * 要素無いスクロールがある要素のマージンを変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareDifferentMargin() throws Exception {
 		openScrollPage();

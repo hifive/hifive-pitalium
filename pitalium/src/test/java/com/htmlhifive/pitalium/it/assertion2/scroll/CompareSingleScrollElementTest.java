@@ -25,6 +25,11 @@ import org.junit.Test;
  */
 public class CompareSingleScrollElementTest extends PtlItAssertionTestBase {
 
+	/**
+	 * 要素無いスクロールがあるDIV要素を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareScrollableDivElement() throws Exception {
 		openScrollPage();
@@ -34,6 +39,11 @@ public class CompareSingleScrollElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 要素無いスクロールがあるTEXTAREA要素を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareScrollableTextareaElement() throws Exception {
 		openScrollPage();
@@ -43,6 +53,11 @@ public class CompareSingleScrollElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 要素無いスクロールがあるTABLE要素を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareScrollableTableElement() throws Exception {
 		openScrollPage();
@@ -52,6 +67,11 @@ public class CompareSingleScrollElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 要素無いスクロールがあるIFRAME要素を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareScrollableIFrameElement() throws Exception {
 		openScrollPage();

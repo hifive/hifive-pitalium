@@ -18,5 +18,8 @@ package com.htmlhifive.pitalium.it.assertion2;
 
 import com.htmlhifive.pitalium.it.PtlItTestBase;
 
+/**
+ * ITテスト 比較を実行するテストのベースクラス
+ */
 public abstract class PtlItAssertionTestBase extends PtlItTestBase {
 }

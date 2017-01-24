@@ -32,6 +32,11 @@ import static org.junit.Assert.assertThat;
  */
 public class SingleElementWithMarginTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 正のマージンが設定された要素のスクリーンショットを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	public void elementWithPositiveMargin() throws Exception {
 		openBasicColorPage();
@@ -43,13 +48,12 @@ public class SingleElementWithMarginTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 
 		// Check screenshot
-		Map<String, Number> size = driver
-				.executeJavaScript("return document.getElementById('colorColumn0').getPixelSize();");
+		Rect rect = getPixelRectById("colorColumn0");
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		int width = image.getWidth();
 		int height = image.getHeight();
-		assertThat((double) width, is(closeTo(size.get("width").doubleValue(), 1.0)));
-		assertThat((double) height, is(closeTo(size.get("height").doubleValue(), 1.0)));
+		assertThat((double) width, is(closeTo(rect.width, 1.0)));
+		assertThat((double) height, is(closeTo(rect.height, 1.0)));
 
 		Color expect = Color.RED;
 		for (int y = 0; y < height; y++) {
@@ -60,6 +64,11 @@ public class SingleElementWithMarginTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * 負のマージンが設定された要素のスクリーンショットを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	public void elementWithNegativeMargin() throws Exception {
 		openBasicColorPage();
@@ -71,13 +80,12 @@ public class SingleElementWithMarginTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 
 		// Check screenshot
-		Map<String, Number> size = driver
-				.executeJavaScript("return document.getElementById('colorColumn0').getPixelSize();");
+		Rect rect = getPixelRectById("colorColumn0");
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		int width = image.getWidth();
 		int height = image.getHeight();
-		assertThat((double) width, is(closeTo(size.get("width").doubleValue(), 1.0)));
-		assertThat((double) height, is(closeTo(size.get("height").doubleValue(), 1.0)));
+		assertThat((double) width, is(closeTo(rect.width, 1.0)));
+		assertThat((double) height, is(closeTo(rect.height, 1.0)));
 
 		Color expect = Color.RED;
 		for (int y = 0; y < height; y++) {

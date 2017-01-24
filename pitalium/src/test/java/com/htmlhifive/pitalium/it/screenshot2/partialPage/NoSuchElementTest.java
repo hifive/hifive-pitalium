@@ -32,6 +32,11 @@ public class NoSuchElementTest extends PtlItScreenshotTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 存在しない要素を指定して撮影する。
+	 * 
+	 * @ptl.expect AssertionErrorが発生すること。
+	 */
 	@Test
 	public void noSuchElement() throws Exception {
 		openBasicTextPage();
@@ -45,6 +50,11 @@ public class NoSuchElementTest extends PtlItScreenshotTestBase {
 		fail();
 	}
 
+	/**
+	 * 存在しない要素を含む条件を指定して撮影する。
+	 * 
+	 * @ptl.expect AssertionErrorが発生すること。
+	 */
 	@Test
 	public void noSuchElementInMultiTarget() throws Exception {
 		openBasicTextPage();

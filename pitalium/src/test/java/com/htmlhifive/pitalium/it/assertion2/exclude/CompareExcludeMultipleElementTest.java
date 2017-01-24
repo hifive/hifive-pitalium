@@ -25,6 +25,11 @@ import org.junit.Test;
  */
 public class CompareExcludeMultipleElementTest extends PtlItAssertionTestBase {
 
+	/**
+	 * 変更がない部位を複数除外して比較を行う。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareNotChangedElementWithExcludeOption() throws Exception {
 		openBasicTextPage(false);
@@ -35,6 +40,11 @@ public class CompareExcludeMultipleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 変更された部位を複数除外して比較を行う。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareChangedElementWithExcludeOption() throws Exception {
 		openBasicTextPage(true);

@@ -34,6 +34,11 @@ import static org.junit.Assert.assertThat;
  */
 public class ExcludeInFrameTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * BODYを撮影する際にiframe内外の要素を除外する。
+	 * 
+	 * @ptl.expect iframe内外の除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void captureBody_excludeInsideAndOutsideFrame() throws Exception {
 		openIFramePage();
@@ -69,6 +74,11 @@ public class ExcludeInFrameTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes().get(1).getRectangle(), is(new RectangleArea(x, y, width, height)));
 	}
 
+	/**
+	 * iframeを撮影する際にiframe内の要素を除外する。
+	 * 
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void captureIFrame() throws Exception {
 		openIFramePage();
@@ -95,6 +105,11 @@ public class ExcludeInFrameTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes().get(0).getRectangle(), is(rect.round().toRectangleArea()));
 	}
 
+	/**
+	 * BODYを撮影する際にiframe内外のs存在しない要素を除外する。
+	 * 
+	 * @ptl.expect エラーが発生せず、除外領域が保存されていないこと。
+	 */
 	@Test
 	public void captureBody_excludeNotExistElementInsideAndOutsideFrame() throws Exception {
 		openIFramePage();
@@ -109,6 +124,11 @@ public class ExcludeInFrameTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes(), is(empty()));
 	}
 
+	/**
+	 * iframeを撮影する際にiframe内の存在しない要素を除外する。
+	 * 
+	 * @ptl.expect エラーが発生せず、除外領域が保存されていないこと。
+	 */
 	@Test
 	public void captureIFrame_excludeNotExists() throws Exception {
 		openIFramePage();

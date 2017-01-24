@@ -32,6 +32,11 @@ public class CompareDifferentVisibilityTest extends PtlItAssertionTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 同一要素を比較時にvisibility: hiddenに変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareSameElementWhichVisibilityIsHidden() throws Exception {
 		openBasicTextPage();
@@ -53,6 +58,11 @@ public class CompareDifferentVisibilityTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 同一要素の一部を比較時にvisibility: hiddenに変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareSameElementWhichVisibilityIsHiddenPartially() throws Exception {
 		openBasicTextPage();
@@ -74,6 +84,11 @@ public class CompareDifferentVisibilityTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 同一要素を比較時にdisplay: noneに変更して比較する。
+	 * 
+	 * @ptl.expect AssertionErrorが発生すること。
+	 */
 	@Test
 	public void compareSameElementWhichIsDisplayNone() throws Exception {
 		openBasicTextPage();
@@ -95,6 +110,11 @@ public class CompareDifferentVisibilityTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 同一要素を比較時に、親要素をdisplay: noneに変更して比較する。
+	 * 
+	 * @ptl.expect AssertionErrorが発生すること。
+	 */
 	@Test
 	public void compareSameElementWhoseParentIsDisplayNone() throws Exception {
 		openBasicTextPage();
@@ -116,6 +136,11 @@ public class CompareDifferentVisibilityTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 同一要素を比較時に要素の一部をdisplay: noneに変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareMultipleElementsWhichIsDisplayNonePartially() throws Exception {
 		openBasicTextPage();

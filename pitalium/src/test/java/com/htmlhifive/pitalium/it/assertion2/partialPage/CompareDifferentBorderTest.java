@@ -32,6 +32,11 @@ public class CompareDifferentBorderTest extends PtlItAssertionTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 同一要素のボーダーの幅を変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareSameElementWhichHasDifferentBorderWidth() throws Exception {
 		openBasicTextPage();
@@ -56,6 +61,11 @@ public class CompareDifferentBorderTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 同一要素からボーダーを削除して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareSameElementWhichHasNoBorderWidth() throws Exception {
 		openBasicTextPage();

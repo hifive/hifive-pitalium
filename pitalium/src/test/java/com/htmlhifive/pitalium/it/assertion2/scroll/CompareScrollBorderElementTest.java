@@ -32,6 +32,11 @@ public class CompareScrollBorderElementTest extends PtlItAssertionTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 要素無いスクロールがある要素のボーダーの幅を変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareDifferentBorderWidth() throws Exception {
 		openScrollPage();
@@ -54,6 +59,11 @@ public class CompareScrollBorderElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 要素無いスクロールがある要素のボーダーの色を変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareDifferentBorderColor() throws Exception {
 		openScrollPage();

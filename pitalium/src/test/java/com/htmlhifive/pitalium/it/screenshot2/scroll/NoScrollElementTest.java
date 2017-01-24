@@ -31,6 +31,11 @@ import static org.junit.Assert.assertThat;
  */
 public class NoScrollElementTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 要素内スクロールが無い要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void move() throws Exception {
 		openGradationPage();
@@ -45,6 +50,11 @@ public class NoScrollElementTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(ratio)));
 	}
 
+	/**
+	 * 要素内スクロールが無い要素を要素内スクロールオプションあり、移動オプション無しを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void notMove() throws Exception {
 		openGradationPage();

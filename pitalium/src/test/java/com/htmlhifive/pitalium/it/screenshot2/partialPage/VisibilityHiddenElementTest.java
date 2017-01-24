@@ -35,6 +35,11 @@ import static org.junit.Assert.assertThat;
  */
 public class VisibilityHiddenElementTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * visibility: hiddenが設定された要素を撮影する。
+	 * 
+	 * @ptl.expect エラーが発生せず、正しく撮影されていること。
+	 */
 	@Test
 	public void singleTarget() throws Exception {
 		openBasicColorPage();
@@ -47,13 +52,12 @@ public class VisibilityHiddenElementTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 
 		// Check screenshot
-		Map<String, Number> size = driver
-				.executeJavaScript("return document.getElementById('colorColumn0').getPixelSize();");
+		Rect rect = getPixelRectById("colorColumn0");
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		int width = image.getWidth();
 		int height = image.getHeight();
-		assertThat((double) width, is(closeTo(size.get("width").doubleValue(), 1.0)));
-		assertThat((double) height, is(closeTo(size.get("height").doubleValue(), 1.0)));
+		assertThat((double) width, is(closeTo(rect.width, 1.0)));
+		assertThat((double) height, is(closeTo(rect.height, 1.0)));
 
 		Color expect = Color.WHITE;
 		for (int y = 0; y < height; y++) {
@@ -64,6 +68,11 @@ public class VisibilityHiddenElementTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * visibility: hiddenが設定された要素を含む、複数の要素を撮影する。
+	 * 
+	 * @ptl.expect エラーが発生せず、正しく撮影されていること。
+	 */
 	@Test
 	public void inMultiTargets() throws Exception {
 		openBasicColorPage();
@@ -81,13 +90,12 @@ public class VisibilityHiddenElementTest extends PtlItScreenshotTestBase {
 		assertThat(results, hasSize(3));
 		Color[] expects = { Color.GREEN, Color.BLUE, Color.WHITE };
 		for (int i = 0; i < 3; i++) {
-			Map<String, Number> size = driver.executeJavaScript("return document.getElementById('colorColumn" + i
-					+ "').getPixelSize();");
+			Rect rect = getPixelRectById("colorColumn" + i);
 			BufferedImage image = results.get(i).getImage().get();
 			int width = image.getWidth();
 			int height = image.getHeight();
-			assertThat((double) width, is(closeTo(size.get("width").doubleValue(), 1.0)));
-			assertThat((double) height, is(closeTo(size.get("height").doubleValue(), 1.0)));
+			assertThat((double) width, is(closeTo(rect.width, 1.0)));
+			assertThat((double) height, is(closeTo(rect.height, 1.0)));
 
 			Color expect = expects[i];
 			for (int y = 0; y < height; y++) {

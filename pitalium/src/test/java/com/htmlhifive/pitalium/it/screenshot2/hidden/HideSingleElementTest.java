@@ -31,6 +31,11 @@ import static org.junit.Assert.assertThat;
  */
 public class HideSingleElementTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 単体セレクタで単一要素を指定して非表示にする。
+	 * 
+	 * @ptl.expect 非表示に指定した要素が写っていないこと。
+	 */
 	@Test
 	public void singleTarget() throws Exception {
 		openBasicColorPage();
@@ -53,6 +58,11 @@ public class HideSingleElementTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * 単体セレクタで存在しない要素を指定して非表示にする。
+	 * 
+	 * @ptl.expect エラーが発生しないこと。
+	 */
 	@Test
 	public void notExists() throws Exception {
 		openBasicColorPage();

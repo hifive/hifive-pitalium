@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
 import java.awt.image.BufferedImage;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
@@ -35,6 +34,11 @@ import static org.junit.Assert.assertThat;
  */
 public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * IDで指定した要素のスクリーンショットを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	public void byId() throws Exception {
 		openBasicColorPage();
@@ -43,15 +47,14 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 
 		WebElement target = driver.findElementById("colorColumn0");
-		Map<String, Number> size = driver.executeJavaScript(
-				"" + "var el = arguments[0];" + "return el.getPixelSize();", target);
+		Rect rect = getPixelRect(target);
 
 		// 画像チェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		int width = image.getWidth();
 		int height = image.getHeight();
-		assertThat((double) width, is(closeTo(size.get("width").doubleValue(), 1.0)));
-		assertThat((double) height, is(closeTo(size.get("height").doubleValue(), 1.0)));
+		assertThat((double) width, is(closeTo(rect.width, 1.0)));
+		assertThat((double) height, is(closeTo(rect.height, 1.0)));
 
 		Color expect = Color.RED;
 		for (int y = 0; y < height; y++) {
@@ -62,6 +65,11 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * NAMEで指定した要素のスクリーンショットを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	@RequireVisualCheck
 	public void byName() throws Exception {
@@ -79,11 +87,21 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * TAG_NAMEで指定した要素のスクリーンショットを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	public void byTagName() throws Exception {
 		throw new AssumptionViolatedException("Full pageテストで実行");
 	}
 
+	/**
+	 * CLASS_NAMEで指定した要素のスクリーンショットを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	public void byClassName() throws Exception {
 		openBasicColorPage();
@@ -92,15 +110,14 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 
 		WebElement target = driver.findElementByClassName("color-column-0");
-		Map<String, Number> size = driver.executeJavaScript(
-				"" + "var el = arguments[0];" + "return el.getPixelSize();", target);
+		Rect rect = getPixelRect(target);
 
 		// 画像チェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		int width = image.getWidth();
 		int height = image.getHeight();
-		assertThat((double) width, is(closeTo(size.get("width").doubleValue(), 1.0)));
-		assertThat((double) height, is(closeTo(size.get("height").doubleValue(), 1.0)));
+		assertThat((double) width, is(closeTo(rect.width, 1.0)));
+		assertThat((double) height, is(closeTo(rect.height, 1.0)));
 
 		Color expect = Color.RED;
 		for (int y = 0; y < height; y++) {
@@ -111,6 +128,11 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * CSS_SELECTORで指定した要素のスクリーンショットを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	public void byCssSelector() throws Exception {
 		openBasicColorPage();
@@ -119,15 +141,14 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 
 		WebElement target = driver.findElementByCssSelector(".color-column-0");
-		Map<String, Number> size = driver.executeJavaScript(
-				"" + "var el = arguments[0];" + "return el.getPixelSize();", target);
+		Rect rect = getPixelRect(target);
 
 		// 画像チェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		int width = image.getWidth();
 		int height = image.getHeight();
-		assertThat((double) width, is(closeTo(size.get("width").doubleValue(), 1.0)));
-		assertThat((double) height, is(closeTo(size.get("height").doubleValue(), 1.0)));
+		assertThat((double) width, is(closeTo(rect.width, 1.0)));
+		assertThat((double) height, is(closeTo(rect.height, 1.0)));
 
 		Color expect = Color.RED;
 		for (int y = 0; y < height; y++) {
@@ -138,6 +159,11 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * LINK_TEXTで指定した要素のスクリーンショットを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	@RequireVisualCheck
 	public void byLinkText() throws Exception {
@@ -147,6 +173,11 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * PARTIAL_LINK_TEXTで指定した要素のスクリーンショットを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	@RequireVisualCheck
 	public void byPartialLinkText() throws Exception {
@@ -156,6 +187,11 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * XPATHで指定した要素のスクリーンショットを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	public void byXPath() throws Exception {
 		openBasicColorPage();
@@ -164,15 +200,14 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 
 		WebElement target = driver.findElementByXPath("id(\"colorColumn0\")");
-		Map<String, Number> size = driver.executeJavaScript(
-				"" + "var el = arguments[0];" + "return el.getPixelSize();", target);
+		Rect rect = getPixelRect(target);
 
 		// 画像チェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		int width = image.getWidth();
 		int height = image.getHeight();
-		assertThat((double) width, is(closeTo(size.get("width").doubleValue(), 1.0)));
-		assertThat((double) height, is(closeTo(size.get("height").doubleValue(), 1.0)));
+		assertThat((double) width, is(closeTo(rect.width, 1.0)));
+		assertThat((double) height, is(closeTo(rect.height, 1.0)));
 
 		Color expect = Color.RED;
 		for (int y = 0; y < height; y++) {

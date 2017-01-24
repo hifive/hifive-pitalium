@@ -31,6 +31,11 @@ import static org.junit.Assert.assertThat;
  */
 public class EntirePageTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * ターゲットを指定せずにBODYを撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void captureBodyByNoTarget() throws Exception {
 		openGradationPage();
@@ -43,6 +48,11 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(pixelRatio)));
 	}
 
+	/**
+	 * TAG_NAME=BODYを指定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void captureBodyByTagName() throws Exception {
 		openGradationPage();
@@ -57,6 +67,11 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(pixelRatio)));
 	}
 
+	/**
+	 * BODYに設定したCLASS_NAMEを指定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void captureBodyByClassName() throws Exception {
 		openGradationPage();
@@ -74,6 +89,11 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(pixelRatio)));
 	}
 
+	/**
+	 * スクロールが無いページを撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void captureNonScrollPage() throws Exception {
 		openGradationPage("100%", "100%");
@@ -86,6 +106,11 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(pixelRatio)));
 	}
 
+	/**
+	 * 縦スクロール0回、横スクロール1回のページを撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void captureScrollPage_v0_h1() throws Exception {
 		openGradationPage("160%", "100%");
@@ -98,6 +123,11 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(pixelRatio)));
 	}
 
+	/**
+	 * 縦スクロール0回、横スクロール2回のページを撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void captureScrollPage_v0_h2() throws Exception {
 		openGradationPage("240%", "100%");
@@ -110,6 +140,11 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(pixelRatio)));
 	}
 
+	/**
+	 * 縦スクロール1回、横スクロール0回のページを撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void captureScrollPage_v1_h0() throws Exception {
 		openGradationPage("100%", "160%");
@@ -122,6 +157,11 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(pixelRatio)));
 	}
 
+	/**
+	 * 縦スクロール2回、横スクロール0回のページを撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void captureScrollPage_v2_h0() throws Exception {
 		openGradationPage("100%", "240%");
@@ -134,6 +174,11 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(pixelRatio)));
 	}
 
+	/**
+	 * 縦スクロール1回、横スクロール1回のページを撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void captureScrollPage_v1_h1() throws Exception {
 		openGradationPage("160%", "160%");
@@ -146,6 +191,11 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(pixelRatio)));
 	}
 
+	/**
+	 * 縦スクロール2回、横スクロール2回のページを撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void captureScrollPage_v2_h2() throws Exception {
 		openGradationPage("240%", "240%");

@@ -34,6 +34,11 @@ import static org.junit.Assert.assertThat;
  */
 public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 要素内スクロールの撮影において、最初から見えている領域を指定して除外する。
+	 * 
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void excludeVisibleArea() throws Exception {
 		openScrollPage();
@@ -59,6 +64,11 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes().get(0).getRectangle(), is(new RectangleArea(x, y, width, height)));
 	}
 
+	/**
+	 * 要素内スクロールの撮影において、最初は見えていない領域を指定して除外する。
+	 * 
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void excludeNotVisibleArea() throws Exception {
 		openScrollPage();

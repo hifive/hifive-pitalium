@@ -32,8 +32,13 @@ import static org.junit.Assert.assertThat;
 /**
  * 範囲を指定して除外するテスト
  */
-public class ExcludeSingleElementByAreaTest extends PtlItScreenshotTestBase {
+public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 範囲を指定して除外する。moveオブションあり。
+	 * 
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void move() throws Exception {
 		openBasicColorPage();
@@ -63,6 +68,11 @@ public class ExcludeSingleElementByAreaTest extends PtlItScreenshotTestBase {
 				- containerRect.x, pixelRect.y - containerRect.y, pixelRect.width, pixelRect.height)));
 	}
 
+	/**
+	 * 範囲を指定して除外する。moveオブションなし。
+	 * 
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void notMove() throws Exception {
 		openBasicColorPage();

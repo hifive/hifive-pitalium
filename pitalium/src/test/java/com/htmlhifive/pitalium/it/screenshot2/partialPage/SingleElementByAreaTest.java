@@ -32,6 +32,11 @@ import static org.junit.Assert.assertThat;
  */
 public class SingleElementByAreaTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 範囲を指定してスクリーンショットを撮影するテスト。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	public void move() throws Exception {
 		openGradationPage();
@@ -51,6 +56,11 @@ public class SingleElementByAreaTest extends PtlItScreenshotTestBase {
 		assertThat(image.getHeight(), is((int) Math.round(pixelRect.height)));
 	}
 
+	/**
+	 * 範囲を指定してスクリーンショットを撮影するテスト。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	public void notMove() throws Exception {
 		openGradationPage();
@@ -58,6 +68,30 @@ public class SingleElementByAreaTest extends PtlItScreenshotTestBase {
 		Rect rect = getRectById("container");
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget(rect.x, rect.y, rect.width, rect.height)
 				.moveTarget(false).build();
+		assertionView.assertView(arg);
+
+		// Check image
+		double ratio = getPixelRatio();
+		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+		assertThat(image, is(gradation(ratio)));
+
+		Rect pixelRect = getPixelRectById("container");
+		assertThat(image.getWidth(), is((int) Math.round(pixelRect.width)));
+		assertThat(image.getHeight(), is((int) Math.round(pixelRect.height)));
+	}
+
+	/**
+	 * スクロールがあるページで範囲を指定してスクリーンショットを撮影するテスト。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
+	@Test
+	public void inScrollPage() throws Exception {
+		openGradationPageLarge();
+
+		Rect rect = getRectById("container");
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget(rect.x, rect.y, rect.width, rect.height)
+				.moveTarget(true).build();
 		assertionView.assertView(arg);
 
 		// Check image

@@ -25,6 +25,11 @@ import org.junit.Test;
  */
 public class CompareDifferentMarginTest extends PtlItAssertionTestBase {
 
+	/**
+	 * 比較時に要素のマージンを変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareSameElementWhichHasDifferentMargin() throws Exception {
 		openBasicTextPage();

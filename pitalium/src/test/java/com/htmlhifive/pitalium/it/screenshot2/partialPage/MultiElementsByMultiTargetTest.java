@@ -36,6 +36,11 @@ import static org.junit.Assert.assertThat;
  */
 public class MultiElementsByMultiTargetTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 複数のセレクタで複数の要素を指定して撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影されていること。
+	 */
 	@Test
 	public void byMultipleClassName() throws Exception {
 		openBasicColorPage();

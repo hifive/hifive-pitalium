@@ -33,6 +33,11 @@ import static org.junit.Assert.assertThat;
  */
 public class HideMultiElementsTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 単体セレクタで複数の要素を指定して非表示にする。
+	 * 
+	 * @ptl.expect 非表示に指定した要素が写っていないこと。
+	 */
 	@Test
 	public void singleTarget() throws Exception {
 		openBasicColorPage();
@@ -54,6 +59,11 @@ public class HideMultiElementsTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * 複数セレクタで複数の要素を指定して非表示にする。
+	 * 
+	 * @ptl.expect 非表示に指定した要素が写っていないこと。
+	 */
 	@Test
 	public void multiTargets() throws Exception {
 		openBasicColorPage();
@@ -75,6 +85,11 @@ public class HideMultiElementsTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * 複数セレクタで複数の要素を指定して非表示にするが、そのうちのいずれかは存在しない要素である。
+	 * 
+	 * @ptl.expect エラーが発生せず、非表示に指定した要素が写っていないこと。
+	 */
 	@Test
 	public void multiTargets_notExist() throws Exception {
 		openBasicColorPage();

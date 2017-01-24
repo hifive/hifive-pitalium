@@ -34,6 +34,11 @@ import static org.junit.Assert.assertThat;
  */
 public class ExcludeNoSuchElementTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 存在しない要素を除外する。
+	 * 
+	 * @ptl.expect エラーが発生せず、除外領域が保存されていないこと。
+	 */
 	@Test
 	public void noSuchElement() throws Exception {
 		openBasicColorPage();
@@ -46,6 +51,11 @@ public class ExcludeNoSuchElementTest extends PtlItScreenshotTestBase {
 		assertThat(excludes, is(empty()));
 	}
 
+	/**
+	 * 複数のスクリーンショット撮影時に、そのいずれかで存在しない要素を除外する。
+	 * 
+	 * @ptl.expect エラーが発生せず、存在する要素の除外領域が保存されていること。
+	 */
 	@Test
 	public void noSuchElementInMultiTargets() throws Exception {
 		openBasicColorPage();

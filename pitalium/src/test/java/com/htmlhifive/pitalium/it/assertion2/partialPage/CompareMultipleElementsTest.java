@@ -25,6 +25,11 @@ import org.junit.Test;
  */
 public class CompareMultipleElementsTest extends PtlItAssertionTestBase {
 
+	/**
+	 * 単体セレクタで単一要素を移動オプションありで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareWithMoveOptionBySingleSelector() throws Exception {
 		openBasicTextPage();
@@ -34,6 +39,11 @@ public class CompareMultipleElementsTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 単体セレクタで単一要素を移動オプションなしで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareWithoutMoveOptionBySingleSelector() throws Exception {
 		openBasicTextPage();
@@ -43,6 +53,11 @@ public class CompareMultipleElementsTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 複数セレクタで複数要素を移動オプションありで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareWithMoveOptionByMultipleSelectors() throws Exception {
 		openBasicTextPage();
@@ -53,6 +68,11 @@ public class CompareMultipleElementsTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 複数セレクタで複数要素を移動オプションなしで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareWithoutMoveOptionByMultipleSelectors() throws Exception {
 		openBasicTextPage();
@@ -63,6 +83,11 @@ public class CompareMultipleElementsTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 複数セレクタで複数要素を、セレクタの順番を入れ替えて比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareByMultipleSelectorsIncorrectOrder() throws Exception {
 		openBasicTextPage();

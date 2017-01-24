@@ -32,6 +32,11 @@ public class CompareExcludeElementInScrollTest extends PtlItAssertionTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 要素内スクロールの撮影において、最初から見えている内容が変更された要素を除外して比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void excludeVisibleElement() throws Exception {
 		openScrollPage();
@@ -47,6 +52,11 @@ public class CompareExcludeElementInScrollTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 要素内スクロールの撮影において、最初から見えている内容が変更された要素を除外せずに比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void excludeVisibleElementWithoutExcludeOption() throws Exception {
 		openScrollPage();
@@ -70,6 +80,11 @@ public class CompareExcludeElementInScrollTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 要素内スクロールの撮影において、最初は見えていない内容が変更された要素を除外して比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void excludeNotVisibleElement() throws Exception {
 		openScrollPage();
@@ -85,6 +100,11 @@ public class CompareExcludeElementInScrollTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 要素内スクロールの撮影において、最初は見えていない内容が変更された要素を除外せずに比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void excludeNotVisibleElementWithoutExcludeOption() throws Exception {
 		openScrollPage();

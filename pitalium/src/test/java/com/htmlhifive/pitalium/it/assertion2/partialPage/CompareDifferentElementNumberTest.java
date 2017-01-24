@@ -32,6 +32,11 @@ public class CompareDifferentElementNumberTest extends PtlItAssertionTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 比較時に一部の要素が存在しない状態で比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareRemovedElement() throws Exception {
 		openBasicTextPage();
@@ -53,6 +58,11 @@ public class CompareDifferentElementNumberTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 比較時に要素を追加して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareAddedElement() throws Exception {
 		openBasicTextPage();

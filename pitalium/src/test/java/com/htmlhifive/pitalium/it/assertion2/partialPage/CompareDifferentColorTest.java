@@ -32,6 +32,11 @@ public class CompareDifferentColorTest extends PtlItAssertionTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 同一要素の色を全体的に変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareSameElementWhichHasDifferentColor() throws Exception {
 		openBasicColorPage();
@@ -53,6 +58,11 @@ public class CompareDifferentColorTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 同一要素の色を部分的に変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareSameElementWhichHasDifferentColorPartially() throws Exception {
 		openGradationPage();
@@ -76,6 +86,11 @@ public class CompareDifferentColorTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 同一要素の文字色を変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareSameTextWhichHasDifferentColor() throws Exception {
 		openBasicTextPage();

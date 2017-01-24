@@ -33,6 +33,11 @@ import static org.junit.Assert.assertThat;
  */
 public class KeepBodyStyleTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * BODYにtop/leftのオフセットを設定した状態でBODYを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影され、撮影の前後でBODYのスタイルが変化していないこと。
+	 */
 	@Test
 	public void keepBodyStyleOffset() throws Exception {
 		openBasicColorPage();
@@ -68,6 +73,11 @@ public class KeepBodyStyleTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * BODYにマージンを設定した状態でBODYを撮影する。
+	 * 
+	 * @ptl.expect 正しく撮影され、撮影の前後でBODYのスタイルが変化していないこと。
+	 */
 	@Test
 	public void keepBodyStyleMargin() throws Exception {
 		openBasicColorPage();

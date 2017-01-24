@@ -33,6 +33,11 @@ public class DuplicateScreenshotIdTest extends PtlItScreenshotTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * SSIDを含めて全く同じ条件で複数回撮影を行う。
+	 * 
+	 * @ptl.expect TestRuntimeExceptionが発生すること。
+	 */
 	@Test
 	public void sameTarget() throws Exception {
 		openBasicColorPage();
@@ -46,6 +51,11 @@ public class DuplicateScreenshotIdTest extends PtlItScreenshotTestBase {
 		fail();
 	}
 
+	/**
+	 * SSIDが同一の異なる条件で撮影を行う。
+	 * 
+	 * @ptl.expect TestRuntimeExceptionが発生すること。
+	 */
 	@Test
 	public void differentTarget() throws Exception {
 		openBasicColorPage();

@@ -32,6 +32,11 @@ public class CompareAreaTest extends PtlItAssertionTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 同一の領域を指定して比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareSameArea() throws Exception {
 		openBasicTextPage();
@@ -42,6 +47,11 @@ public class CompareAreaTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 異なる領域を指定して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareDifferentArea() throws Exception {
 		openBasicTextPage();

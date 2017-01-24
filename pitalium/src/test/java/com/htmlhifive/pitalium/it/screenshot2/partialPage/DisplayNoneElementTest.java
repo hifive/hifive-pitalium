@@ -32,6 +32,11 @@ public class DisplayNoneElementTest extends PtlItScreenshotTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * display: noneの要素を撮影する。
+	 * 
+	 * @ptl.expect AssertionErrorが発生すること。
+	 */
 	@Test
 	public void singleTarget() throws Exception {
 		openBasicColorPage();
@@ -49,6 +54,11 @@ public class DisplayNoneElementTest extends PtlItScreenshotTestBase {
 		fail();
 	}
 
+	/**
+	 * display: noneの要素を含む、複数の要素を撮影する。
+	 * 
+	 * @ptl.expect AssertionErrorが発生すること。
+	 */
 	@Test
 	public void inMultiTargets() throws Exception {
 		openBasicColorPage();

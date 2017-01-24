@@ -34,6 +34,11 @@ import static org.junit.Assert.assertThat;
  */
 public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 要素内スクロールがあるDIV要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeDivScreenshot_scroll_move() throws Exception {
 		openScrollPage();
@@ -55,6 +60,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1)));
 	}
 
+	/**
+	 * 要素内スクロールがあるTEXTAREA要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	@RequireVisualCheck
 	public void takeTextareaScreenshot_scroll_move() throws Exception {
@@ -70,6 +80,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		assertThat(image.getHeight(), is(greaterThan((int) rect.height)));
 	}
 
+	/**
+	 * 要素内スクロールがあるTABLE要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeTableScreenshot_scroll_move() throws Exception {
 		openScrollPage();
@@ -100,6 +115,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * 要素内スクロールがあるIFRAME要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeIFrameScreenshot_scroll_move() throws Exception {
 		openScrollPage();
@@ -120,6 +140,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(ratio)));
 	}
 
+	/**
+	 * 要素内スクロールがあるDIV要素を要素内スクロールオプションあり、移動オプションなしを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeDivScreenshot_scroll_notMove() throws Exception {
 		openScrollPage();
@@ -141,6 +166,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1)));
 	}
 
+	/**
+	 * 要素内スクロールがあるTEXTAREA要素を要素内スクロールオプションあり、移動オプションなしを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	@RequireVisualCheck
 	public void takeTextareaScreenshot_scroll_notMove() throws Exception {
@@ -156,6 +186,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		assertThat(image.getHeight(), is(greaterThan((int) rect.height)));
 	}
 
+	/**
+	 * 要素内スクロールがあるTABLE要素を要素内スクロールオプションあり、移動オプションなしを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeTableScreenshot_scroll_notMove() throws Exception {
 		openScrollPage();
@@ -186,6 +221,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * 要素内スクロールがあるIFRAME要素を要素内スクロールオプションあり、移動オプションなしを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeIFrameScreenshot_scroll_notMove() throws Exception {
 		openScrollPage();
@@ -206,6 +246,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(ratio)));
 	}
 
+	/**
+	 * 要素内スクロールがあるDIV要素を要素内スクロールオプションなし、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeDivScreenshot_notScroll_move() throws Exception {
 		openScrollPage();
@@ -222,6 +267,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		// スクロールバーの検証が出来ないため、大きさだけチェックする
 	}
 
+	/**
+	 * 要素内スクロールがあるTEXTAREA要素を要素内スクロールオプションなし、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	@RequireVisualCheck
 	public void takeTextareaScreenshot_notScroll_move() throws Exception {
@@ -237,6 +287,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		assertThat(image.getHeight(), is((int) rect.round().height));
 	}
 
+	/**
+	 * 要素内スクロールがあるTABLE要素を要素内スクロールオプションなし、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeTableScreenshot_notScroll_move() throws Exception {
 		openScrollPage();
@@ -267,6 +322,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * 要素内スクロールがあるIFRAME要素を要素内スクロールオプションなし、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeIFrameScreenshot_notScroll_move() throws Exception {
 		openScrollPage();
@@ -283,6 +343,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		// スクロールバーの検証が出来ないため、大きさだけチェックする
 	}
 
+	/**
+	 * 要素内スクロールがあるDIV要素を要素内スクロールオプションなし、移動オプションなしを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeDivScreenshot_notScroll_notMove() throws Exception {
 		openScrollPage();
@@ -299,6 +364,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		// スクロールバーの検証が出来ないため、大きさだけチェックする
 	}
 
+	/**
+	 * 要素内スクロールがあるTEXTAREA要素を要素内スクロールオプションなし、移動オプションなしを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	@RequireVisualCheck
 	public void takeTextareaScreenshot_notScroll_notMove() throws Exception {
@@ -314,6 +384,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		assertThat(image.getHeight(), is((int) rect.round().height));
 	}
 
+	/**
+	 * 要素内スクロールがあるTABLE要素を要素内スクロールオプションなし、移動オプションなしを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeTableScreenshot_notScroll_notMove() throws Exception {
 		openScrollPage();
@@ -344,6 +419,11 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * 要素内スクロールがあるIFRAME要素を要素内スクロールオプションなし、移動オプションなしを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void takeIFrameScreenshot_notScroll_notMove() throws Exception {
 		openScrollPage();

@@ -35,6 +35,11 @@ import static org.junit.Assert.assertThat;
  */
 public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 要素内スクロールの撮影において、最初から見えている要素を指定して除外する。
+	 * 
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void excludeVisibleElement() throws Exception {
 		openScrollPage();
@@ -60,6 +65,11 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes().get(0).getRectangle(), is(new RectangleArea(x, y, width, height)));
 	}
 
+	/**
+	 * 要素内スクロールの撮影において、最初は見えていない要素を指定して除外する。
+	 * 
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void excludeNotVisibleElement() throws Exception {
 		openScrollPage();
@@ -84,6 +94,11 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes().get(0).getRectangle(), is(new RectangleArea(x, y, width, height)));
 	}
 
+	/**
+	 * 要素内スクロールの撮影において、存在しない要素を指定して除外する。
+	 * 
+	 * @ptl.expect エラーが発生せず、除外領域が保存されていないこと。
+	 */
 	@Test
 	public void excludeNotExistElement() throws Exception {
 		openScrollPage();

@@ -34,6 +34,11 @@ import static org.junit.Assert.assertThat;
  */
 public class ScrollMarginElementTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 要素内スクロール、マージンがあるDIV要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void marginDivElement() throws Exception {
 		openScrollPage();
@@ -53,6 +58,11 @@ public class ScrollMarginElementTest extends PtlItScreenshotTestBase {
 		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1)));
 	}
 
+	/**
+	 * 要素内スクロール、マージンがあるTEXTAREA要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	@RequireVisualCheck
 	public void marginTextareaElement() throws Exception {
@@ -71,6 +81,11 @@ public class ScrollMarginElementTest extends PtlItScreenshotTestBase {
 		assertThat(image.getHeight(), is(greaterThan((int) rect.height)));
 	}
 
+	/**
+	 * 要素内スクロール、マージンがあるTABLE要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void marginTableElement() throws Exception {
 		openScrollPage();
@@ -105,6 +120,11 @@ public class ScrollMarginElementTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * 要素内スクロール、マージンがあるIFRAME要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
+	 * 
+	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
+	 */
 	@Test
 	public void marginIFrameElement() throws Exception {
 		openScrollPage();

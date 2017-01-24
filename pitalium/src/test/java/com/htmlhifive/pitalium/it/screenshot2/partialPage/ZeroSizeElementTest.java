@@ -32,6 +32,11 @@ public class ZeroSizeElementTest extends PtlItScreenshotTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 大きさが無い要素を撮影する。
+	 * 
+	 * @ptl.expect AssertionErrorが発生すること。
+	 */
 	@Test
 	public void singleTarget() throws Exception {
 		openBasicColorPage();
@@ -48,6 +53,11 @@ public class ZeroSizeElementTest extends PtlItScreenshotTestBase {
 		fail();
 	}
 
+	/**
+	 * 大きさが無い要素を含む、複数の要素を撮影する。
+	 * 
+	 * @ptl.expect AssertionErrorが発生すること。
+	 */
 	@Test
 	public void inMultiTargets() throws Exception {
 		openBasicColorPage();

@@ -25,6 +25,11 @@ import org.junit.Test;
  */
 public class CompareSingleElementTest extends PtlItAssertionTestBase {
 
+	/**
+	 * 単一要素を移動オプションありで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareWithMoveOption() throws Exception {
 		openBasicTextPage();
@@ -33,6 +38,11 @@ public class CompareSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 単一要素を移動オプションなしで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareWithoutMoveOption() throws Exception {
 		openBasicTextPage();
@@ -42,6 +52,11 @@ public class CompareSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 文字列を移動オプションありで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareTextWithMoveOption() throws Exception {
 		openBasicTextPage();
@@ -51,6 +66,11 @@ public class CompareSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 文字列を移動オプションｍなしで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareTextWithoutMoveOption() throws Exception {
 		openBasicTextPage();
@@ -60,6 +80,11 @@ public class CompareSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 特定の色のみを含んだ要素を移動オプションありで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareColorWithMoveOption() throws Exception {
 		openBasicColorPage();
@@ -69,6 +94,11 @@ public class CompareSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 特定の色のみを含んだ要素を移動オプションなしで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareColorWithoutMoveOption() throws Exception {
 		openBasicColorPage();
@@ -78,6 +108,11 @@ public class CompareSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * PNG画像を移動オプションありで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareImagePngWithMoveOption() throws Exception {
 		openBasicImagePage();
@@ -87,6 +122,11 @@ public class CompareSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * PNG画像を移動オプションなしで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareImagePngWithoutMoveOption() throws Exception {
 		openBasicImagePage();
@@ -96,6 +136,11 @@ public class CompareSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * JPEG画像を移動オプションありで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareImageJpegWithMoveOption() throws Exception {
 		openBasicImagePage();
@@ -105,6 +150,11 @@ public class CompareSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * JPEG画像を移動オプションなしで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareImageJpegWithoutMoveOption() throws Exception {
 		openBasicImagePage();
@@ -114,6 +164,11 @@ public class CompareSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 圧縮率の高いJPEG画像を移動オプションありで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareImageBadJpegWithMoveOption() throws Exception {
 		openBasicImagePage();
@@ -123,6 +178,11 @@ public class CompareSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 圧縮率の高いJPEG画像を移動オプションなしで比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと
+	 */
 	@Test
 	public void compareImageBadJpegWithoutMoveOption() throws Exception {
 		openBasicImagePage();

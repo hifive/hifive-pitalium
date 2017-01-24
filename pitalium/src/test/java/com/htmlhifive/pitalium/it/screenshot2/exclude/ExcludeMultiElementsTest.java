@@ -33,6 +33,11 @@ import static org.junit.Assert.assertThat;
  */
 public class ExcludeMultiElementsTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 単体要素のスクリーンショットを撮影し、そこに含まれる複数の要素を単体のセレクタを使用して除外する。
+	 * 
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void singleTarget() throws Exception {
 		openBasicColorPage();
@@ -52,6 +57,11 @@ public class ExcludeMultiElementsTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * 単体要素のスクリーンショットを撮影し、そこに含まれる複数の要素を複数のセレクタを使用して除外する。
+	 * 
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void multiTargets() throws Exception {
 		openBasicColorPage();
@@ -71,6 +81,11 @@ public class ExcludeMultiElementsTest extends PtlItScreenshotTestBase {
 		}
 	}
 
+	/**
+	 * 複数のスクリーンショットを撮影し、それぞれから要素を除外する。
+	 * 
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void nestedTargets() throws Exception {
 		openBasicColorPage();

@@ -33,6 +33,11 @@ import static org.junit.Assert.assertThat;
  */
 public class ExcludeSingleElementTest extends PtlItScreenshotTestBase {
 
+	/**
+	 * 単体要素撮影時に、単体要素を指定して除外する。
+	 * 
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
 	@Test
 	public void singleTarget() throws Exception {
 		openBasicTextPage();

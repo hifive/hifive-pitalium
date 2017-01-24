@@ -16,7 +16,6 @@
 
 package com.htmlhifive.pitalium.it.assertion2.partialPage;
 
-import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
 import org.junit.Rule;
@@ -33,6 +32,11 @@ public class CompareNoSuchElementTest extends PtlItAssertionTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 比較時に対象の要素を削除して比較する。
+	 * 
+	 * @ptl.expect AssertionErrorが発生すること。
+	 */
 	@Test
 	public void compareElementNotExists() throws Exception {
 		openBasicTextPage();
@@ -54,6 +58,11 @@ public class CompareNoSuchElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 複数の要素比較時に一部の要素を削除して比較する。
+	 * 
+	 * @ptl.expect AssertionErrorが発生すること。
+	 */
 	@Test
 	public void compareMultipleElementsNotExistBySingleSelector() throws Exception {
 		openBasicTextPage();

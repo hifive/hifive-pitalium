@@ -32,6 +32,11 @@ public class CompareExcludeSingleElementTest extends PtlItAssertionTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 変更された部位を除外せずに比較を行う。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareChangedElementWithoutExcludeOption() throws Exception {
 		openBasicTextPage(true);
@@ -48,6 +53,11 @@ public class CompareExcludeSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 変更がない部位を除外して比較を行う。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareNotChangedElementWithExcludeOption() throws Exception {
 		openBasicTextPage(false);
@@ -58,6 +68,11 @@ public class CompareExcludeSingleElementTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 変更された部位を除外して比較を行う。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareChangedElementWithExcludeOption() throws Exception {
 		openBasicTextPage(true);

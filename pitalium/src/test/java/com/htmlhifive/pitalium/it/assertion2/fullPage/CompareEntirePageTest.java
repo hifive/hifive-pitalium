@@ -16,9 +16,7 @@
 
 package com.htmlhifive.pitalium.it.assertion2.fullPage;
 
-import com.htmlhifive.pitalium.core.result.TestResultManager;
 import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
-import org.junit.AfterClass;
 import org.junit.Test;
 
 /**
@@ -26,48 +24,88 @@ import org.junit.Test;
  */
 public class CompareEntirePageTest extends PtlItAssertionTestBase {
 
+	/**
+	 * スクロールがないページ全体を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareNonScrollPage() throws Exception {
 		openGradationPage("100%", "100%");
 		assertionView.assertView("s");
 	}
 
+	/**
+	 * 縦スクロール0回、横スクロール1回のページ全体を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareScrollPage_v0_h1() throws Exception {
 		openGradationPage("160%", "100%");
 		assertionView.assertView("s");
 	}
 
+	/**
+	 * 縦スクロール0回、横スクロール2回のページ全体を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareScrollPage_v0_h2() throws Exception {
 		openGradationPage("240%", "100%");
 		assertionView.assertView("s");
 	}
 
+	/**
+	 * 縦スクロール1回、横スクロール0回のページ全体を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareScrollPage_v1_h0() throws Exception {
 		openGradationPage("100%", "160%");
 		assertionView.assertView("s");
 	}
 
+	/**
+	 * 縦スクロール2回、横スクロール0回のページ全体を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareScrollPage_v2_h0() throws Exception {
 		openGradationPage("100%", "240%");
 		assertionView.assertView("s");
 	}
 
+	/**
+	 * 縦スクロール1回、横スクロール1回のページ全体を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareScrollPage_v1_h1() throws Exception {
 		openGradationPage("160%", "160%");
 		assertionView.assertView("s");
 	}
 
+	/**
+	 * 縦スクロール2回、横スクロール2回のページ全体を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareScrollPage_v2_h2() throws Exception {
 		openGradationPage("240%", "240%");
 		assertionView.assertView("s");
 	}
 
+	/**
+	 * BODYにマージンが設定されたページ全体を比較する。
+	 * 
+	 * @ptl.expect 差分が発生しないこと。
+	 */
 	@Test
 	public void compareBodyWithMargin() throws Exception {
 		openGradationPage();

@@ -32,6 +32,11 @@ public class CompareDifferentSizeTest extends PtlItAssertionTestBase {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	/**
+	 * 要素の幅を変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareSameElementWhichHasDifferentWidth() throws Exception {
 		openBasicColorPage();
@@ -53,6 +58,11 @@ public class CompareDifferentSizeTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 要素の高さを変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareSameElementWhichHasDifferentHeight() throws Exception {
 		openBasicColorPage();
@@ -74,6 +84,11 @@ public class CompareDifferentSizeTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 	}
 
+	/**
+	 * 要素の幅と高さを変更して比較する。
+	 * 
+	 * @ptl.expect 差分が発生すること。
+	 */
 	@Test
 	public void compareSameElementWhichHasDifferentSize() throws Exception {
 		openBasicColorPage();
