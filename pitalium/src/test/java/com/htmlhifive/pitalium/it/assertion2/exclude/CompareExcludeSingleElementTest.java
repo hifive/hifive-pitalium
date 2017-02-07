@@ -16,13 +16,14 @@
 
 package com.htmlhifive.pitalium.it.assertion2.exclude;
 
-import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
-import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
+import static org.junit.Assert.*;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.fail;
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
+import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
 
 /**
  * 単一要素を撮影時に除外設定をするテスト

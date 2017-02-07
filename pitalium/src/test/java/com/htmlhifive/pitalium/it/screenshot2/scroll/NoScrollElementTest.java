@@ -16,15 +16,16 @@
 
 package com.htmlhifive.pitalium.it.screenshot2.scroll;
 
-import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
-import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
-import org.junit.Test;
+import static com.htmlhifive.pitalium.it.PtlItTestBase.IsGradation.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.awt.image.BufferedImage;
 
-import static com.htmlhifive.pitalium.it.PtlItTestBase.IsGradation.gradationWithBorder;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
+
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
+import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
 
 /**
  * スクロールが無い要素を撮影するテスト

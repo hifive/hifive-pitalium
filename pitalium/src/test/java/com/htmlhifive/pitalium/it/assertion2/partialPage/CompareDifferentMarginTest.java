@@ -16,9 +16,10 @@
 
 package com.htmlhifive.pitalium.it.assertion2.partialPage;
 
+import org.junit.Test;
+
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
-import org.junit.Test;
 
 /**
  * 条件が異なる場合の比較テスト（要素のマージンが異なる）

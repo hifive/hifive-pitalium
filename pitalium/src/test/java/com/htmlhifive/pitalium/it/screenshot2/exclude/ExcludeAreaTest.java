@@ -16,18 +16,17 @@
 
 package com.htmlhifive.pitalium.it.screenshot2.exclude;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.util.List;
+
+import org.junit.Test;
+
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.core.model.TargetResult;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
-import org.junit.Test;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * 範囲を指定して除外するテスト

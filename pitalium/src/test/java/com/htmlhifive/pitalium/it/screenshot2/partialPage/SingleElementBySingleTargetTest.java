@@ -16,18 +16,18 @@
 
 package com.htmlhifive.pitalium.it.screenshot2.partialPage;
 
-import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
-import com.htmlhifive.pitalium.it.RequireVisualCheck;
-import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.awt.image.BufferedImage;
+
 import org.junit.AssumptionViolatedException;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
-import java.awt.image.BufferedImage;
-
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
+import com.htmlhifive.pitalium.it.RequireVisualCheck;
+import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
 
 /**
  * ページの特定要素のスクリーンショットが正しくとれているかのテスト

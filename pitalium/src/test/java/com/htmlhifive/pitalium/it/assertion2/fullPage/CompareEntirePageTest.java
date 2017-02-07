@@ -16,8 +16,9 @@
 
 package com.htmlhifive.pitalium.it.assertion2.fullPage;
 
-import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
 import org.junit.Test;
+
+import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
 
 /**
  * 画面全体の比較を行うテスト

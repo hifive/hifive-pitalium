@@ -16,13 +16,14 @@
 
 package com.htmlhifive.pitalium.it.assertion2.partialPage;
 
-import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
-import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
+import static org.junit.Assert.*;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.fail;
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
+import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
 
 /**
  * 条件が異なる場合の比較テスト（要素のボーダーが異なる）

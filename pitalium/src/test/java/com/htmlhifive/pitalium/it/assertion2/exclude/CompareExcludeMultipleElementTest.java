@@ -16,9 +16,10 @@
 
 package com.htmlhifive.pitalium.it.assertion2.exclude;
 
+import org.junit.Test;
+
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
-import org.junit.Test;
 
 /**
  * 複数要素比較時に除外設定をするテスト

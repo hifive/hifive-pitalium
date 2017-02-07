@@ -16,18 +16,18 @@
 
 package com.htmlhifive.pitalium.it.screenshot2.scroll;
 
-import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
-import com.htmlhifive.pitalium.it.RequireVisualCheck;
-import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
-import org.junit.Test;
-import org.openqa.selenium.WebElement;
+import static com.htmlhifive.pitalium.it.PtlItTestBase.IsGradation.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.awt.image.BufferedImage;
 
-import static com.htmlhifive.pitalium.it.PtlItTestBase.IsGradation.gradationWithBorder;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
+import org.openqa.selenium.WebElement;
+
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
+import com.htmlhifive.pitalium.it.RequireVisualCheck;
+import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
 
 /**
  * マージンが設定された要素の要素内スクロールテスト

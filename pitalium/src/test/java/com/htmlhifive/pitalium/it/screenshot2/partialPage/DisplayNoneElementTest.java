@@ -16,13 +16,14 @@
 
 package com.htmlhifive.pitalium.it.screenshot2.partialPage;
 
-import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
-import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
+import static org.junit.Assert.*;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.fail;
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
+import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
 
 /**
  * display: noneの要素を撮影するテスト

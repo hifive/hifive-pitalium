@@ -16,9 +16,10 @@
 
 package com.htmlhifive.pitalium.it.assertion2.partialPage;
 
+import org.junit.Test;
+
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
-import org.junit.Test;
 
 /**
  * 複数要素を単一セレクタで指定して同一条件で比較するテスト

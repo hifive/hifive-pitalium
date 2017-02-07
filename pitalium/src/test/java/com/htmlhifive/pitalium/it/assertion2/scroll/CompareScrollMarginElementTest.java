@@ -16,9 +16,10 @@
 
 package com.htmlhifive.pitalium.it.assertion2.scroll;
 
+import org.junit.Test;
+
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
-import org.junit.Test;
 
 /**
  * マージンがある要素をスクロール撮影して比較すするテスト

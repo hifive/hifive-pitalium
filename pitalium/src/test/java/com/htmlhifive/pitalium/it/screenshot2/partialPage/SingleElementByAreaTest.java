@@ -16,16 +16,16 @@
 
 package com.htmlhifive.pitalium.it.screenshot2.partialPage;
 
-import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
-import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
-import org.junit.Test;
+import static com.htmlhifive.pitalium.it.PtlItTestBase.IsGradation.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.awt.image.BufferedImage;
-import java.util.Map;
 
-import static com.htmlhifive.pitalium.it.PtlItTestBase.IsGradation.gradation;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
+
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
+import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
 
 /**
  * 範囲指定をしてスクリーンショットを撮影するテスト
