@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.BrowserType;
 
 import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
@@ -163,6 +164,13 @@ public class PtlItTestBase extends PtlTestBase {
 	}
 
 	//</editor-fold>
+
+	/**
+	 * 現在テスト中のブラウザがIE9かどうかを取得します。
+	 */
+	public boolean isInternetExplorer9() {
+		return BrowserType.IE.equals(capabilities.getBrowserName()) && "9".equals(capabilities.getVersion());
+	}
 
 	/**
 	 * ブラウザのピクセル比を取得します。

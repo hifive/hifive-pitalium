@@ -16,13 +16,14 @@
 
 package com.htmlhifive.pitalium.it.assertion2.iframe;
 
-import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
-import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
+import static org.junit.Assert.*;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static org.junit.Assert.fail;
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
+import com.htmlhifive.pitalium.it.assertion2.PtlItAssertionTestBase;
 
 /**
  * iframe内の要素を除外設定とするテスト
@@ -44,7 +45,7 @@ public class CompareExcludeInFrameTest extends PtlItAssertionTestBase {
 		if (isRunTest()) {
 			driver.executeJavaScript("" + "var el0 = document.getElementsByClassName('exclude-target')[0];"
 					+ "el0.style.background = 'blue';"
-					+ "var el1 = window.frames[0].document.getElementByClassName('content-left')[0];"
+					+ "var el1 = window.frames[0].document.getElementsByClassName('content-left')[0];"
 					+ "el1.style.background = '#123456';");
 		}
 
@@ -78,7 +79,7 @@ public class CompareExcludeInFrameTest extends PtlItAssertionTestBase {
 		if (isRunTest()) {
 			driver.executeJavaScript("" + "var el0 = document.getElementsByClassName('exclude-target')[0];"
 					+ "el0.style.background = 'blue';"
-					+ "var el1 = window.frames[0].document.getElementByClassName('content-left')[0];"
+					+ "var el1 = window.frames[0].document.getElementsByClassName('content-left')[0];"
 					+ "el1.style.background = '#123456';");
 		}
 
@@ -87,7 +88,7 @@ public class CompareExcludeInFrameTest extends PtlItAssertionTestBase {
 		assertionView.assertView(arg);
 
 		// 除外しないと差分
-		ScreenshotArgument arg2 = ScreenshotArgument.builder("s").addNewTargetByClassName("content").moveTarget(true)
+		ScreenshotArgument arg2 = ScreenshotArgument.builder("s2").addNewTargetByClassName("content").moveTarget(true)
 				.scrollTarget(true).build();
 		if (isRunTest()) {
 			expectedException.expect(AssertionError.class);

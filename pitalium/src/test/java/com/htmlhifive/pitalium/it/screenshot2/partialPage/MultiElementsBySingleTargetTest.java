@@ -16,20 +16,20 @@
 
 package com.htmlhifive.pitalium.it.screenshot2.partialPage;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Test;
+import org.openqa.selenium.WebElement;
+
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.core.model.TargetResult;
 import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
-import org.junit.Test;
-
-import java.awt.image.BufferedImage;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * 単一セレクタで複数個所を撮影するテスト
@@ -52,12 +52,10 @@ public class MultiElementsBySingleTargetTest extends PtlItScreenshotTestBase {
 		List<TargetResult> results = loadTargetResults("s");
 		assertThat(results, hasSize(3));
 
-		List<Map<String, Number>> sizes = driver.executeJavaScript(""
-				+ "var elements = document.getElementsByClassName('color-column');"
-				+ "var ratio = window.devicePixelRatio;" + "var result = [];"
-				+ "for (var i = 0; i < elements.length; i++) {" + "  var rect = elements[i].getBoundingClientRect();"
-				+ "  result.push({" + "    width:  rect.width  * ratio," + "    height: rect.height * ratio" + "  });"
-				+ "}" + "return result;");
+		List<Rect> rects = new ArrayList<>();
+		for (WebElement element : driver.findElementsByClassName("color-column")) {
+			rects.add(getPixelRect(element));
+		}
 
 		// 0 -> RED
 		// 1 -> GREEN
@@ -68,9 +66,9 @@ public class MultiElementsBySingleTargetTest extends PtlItScreenshotTestBase {
 			int width = image.getWidth();
 			int height = image.getHeight();
 
-			Map<String, Number> size = sizes.get(i);
-			assertThat((double) width, is(closeTo(size.get("width").doubleValue(), 1.0)));
-			assertThat((double) height, is(closeTo(size.get("height").doubleValue(), 1.0)));
+			Rect rect = rects.get(i);
+			assertThat((double) width, is(closeTo(rect.width, 1.0)));
+			assertThat((double) height, is(closeTo(rect.height, 1.0)));
 
 			Color expect = expects.get(i);
 			for (int y = 0; y < height; y++) {

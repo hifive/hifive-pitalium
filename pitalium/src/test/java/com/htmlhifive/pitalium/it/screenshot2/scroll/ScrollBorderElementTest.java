@@ -16,16 +16,17 @@
 
 package com.htmlhifive.pitalium.it.screenshot2.scroll;
 
-import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
-import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
-import org.junit.Test;
-import org.openqa.selenium.WebElement;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.awt.image.BufferedImage;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
+import org.openqa.selenium.WebElement;
+
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
+import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
 
 /**
  * ボーダーがある要素をスクロール撮影するテスト
@@ -77,6 +78,8 @@ public class ScrollBorderElementTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void borderTableElement() throws Exception {
+		assumeFalse("Skip IE9 table test.", isInternetExplorer9());
+
 		openScrollPage();
 
 		WebElement target = driver.findElementByCssSelector("#table-scroll > tbody");

@@ -16,18 +16,17 @@
 
 package com.htmlhifive.pitalium.it.screenshot2.iframe;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
 import com.google.common.base.Supplier;
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.core.model.TargetResult;
 import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.it.screenshot2.PtlItScreenshotTestBase;
-import org.junit.Test;
-
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * iframe内の要素を除外設定とするテスト
@@ -70,7 +69,7 @@ public class ExcludeInFrameTest extends PtlItScreenshotTestBase {
 		double x = Math.round(frameRect.x + targetRect.x);
 		double y = Math.round(frameRect.y + targetRect.y);
 		double width = Math.round(frameRect.width - targetRect.x);
-		double height = Math.round(targetRect.height);
+		double height = Math.round(frameRect.height - targetRect.y);
 		assertThat(result.getExcludes().get(1).getRectangle(), is(new RectangleArea(x, y, width, height)));
 	}
 
@@ -122,6 +121,28 @@ public class ExcludeInFrameTest extends PtlItScreenshotTestBase {
 		// Check
 		TargetResult result = loadTargetResults("s").get(0);
 		assertThat(result.getExcludes(), is(empty()));
+	}
+
+	/**
+	 * BODYを撮影する際にiframe内のスクロールしないと見えない要素を除外する。
+	 * 
+	 * @ptl.expect エラーが発生せず、除外領域が保存されていないこと。
+	 */
+	@Test
+	public void captureBody_excludeNotVisibleElement() throws Exception {
+		openIFramePage();
+
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget().moveTarget(true).scrollTarget(false)
+				.addExcludeByClassName("content-right").inFrameByClassName("content").build();
+		assertionView.assertView(arg);
+
+		// Check
+		TargetResult result = loadTargetResults("s").get(0);
+		assertThat(result.getExcludes(), hasSize(1));
+
+		RectangleArea area = result.getExcludes().get(0).getRectangle();
+		assertThat(area.getWidth(), is(0.0));
+		assertThat(area.getHeight(), is(0.0));
 	}
 
 	/**
