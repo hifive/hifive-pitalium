@@ -1243,7 +1243,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		double top = Math.max(r.getTop(), a.getY());
 		double right = Math.min(r.getLeft() + r.getWidth(), a.getX() + a.getWidth());
 		double bottom = Math.min(r.getTop() + r.getHeight(), a.getY() + a.getHeight());
-		RectangleArea newArea = new RectangleArea(left, top, right - left, bottom - top);
+		double width = right - left < 0.0 ? 0.0 : right - left;
+		double height = bottom - top < 0.0 ? 0.0 : bottom - top;
+		RectangleArea newArea = new RectangleArea(left, top, width, height);
 		LOG.debug("[createExcludeScreenAreaResult] parent: {}, exclude: {} -> {}", r, a, newArea);
 		return new ScreenAreaResult(result.getSelector(), newArea, result.getScreenArea());
 	}
