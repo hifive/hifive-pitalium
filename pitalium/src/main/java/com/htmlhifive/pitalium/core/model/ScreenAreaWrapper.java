@@ -348,7 +348,7 @@ public abstract class ScreenAreaWrapper {
 		@Override
 		public void updatePosition(double scale, double moveX, double moveY) {
 			LOG.trace("Position update. scale: {}; x: {}; y: {} ({})", scale, moveX, moveY, element);
-			RectangleArea area = new RectangleArea(target.getX() - moveX, target.getY() - moveX, target.getWidth(),
+			RectangleArea area = new RectangleArea(target.getX() - moveX, target.getY() - moveY, target.getWidth(),
 					target.getHeight());
 			this.area = scale == PtlWebDriver.DEFAULT_SCREENSHOT_SCALE ? area : area.applyScale(scale);
 			LOG.debug("Position updated. {} ({})", area, target);
