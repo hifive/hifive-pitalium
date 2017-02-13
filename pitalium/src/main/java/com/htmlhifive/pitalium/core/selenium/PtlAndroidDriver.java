@@ -70,11 +70,11 @@ class PtlAndroidDriver extends PtlAbsAndroidDriver {
 				trimBottom = (int) Math.round(targetBorder.getBottom() * currentScale)
 						+ (int) Math.round(1 * currentScale);
 			} else if (num >= size - 1) {
-				trimTop = (int) Math.round(targetBorder.getTop() * currentScale) + (int) Math.round(1 * currentScale);
+				trimTop = (int) Math.round(targetBorder.getTop() * currentScale);
 			} else {
 				trimBottom = (int) Math.round(targetBorder.getBottom() * currentScale)
 						+ (int) Math.round(1 * currentScale);
-				trimTop = (int) Math.round(targetBorder.getTop() * currentScale) + (int) Math.round(1 * currentScale);
+				trimTop = (int) Math.round(targetBorder.getTop() * currentScale);
 			}
 		}
 
