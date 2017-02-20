@@ -1253,10 +1253,11 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		// 親セレクタが指定されている場合、親要素に収まる範囲に切り抜く
 		DoubleValueRect r = parent.getDoubleValueRect();
 		RectangleArea a = result.getRectangle();
-		double left = Math.max(r.getLeft(), a.getX());
-		double top = Math.max(r.getTop(), a.getY());
-		double right = Math.min(r.getLeft() + r.getWidth(), a.getX() + a.getWidth());
-		double bottom = Math.min(r.getTop() + r.getHeight(), a.getY() + a.getHeight());
+		double scale = getScreenshotScale();
+		double left = Math.max(r.getLeft() * scale, a.getX());
+		double top = Math.max(r.getTop() * scale, a.getY());
+		double right = Math.min((r.getLeft() + r.getWidth()) * scale, a.getX() + a.getWidth());
+		double bottom = Math.min((r.getTop() + r.getHeight()) * scale, a.getY() + a.getHeight());
 		double width = right - left < 0.0 ? 0.0 : right - left;
 		double height = bottom - top < 0.0 ? 0.0 : bottom - top;
 		RectangleArea newArea = new RectangleArea(left, top, width, height);
