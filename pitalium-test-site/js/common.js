@@ -8,7 +8,9 @@
   };
 
   /**
-   * @param {string} name
+   * HTML要素にCSSクラスを追加します。
+   *
+   * @param {string} name 追加するクラス名
    */
   HTMLElement.prototype.addClassName = function (name) {
     // Modern browser implements
@@ -27,6 +29,12 @@
     classes.push(name);
     this.className = classes.join(' ');
   };
+
+  /**
+   * HTML要素の座標と大きさを実際の表示ピクセルで取得します。
+   *
+   * @return {{x: number, y: number, width: number, height: number}}
+   */
   HTMLElement.prototype.getPixelRect = function () {
     var rect = this.getBoundingClientRect();
     return {
@@ -36,6 +44,12 @@
       height: rect.height * ratio
     }
   };
+
+  /**
+   * HTML要素の大きさを実際に表示ピクセルで取得します。
+   *
+   * @return {{width: number, height: number}}
+   */
   HTMLElement.prototype.getPixelSize = function () {
     var rect = this.getBoundingClientRect();
     return {
@@ -43,6 +57,12 @@
       height: rect.height * ratio
     }
   };
+
+  /**
+   * HTML要素のインラインCSSスタイル一覧を取得します。
+   *
+   * @return {Object}
+   */
   HTMLElement.prototype.getInlineStyles = function () {
     var result = {};
     var style = this.style;
@@ -56,7 +76,9 @@
   };
 
   /**
-   * @returns {{get: Function}} {get: (string, string} => string}
+   * QueryStringの値を取得します。
+   *
+   * @return {{get: Function<string, string, string>}}
    */
   window.getQueryString = function () {
     var query = window.location.search;
@@ -79,8 +101,10 @@
   };
 
   /**
-   * @param {HTMLElement} container
-   * @param {number} [blue]
+   * 指定したHTML要素の内部に1つ20pxの縦横両方向グラデーションで塗りつぶします。
+   *
+   * @param {HTMLElement} container 塗りつぶすHTML要素
+   * @param {number} [blue=0xff] 固定青色
    */
   window.fillGradation = function (container, blue) {
     blue = blue === undefined ? 0xff : blue;
@@ -124,6 +148,8 @@
   };
 
   /**
+   * 日付を &quot;yyyy/MM/dd hh:mm:ss.SSS&quot; 形式で返します。
+   *
    * @param {Date} [date]
    * @returns {string}
    */
