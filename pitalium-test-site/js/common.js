@@ -8,6 +8,24 @@
   };
 
   /**
+   * widthやheightを補完したBoundingClientRectを取得します。
+   *
+   * @return {{}}
+   */
+  HTMLElement.prototype.getPtlBoundingClientRect = function () {
+    var rect = this.getBoundingClientRect();
+    var result = {};
+    for (var key in rect) {
+      result[key] = rect[key];
+    }
+    if (!('width' in rect)) {
+      result.width = rect.right - rect.left;
+      result.height = rect.bottom - rect.top;
+    }
+    return result;
+  };
+
+  /**
    * HTML要素にCSSクラスを追加します。
    *
    * @param {string} name 追加するクラス名
@@ -36,7 +54,7 @@
    * @return {{x: number, y: number, width: number, height: number}}
    */
   HTMLElement.prototype.getPixelRect = function () {
-    var rect = this.getBoundingClientRect();
+    var rect = this.getPtlBoundingClientRect();
     return {
       x: rect.left * ratio,
       y: rect.top * ratio,
@@ -51,7 +69,7 @@
    * @return {{width: number, height: number}}
    */
   HTMLElement.prototype.getPixelSize = function () {
-    var rect = this.getBoundingClientRect();
+    var rect = this.getPtlBoundingClientRect();
     return {
       width: rect.width * ratio,
       height: rect.height * ratio
@@ -108,7 +126,7 @@
    */
   window.fillGradation = function (container, blue) {
     blue = blue === undefined ? 0xff : blue;
-    var rect = container.getBoundingClientRect();
+    var rect = container.getPtlBoundingClientRect();
 
     function incrementColor(color) {
       color += 8;

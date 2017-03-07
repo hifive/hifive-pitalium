@@ -273,7 +273,7 @@ public class PtlItTestBase extends PtlTestBase {
 	 */
 	public Rect getRectById(String id) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var id = arguments[0];"
-				+ "var element = document.getElementById(id);" + "var rect = element.getBoundingClientRect();"
+				+ "var element = document.getElementById(id);" + "var rect = element.getPtlBoundingClientRect();"
 				+ "var result = {" + "  x: rect.left," + "  y: rect.top," + "  width: rect.width,"
 				+ "  height: rect.height" + "};" + "return result;", id);
 		return getRect(rect);
@@ -287,7 +287,7 @@ public class PtlItTestBase extends PtlTestBase {
 	 */
 	public Rect getRectBySelector(String selector) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var selector = arguments[0];"
-				+ "var element = document.querySelector(selector);" + "var rect = element.getBoundingClientRect();"
+				+ "var element = document.querySelector(selector);" + "var rect = element.getPtlBoundingClientRect();"
 				+ "var result = {" + "  x: rect.left," + "  y: rect.top," + "  width: rect.width,"
 				+ "  height: rect.height" + "};" + "return result;", selector);
 		return getRect(rect);
@@ -301,7 +301,7 @@ public class PtlItTestBase extends PtlTestBase {
 	 */
 	public Rect getRect(WebElement element) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var element = arguments[0];"
-				+ "var rect = element.getBoundingClientRect();" + "var result = {" + "  x: rect.left,"
+				+ "var rect = element.getPtlBoundingClientRect();" + "var result = {" + "  x: rect.left,"
 				+ "  y: rect.top," + "  width: rect.width," + "  height: rect.height" + "};" + "return result;",
 				element);
 		return getRect(rect);
@@ -567,7 +567,8 @@ public class PtlItTestBase extends PtlTestBase {
 	}
 
 	/**
-	 * グラデーションかどうかをチェックするMatcher
+	 * グラデーションかどうかをチェックするMatcher。<br>
+	 * 指定された画像が縦横それぞれ20pxのボックス上のグラデーションで塗りつぶされているか検証する。
 	 */
 	public static class IsGradation extends TypeSafeDiagnosingMatcher<BufferedImage> {
 

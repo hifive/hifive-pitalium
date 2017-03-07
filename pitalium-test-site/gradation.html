@@ -38,7 +38,7 @@
     body.style.overflow = 'hidden';
 
     // 小数点はテストしづらいので丸める
-    var bodyRect = body.getBoundingClientRect();
+    var bodyRect = body.getPtlBoundingClientRect();
     body.style.width = Math.floor(bodyRect.width) + 'px';
     body.style.height = Math.floor(bodyRect.height) + 'px';
 

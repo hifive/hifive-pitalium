@@ -78,7 +78,7 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 		// Mobileでは表示する必要あり
 		boolean mobile = driver.executeJavaScript(""
 				+ "var button = document.getElementsByClassName('navbar-toggle')[0];"
-				+ "var rect = button.getBoundingClientRect();" + "return !!rect.width;");
+				+ "var rect = button.getPtlBoundingClientRect();" + "return !!rect.width;");
 		if (mobile) {
 			driver.findElementByClassName("navbar-toggle").click();
 		}
