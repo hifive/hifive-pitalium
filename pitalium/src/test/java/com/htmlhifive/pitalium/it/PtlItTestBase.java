@@ -646,17 +646,18 @@ public class PtlItTestBase extends PtlTestBase {
 			int width = image.getWidth();
 			int height = image.getHeight();
 			int border = (int) Math.round(borderStroke * pixelRatio);
-			if (border > 0.0) {
+			if (border > 0) {
 				int centerX = width / 2;
 				int centerY = height / 2;
-				for (int i = 0; i < border; i++) {
+				int start = Math.min(5, border);
+				// 端っこがダメなブラウザが多いので、フレームの内側5px相当のみバリデーション
+				for (int i = start; i < border; i++) {
 					// top
 					if (!borderMatch(image, mismatch, i, centerY)) {
 						return false;
 					}
 					// bottom
-					// FIXME IE hack (bottom 2px)
-					if (!borderMatch(image, mismatch, width - i - 1, centerY) && i > 2) {
+					if (!borderMatch(image, mismatch, width - i - 1, centerY)) {
 						return false;
 					}
 					// left
@@ -664,8 +665,7 @@ public class PtlItTestBase extends PtlTestBase {
 						return false;
 					}
 					// right
-					// FIXME IE hack (right 2px)
-					if (!borderMatch(image, mismatch, centerX, height - i - 1) && i > 2) {
+					if (!borderMatch(image, mismatch, centerX, height - i - 1)) {
 						return false;
 					}
 				}
