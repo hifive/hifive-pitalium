@@ -25,6 +25,10 @@ public enum CompareOption {
 	 */
 	STRICT,
 	/**
+	 * 透明度が0xFF以外のpixelは無視して比較します。
+	 */
+	IGNORE_CLEAR_PIXELS,
+	/**
 	 * 画像の余白部分を無視して比較します。
 	 */
 	IGNORE_BLANK_SPACE;
