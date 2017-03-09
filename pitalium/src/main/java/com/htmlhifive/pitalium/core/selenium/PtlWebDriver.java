@@ -63,6 +63,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.transform;
 
+
 /**
  * WebDriverの実装クラス。{@link org.openqa.selenium.remote.RemoteWebDriver}
  * の機能に加え、表示中のWebページに関する情報取得、ブラウザの差異を吸収したスクリーンショットの撮影を行います。<br/>
@@ -83,11 +84,12 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			"document.body.scrollLeft" };
 	private static final String SCRIPT_GET_DEFAULT_DOCUMENT_OVERFLOW = "return {\"overflow\": document.documentElement.style.overflow};";
 	private static final String SCRIPT_SET_DOCUMENT_OVERFLOW = "document.documentElement.style.overflow = arguments[0];";
-	private static final String SCRIPT_GET_DEFAULT_BODY_STYLE = "return {"
-			+ "  \"position\":    document.body.style.position ? document.body.style.position : null,"
-			+ "  \"top\":         document.body.style.top      ? document.body.style.top      : null,"
-			+ "  \"left\":        document.body.style.left     ? document.body.style.left     : null,"
-			+ "  \"width\":       document.body.style.width    ? document.body.style.width    : null,"
+	private static final String SCRIPT_GET_DEFAULT_BODY_STYLE = "var style = document.body.style;"
+			+ "return {"
+			+ "  \"position\":    style.position || null,"
+			+ "  \"top\":         style.top      || null,"
+			+ "  \"left\":        style.left     || null,"
+			+ "  \"width\":       style.width    || null,"
 			+ "  \"scrollWidth\": document.body.scrollWidth};";
 
 	private static final String SCRIPT_MOVE_BODY = "document.body.style.position = arguments[0];"
