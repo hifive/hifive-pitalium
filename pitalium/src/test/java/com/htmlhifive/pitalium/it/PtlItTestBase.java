@@ -325,7 +325,7 @@ public class PtlItTestBase extends PtlTestBase {
 		double y = rect.get("y").doubleValue();
 		double width = rect.get("width").doubleValue();
 		double height = rect.get("height").doubleValue();
-		return new Rect(x, y, width, height);
+		return new Rect(x, y, width, height).round();
 	}
 
 	/**

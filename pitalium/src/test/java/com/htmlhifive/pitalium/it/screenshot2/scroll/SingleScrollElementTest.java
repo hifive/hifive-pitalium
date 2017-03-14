@@ -56,7 +56,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 						+ "var borderWidth = parseFloat(style.borderWidth || style.borderLeftWidth);"
 						+ "return borderWidth;").doubleValue();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image.getHeight(), is((int) (rect.round().height + Math.round(border * ratio) * 2)));
+		assertThat(image.getHeight(), is((int) (rect.height + Math.round(border * ratio) * 2)));
 		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1)));
 	}
 
@@ -165,7 +165,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 						+ "var borderWidth = parseFloat(style.borderWidth || style.borderLeftWidth);"
 						+ "return borderWidth;").doubleValue();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image.getHeight(), is((int) (rect.round().height + Math.round(border * ratio) * 2)));
+		assertThat(image.getHeight(), is((int) (rect.height + Math.round(border * ratio) * 2)));
 		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1)));
 	}
 
@@ -268,7 +268,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		// Check
 		Rect rect = getPixelRectById("div-scroll");
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image.getHeight(), is((int) rect.round().height));
+		assertThat(image.getHeight(), is((int) rect.height));
 
 		// スクロールバーの検証が出来ないため、大きさだけチェックする
 	}
@@ -290,7 +290,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		// Check
 		Rect rect = getPixelRectById("textarea-scroll");
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image.getHeight(), is((int) rect.round().height));
+		assertThat(image.getHeight(), is((int) rect.height));
 	}
 
 	/**
@@ -310,7 +310,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		double ratio = getPixelRatio();
 		Rect rect = getPixelRectById("table-scroll");
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image.getHeight(), is((int) rect.round().height));
+		assertThat(image.getHeight(), is((int) rect.height));
 
 		int x = image.getWidth() / 2;
 		int y = 0;
@@ -344,7 +344,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		// Check
 		Rect rect = getPixelRect(driver.findElementByName("iframe-scroll"));
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image.getHeight(), is((int) rect.round().height));
+		assertThat(image.getHeight(), is((int) rect.height));
 
 		// スクロールバーの検証が出来ないため、大きさだけチェックする
 	}
@@ -365,7 +365,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		// Check
 		Rect rect = getPixelRectById("div-scroll");
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image.getHeight(), is((int) rect.round().height));
+		assertThat(image.getHeight(), is((int) rect.height));
 
 		// スクロールバーの検証が出来ないため、大きさだけチェックする
 	}
@@ -387,7 +387,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		// Check
 		Rect rect = getPixelRectById("textarea-scroll");
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image.getHeight(), is((int) rect.round().height));
+		assertThat(image.getHeight(), is((int) rect.height));
 	}
 
 	/**
@@ -407,7 +407,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		double ratio = getPixelRatio();
 		Rect rect = getPixelRectById("table-scroll");
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image.getHeight(), is((int) rect.round().height));
+		assertThat(image.getHeight(), is((int) rect.height));
 
 		int x = image.getWidth() / 2;
 		int y = 0;
@@ -450,7 +450,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		// Check
 		Rect rect = getPixelRect(driver.findElementByName("iframe-scroll"));
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image.getHeight(), is((int) rect.round().height));
+		assertThat(image.getHeight(), is((int) rect.height));
 
 		// スクロールバーの検証が出来ないため、大きさだけチェックする
 	}
