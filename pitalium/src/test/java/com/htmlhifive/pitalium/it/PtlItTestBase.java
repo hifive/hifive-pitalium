@@ -166,6 +166,13 @@ public class PtlItTestBase extends PtlTestBase {
 	//</editor-fold>
 
 	/**
+	 * 現在テスト中のブラウザがIE8かどうかを取得します。
+	 */
+	public boolean isInternetExplorer8() {
+		return BrowserType.IE.equals(capabilities.getBrowserName()) && "8".equals(capabilities.getVersion());
+	}
+
+	/**
 	 * 現在テスト中のブラウザがIE9かどうかを取得します。
 	 */
 	public boolean isInternetExplorer9() {

@@ -87,6 +87,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void takeTableScreenshot_scroll_move() throws Exception {
+		assumeFalse("Skip IE8 table test.", isInternetExplorer8());
 		assumeFalse("Skip IE9 table test.", isInternetExplorer9());
 
 		openScrollPage();
@@ -195,6 +196,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void takeTableScreenshot_scroll_notMove() throws Exception {
+		assumeFalse("Skip IE8 table test.", isInternetExplorer8());
 		assumeFalse("Skip IE9 table test.", isInternetExplorer9());
 
 		openScrollPage();
