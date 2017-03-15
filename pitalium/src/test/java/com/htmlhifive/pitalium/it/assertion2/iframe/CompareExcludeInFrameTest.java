@@ -17,6 +17,7 @@
 package com.htmlhifive.pitalium.it.assertion2.iframe;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,6 +41,8 @@ public class CompareExcludeInFrameTest extends PtlItAssertionTestBase {
 	 */
 	@Test
 	public void excludeInsideAndOutsideIFrame() throws Exception {
+		assumeFalse("Skip IE8 test (getElementsByClassName is not supported)", isInternetExplorer8());
+
 		openIFramePage();
 
 		if (isRunTest()) {
@@ -74,6 +77,8 @@ public class CompareExcludeInFrameTest extends PtlItAssertionTestBase {
 	 */
 	@Test
 	public void excludeInsideIFrame() throws Exception {
+		assumeFalse("Skip IE8 test (getElementsByClassName is not supported)", isInternetExplorer8());
+
 		openIFramePage();
 
 		if (isRunTest()) {

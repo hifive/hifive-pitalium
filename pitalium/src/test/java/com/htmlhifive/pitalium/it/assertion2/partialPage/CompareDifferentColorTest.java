@@ -17,6 +17,7 @@
 package com.htmlhifive.pitalium.it.assertion2.partialPage;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,6 +67,8 @@ public class CompareDifferentColorTest extends PtlItAssertionTestBase {
 	 */
 	@Test
 	public void compareSameElementWhichHasDifferentColorPartially() throws Exception {
+		assumeFalse("Skip IE8 test (getElementsByClassName is not supported)", isInternetExplorer8());
+
 		openGradationPage();
 
 		if (isRunTest()) {

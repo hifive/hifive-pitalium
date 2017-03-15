@@ -42,8 +42,8 @@ public class ScrollLessThanMarginTest extends PtlItScreenshotTestBase {
 
 		// マージンの追加
 		int margin = driver.<Number> executeJavaScript(
-				"" + "var windowHeight = window.innerHeight;" + "var body = document.body;"
-						+ "var height = body.getPtlBoundingClientRect().height;"
+				"var windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;"
+						+ "var body = document.body;" + "var height = body.getPtlBoundingClientRect().height;"
 						+ "var margin = (windowHeight - height) * 2;" + "body.style.marginTop = margin + 'px';"
 						+ "return margin;").intValue();
 
@@ -70,9 +70,10 @@ public class ScrollLessThanMarginTest extends PtlItScreenshotTestBase {
 
 		// マージンの追加
 		int margin = driver.<Number> executeJavaScript(
-				"" + "var windowWidth = window.innerWidth;" + "var body = document.body;"
-						+ "var width = body.getPtlBoundingClientRect().width;" + "var margin = (windowWidth - width) * 2;"
-						+ "body.style.marginLeft = margin + 'px';" + "return margin;").intValue();
+				"var windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;"
+						+ "var body = document.body;" + "var width = body.getPtlBoundingClientRect().width;"
+						+ "var margin = (windowWidth - width) * 2;" + "body.style.marginLeft = margin + 'px';"
+						+ "return margin;").intValue();
 
 		assertionView.assertView("s");
 

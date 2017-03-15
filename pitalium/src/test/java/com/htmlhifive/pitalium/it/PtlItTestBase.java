@@ -30,6 +30,8 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.BrowserType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
@@ -45,6 +47,8 @@ import com.htmlhifive.pitalium.image.util.ImageUtils;
  * ITテストのベースクラス
  */
 public class PtlItTestBase extends PtlTestBase {
+
+	protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
 	@Rule
 	public TestName testName = new TestName();
@@ -166,17 +170,31 @@ public class PtlItTestBase extends PtlTestBase {
 	//</editor-fold>
 
 	/**
+	 * 現在テスト中のブラウザがIEかどうかを取得します。
+	 */
+	public boolean isInternetExplorer() {
+		return BrowserType.IE.equals(capabilities.getBrowserName());
+	}
+
+	/**
 	 * 現在テスト中のブラウザがIE8かどうかを取得します。
 	 */
 	public boolean isInternetExplorer8() {
-		return BrowserType.IE.equals(capabilities.getBrowserName()) && "8".equals(capabilities.getVersion());
+		return isInternetExplorer() && "8".equals(capabilities.getVersion());
 	}
 
 	/**
 	 * 現在テスト中のブラウザがIE9かどうかを取得します。
 	 */
 	public boolean isInternetExplorer9() {
-		return BrowserType.IE.equals(capabilities.getBrowserName()) && "9".equals(capabilities.getVersion());
+		return isInternetExplorer() && "9".equals(capabilities.getVersion());
+	}
+
+	/**
+	 * 現在テスト中のブラウザがEdgeかどうかを取得します。
+	 */
+	public boolean isMicrosoftEdge() {
+		return BrowserType.EDGE.equals(capabilities.getBrowserName());
 	}
 
 	/**
