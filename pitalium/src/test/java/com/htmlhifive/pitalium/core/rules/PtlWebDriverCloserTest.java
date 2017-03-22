@@ -32,7 +32,6 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.SessionNotFoundException;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -126,7 +125,7 @@ public class PtlWebDriverCloserTest {
 			try {
 				driver.getWindowHandle();
 				fail();
-			} catch (SessionNotFoundException e) {
+			} catch (Exception e) {
 				assertTrue(true);
 			}
 		}
@@ -144,7 +143,7 @@ public class PtlWebDriverCloserTest {
 			try {
 				driver.getWindowHandle();
 				fail();
-			} catch (SessionNotFoundException e) {
+			} catch (Exception e) {
 				assertTrue(true);
 			}
 		}

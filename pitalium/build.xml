@@ -13,8 +13,8 @@
 	<property name="target.test.res.dir" value="src/test/resources" />
 
 	<property name="target.java.encoding" value="UTF-8" />
-	<property name="target.java.version" value="1.7" />
-	<property name="target.java.source.version" value="1.7" />
+	<property name="target.java.version" value="1.8" />
+	<property name="target.java.source.version" value="1.8" />
 
 	<property name="target.lib.dir" value="libs" />
 	<property name="target.work.dir" value="target/work" />
