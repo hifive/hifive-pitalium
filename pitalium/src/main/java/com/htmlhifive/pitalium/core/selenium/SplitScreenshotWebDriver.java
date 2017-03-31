@@ -33,8 +33,6 @@ import com.htmlhifive.pitalium.image.util.ImageUtils;
  */
 abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
-	private double scale = DEFAULT_SCREENSHOT_SCALE;
-
 	/**
 	 * コンストラクタ
 	 * 
@@ -48,7 +46,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	@Override
 	protected TargetResult getTargetResult(CompareTarget compareTarget, List<DomSelector> hiddenElementSelectors,
 			ScreenshotParams params, ScreenshotParams... additionalParams) {
-		scale = DEFAULT_SCREENSHOT_SCALE;
+		resetScreenshotScale();
 		return super.getTargetResult(compareTarget, hiddenElementSelectors, params, additionalParams);
 	}
 
@@ -147,13 +145,14 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 					// 画像のサイズからscaleを計算（初回のみ）
 					if (Double.isNaN(currentScale)) {
 						currentScale = calcScale(windowWidth, image.getWidth());
-						scale = currentScale;
-						LOG.trace("[GetMinimumScreenshot] scale: {}", scale);
+						setScreenshotScale(currentScale);
+						LOG.trace("[GetMinimumScreenshot] scale: {}", currentScale);
 					}
 
 					// 次の画像と重なる部分を切り取っておく
-					if (scale != DEFAULT_SCREENSHOT_SCALE) {
-						image = trimOverlap(captureTop, captureLeft, windowHeight, windowWidth, scale, image);
+					if (getScreenshotScale() != DEFAULT_SCREENSHOT_SCALE) {
+						image = trimOverlap(captureTop, captureLeft, windowHeight, windowWidth, getScreenshotScale(),
+								image);
 					}
 
 					// 今回撮った画像をリストに追加
@@ -180,7 +179,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				}
 
 				// 右端の画像の重複部分をトリムする
-				trimRightImage(lineImages, currentHScrollAmount, bodyElement, scale);
+				trimRightImage(lineImages, currentHScrollAmount, bodyElement, getScreenshotScale());
 
 				images.add(lineImages);
 
@@ -193,7 +192,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				double scrollIncrement = 0;
 				if (headerHeight > 0) {
 					// HeaderHeightがある場合、画像の高さからスクロール幅を逆算
-					scrollIncrement = calcVerticalScrollIncrementWithHeader(imageHeight, scale);
+					scrollIncrement = calcVerticalScrollIncrementWithHeader(imageHeight, getScreenshotScale());
 				} else {
 					scrollIncrement = calcVerticalScrollIncrement(windowHeight);
 
@@ -219,7 +218,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 		}
 
 		// 末尾の画像の重複部分をトリムする
-		trimBottomImages(images, currentVScrollAmount, bodyElement, scale);
+		trimBottomImages(images, currentVScrollAmount, bodyElement, getScreenshotScale());
 
 		BufferedImage screenshot = ImageUtils.merge(images);
 		LOG.trace("[GetMinimumScreenshot finished]");
@@ -282,11 +281,6 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	 */
 	protected double calcHorizontalScrollIncrement(long windowWidth) {
 		return windowWidth;
-	}
-
-	@Override
-	protected double getScreenshotScale() {
-		return scale;
 	}
 
 	/**
