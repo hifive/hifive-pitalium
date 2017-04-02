@@ -159,6 +159,80 @@ public class IgnoringClearPixelsImageComparatorTest {
 	}
 
 	/**
+	 * 1px、透明度だけ違う画像を比較する. => 成功
+	 */
+	@Test
+	public void testCompare_same_clear_1px() throws Exception {
+		BufferedImage image1 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+
+		// 1pxだけ色を変える
+		Random random = new Random();
+		int x = random.nextInt(image2.getWidth());
+		int y = random.nextInt(image2.getHeight());
+		image2.setRGB(x, y, (image2.getRGB(x, y)) & 0xFEFFFFFF);
+
+		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
+
+		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2, rectangle);
+
+		assertThat(result.isSucceeded(), is(true));
+		assertThat(result.isFailed(), is(false));
+	}
+
+	/**
+	 * 複数点異なり、それらのすべての点で透明度が0xFFでない場合 ⇒ 比較差分なし
+	 */
+	@Test
+	public void testCompare_different_multipxs_all_clear() throws Exception {
+		BufferedImage image1 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+
+		// 2px色を変える
+		Random random = new Random();
+		int x = random.nextInt(image2.getWidth());
+		int y = random.nextInt(image2.getHeight());
+		image2.setRGB(x, y, (image2.getRGB(x, y) - 1) & 0xFEFFFFFF); // 透明
+		int x2 = (x + 1) % x;
+		int y2 = (y + 1) % y;
+		image2.setRGB(x2, y2, (image2.getRGB(x2, y2) - 1) & 0xFEFFFFFF); // 透明
+
+		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
+
+		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2, rectangle);
+
+		assertThat(result.isSucceeded(), is(true));
+		assertThat(result.isFailed(), is(false));
+	}
+
+	/**
+	 * 複数点異なり、それらのいくつかの点で透明度が0xFFでない場合 ⇒ 比較差分あり
+	 */
+	@Test
+	public void testCompare_different_multipxs_some_clear() throws Exception {
+		BufferedImage image1 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+
+		// 2px色を変える
+		Random random = new Random();
+		int x = random.nextInt(image2.getWidth());
+		int y = random.nextInt(image2.getHeight());
+		image2.setRGB(x, y, (image2.getRGB(x, y) - 1)); // 透明でない
+		int x2 = (x + 1) % x;
+		int y2 = (y + 1) % y;
+		image2.setRGB(x2, y2, (image2.getRGB(x2, y2) - 1) & 0xFEFFFFFF); // 透明
+
+		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
+
+		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2, rectangle);
+
+		assertThat(result.isFailed(), is(true));
+		assertThat(result.getDiffPoints().size(), is(1));
+		assertThat(result.getSizeDiffPoints().isEmpty(), is(true));
+		assertThat(result.getDiffPoints().get(0), is(new Point(x, y)));
+	}
+
+	/**
 	 * 端に差分がある場合 => 失敗
 	 *
 	 * @throws Exception
