@@ -193,8 +193,8 @@ public class IgnoringClearPixelsImageComparatorTest {
 		int x = random.nextInt(image2.getWidth());
 		int y = random.nextInt(image2.getHeight());
 		image2.setRGB(x, y, (image2.getRGB(x, y) - 1) & 0xFEFFFFFF); // 透明
-		int x2 = (x + 1) % x;
-		int y2 = (y + 1) % y;
+		int x2 = (x + 1) % image2.getWidth();
+		int y2 = (y + 1) % image2.getHeight();
 		image2.setRGB(x2, y2, (image2.getRGB(x2, y2) - 1) & 0xFEFFFFFF); // 透明
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
@@ -218,8 +218,8 @@ public class IgnoringClearPixelsImageComparatorTest {
 		int x = random.nextInt(image2.getWidth());
 		int y = random.nextInt(image2.getHeight());
 		image2.setRGB(x, y, (image2.getRGB(x, y) - 1)); // 透明でない
-		int x2 = (x + 1) % x;
-		int y2 = (y + 1) % y;
+		int x2 = (x + 1) % image2.getWidth();
+		int y2 = (y + 1) % image2.getHeight();
 		image2.setRGB(x2, y2, (image2.getRGB(x2, y2) - 1) & 0xFEFFFFFF); // 透明
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
