@@ -78,6 +78,7 @@ public class ScrollBorderElementTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void borderTableElement() throws Exception {
+		assumeFalse("Skip IE8 table test.", isInternetExplorer8());
 		assumeFalse("Skip IE9 table test.", isInternetExplorer9());
 
 		openScrollPage();

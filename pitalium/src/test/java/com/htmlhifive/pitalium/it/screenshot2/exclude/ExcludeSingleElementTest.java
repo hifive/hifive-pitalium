@@ -18,6 +18,7 @@ package com.htmlhifive.pitalium.it.screenshot2.exclude;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.util.Map;
 
@@ -40,6 +41,8 @@ public class ExcludeSingleElementTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void singleTarget() throws Exception {
+		assumeFalse("Skip IE8 test (getElementsByClassName is not supported)", isInternetExplorer8());
+
 		openBasicTextPage();
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByTagName("body")

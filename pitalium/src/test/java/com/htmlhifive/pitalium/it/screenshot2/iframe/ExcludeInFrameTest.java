@@ -101,7 +101,7 @@ public class ExcludeInFrameTest extends PtlItScreenshotTestBase {
 			}
 		});
 
-		assertThat(result.getExcludes().get(0).getRectangle(), is(rect.round().toRectangleArea()));
+		assertThat(result.getExcludes().get(0).getRectangle(), is(rect.toRectangleArea()));
 	}
 
 	/**

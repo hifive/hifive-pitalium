@@ -18,6 +18,7 @@ package com.htmlhifive.pitalium.it.screenshot2.partialPage;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.awt.image.BufferedImage;
 
@@ -73,12 +74,14 @@ public class SingleElementBySingleTargetTest extends PtlItScreenshotTestBase {
 	@Test
 	@RequireVisualCheck
 	public void byName() throws Exception {
+		assumeFalse("Skip IE8 test (getElementsByClassName is not supported)", isInternetExplorer8());
+
 		openBasicColorPage();
 
 		// Mobileでは表示する必要あり
 		boolean mobile = driver.executeJavaScript(""
 				+ "var button = document.getElementsByClassName('navbar-toggle')[0];"
-				+ "var rect = button.getBoundingClientRect();" + "return !!rect.width;");
+				+ "var rect = button.getPtlBoundingClientRect();" + "return !!rect.width;");
 		if (mobile) {
 			driver.findElementByClassName("navbar-toggle").click();
 		}

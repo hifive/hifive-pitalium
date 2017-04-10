@@ -18,6 +18,7 @@ package com.htmlhifive.pitalium.it.screenshot2.excludeInScroll;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
@@ -39,6 +40,9 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void excludeVisibleArea_move() throws Exception {
+		assumeFalse("Skip IE8 table test.", isInternetExplorer8());
+		assumeFalse("Skip IE9 table test.", isInternetExplorer9());
+
 		openScrollPage();
 
 		// 一つ目のTRを除外する
@@ -70,6 +74,9 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void excludeNotVisibleArea_move() throws Exception {
+		assumeFalse("Skip IE8 table test.", isInternetExplorer8());
+		assumeFalse("Skip IE9 table test.", isInternetExplorer9());
+
 		openScrollPage();
 
 		// 最後のTRを除外する
@@ -101,6 +108,9 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void excludeVisibleArea_notMove() throws Exception {
+		assumeFalse("Skip IE8 table test.", isInternetExplorer8());
+		assumeFalse("Skip IE9 table test.", isInternetExplorer9());
+
 		openScrollPage();
 
 		// 一つ目のTRを除外する
@@ -132,6 +142,9 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void excludeNotVisibleArea_notMove() throws Exception {
+		assumeFalse("Skip IE8 table test.", isInternetExplorer8());
+		assumeFalse("Skip IE9 table test.", isInternetExplorer9());
+
 		openScrollPage();
 
 		// 最後のTRを除外する

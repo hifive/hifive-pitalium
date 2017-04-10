@@ -30,6 +30,8 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.BrowserType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.ExecMode;
@@ -45,6 +47,8 @@ import com.htmlhifive.pitalium.image.util.ImageUtils;
  * ITテストのベースクラス
  */
 public class PtlItTestBase extends PtlTestBase {
+
+	protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
 	@Rule
 	public TestName testName = new TestName();
@@ -166,10 +170,31 @@ public class PtlItTestBase extends PtlTestBase {
 	//</editor-fold>
 
 	/**
+	 * 現在テスト中のブラウザがIEかどうかを取得します。
+	 */
+	public boolean isInternetExplorer() {
+		return BrowserType.IE.equals(capabilities.getBrowserName());
+	}
+
+	/**
+	 * 現在テスト中のブラウザがIE8かどうかを取得します。
+	 */
+	public boolean isInternetExplorer8() {
+		return isInternetExplorer() && "8".equals(capabilities.getVersion());
+	}
+
+	/**
 	 * 現在テスト中のブラウザがIE9かどうかを取得します。
 	 */
 	public boolean isInternetExplorer9() {
-		return BrowserType.IE.equals(capabilities.getBrowserName()) && "9".equals(capabilities.getVersion());
+		return isInternetExplorer() && "9".equals(capabilities.getVersion());
+	}
+
+	/**
+	 * 現在テスト中のブラウザがEdgeかどうかを取得します。
+	 */
+	public boolean isMicrosoftEdge() {
+		return BrowserType.EDGE.equals(capabilities.getBrowserName());
 	}
 
 	/**
@@ -273,7 +298,7 @@ public class PtlItTestBase extends PtlTestBase {
 	 */
 	public Rect getRectById(String id) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var id = arguments[0];"
-				+ "var element = document.getElementById(id);" + "var rect = element.getBoundingClientRect();"
+				+ "var element = document.getElementById(id);" + "var rect = element.getPtlBoundingClientRect();"
 				+ "var result = {" + "  x: rect.left," + "  y: rect.top," + "  width: rect.width,"
 				+ "  height: rect.height" + "};" + "return result;", id);
 		return getRect(rect);
@@ -287,7 +312,7 @@ public class PtlItTestBase extends PtlTestBase {
 	 */
 	public Rect getRectBySelector(String selector) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var selector = arguments[0];"
-				+ "var element = document.querySelector(selector);" + "var rect = element.getBoundingClientRect();"
+				+ "var element = document.querySelector(selector);" + "var rect = element.getPtlBoundingClientRect();"
 				+ "var result = {" + "  x: rect.left," + "  y: rect.top," + "  width: rect.width,"
 				+ "  height: rect.height" + "};" + "return result;", selector);
 		return getRect(rect);
@@ -301,7 +326,7 @@ public class PtlItTestBase extends PtlTestBase {
 	 */
 	public Rect getRect(WebElement element) {
 		Map<String, Number> rect = driver.executeJavaScript("" + "var element = arguments[0];"
-				+ "var rect = element.getBoundingClientRect();" + "var result = {" + "  x: rect.left,"
+				+ "var rect = element.getPtlBoundingClientRect();" + "var result = {" + "  x: rect.left,"
 				+ "  y: rect.top," + "  width: rect.width," + "  height: rect.height" + "};" + "return result;",
 				element);
 		return getRect(rect);
@@ -318,7 +343,7 @@ public class PtlItTestBase extends PtlTestBase {
 		double y = rect.get("y").doubleValue();
 		double width = rect.get("width").doubleValue();
 		double height = rect.get("height").doubleValue();
-		return new Rect(x, y, width, height);
+		return new Rect(x, y, width, height).round();
 	}
 
 	/**
@@ -567,7 +592,8 @@ public class PtlItTestBase extends PtlTestBase {
 	}
 
 	/**
-	 * グラデーションかどうかをチェックするMatcher
+	 * グラデーションかどうかをチェックするMatcher。<br>
+	 * 指定された画像が縦横それぞれ20pxのボックス上のグラデーションで塗りつぶされているか検証する。
 	 */
 	public static class IsGradation extends TypeSafeDiagnosingMatcher<BufferedImage> {
 
@@ -645,17 +671,18 @@ public class PtlItTestBase extends PtlTestBase {
 			int width = image.getWidth();
 			int height = image.getHeight();
 			int border = (int) Math.round(borderStroke * pixelRatio);
-			if (border > 0.0) {
+			if (border > 0) {
 				int centerX = width / 2;
 				int centerY = height / 2;
-				for (int i = 0; i < border; i++) {
+				int start = Math.min(5, border);
+				// 端っこがダメなブラウザが多いので、フレームの内側5px相当のみバリデーション
+				for (int i = start; i < border; i++) {
 					// top
 					if (!borderMatch(image, mismatch, i, centerY)) {
 						return false;
 					}
 					// bottom
-					// FIXME IE hack (bottom 2px)
-					if (!borderMatch(image, mismatch, width - i - 1, centerY) && i > 2) {
+					if (!borderMatch(image, mismatch, width - i - 1, centerY)) {
 						return false;
 					}
 					// left
@@ -663,8 +690,7 @@ public class PtlItTestBase extends PtlTestBase {
 						return false;
 					}
 					// right
-					// FIXME IE hack (right 2px)
-					if (!borderMatch(image, mismatch, centerX, height - i - 1) && i > 2) {
+					if (!borderMatch(image, mismatch, centerX, height - i - 1)) {
 						return false;
 					}
 				}

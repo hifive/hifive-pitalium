@@ -18,6 +18,7 @@ package com.htmlhifive.pitalium.it.screenshot2.excludeInScroll;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
@@ -39,6 +40,9 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void excludeVisibleElement() throws Exception {
+		assumeFalse("Skip IE8 table test.", isInternetExplorer8());
+		assumeFalse("Skip IE9 table test.", isInternetExplorer9());
+
 		openScrollPage();
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#table-scroll > tbody")
@@ -69,6 +73,9 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void excludeNotVisibleElement() throws Exception {
+		assumeFalse("Skip IE8 table test.", isInternetExplorer8());
+		assumeFalse("Skip IE9 table test.", isInternetExplorer9());
+
 		openScrollPage();
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#table-scroll > tbody")
@@ -98,6 +105,9 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void excludeNotExistElement() throws Exception {
+		assumeFalse("Skip IE8 table test.", isInternetExplorer8());
+		assumeFalse("Skip IE9 table test.", isInternetExplorer9());
+
 		openScrollPage();
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#table-scroll > tbody")

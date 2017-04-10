@@ -17,6 +17,7 @@
 package com.htmlhifive.pitalium.it.assertion2.excludeInScroll;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,6 +41,8 @@ public class CompareExcludeElementInScrollTest extends PtlItAssertionTestBase {
 	 */
 	@Test
 	public void excludeVisibleElement() throws Exception {
+		assumeFalse("Skip IE8 test (CSS Selector).", isInternetExplorer8());
+
 		openScrollPage();
 
 		if (isRunTest()) {
@@ -88,6 +91,8 @@ public class CompareExcludeElementInScrollTest extends PtlItAssertionTestBase {
 	 */
 	@Test
 	public void excludeNotVisibleElement() throws Exception {
+		assumeFalse("Skip IE8 test (CSS Selector).", isInternetExplorer8());
+
 		openScrollPage();
 
 		if (isRunTest()) {
