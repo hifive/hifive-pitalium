@@ -97,7 +97,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 	/**
 	 * テスト標準ページを開きます。
-	 * 
+	 *
 	 * @param date subtitleを日付にするかどうか
 	 */
 	public void openBasicPage(boolean text, boolean color, boolean image, boolean date) {
@@ -145,7 +145,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 	/**
 	 * 全体グラデーションページを開きます。
-	 * 
+	 *
 	 * @param width bodyの幅
 	 * @param height bodyの高さ
 	 */
@@ -199,7 +199,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 	/**
 	 * ブラウザのピクセル比を取得します。
-	 * 
+	 *
 	 * @return ピクセル比
 	 */
 	public double getPixelRatio() {
@@ -208,7 +208,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 	/**
 	 * スクリーンショット撮影結果を取得します。
-	 * 
+	 *
 	 * @param ssid スクリーンショットID
 	 * @return スクリーンショット撮影結果
 	 */
@@ -220,7 +220,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 	/**
 	 * 現在の実行モードを取得します。
-	 * 
+	 *
 	 * @return 現在の実行モード
 	 */
 	public static ExecMode getCurrentMode() {
@@ -229,7 +229,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 	/**
 	 * 現在の実行モードが画像アサートをするモードかどうかを取得します。
-	 * 
+	 *
 	 * @return 画像アサートをするモードかどうか
 	 */
 	public static boolean isRunTest() {
@@ -246,7 +246,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 	/**
 	 * devicePixelRatioからピクセル換算した要素の座標と大きさを取得します。
-	 * 
+	 *
 	 * @param id 要素のID
 	 * @return ピクセル換算した要素の座標と大きさ
 	 */
@@ -258,7 +258,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 	/**
 	 * devicePixelRatioからピクセル換算した要素の座標と大きさを取得します。
-	 * 
+	 *
 	 * @param selector 要素を示すセレクタ
 	 * @return ピクセル換算した要素の座標と大きさ
 	 */
@@ -270,19 +270,19 @@ public class PtlItTestBase extends PtlTestBase {
 
 	/**
 	 * devicePixelRatioからピクセル換算した要素の座標と大きさを取得します。
-	 * 
+	 *
 	 * @param element 要素
 	 * @return ピクセル換算した要素の座標と大きさ
 	 */
 	public Rect getPixelRect(WebElement element) {
-		Map<String, Number> rect = driver.executeJavaScript("" + "var element = arguments[0];"
-				+ "return element.getPixelRect();", element);
+		Map<String, Number> rect = driver
+				.executeJavaScript("" + "var element = arguments[0];" + "return element.getPixelRect();", element);
 		return getPixelRect(rect);
 	}
 
 	/**
 	 * devicePixelRatioからピクセル換算した要素の座標と大きさを取得します。
-	 * 
+	 *
 	 * @param rect 座標と大きさを含んだマップ
 	 * @return ピクセル換算した要素の座標と大きさ
 	 */
@@ -292,35 +292,37 @@ public class PtlItTestBase extends PtlTestBase {
 
 	/**
 	 * 要素の座標と大きさを取得します。
-	 * 
+	 *
 	 * @param id 要素のID
 	 * @return 要素の座標と大きさ
 	 */
 	public Rect getRectById(String id) {
-		Map<String, Number> rect = driver.executeJavaScript("" + "var id = arguments[0];"
-				+ "var element = document.getElementById(id);" + "var rect = element.getPtlBoundingClientRect();"
-				+ "var result = {" + "  x: rect.left," + "  y: rect.top," + "  width: rect.width,"
-				+ "  height: rect.height" + "};" + "return result;", id);
+		Map<String, Number> rect = driver.executeJavaScript(
+				"" + "var id = arguments[0];" + "var element = document.getElementById(id);"
+						+ "var rect = element.getPtlBoundingClientRect();" + "var result = {" + "  x: rect.left,"
+						+ "  y: rect.top," + "  width: rect.width," + "  height: rect.height" + "};" + "return result;",
+				id);
 		return getRect(rect);
 	}
 
 	/**
 	 * 要素の座標と大きさを取得します。
-	 * 
+	 *
 	 * @param selector 要素を示すセレクタ
 	 * @return 要素の座標と大きさ
 	 */
 	public Rect getRectBySelector(String selector) {
-		Map<String, Number> rect = driver.executeJavaScript("" + "var selector = arguments[0];"
-				+ "var element = document.querySelector(selector);" + "var rect = element.getPtlBoundingClientRect();"
-				+ "var result = {" + "  x: rect.left," + "  y: rect.top," + "  width: rect.width,"
-				+ "  height: rect.height" + "};" + "return result;", selector);
+		Map<String, Number> rect = driver.executeJavaScript(
+				"" + "var selector = arguments[0];" + "var element = document.querySelector(selector);"
+						+ "var rect = element.getPtlBoundingClientRect();" + "var result = {" + "  x: rect.left,"
+						+ "  y: rect.top," + "  width: rect.width," + "  height: rect.height" + "};" + "return result;",
+				selector);
 		return getRect(rect);
 	}
 
 	/**
 	 * 要素の座標と大きさを取得します。
-	 * 
+	 *
 	 * @param element 要素
 	 * @return 要素の座標と大きさ
 	 */
@@ -334,7 +336,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 	/**
 	 * 要素の座標と大きさを取得します。
-	 * 
+	 *
 	 * @param rect 座標と大きさを含んだマップ
 	 * @return 要素の座標と大きさ
 	 */
@@ -410,7 +412,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 		/**
 		 * 色を表すintから赤色の情報を取り出します。
-		 * 
+		 *
 		 * @param color 色を表すint
 		 * @return 赤色の情報
 		 */
@@ -420,7 +422,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 		/**
 		 * 色を表すintから緑色の情報を取り出します。
-		 * 
+		 *
 		 * @param color 色を表すint
 		 * @return 緑色の情報
 		 */
@@ -430,7 +432,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 		/**
 		 * 色を表すintから青色の情報を取り出します。
-		 * 
+		 *
 		 * @param color 色を表すint
 		 * @return 青色の情報
 		 */
@@ -440,7 +442,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 		/**
 		 * RGBそれぞれの値からColorを合成します。
-		 * 
+		 *
 		 * @param red 赤色
 		 * @param green 緑色
 		 * @param blue 青色
@@ -452,7 +454,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 		/**
 		 * 色を表す文字列（{@code #RRGGBB}または{@code #RGB}形式）からColorを生成します。
-		 * 
+		 *
 		 * @param color 色を表す文字列
 		 * @return 生成されたColor
 		 */
@@ -484,7 +486,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 		/**
 		 * 色を表す数値からColorを生成します。
-		 * 
+		 *
 		 * @param color 色を表す数値
 		 * @return 生成されたColor
 		 */
@@ -597,13 +599,15 @@ public class PtlItTestBase extends PtlTestBase {
 	 */
 	public static class IsGradation extends TypeSafeDiagnosingMatcher<BufferedImage> {
 
+		private static Color expectedBorderColor;
+
 		public static IsGradation gradation() {
 			return new IsGradation();
 		}
 
 		/**
 		 * グラデーションかどうかをチェックします。
-		 * 
+		 *
 		 * @param pixelRatio 論理ピクセル比率
 		 */
 		public static IsGradation gradation(double pixelRatio) {
@@ -612,7 +616,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 		/**
 		 * ボーダー付のグラデーションかどうかをチェックします。
-		 * 
+		 *
 		 * @param pixelRatio 論理ピクセル比率
 		 */
 		public static IsGradation gradationWithBorder(double pixelRatio) {
@@ -621,7 +625,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 		/**
 		 * ボーダー付のグラデーションかどうかをチェックします。
-		 * 
+		 *
 		 * @param pixelRatio 論理ピクセル比率
 		 * @param borderStroke ボーダーの幅
 		 */
@@ -631,7 +635,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 		/**
 		 * ボーダー付のグラデーションかどうかをチェックします。
-		 * 
+		 *
 		 * @param pixelRatio 論理ピクセル比率
 		 * @param color ボーダーの色
 		 * @param borderStroke ボーダーの幅
@@ -642,7 +646,7 @@ public class PtlItTestBase extends PtlTestBase {
 
 		private final double pixelRatio;
 		private final int blockSize;
-		private final Color borderColor;
+		private Color borderColor;
 		private final int borderStroke;
 
 		public IsGradation() {
@@ -666,6 +670,9 @@ public class PtlItTestBase extends PtlTestBase {
 
 		@Override
 		public boolean matchesSafely(BufferedImage image, Description mismatch) {
+
+			// (0,0)の色をborderとみなす
+			borderColor = Color.valueOf(image.getRGB(0, 0));
 
 			// Border
 			int width = image.getWidth();
@@ -696,27 +703,52 @@ public class PtlItTestBase extends PtlTestBase {
 				}
 			}
 
+			// IEで指定した色がブラウザ上では若干異なる色になってしまうため、
+			// 端の値をベースにグラデーションになっているかを確認する
+
 			// Horizontal
+			int red = Color.valueOf(image.getRGB(border, border)).red;
+
 			for (int i = 0; i < width - border * 2; i++) {
 				int x = border + i;
 				int y = border;
 				Color actual = Color.valueOf(image.getRGB(x, y));
-				Color expected = Color.rgb((((int) Math.floor(i / pixelRatio) / blockSize) % (0x1 << 5)) * 8, 0, 0xff);
+				Color expected = Color.rgb(red, 0, 0xff);
 				if (!actual.equals(expected)) {
-					mismatch.appendText(String.format("%s @horizontal (%d, %d), expect=%s\n", actual, x, y, expected));
-					return false;
+					// IEでは色の変化が一定でなくなるため、次の値も確認
+					if (!actual.equals(Color.rgb(red + 1, 0, 0xff))) {
+						mismatch.appendText(
+								String.format("%s @horizontal (%d, %d), expect=%s\n", actual.red, x, y, red));
+						return false;
+					}
+					red++;
+				}
+				if (i % (int) (pixelRatio * blockSize) == blockSize - 1) {
+					red += 8;
+					red = red <= 0xff ? red : 0;
 				}
 			}
 
 			// Vertical
+			int green = Color.valueOf(image.getRGB(border, border)).green;
+
 			for (int i = 0; i < height - border * 2; i++) {
 				int x = border;
 				int y = border + i;
 				Color actual = Color.valueOf(image.getRGB(x, y));
-				Color expected = Color.rgb(0, (((int) Math.floor(i / pixelRatio) / blockSize) % (0x1 << 5)) * 8, 0xff);
+				Color expected = Color.rgb(0, green, 0xff);
 				if (!actual.equals(expected)) {
-					mismatch.appendText(String.format("%s @vertical (%d, %d), expect=%s\n", actual, x, y, expected));
-					return false;
+					// IEでは色の変化が一定でなくなるため、次の値も確認
+					if (!actual.equals(Color.rgb(0, green + 1, 0xff))) {
+						mismatch.appendText(
+								String.format("%s @vertical (%d, %d), expect=%s\n", actual, x, y, expected));
+						return false;
+					}
+					green++;
+				}
+				if (i % (int) (pixelRatio * blockSize) == blockSize - 1) {
+					green += 8;
+					green = green <= 0xff ? green : 0;
 				}
 			}
 
@@ -725,9 +757,9 @@ public class PtlItTestBase extends PtlTestBase {
 
 		@Override
 		public void describeTo(Description description) {
-			description.appendText(String.format(
-					"gradation page (pixelRatio=%f, blockSize=%d, borderColor=%s, borderStroke=%d)", pixelRatio,
-					blockSize, borderColor, borderStroke));
+			description.appendText(
+					String.format("gradation page (pixelRatio=%f, blockSize=%d, borderColor=%s, borderStroke=%d)",
+							pixelRatio, blockSize, borderColor, borderStroke));
 		}
 
 		private boolean borderMatch(BufferedImage image, Description mismatch, int x, int y) {
