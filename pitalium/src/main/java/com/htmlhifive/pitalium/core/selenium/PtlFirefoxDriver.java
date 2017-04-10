@@ -30,9 +30,11 @@ import com.htmlhifive.pitalium.core.model.ScreenshotParams;
  */
 class PtlFirefoxDriver extends SplitScreenshotWebDriver {
 
+	private static final String GET_PAGE_HEIGHT_SCRIPT = "var body = document.body; return body.scrollHeight";
+
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -71,6 +73,13 @@ class PtlFirefoxDriver extends SplitScreenshotWebDriver {
 				images.set(i, trimTargetPadding(el, images.get(i), i, images.size()));
 			}
 		}
+	}
+
+	@Override
+	long getScrollNum(double clientHeight) {
+		WebElementMargin margin = ((PtlWebElement) findElementByTagName("body")).getMargin();
+		double pageHeight = getScrollHeight() + margin.getTop() + margin.getBottom();
+		return (int) (Math.ceil(pageHeight / clientHeight)) - 1;
 	}
 
 	@Override
