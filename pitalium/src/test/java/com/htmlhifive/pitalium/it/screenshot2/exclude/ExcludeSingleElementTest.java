@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
 import org.junit.Test;
+import org.openqa.selenium.Dimension;
 
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.core.model.TargetResult;
@@ -48,7 +49,7 @@ public class ExcludeSingleElementTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 
 		// Check
-		Rect rect = getPixelRectBySelector(".navbar");
+		Rect rect = getRectBySelector(".navbar");
 		TargetResult result = loadTargetResults("s").get(0);
 		assertThat(result.getExcludes(), hasSize(1));
 
@@ -57,4 +58,27 @@ public class ExcludeSingleElementTest extends PtlItScreenshotTestBase {
 		assertThat(area, is(expectArea));
 	}
 
+	/**
+	 * 単体要素撮影時に、小数点以下がある幅を持つ単体要素を指定して除外する。
+	 *
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
+	@Test
+	public void singleTestWithDecimal() {
+		openBasicColorPage();
+		driver.manage().window().setSize(new Dimension(1100, (int) driver.getWindowHeight()));
+
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByTagName("body")
+				.addExcludeById("colorColumn1").build();
+		assertionView.assertView(arg);
+
+		// Check
+		Rect rect = getRectById("colorColumn1");
+		TargetResult result = loadTargetResults("s").get(0);
+		assertThat(result.getExcludes(), hasSize(1));
+
+		RectangleArea area = result.getExcludes().get(0).getRectangle();
+		RectangleArea expectArea = rect.toExcludeRect().toRectangleArea();
+		assertThat(area, is(expectArea));
+	}
 }
