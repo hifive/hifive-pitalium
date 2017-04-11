@@ -35,7 +35,7 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールの撮影において、最初から見えている要素を指定して除外する。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
@@ -54,10 +54,10 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes(), hasSize(1));
 
 		// memo :nth-of-typeはIE9から
-		Rect tableRect = getPixelRectById("table-scroll");
-		Rect rowRect = getPixelRect((WebElement) driver.executeJavaScript(""
-				+ "var table = document.getElementById('table-scroll');"
-				+ "return table.getElementsByTagName('tr')[0];"));
+		Rect tableRect = getPixelRectById("table-scroll").toTargetRect();
+		Rect rowRect = getRect(
+				(WebElement) driver.executeJavaScript("" + "var table = document.getElementById('table-scroll');"
+						+ "return table.getElementsByTagName('tr')[0];")).toExcludeRect();
 
 		double x = Math.round(rowRect.x - tableRect.x);
 		double y = Math.round(rowRect.y - tableRect.y);
@@ -68,7 +68,7 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールの撮影において、最初は見えていない要素を指定して除外する。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
@@ -86,10 +86,10 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 		TargetResult result = loadTargetResults("s").get(0);
 		assertThat(result.getExcludes(), hasSize(1));
 
-		Rect tableRect = getPixelRectById("table-scroll");
-		Rect rowRect = getPixelRect((WebElement) driver.executeJavaScript(""
-				+ "var table = document.getElementById('table-scroll');" + "var tr = table.getElementsByTagName('tr');"
-				+ "return tr[tr.length - 1];"));
+		Rect tableRect = getPixelRectById("table-scroll").toTargetRect();
+		Rect rowRect = getPixelRect(
+				(WebElement) driver.executeJavaScript("" + "var table = document.getElementById('table-scroll');"
+						+ "var tr = table.getElementsByTagName('tr');" + "return tr[tr.length - 1];")).toExcludeRect();
 
 		double x = Math.round(rowRect.x - tableRect.x);
 		double y = Math.round(rowRect.y - tableRect.y);
@@ -100,7 +100,7 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールの撮影において、存在しない要素を指定して除外する。
-	 * 
+	 *
 	 * @ptl.expect エラーが発生せず、除外領域が保存されていないこと。
 	 */
 	@Test

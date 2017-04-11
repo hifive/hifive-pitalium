@@ -287,7 +287,7 @@ public class PtlItTestBase extends PtlTestBase {
 	 * @return ピクセル換算した要素の座標と大きさ
 	 */
 	public Rect getPixelRect(Map<String, Number> rect) {
-		return getRect(rect);
+		return getRect(rect).round();
 	}
 
 	/**
@@ -345,7 +345,7 @@ public class PtlItTestBase extends PtlTestBase {
 		double y = rect.get("y").doubleValue();
 		double width = rect.get("width").doubleValue();
 		double height = rect.get("height").doubleValue();
-		return new Rect(x, y, width, height).round();
+		return new Rect(x, y, width, height);
 	}
 
 	/**
@@ -385,6 +385,22 @@ public class PtlItTestBase extends PtlTestBase {
 			double y = Math.round(this.y);
 			double width = Math.round(this.width);
 			double height = Math.round(this.height);
+			return new Rect(x, y, width, height);
+		}
+
+		public Rect toTargetRect() {
+			double x = Math.ceil(this.x);
+			double y = Math.ceil(this.y);
+			double width = Math.floor(this.x + this.width) - x;
+			double height = Math.floor(this.y + this.height) - y;
+			return new Rect(x, y, width, height);
+		}
+
+		public Rect toExcludeRect() {
+			double x = Math.floor(this.x);
+			double y = Math.floor(this.y);
+			double width = Math.ceil(this.x + this.width) - x;
+			double height = Math.ceil(this.y + this.height) - y;
 			return new Rect(x, y, width, height);
 		}
 

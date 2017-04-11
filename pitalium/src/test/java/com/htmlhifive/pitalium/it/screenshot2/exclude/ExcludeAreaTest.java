@@ -35,14 +35,14 @@ public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 範囲を指定して除外する。moveオブションあり。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
 	public void move() throws Exception {
 		openBasicColorPage();
 
-		Rect rect = getRectById("colorColumn2");
+		Rect rect = getPixelRectById("colorColumn2");
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget()
 				.addExclude(rect.x, rect.y, rect.width, rect.height).addNewTargetById("container").moveTarget(true)
 				.addExclude(rect.x, rect.y, rect.width, rect.height).moveTarget(true).build();
@@ -53,30 +53,29 @@ public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 		assertThat(results, hasSize(2));
 
 		// Body
-		Rect pixelRect = getPixelRectById("colorColumn2");
 		TargetResult bodyResult = results.get(0);
 		assertThat(bodyResult.getExcludes(), hasSize(1));
-		assertThat(bodyResult.getExcludes().get(0).getRectangle(), is(pixelRect.toRectangleArea()));
+		assertThat(bodyResult.getExcludes().get(0).getRectangle(), is(rect.toRectangleArea()));
 
 		// Container
 		TargetResult containerResult = results.get(1);
 		assertThat(containerResult.getExcludes(), hasSize(1));
 
 		Rect containerRect = getPixelRectById("container");
-		assertThat(containerResult.getExcludes().get(0).getRectangle(), is(new RectangleArea(pixelRect.x
-				- containerRect.x, pixelRect.y - containerRect.y, pixelRect.width, pixelRect.height)));
+		assertThat(containerResult.getExcludes().get(0).getRectangle(),
+				is(new RectangleArea(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height)));
 	}
 
 	/**
 	 * 範囲を指定して除外する。moveオブションなし。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
 	public void notMove() throws Exception {
 		openBasicColorPage();
 
-		Rect rect = getRectById("colorColumn2");
+		Rect rect = getPixelRectById("colorColumn2");
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget()
 				.addExclude(rect.x, rect.y, rect.width, rect.height).addNewTargetById("container").moveTarget(false)
 				.addExclude(rect.x, rect.y, rect.width, rect.height).moveTarget(false).build();
@@ -87,18 +86,17 @@ public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 		assertThat(results, hasSize(2));
 
 		// Body
-		Rect pixelRect = getPixelRectById("colorColumn2");
 		TargetResult bodyResult = results.get(0);
 		assertThat(bodyResult.getExcludes(), hasSize(1));
-		assertThat(bodyResult.getExcludes().get(0).getRectangle(), is(pixelRect.toRectangleArea()));
+		assertThat(bodyResult.getExcludes().get(0).getRectangle(), is(rect.toRectangleArea()));
 
 		// Container
 		TargetResult containerResult = results.get(1);
 		assertThat(containerResult.getExcludes(), hasSize(1));
 
 		Rect containerRect = getPixelRectById("container");
-		assertThat(containerResult.getExcludes().get(0).getRectangle(), is(new RectangleArea(pixelRect.x
-				- containerRect.x, pixelRect.y - containerRect.y, pixelRect.width, pixelRect.height)));
+		assertThat(containerResult.getExcludes().get(0).getRectangle(),
+				is(new RectangleArea(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height)));
 	}
 
 }

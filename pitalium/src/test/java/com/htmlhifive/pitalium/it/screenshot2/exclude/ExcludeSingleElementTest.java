@@ -20,8 +20,6 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
-import java.util.Map;
-
 import org.junit.Test;
 
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
@@ -36,7 +34,7 @@ public class ExcludeSingleElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 単体要素撮影時に、単体要素を指定して除外する。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
@@ -50,14 +48,12 @@ public class ExcludeSingleElementTest extends PtlItScreenshotTestBase {
 		assertionView.assertView(arg);
 
 		// Check
-		Map<String, Number> rect = driver.executeJavaScript(""
-				+ "var element = document.getElementsByClassName('navbar')[0];" + "return element.getPixelRect();");
+		Rect rect = getPixelRectBySelector(".navbar");
 		TargetResult result = loadTargetResults("s").get(0);
 		assertThat(result.getExcludes(), hasSize(1));
 
 		RectangleArea area = result.getExcludes().get(0).getRectangle();
-		RectangleArea expectArea = new RectangleArea(0.0, 0.0, rect.get("width").doubleValue(), rect.get("height")
-				.doubleValue());
+		RectangleArea expectArea = rect.toExcludeRect().toRectangleArea();
 		assertThat(area, is(expectArea));
 	}
 

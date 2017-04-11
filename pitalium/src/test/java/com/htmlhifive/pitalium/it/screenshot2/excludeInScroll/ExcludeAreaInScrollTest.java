@@ -35,7 +35,7 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールの撮影において、最初から見えている領域を指定して除外する。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
@@ -48,7 +48,7 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 		// 一つ目のTRを除外する
 		WebElement row = driver.executeJavaScript("" + "var table = document.getElementById('table-scroll');"
 				+ "return table.getElementsByTagName('tr')[0];");
-		Rect rowRect = getRect(row);
+		Rect rowRect = getPixelRect(row);
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#table-scroll > tbody")
 				.scrollTarget(true).moveTarget(true).addExclude(rowRect.x, rowRect.y, rowRect.width, rowRect.height)
 				.build();
@@ -58,18 +58,17 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 		TargetResult result = loadTargetResults("s").get(0);
 		assertThat(result.getExcludes(), hasSize(1));
 
-		Rect tableRect = getPixelRectById("table-scroll");
-		Rect rowPixelRect = getPixelRect(row);
-		double x = Math.round(rowPixelRect.x - tableRect.x);
-		double y = Math.round(rowPixelRect.y - tableRect.y);
-		double width = Math.round(rowPixelRect.width);
-		double height = Math.round(rowPixelRect.height);
+		Rect tableRect = getRectById("table-scroll");
+		double x = Math.round(rowRect.x - tableRect.x);
+		double y = Math.round(rowRect.y - tableRect.y);
+		double width = Math.round(rowRect.width);
+		double height = Math.round(rowRect.height);
 		assertThat(result.getExcludes().get(0).getRectangle(), is(new RectangleArea(x, y, width, height)));
 	}
 
 	/**
 	 * 要素内スクロールの撮影において、最初は見えていない領域を指定して除外する。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
@@ -82,7 +81,7 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 		// 最後のTRを除外する
 		WebElement row = driver.executeJavaScript("" + "var table = document.getElementById('table-scroll');"
 				+ "var tr = table.getElementsByTagName('tr');" + "return tr[tr.length - 1];");
-		Rect rowRect = getRect(row);
+		Rect rowRect = getPixelRect(row);
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#table-scroll > tbody")
 				.scrollTarget(true).moveTarget(true).addExclude(rowRect.x, rowRect.y, rowRect.width, rowRect.height)
 				.build();
@@ -93,17 +92,16 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes(), hasSize(1));
 
 		Rect tableRect = getPixelRectById("table-scroll");
-		Rect rowPixelRect = getPixelRect(row);
-		double x = Math.round(rowPixelRect.x - tableRect.x);
-		double y = Math.round(rowPixelRect.y - tableRect.y);
-		double width = Math.round(rowPixelRect.width);
-		double height = Math.round(rowPixelRect.height);
+		double x = Math.round(rowRect.x - tableRect.x);
+		double y = Math.round(rowRect.y - tableRect.y);
+		double width = Math.round(rowRect.width);
+		double height = Math.round(rowRect.height);
 		assertThat(result.getExcludes().get(0).getRectangle(), is(new RectangleArea(x, y, width, height)));
 	}
 
 	/**
 	 * 要素内スクロールの撮影において、最初から見えている領域を指定して除外する。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
@@ -116,7 +114,7 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 		// 一つ目のTRを除外する
 		WebElement row = driver.executeJavaScript("" + "var table = document.getElementById('table-scroll');"
 				+ "return table.getElementsByTagName('tr')[0];");
-		Rect rowRect = getRect(row);
+		Rect rowRect = getPixelRect(row);
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#table-scroll > tbody")
 				.scrollTarget(true).moveTarget(false).addExclude(rowRect.x, rowRect.y, rowRect.width, rowRect.height)
 				.build();
@@ -127,17 +125,16 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes(), hasSize(1));
 
 		Rect tableRect = getPixelRectById("table-scroll");
-		Rect rowPixelRect = getPixelRect(row);
-		double x = Math.round(rowPixelRect.x - tableRect.x);
-		double y = Math.round(rowPixelRect.y - tableRect.y);
-		double width = Math.round(rowPixelRect.width);
-		double height = Math.round(rowPixelRect.height);
+		double x = Math.round(rowRect.x - tableRect.x);
+		double y = Math.round(rowRect.y - tableRect.y);
+		double width = Math.round(rowRect.width);
+		double height = Math.round(rowRect.height);
 		assertThat(result.getExcludes().get(0).getRectangle(), is(new RectangleArea(x, y, width, height)));
 	}
 
 	/**
 	 * 要素内スクロールの撮影において、最初は見えていない領域を指定して除外する。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
@@ -150,7 +147,7 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 		// 最後のTRを除外する
 		WebElement row = driver.executeJavaScript("" + "var table = document.getElementById('table-scroll');"
 				+ "var tr = table.getElementsByTagName('tr');" + "return tr[tr.length - 1];");
-		Rect rowRect = getRect(row);
+		Rect rowRect = getPixelRect(row);
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#table-scroll > tbody")
 				.scrollTarget(true).moveTarget(false).addExclude(rowRect.x, rowRect.y, rowRect.width, rowRect.height)
 				.build();
@@ -161,11 +158,10 @@ public class ExcludeAreaInScrollTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes(), hasSize(1));
 
 		Rect tableRect = getPixelRectById("table-scroll");
-		Rect rowPixelRect = getPixelRect(row);
-		double x = Math.round(rowPixelRect.x - tableRect.x);
-		double y = Math.round(rowPixelRect.y - tableRect.y);
-		double width = Math.round(rowPixelRect.width);
-		double height = Math.round(rowPixelRect.height);
+		double x = Math.round(rowRect.x - tableRect.x);
+		double y = Math.round(rowRect.y - tableRect.y);
+		double width = Math.round(rowRect.width);
+		double height = Math.round(rowRect.height);
 		assertThat(result.getExcludes().get(0).getRectangle(), is(new RectangleArea(x, y, width, height)));
 	}
 

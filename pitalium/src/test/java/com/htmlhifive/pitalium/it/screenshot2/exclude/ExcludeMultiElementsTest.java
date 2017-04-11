@@ -35,7 +35,7 @@ public class ExcludeMultiElementsTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 単体要素のスクリーンショットを撮影し、そこに含まれる複数の要素を単体のセレクタを使用して除外する。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
@@ -53,13 +53,13 @@ public class ExcludeMultiElementsTest extends PtlItScreenshotTestBase {
 		for (int i = 0; i < 3; i++) {
 			Rect rect = getPixelRectById("colorColumn" + i);
 			RectangleArea area = result.getExcludes().get(i).getRectangle();
-			assertThat(area, is(rect.toRectangleArea()));
+			assertThat(area, is(rect.toExcludeRect().toRectangleArea()));
 		}
 	}
 
 	/**
 	 * 単体要素のスクリーンショットを撮影し、そこに含まれる複数の要素を複数のセレクタを使用して除外する。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
@@ -83,7 +83,7 @@ public class ExcludeMultiElementsTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 複数のスクリーンショットを撮影し、それぞれから要素を除外する。
-	 * 
+	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
 	@Test
@@ -98,11 +98,11 @@ public class ExcludeMultiElementsTest extends PtlItScreenshotTestBase {
 		List<TargetResult> results = loadTargetResults("s");
 		assertThat(results, hasSize(2));
 
-		Rect containerRect = getPixelRectById("container");
-		Rect columnRect = getPixelRectById("colorColumn0");
+		Rect containerRect = getRectById("container");
+		Rect columnRect = getRectById("colorColumn0");
 
-		RectangleArea containerArea = containerRect.toRectangleArea();
-		RectangleArea columnArea = columnRect.toRectangleArea();
+		RectangleArea containerArea = containerRect.toTargetRect().toRectangleArea();
+		RectangleArea columnArea = columnRect.toExcludeRect().toRectangleArea();
 
 		// Body
 		TargetResult bodyResult = results.get(0);
@@ -113,8 +113,8 @@ public class ExcludeMultiElementsTest extends PtlItScreenshotTestBase {
 		TargetResult containerResult = results.get(1);
 		assertThat(containerResult.getExcludes(), hasSize(1));
 		assertThat(containerResult.getExcludes().get(0).getRectangle(),
-				is(new RectangleArea(columnArea.getX() - containerArea.getX(),
-						columnArea.getY() - containerArea.getY(), columnArea.getWidth(), columnArea.getHeight())));
+				is(new RectangleArea(columnArea.getX() - containerArea.getX(), columnArea.getY() - containerArea.getY(),
+						columnArea.getWidth(), columnArea.getHeight())));
 	}
 
 }
