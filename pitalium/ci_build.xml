@@ -35,17 +35,17 @@
 	<property name="ut.include.dir" value="**/common/util/*.java,**/core/**/*.java,**/image/**/*.java,**/junit/*.java" />
 	<property name="ut.exclude.dir" value="" />
 	<property name="it.screenshot.includes" value="**/it/screenshot2/**/*.java" />
-	<property name="it.screenshot.excludes" value="**/it/screenshot2/scroll/*.java,PtlItScreenshotTestBase.java" />
+	<property name="it.screenshot.excludes" value="**/it/screenshot2/scroll/*.java,**/it/screenshot2/*.java,**/package-info.java" />
 	<property name="it.screenshot.scroll.includes" value="**/it/screenshot2/scroll/*.java" />
-	<property name="it.screenshot.scroll.excludes" value="" />
+	<property name="it.screenshot.scroll.excludes" value="**/package-info.java" />
 	<property name="it.assertion.set_expected.includes" value="**/it/assertion2/**/*.java" />
-	<property name="it.assertion.set_expected.excludes" value="**/it/assertion2/scroll/*.java" />
+	<property name="it.assertion.set_expected.excludes" value="**/it/assertion2/scroll/*.java,**/it/assertion2/*.java,**/package-info.java" />
 	<property name="it.assertion.scroll.set_expected.includes" value="**/it/assertion2/scroll/*.java" />
-	<property name="it.assertion.scroll.set_expected.excludes" value="" />
+	<property name="it.assertion.scroll.set_expected.excludes" value="**/package-info.java" />
 	<property name="it.assertion.includes" value="**/it/assertion2/**/*.java" />
-	<property name="it.assertion.excludes" value="" />
+	<property name="it.assertion.excludes" value="**/it/assertion2/scroll/*.java,**/it/assertion2/*.java,**/package-info.java" />
 	<property name="it.assertion.scroll.includes" value="**/it/assertion2/scroll/*.java" />
-	<property name="it.assertion.scroll.excludes" value="" />
+	<property name="it.assertion.scroll.excludes" value="**/package-info.java" />
 
 	<!-- テスト実行用設定ファイル名 -->
 	<property name="set_expected.config.file" value="environmentConfig.json" />
