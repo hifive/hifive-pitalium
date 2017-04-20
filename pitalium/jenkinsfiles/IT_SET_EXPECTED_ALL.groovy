@@ -46,9 +46,14 @@ node {
 				buildITSetExpectedJob('IE10')
 			}
 		},
-		IE11: {
-			if (IE11 == 'true') {
-				buildITSetExpectedJob('IE11')
+		IE11_Win7: {
+			if (Windows7_IE11 == 'true') {
+				buildITSetExpectedJob('IE11_Win7')
+			}
+		},
+		IE11_Win10: {
+			if (Windows10_IE11 == 'true') {
+				buildITSetExpectedJob('IE11_Win10')
 			}
 		},
 		Edge: {
@@ -56,14 +61,24 @@ node {
 				buildITSetExpectedJob('Edge')
 			}
 		},
-		Chrome_Win: {
-			if (Windows_Chrome == 'true') {
-				buildITSetExpectedJob('Chrome_Win')
+		Chrome_Win7: {
+			if (Windows7_Chrome == 'true') {
+				buildITSetExpectedJob('Chrome_Win7')
 			}
 		},
-		FF_Win: {
-			if (Windows_Firefox == 'true') {
-				buildITSetExpectedJob('FF_Win')
+		Chrome_Win10: {
+			if (Windows10_Chrome == 'true') {
+				buildITSetExpectedJob('Chrome_Win10')
+			}
+		},
+		FF_Win7: {
+			if (Windows7_Firefox == 'true') {
+				buildITSetExpectedJob('FF_Win7')
+			}
+		},
+		FF_Win10: {
+			if (Windows10_Firefox == 'true') {
+				buildITSetExpectedJob('FF_Win10')
 			}
 		},
 		Chrome_Mac: {

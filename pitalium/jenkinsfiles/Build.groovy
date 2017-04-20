@@ -61,7 +61,7 @@ def createSettingFilesForAll() {
 			file: 'pitalium\\src\\test\\resources\\testAppConfig.json',
 			text: """\
 {
-	"baseUrl": "http://${APP_HOST}/mdtTest/",
+	"baseUrl": "http://${APP_HOST}/pitalium-test-site/",
 	"windowHeight": 960,
 	"windowWidth": 1280
 }"""
@@ -71,7 +71,7 @@ def createSettingFilesForAll() {
 			file: 'pitalium\\src\\test\\resources\\testAppConfig_scroll.json',
 			text: """\
 {
-	"baseUrl": "http://${APP_HOST}/pitalium-test/overflow.html",
+	"baseUrl": "http://${APP_HOST}/pitalium-test-site/",
 	"windowHeight": 960,
 	"windowWidth": 1280
 }"""
