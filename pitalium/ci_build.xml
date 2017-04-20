@@ -7,8 +7,8 @@
 	<!-- プロジェクトの設定 -->
 	<property name="target.project.version" value="1.1.0" />
 	<property name="target.java.encoding" value="UTF-8" />
-	<property name="target.java.version" value="1.7" />
-	<property name="target.java.source.version" value="1.7" />
+	<property name="target.java.version" value="1.8" />
+	<property name="target.java.source.version" value="1.8" />
 	
 	<!-- ソースフォルダの設定 -->
 	<property name="target.main.src.dir" value="src/main/java" />
