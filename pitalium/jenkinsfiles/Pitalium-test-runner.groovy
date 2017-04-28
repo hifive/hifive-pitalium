@@ -210,9 +210,13 @@ node {
 	withEnv(["ANT_OPTS=-Dcobertura.report.dir=../${reportPath}"]) {
 		bat("${antHome}/bin/ant.bat -file pitalium/ci_build.xml test_report && exit %%ERRORLEVEL%%")
 	}
-	// SonarQubeで解析
-	def sonarScanner = tool(name: 'Default_SonarQube-Scanner')
-	bat("${sonarScanner}/bin/sonar-runner.bat -e -Dsonar.host.url=${SONAR_URL} -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=pitalium/src/main/java -Dsonar.junit.reportsPath=${reportPath} -Dsonar.projectVersion=1.1.0 -Dsonar.java.binaries=pitalium/target/work/classes -Dsonar.projectKey=com.htmlhifive.test.pitalium2 -Dsonar.cobertura.reportPath=pitalium/target/work/test-cobertura/coverage.xml -Dsonar.working.directory=pitalium/tmp/sonar -Dsonar.tests=pitalium/src/test/java -Dsonar.java.libraries=pitalium/libs/*.jar -Dsonar.projectName=Pitalium-jenkins2")
+	if (RUN_SONAR_ANALYSIS == 'true') {
+		// SonarQubeで解析
+		def sonarScanner = tool(name: 'Default_SonarQube-Scanner')
+		bat("${sonarScanner}/bin/sonar-runner.bat -e -Dsonar.host.url=${SONAR_URL} -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=pitalium/src/main/java -Dsonar.junit.reportsPath=${reportPath} -Dsonar.projectVersion=1.1.0 -Dsonar.java.binaries=pitalium/target/work/classes -Dsonar.projectKey=com.htmlhifive.test.pitalium2 -Dsonar.cobertura.reportPath=pitalium/target/work/test-cobertura/coverage.xml -Dsonar.working.directory=pitalium/tmp/sonar -Dsonar.tests=pitalium/src/test/java -Dsonar.java.libraries=pitalium/libs/*.jar -Dsonar.projectName=Pitalium-jenkins2")
+	} else {
+		echo("#### Skip SonarQube Analysis... The Current Test Results are Displayed on Jenkins ####")
+	}
 	step(
 			$class: 'JUnitResultArchiver',
 			testResults: "${reportPath}/*.xml"
