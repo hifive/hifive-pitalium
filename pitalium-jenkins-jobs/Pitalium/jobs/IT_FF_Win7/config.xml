@@ -23,6 +23,16 @@
           <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
+          <name>IVY_PROXY_USER</name>
+          <description>ivy実行時のプロキシの認証ユーザ名</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>IVY_PROXY_PASSWORD</name>
+          <description>ivy実行時のプロキシの認証パスワード</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
           <name>ANT_PROXY_HOST</name>
           <description>テスト実行時のプロキシのホスト</description>
           <defaultValue></defaultValue>

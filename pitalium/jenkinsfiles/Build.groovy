@@ -12,7 +12,7 @@ node {
 
 	stage('Download Libraries')
 	def antHome = tool(name: 'Default_Ant')
-	withEnv(["ANT_OPTS=-Dhttp.proxyHost=${IVY_PROXY_HOST} -Dhttp.proxyPort=${IVY_PROXY_PORT}"]) {
+	withEnv(["ANT_OPTS=-Dhttp.proxyHost=${IVY_PROXY_HOST} -Dhttp.proxyPort=${IVY_PROXY_PORT} -Dhttp.proxyUser=${IVY_PROXY_USER} -Dhttp.proxyPassword=${IVY_PROXY_PASSWORD}"]) {
 		bat("${antHome}/bin/ant.bat -file pitalium/ivy_build.xml resolve-test && exit %%ERRORLEVEL%%")
 	}
 

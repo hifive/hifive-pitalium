@@ -22,6 +22,16 @@
           <description>ivy実行時のプロキシのポート</description>
           <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>IVY_PROXY_USER</name>
+          <description>ivy実行時のプロキシの認証ユーザ名</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>IVY_PROXY_PASSWORD</name>
+          <description>ivy実行時のプロキシの認証パスワード</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>IE8</name>
           <description>IE8でテストを実行するか否か</description>

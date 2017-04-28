@@ -13,6 +13,8 @@ node {
 				[$class: 'StringParameterValue', name: 'BRANCH_NAME', value: BRANCH_NAME],
 				[$class: 'StringParameterValue', name: 'IVY_PROXY_HOST', value: IVY_PROXY_HOST],
 				[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PORT],
+				[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_USER],
+				[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PASSWORD],
 				[$class: 'StringParameterValue', name: 'HUB_HOST', value: HUB_HOST],
 				[$class: 'StringParameterValue', name: 'APP_HOST', value: APP_HOST]
 			],
