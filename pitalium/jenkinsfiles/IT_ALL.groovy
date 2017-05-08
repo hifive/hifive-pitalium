@@ -10,7 +10,9 @@ node {
 		parameters: [
 			[$class: 'StringParameterValue', name: 'BRANCH_NAME', value: BRANCH_NAME],
 			[$class: 'StringParameterValue', name: 'IVY_PROXY_HOST', value: IVY_PROXY_HOST],
-			[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PORT]
+			[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PORT],
+			[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_USER],
+			[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PASSWORD]
 		],
 		propagate: false
 	)
@@ -46,9 +48,14 @@ node {
 				buildITJob('IE10')
 			}
 		},
-		IE11: {
-			if (IE11 == 'true') {
-				buildITJob('IE11')
+		IE11_Win7: {
+			if (Windows7_IE11 == 'true') {
+				buildITJob('IE11_Win7')
+			}
+		},
+		IE11_Win10: {
+			if (Windows10_IE11 == 'true') {
+				buildITJob('IE11_Win10')
 			}
 		},
 		Edge: {
@@ -56,14 +63,24 @@ node {
 				buildITJob('Edge')
 			}
 		},
-		Chrome_Win: {
-			if (Windows_Chrome == 'true') {
-				buildITJob('Chrome_Win')
+		Chrome_Win7: {
+			if (Windows7_Chrome == 'true') {
+				buildITJob('Chrome_Win7')
 			}
 		},
-		FF_Win: {
-			if (Windows_Firefox == 'true') {
-				buildITJob('FF_Win')
+		Chrome_Win10: {
+			if (Windows10_Chrome == 'true') {
+				buildITJob('Chrome_Win10')
+			}
+		},
+		FF_Win7: {
+			if (Windows7_Firefox == 'true') {
+				buildITJob('FF_Win7')
+			}
+		},
+		FF_Win10: {
+			if (Windows10_Firefox == 'true') {
+				buildITJob('FF_Win10')
 			}
 		},
 		Chrome_Mac: {

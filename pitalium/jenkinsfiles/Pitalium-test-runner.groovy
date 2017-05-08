@@ -13,6 +13,8 @@ node {
 				[$class: 'StringParameterValue', name: 'BRANCH_NAME', value: BRANCH_NAME],
 				[$class: 'StringParameterValue', name: 'IVY_PROXY_HOST', value: IVY_PROXY_HOST],
 				[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PORT],
+				[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_USER],
+				[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PASSWORD],
 				[$class: 'StringParameterValue', name: 'HUB_HOST', value: HUB_HOST],
 				[$class: 'StringParameterValue', name: 'APP_HOST', value: APP_HOST]
 			],
@@ -88,9 +90,14 @@ node {
 						buildITJob('IE10')
 					}
 				},
-				IE11: {
-					if (IE11 == 'true') {
-						buildITJob('IE11')
+				IE11_Win7: {
+					if (Windows7_IE11 == 'true') {
+						buildITJob('IE11_Win7')
+					}
+				},
+				IE11_Win10: {
+					if (Windows10_IE11 == 'true') {
+						buildITJob('IE11_Win10')
 					}
 				},
 				Edge: {
@@ -98,14 +105,24 @@ node {
 						buildITJob('Edge')
 					}
 				},
-				Chrome_Win: {
-					if (Windows_Chrome == 'true') {
-						buildITJob('Chrome_Win')
+				Chrome_Win7: {
+					if (Windows7_Chrome == 'true') {
+						buildITJob('Chrome_Win7')
 					}
 				},
-				FF_Win: {
-					if (Windows_Firefox == 'true') {
-						buildITJob('FF_Win')
+				Chrome_Win10: {
+					if (Windows10_Chrome == 'true') {
+						buildITJob('Chrome_Win10')
+					}
+				},
+				FF_Win7: {
+					if (Windows7_Firefox == 'true') {
+						buildITJob('FF_Win7')
+					}
+				},
+				FF_Win10: {
+					if (Windows10_Firefox == 'true') {
+						buildITJob('FF_Win10')
 					}
 				},
 				Chrome_Mac: {
@@ -141,30 +158,67 @@ node {
 	stage('SonarQube Analysis')
 	// 全テストレポートの集約
 	def reportPath = 'reports'
-	def jobs = [
-		'UT_common_core_image_junit',
-		'IT_exec',
-		'IT_IE8',
-		'IT_IE9',
-//		'IT_IE10',
-		'IT_IE11',
-		'IT_Edge',
-		'IT_Chrome_Win',
-		'IT_FF_Win',
-		'IT_Chrome_Mac',
-		'IT_FF_Mac',
-		'IT_Safari'
-//		'IT_FF_Linux'
-	]
-	for(j in jobs) {
-		copyReportFromJob(j, reportPath)
+	if (RUN_UT == 'true') {
+		copyReportFromJob('UT_common_core_image_junit', reportPath)
 	}
+	if (RUN_IT_EXEC == 'true') {
+		copyReportFromJob('IT_exec', reportPath)
+	}
+	if (RUN_IT_SCREENSHOT_ASSERTION == 'true') {
+		if (IE8 == 'true') {
+			copyReportFromJob('IT_IE8', reportPath)
+		}
+		if (IE9 == 'true') {
+			copyReportFromJob('IT_IE9', reportPath)
+		}
+		if (IE10 == 'true') {
+			copyReportFromJob('IT_IE10', reportPath)
+		}
+		if (Windows7_IE11 == 'true') {
+			copyReportFromJob('IT_IE11_Win7', reportPath)
+		}
+		if (Windows10_IE11 == 'true') {
+			copyReportFromJob('IT_IE11_Win10', reportPath)
+		}
+		if (Edge == 'true') {
+			copyReportFromJob('IT_Edge', reportPath)
+		}
+		if (Windows7_Chrome == 'true') {
+			copyReportFromJob('IT_Chrome_Win7', reportPath)
+		}
+		if (Windows10_Chrome == 'true') {
+			copyReportFromJob('IT_Chrome_Win10', reportPath)
+		}
+		if (Windows7_Firefox == 'true') {
+			copyReportFromJob('IT_FF_Win7', reportPath)
+		}
+		if (Windows10_Firefox == 'true') {
+			copyReportFromJob('IT_FF_Win10', reportPath)
+		}
+		if (Mac_Chrome == 'true') {
+			copyReportFromJob('IT_Chrome_Mac', reportPath)
+		}
+		if (Mac_Firefox == 'true') {
+			copyReportFromJob('IT_FF_Mac', reportPath)
+		}
+		if (Safari == 'true') {
+			copyReportFromJob('IT_Safari', reportPath)
+		}
+		if (Linux_Firefox == 'true') {
+			copyReportFromJob('IT_FF_Linux', reportPath)
+		}
+	}
+	
 	withEnv(["ANT_OPTS=-Dcobertura.report.dir=../${reportPath}"]) {
 		bat("${antHome}/bin/ant.bat -file pitalium/ci_build.xml test_report && exit %%ERRORLEVEL%%")
 	}
-	// SonarQubeで解析
-	def sonarScanner = tool(name: 'Default_SonarQube-Scanner')
-	bat("${sonarScanner}/bin/sonar-runner.bat -e -Dsonar.host.url=${SONAR_URL} -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=pitalium/src/main/java -Dsonar.junit.reportsPath=${reportPath} -Dsonar.projectVersion=1.1.0 -Dsonar.java.binaries=pitalium/target/work/classes -Dsonar.projectKey=com.htmlhifive.test.pitalium2 -Dsonar.cobertura.reportPath=pitalium/target/work/test-cobertura/coverage.xml -Dsonar.working.directory=pitalium/tmp/sonar -Dsonar.tests=pitalium/src/test/java -Dsonar.java.libraries=pitalium/libs/*.jar -Dsonar.projectName=Pitalium-jenkins2")
+	if (RUN_SONAR_ANALYSIS == 'true') {
+		// SonarQubeで解析
+		def sonarScanner = tool(name: 'Default_SonarQube-Scanner')
+		bat("${sonarScanner}/bin/sonar-runner.bat -e -Dsonar.host.url=${SONAR_URL} -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=pitalium/src/main/java -Dsonar.junit.reportsPath=${reportPath} -Dsonar.projectVersion=1.1.0 -Dsonar.java.binaries=pitalium/target/work/classes -Dsonar.projectKey=com.htmlhifive.test.pitalium2 -Dsonar.cobertura.reportPath=pitalium/target/work/test-cobertura/coverage.xml -Dsonar.working.directory=pitalium/tmp/sonar -Dsonar.tests=pitalium/src/test/java -Dsonar.java.libraries=pitalium/libs/*.jar -Dsonar.projectName=Pitalium-jenkins2")
+	} else {
+		echo("#### Skip SonarQube Analysis... The Current Test Results are Displayed on Jenkins ####")
+	}
 	step(
 			$class: 'JUnitResultArchiver',
 			testResults: "${reportPath}/*.xml"
@@ -211,7 +265,7 @@ def copyReportFromJob(jobName, reportPath) {
 def restartAllNodeForCI() {
 	def nodes = [
 //		'IE7',
-		'IE8',
+//		'IE8',
 		'IE9',
 //		'IE10',
 		'IE11'
@@ -231,7 +285,7 @@ call ${SELENIUM_DIR}\\launchNode.bat"""
 def restartAllNodeForDay() {
 	def nodes = [
 		//		'IE7',
-				'IE8',
+		//		'IE8',
 				'IE9',
 		//		'IE10',
 				'IE11'

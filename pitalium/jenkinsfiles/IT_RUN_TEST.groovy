@@ -43,7 +43,9 @@ node {
 					parameters: [
 						[$class: 'StringParameterValue', name: 'BRANCH_NAME', value: BRANCH_NAME],
 						[$class: 'StringParameterValue', name: 'IVY_PROXY_HOST', value: IVY_PROXY_HOST],
-						[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PORT]
+						[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PORT],
+						[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_USER],
+						[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PASSWORD]
 					],
 					propagate: false
 					)

@@ -1,6 +1,6 @@
 [
 	{
-		"platform": "WINDOWS",
+		"platform": "WIN10",
 		"os": "WINDOWS",
 		"browserName": "internet explorer",
 		"version": "11"
