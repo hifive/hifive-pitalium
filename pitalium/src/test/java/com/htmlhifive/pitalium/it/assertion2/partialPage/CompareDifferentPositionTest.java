@@ -35,7 +35,7 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 
 	/**
 	 * テキストの座標を変更し、移動オプションを指定して比較する。
-	 * 
+	 *
 	 * @ptl.expect 差分が発生しないこと。
 	 */
 	@Test
@@ -54,7 +54,7 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 
 	/**
 	 * テキストの座標を変更し、移動オプションを指定せずに比較する。
-	 * 
+	 *
 	 * @ptl.expect 差分が発生すること。
 	 */
 	@Test
@@ -81,7 +81,7 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 
 	/**
 	 * 画像の座標を変更し、移動オプションを指定して比較する。
-	 * 
+	 *
 	 * @ptl.expect 差分が発生しないこと。
 	 */
 	@Test
@@ -100,7 +100,7 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 
 	/**
 	 * 画像の座標を変更し、移動オプションを指定して比較する。
-	 * 
+	 *
 	 * @ptl.expect 差分が発生しないこと。
 	 */
 	@Test
@@ -109,7 +109,7 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 
 		if (isRunTest()) {
 			driver.executeJavaScript("" + "var element = document.querySelector('#imageColumn1 img');"
-					+ "var style = element.style;" + "style.marginTop = '5.5px';" + "style.marginLeft = '5.5px'");
+					+ "var style = element.style;" + "style.marginTop = '3%';" + "style.marginLeft = '3%'");
 		}
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#imageColumn1 img")
@@ -119,7 +119,7 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 
 	/**
 	 * 画像の座標を変更し、移動オプションを指定して比較する。
-	 * 
+	 *
 	 * @ptl.expect 差分が発生しないこと。
 	 */
 	@Test
@@ -138,7 +138,7 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 
 	/**
 	 * 画像の座標を変更し、移動オプションを指定せずに比較する。
-	 * 
+	 *
 	 * @ptl.expect 差分が発生すること。
 	 */
 	@Test
@@ -165,7 +165,7 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 
 	/**
 	 * 画像の座標を変更し、移動オプションを指定せずに比較する。
-	 * 
+	 *
 	 * @ptl.expect 差分が発生すること。
 	 */
 	@Test
@@ -192,7 +192,7 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 
 	/**
 	 * 画像の座標を変更し、移動オプションを指定せずに比較する。
-	 * 
+	 *
 	 * @ptl.expect 差分が発生すること。
 	 */
 	@Test
@@ -219,7 +219,7 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 
 	/**
 	 * 要素の座標を入れ替え、移動オプションを指定して比較する。
-	 * 
+	 *
 	 * @ptl.expect 差分が発生しないこと。
 	 */
 	@Test
@@ -242,7 +242,7 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 
 	/**
 	 * 要素の座標を入れ替え、移動オプションを指定せずに比較する。
-	 * 
+	 *
 	 * @ptl.expect 差分が発生しないこと。
 	 */
 	@Test
