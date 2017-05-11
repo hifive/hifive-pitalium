@@ -170,6 +170,13 @@ public class PtlItTestBase extends PtlTestBase {
 	//</editor-fold>
 
 	/**
+	 * 現在テスト中のブラウザがIEまたはEdgeであるかどうかを取得します。
+	 */
+	public boolean isMicrosoftBrowser() {
+		return isInternetExplorer() || isMicrosoftEdge();
+	}
+
+	/**
 	 * 現在テスト中のブラウザがIEかどうかを取得します。
 	 */
 	public boolean isInternetExplorer() {
