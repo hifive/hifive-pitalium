@@ -763,6 +763,7 @@ public class AssertionView extends TestWatcher {
 			ScreenArea screenArea = exclude.getScreenArea();
 			if (screenArea.getSelector() == null) {
 				ret.add(exclude);
+				continue;
 			}
 
 			RectangleArea area = exclude.getRectangle();
