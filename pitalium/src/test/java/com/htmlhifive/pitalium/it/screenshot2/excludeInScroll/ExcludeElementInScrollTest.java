@@ -53,17 +53,13 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 		TargetResult result = loadTargetResults("s").get(0);
 		assertThat(result.getExcludes(), hasSize(1));
 
-		// memo :nth-of-typeはIE9から
-		Rect tableRect = getPixelRectById("table-scroll").toTargetRect();
+		Rect tableRect = getRectById("table-scroll");
 		Rect rowRect = getRect(
 				(WebElement) driver.executeJavaScript("" + "var table = document.getElementById('table-scroll');"
-						+ "return table.getElementsByTagName('tr')[0];")).toExcludeRect();
+						+ "return table.getElementsByTagName('tr')[0];"));
 
-		double x = Math.round(rowRect.x - tableRect.x);
-		double y = Math.round(rowRect.y - tableRect.y);
-		double width = Math.round(rowRect.width);
-		double height = Math.round(rowRect.height);
-		assertThat(result.getExcludes().get(0).getRectangle(), is(new RectangleArea(x, y, width, height)));
+		RectangleArea expectedRect = createExpectedRect(tableRect, rowRect);
+		assertThat(result.getExcludes().get(0).getRectangle(), is(expectedRect));
 	}
 
 	/**
@@ -86,16 +82,13 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 		TargetResult result = loadTargetResults("s").get(0);
 		assertThat(result.getExcludes(), hasSize(1));
 
-		Rect tableRect = getPixelRectById("table-scroll").toTargetRect();
-		Rect rowRect = getPixelRect(
+		Rect tableRect = getRectById("table-scroll");
+		Rect rowRect = getRect(
 				(WebElement) driver.executeJavaScript("" + "var table = document.getElementById('table-scroll');"
-						+ "var tr = table.getElementsByTagName('tr');" + "return tr[tr.length - 1];")).toExcludeRect();
+						+ "var tr = table.getElementsByTagName('tr');" + "return tr[tr.length - 1];"));
 
-		double x = Math.round(rowRect.x - tableRect.x);
-		double y = Math.round(rowRect.y - tableRect.y);
-		double width = Math.round(rowRect.width);
-		double height = Math.round(rowRect.height);
-		assertThat(result.getExcludes().get(0).getRectangle(), is(new RectangleArea(x, y, width, height)));
+		RectangleArea expectedRect = createExpectedRect(tableRect, rowRect);
+		assertThat(result.getExcludes().get(0).getRectangle(), is(expectedRect));
 	}
 
 	/**
@@ -117,6 +110,16 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 		// Check
 		TargetResult result = loadTargetResults("s").get(0);
 		assertThat(result.getExcludes(), is(empty()));
+	}
+
+	private RectangleArea createExpectedRect(Rect targetRect, Rect excludeRect) {
+
+		double x = excludeRect.x - (!isMicrosoftBrowser() ? targetRect.x : Math.floor(targetRect.x * 100) / 100);
+		double y = excludeRect.y - (!isMicrosoftBrowser() ? targetRect.y : Math.floor(targetRect.y * 100) / 100);
+		double width = excludeRect.width;
+		double height = excludeRect.height;
+
+		return new Rect(x, y, width, height).toExcludeRect().toRectangleArea();
 	}
 
 }
