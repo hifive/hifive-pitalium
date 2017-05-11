@@ -68,8 +68,7 @@ public class ExcludeSingleElementTest extends PtlItScreenshotTestBase {
 		openBasicColorPage();
 		driver.manage().window().setSize(new Dimension(1100, (int) driver.getWindowHeight()));
 
-		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByTagName("body")
-				.addExcludeById("colorColumn1").build();
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget().addExcludeById("colorColumn1").build();
 		assertionView.assertView(arg);
 
 		// Check

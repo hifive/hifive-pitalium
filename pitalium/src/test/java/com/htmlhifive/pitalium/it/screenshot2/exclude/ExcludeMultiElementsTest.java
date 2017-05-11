@@ -51,9 +51,9 @@ public class ExcludeMultiElementsTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes(), hasSize(3));
 
 		for (int i = 0; i < 3; i++) {
-			Rect rect = getPixelRectById("colorColumn" + i);
+			Rect rect = getRectById("colorColumn" + i).toExcludeRect();
 			RectangleArea area = result.getExcludes().get(i).getRectangle();
-			assertThat(area, is(rect.toExcludeRect().toRectangleArea()));
+			assertThat(area, is(rect.toRectangleArea()));
 		}
 	}
 
@@ -75,7 +75,7 @@ public class ExcludeMultiElementsTest extends PtlItScreenshotTestBase {
 		assertThat(result.getExcludes(), hasSize(3));
 
 		for (int i = 0; i < 3; i++) {
-			Rect rect = getPixelRectById("colorColumn" + i);
+			Rect rect = getRectById("colorColumn" + i).toExcludeRect();
 			RectangleArea area = result.getExcludes().get(i).getRectangle();
 			assertThat(area, is(rect.toRectangleArea()));
 		}
