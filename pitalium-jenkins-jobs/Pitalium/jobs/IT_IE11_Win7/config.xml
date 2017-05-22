@@ -57,6 +57,16 @@
           <description></description>
           <defaultValue>C:\\Work\\test-results</defaultValue>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>HUB_HOST</name>
+          <description>Selenium Grid Hubのホストアドレス</description>
+          <defaultValue>localhost</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>APP_HOST</name>
+          <description>テスト対象アプリのベースURL</description>
+          <defaultValue>localhost</defaultValue>
+        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
