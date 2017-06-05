@@ -15,22 +15,22 @@
         <hudson.model.StringParameterDefinition>
           <name>IVY_PROXY_HOST</name>
           <description>ivy実行時のプロキシのホスト</description>
-          <defaultValue></defaultValue>
+          <defaultValue>proxyhost</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>IVY_PROXY_PORT</name>
           <description>ivy実行時のプロキシのポート</description>
-          <defaultValue></defaultValue>
+          <defaultValue>proxyport</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>IVY_PROXY_USER</name>
           <description>ivy実行時のプロキシの認証ユーザ名</description>
-          <defaultValue></defaultValue>
+          <defaultValue>username</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>IVY_PROXY_PASSWORD</name>
           <description>ivy実行時のプロキシの認証パスワード</description>
-          <defaultValue></defaultValue>
+          <defaultValue>password</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>ANT_PROXY_HOST</name>
@@ -56,6 +56,16 @@
           <name>RESULTS_DIR</name>
           <description></description>
           <defaultValue>C:\\Work\\test-results</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>HUB_HOST</name>
+          <description>Selenium Grid Hubのホストアドレス</description>
+          <defaultValue>hubhost</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>APP_HOST</name>
+          <description>テスト対象アプリのベースURL</description>
+          <defaultValue>apphost</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>

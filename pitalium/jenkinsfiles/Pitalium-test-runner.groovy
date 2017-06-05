@@ -13,8 +13,8 @@ node {
 				[$class: 'StringParameterValue', name: 'BRANCH_NAME', value: BRANCH_NAME],
 				[$class: 'StringParameterValue', name: 'IVY_PROXY_HOST', value: IVY_PROXY_HOST],
 				[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PORT],
-				[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_USER],
-				[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PASSWORD],
+				[$class: 'StringParameterValue', name: 'IVY_PROXY_USER', value: IVY_PROXY_USER],
+				[$class: 'StringParameterValue', name: 'IVY_PROXY_PASSWORD', value: IVY_PROXY_PASSWORD],
 				[$class: 'StringParameterValue', name: 'HUB_HOST', value: HUB_HOST],
 				[$class: 'StringParameterValue', name: 'APP_HOST', value: APP_HOST]
 			],
@@ -40,9 +40,6 @@ node {
 		build(
 				job: 'UT_common_core_image_junit',
 				parameters: [
-					[$class: 'StringParameterValue', name: 'BRANCH_NAME', value: BRANCH_NAME],
-					[$class: 'StringParameterValue', name: 'IVY_PROXY_HOST', value: IVY_PROXY_HOST],
-					[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PORT],
 					[$class: 'StringParameterValue', name: 'ANT_PROXY_HOST', value: ANT_PROXY_HOST],
 					[$class: 'StringParameterValue', name: 'ANT_PROXY_PORT', value: ANT_PROXY_PORT]
 				],
@@ -57,9 +54,6 @@ node {
 		build(
 				job: 'IT_exec',
 				parameters: [
-					[$class: 'StringParameterValue', name: 'BRANCH_NAME', value: BRANCH_NAME],
-					[$class: 'StringParameterValue', name: 'IVY_PROXY_HOST', value: IVY_PROXY_HOST],
-					[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PORT],
 					[$class: 'StringParameterValue', name: 'ANT_PROXY_HOST', value: ANT_PROXY_HOST],
 					[$class: 'StringParameterValue', name: 'ANT_PROXY_PORT', value: ANT_PROXY_PORT]
 				],
@@ -233,9 +227,6 @@ def buildITJob(browserName) {
 	build(
 			job: "IT_${browserName}",
 			parameters: [
-				[$class: 'StringParameterValue', name: 'BRANCH_NAME', value: BRANCH_NAME],
-				[$class: 'StringParameterValue', name: 'IVY_PROXY_HOST', value: IVY_PROXY_HOST],
-				[$class: 'StringParameterValue', name: 'IVY_PROXY_PORT', value: IVY_PROXY_PORT],
 				[$class: 'StringParameterValue', name: 'ANT_PROXY_HOST', value: ANT_PROXY_HOST],
 				[$class: 'StringParameterValue', name: 'ANT_PROXY_PORT', value: ANT_PROXY_PORT],
 				[$class: 'StringParameterValue', name: 'RESULTS_DIR', value: RESULTS_DIR]
