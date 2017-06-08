@@ -729,6 +729,8 @@ public class PtlItTestBase extends PtlTestBase {
 			// IEで指定した色がブラウザ上では若干異なる色になってしまうため、
 			// 端の値をベースにグラデーションになっているかを確認する
 
+			int blockPixelSize = (int) (pixelRatio * blockSize);
+
 			// Horizontal
 			int red = Color.valueOf(image.getRGB(border, border)).red;
 
@@ -746,7 +748,7 @@ public class PtlItTestBase extends PtlTestBase {
 					}
 					red++;
 				}
-				if (i % (int) (pixelRatio * blockSize) == blockSize - 1) {
+				if (i % blockPixelSize == blockPixelSize - 1) {
 					red += 8;
 					red = red <= 0xff ? red : 0;
 				}
@@ -769,7 +771,7 @@ public class PtlItTestBase extends PtlTestBase {
 					}
 					green++;
 				}
-				if (i % (int) (pixelRatio * blockSize) == blockSize - 1) {
+				if (i % blockPixelSize == blockPixelSize - 1) {
 					green += 8;
 					green = green <= 0xff ? green : 0;
 				}
