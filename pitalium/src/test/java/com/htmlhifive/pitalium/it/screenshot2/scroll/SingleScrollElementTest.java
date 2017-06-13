@@ -36,7 +36,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるDIV要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -64,7 +64,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるTEXTAREA要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -84,7 +84,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるTABLE要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -108,8 +108,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		int y = 0;
 		int cellCount = 0;
 		while (cellCount * 16 <= 240) {
-			int color = cellCount * 16;
-			Color expect = Color.rgb(color, color, color);
+			Color expect = Color.valueOf(image.getRGB(0, (int) Math.round(cellCount * 20 * ratio)));
 			cellCount++;
 			int maxY = (int) Math.round(cellCount * 20 * ratio);
 			while (y < maxY) {
@@ -122,7 +121,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるIFRAME要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -147,7 +146,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるDIV要素を要素内スクロールオプションあり、移動オプションなしを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -175,7 +174,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるTEXTAREA要素を要素内スクロールオプションあり、移動オプションなしを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -195,7 +194,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるTABLE要素を要素内スクロールオプションあり、移動オプションなしを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -219,8 +218,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		int y = 0;
 		int cellCount = 0;
 		while (cellCount * 16 <= 240) {
-			int color = cellCount * 16;
-			Color expect = Color.rgb(color, color, color);
+			Color expect = Color.valueOf(image.getRGB(0, (int) Math.round(cellCount * 20 * ratio)));
 			cellCount++;
 			int maxY = (int) Math.round(cellCount * 20 * ratio);
 			while (y < maxY) {
@@ -233,7 +231,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるIFRAME要素を要素内スクロールオプションあり、移動オプションなしを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -258,7 +256,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるDIV要素を要素内スクロールオプションなし、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -279,7 +277,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるTEXTAREA要素を要素内スクロールオプションなし、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -299,7 +297,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるTABLE要素を要素内スクロールオプションなし、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -320,8 +318,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		int y = 0;
 		int cellCount = 0;
 		while (cellCount * 16 <= 240 && y < image.getHeight()) {
-			int color = cellCount * 16;
-			Color expect = Color.rgb(color, color, color);
+			Color expect = Color.valueOf(image.getRGB(0, (int) Math.round(cellCount * 20 * ratio) + 1));
 			cellCount++;
 			int maxY = (int) Math.round(cellCount * 20 * ratio);
 			while (y < maxY && y < image.getHeight()) {
@@ -347,7 +344,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるIFRAME要素を要素内スクロールオプションなし、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -368,7 +365,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるDIV要素を要素内スクロールオプションなし、移動オプションなしを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -389,7 +386,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるTEXTAREA要素を要素内スクロールオプションなし、移動オプションなしを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -409,7 +406,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるTABLE要素を要素内スクロールオプションなし、移動オプションなしを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -430,8 +427,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		int y = 0;
 		int cellCount = 0;
 		while (cellCount * 16 <= 240 && y < image.getHeight()) {
-			int color = cellCount * 16;
-			Color expect = Color.rgb(color, color, color);
+			Color expect = Color.valueOf(image.getRGB(0, (int) Math.round(cellCount * 20 * ratio)));
 			cellCount++;
 			int maxY = (int) Math.round(cellCount * 20 * ratio);
 			while (y < maxY && y < image.getHeight()) {
@@ -457,7 +453,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロールがあるIFRAME要素を要素内スクロールオプションなし、移動オプションなしを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
