@@ -15,6 +15,8 @@
  */
 package com.htmlhifive.pitalium.image.util;
 
+import java.util.Arrays;
+
 import com.htmlhifive.pitalium.image.model.CompareOption;
 
 /**
@@ -46,7 +48,10 @@ public final class ImageComparatorFactory {
 	 * @return ImageComparatorオブジェクト
 	 */
 	public ImageComparator getImageComparator(CompareOption[] options) {
-		// TODO implements ImageComparator for each options.
+		if (options != null && options.length > 0
+				&& Arrays.asList(options).contains(CompareOption.IGNORE_CLEAR_PIXELS)) {
+			return new IgnoringClearPixelsImageComparator();
+		}
 		return new DefaultImageComparator();
 	}
 }
