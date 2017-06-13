@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2015-2017 NS Solutions Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.htmlhifive.pitalium.image.model;
 
 import java.awt.Point;
@@ -11,40 +26,62 @@ import java.util.List;
 public class ObjectGroup {
 
 	/**
-	 * 	rectangle which represent object
+	 * グループ化可能な距離のデフォルト値 高速化メモリ節約のため、四角形を作るため誤差が出る
+	 */
+	private static final int DEFAULT_GROUP_DISTANCE = 10;
+
+	/**
+	 * rectangle which represent object
 	 */
 	private Rectangle rectangle;
 
 	/**
-	 * Build object rectangle using center point p
-	 * For grouping, it's assigned group_distance.
-	 * If the difference of x-coordinate or y-coordinate of two points is smaller than group_distance,
-	 * two points are merged into the same group. 
-	 * 
+	 * Build object rectangle using center point p For grouping, it's assigned groupDistance. If the difference of
+	 * x-coordinate or y-coordinate of two points is smaller than groupDistance, two points are merged into the same
+	 * group.
+	 *
 	 * @param p center point
-	 * @param group_distance distance for grouping
+	 * @param groupDistance distance for grouping
 	 */
-	public ObjectGroup(Point p, int group_distance) {
-		int margin = (int)(group_distance/2);
-		rectangle = new Rectangle(p.x - margin, p.y - margin, 2*margin+1, 2*margin+1);
+	public ObjectGroup(Point p, int groupDistance) {
+		int margin = groupDistance / 2;
+		rectangle = new Rectangle(p.x - margin, p.y - margin, groupDistance, groupDistance);
 	}
 
 	/**
-	 *  Specify the coordinates of the center point to generate an object rectangle
-	 * 
+	 * Build object rectangle using center point p for grouping.
+	 *
+	 * @param p center point
+	 */
+	public ObjectGroup(Point p) {
+		this(p, DEFAULT_GROUP_DISTANCE);
+	}
+
+	/**
+	 * Specify the coordinates of the center point to generate an object rectangle
+	 *
 	 * @param x x-coordinate of the center point
 	 * @param y y-coordinate of the center point
-	 * @param group_distance distance for grouping
+	 * @param groupDistance distance for grouping
 	 */
-	public ObjectGroup(int x, int y, int group_distance) {
-		this(new Point(x, y), group_distance);
+	public ObjectGroup(int x, int y, int groupDistance) {
+		this(new Point(x, y), groupDistance);
 	}
 
 	/**
-	 * To join with the specified objectGroup, 
-	 * you need to make sure at whether it is possible to join in advance 
-	 * 
-	 * @param objectGroup ObjectGroup that bind 
+	 * Specify the coordinates of the center point to generate an object rectangle
+	 *
+	 * @param x x-coordinate of the center point
+	 * @param y y-coordinate of the center point
+	 */
+	public ObjectGroup(int x, int y) {
+		this(new Point(x, y));
+	}
+
+	/**
+	 * To join with the specified objectGroup, you need to make sure at whether it is possible to join in advance
+	 *
+	 * @param objectGroup ObjectGroup that bind
 	 */
 	public void union(ObjectGroup objectGroup) {
 		// To combine two of the squares, should check canMerge in advance.
@@ -52,10 +89,9 @@ public class ObjectGroup {
 	}
 
 	/**
-	 * Check whether one of the binding conditions is met.
-	 * The first condition is that one contains the other,
-	 * and the second is intersection.
-	 * 
+	 * Check whether one of the binding conditions is met. The first condition is that one contains the other, and the
+	 * second is intersection.
+	 *
 	 * @param objectGroup target object
 	 * @return whether one of the condition is met
 	 */
@@ -78,10 +114,11 @@ public class ObjectGroup {
 
 	/**
 	 * merge all possible object groups
+	 *
 	 * @param objectGroups list of object groups
-	 * @return	list of object groups which are completely merged 
+	 * @return list of object groups which are completely merged
 	 */
-	public static List<ObjectGroup> mergeAllPossibleObjects (List<ObjectGroup> objectGroups) {
+	public static List<ObjectGroup> mergeAllPossibleObjects(List<ObjectGroup> objectGroups) {
 
 		// Count how many times merge occur for each case
 		int num = -1;
@@ -114,10 +151,10 @@ public class ObjectGroup {
 
 		return objectGroups;
 	}
-		
+
 	/**
 	 * Get the rectangle area of object
-	 * 
+	 *
 	 * @return rectangle area of object
 	 */
 	public Rectangle getRectangle() {

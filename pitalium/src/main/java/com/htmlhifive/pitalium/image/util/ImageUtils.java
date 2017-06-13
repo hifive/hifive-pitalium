@@ -309,12 +309,12 @@ public final class ImageUtils {
 		}
 
 		int margeFlag = 0;
-		List<MarkerGroup> diffGroups = new ArrayList<MarkerGroup>();
+		List<ObjectGroup> diffGroups = new ArrayList<ObjectGroup>();
 
 		for (Point point : diffPoints) {
-			MarkerGroup markerGroup = new MarkerGroup(new Point(point.x, point.y));
-			for (MarkerGroup diffGroup : diffGroups) {
-				if (diffGroup.canMarge(markerGroup)) {
+			ObjectGroup markerGroup = new ObjectGroup(point);
+			for (ObjectGroup diffGroup : diffGroups) {
+				if (diffGroup.canMerge(markerGroup)) {
 					diffGroup.union(markerGroup);
 					margeFlag = 1;
 					break;
@@ -330,10 +330,10 @@ public final class ImageUtils {
 		int num = -1;
 		while (num != 0) {
 			num = 0;
-			for (MarkerGroup rectangleGroup : diffGroups) {
-				List<MarkerGroup> removeList = new ArrayList<MarkerGroup>();
-				for (MarkerGroup rectangleGroup2 : diffGroups) {
-					if (!rectangleGroup.equals(rectangleGroup2) && rectangleGroup.canMarge(rectangleGroup2)) {
+			for (ObjectGroup rectangleGroup : diffGroups) {
+				List<ObjectGroup> removeList = new ArrayList<ObjectGroup>();
+				for (ObjectGroup rectangleGroup2 : diffGroups) {
+					if (!rectangleGroup.equals(rectangleGroup2) && rectangleGroup.canMerge(rectangleGroup2)) {
 						rectangleGroup.union(rectangleGroup2);
 						// マージが発生した場合はカウントする
 						num++;
@@ -343,7 +343,7 @@ public final class ImageUtils {
 				}
 				if (num > 0) {
 					// 削除対象がある場合は、リストから取り除く
-					for (MarkerGroup removeModel : removeList) {
+					for (ObjectGroup removeModel : removeList) {
 						diffGroups.remove(removeModel);
 					}
 					break;
@@ -354,7 +354,7 @@ public final class ImageUtils {
 		// diffGroupsからRectangleのリストを作成
 		List<Rectangle> rectangles = new ArrayList<Rectangle>();
 
-		for (MarkerGroup markerGroup : diffGroups) {
+		for (ObjectGroup markerGroup : diffGroups) {
 			rectangles.add(markerGroup.getRectangle());
 		}
 		return rectangles;
