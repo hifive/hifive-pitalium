@@ -40,11 +40,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
-import com.htmlhifive.pitalium.explorer.image.ComparisonParameters;
-import com.htmlhifive.pitalium.explorer.image.ObjectGroup;
-import com.htmlhifive.pitalium.explorer.image.Offset;
 import com.htmlhifive.pitalium.image.model.CompareOption;
+import com.htmlhifive.pitalium.image.model.ComparisonParameters;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
+import com.htmlhifive.pitalium.image.model.ObjectGroup;
+import com.htmlhifive.pitalium.image.model.Offset;
 
 /**
  * 画像操作を行うユーティリティクラス
@@ -903,7 +903,7 @@ public final class ImageUtils {
 
 	/**
 	 * remove overlapping rectangles for better UI
-	 * 
+	 *
 	 * @param rectangles the list of rectangles which will be checker overlapping
 	 */
 	public static void removeOverlappingRectangles(List<Rectangle> rectangles) {
