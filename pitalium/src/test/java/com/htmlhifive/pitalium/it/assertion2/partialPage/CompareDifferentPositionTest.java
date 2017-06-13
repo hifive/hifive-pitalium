@@ -41,6 +41,8 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 	 */
 	@Test
 	public void compareTextWithMoveOption() throws Exception {
+		assumeFalse("Skip IE9 test (assertError will occur because of subpixel rendering)", isInternetExplorer9());
+
 		openBasicTextPage();
 
 		if (isRunTest()) {
@@ -108,6 +110,8 @@ public class CompareDifferentPositionTest extends PtlItAssertionTestBase {
 	 */
 	@Test
 	public void compareImage1WithMoveOption() throws Exception {
+		assumeFalse("Skip IE9 test (assertError will occur because of subpixel rendering)", isInternetExplorer9());
+
 		openBasicImagePage();
 
 		if (isRunTest()) {
