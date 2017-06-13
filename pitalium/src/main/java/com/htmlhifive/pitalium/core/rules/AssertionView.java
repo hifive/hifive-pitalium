@@ -722,7 +722,8 @@ public class AssertionView extends TestWatcher {
 		// Mask
 		List<ScreenAreaResult> excludes = target.getExcludes();
 		if (!excludes.isEmpty()) {
-			List<Rectangle> maskAreas = Lists.transform(excludes, SCREEN_AREA_RESULT_TO_RECTANGLE_FUNCTION);
+			List<Rectangle> maskAreas = Lists.transform(toExcludesForJson(excludes),
+					SCREEN_AREA_RESULT_TO_RECTANGLE_FUNCTION);
 			image = ImageUtils.getMaskedImage(image, maskAreas);
 		}
 
