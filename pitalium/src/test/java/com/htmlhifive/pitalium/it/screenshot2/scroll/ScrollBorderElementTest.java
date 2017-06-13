@@ -35,7 +35,7 @@ public class ScrollBorderElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロール、ボーダーがあるDIV要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -54,7 +54,7 @@ public class ScrollBorderElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロール、ボーダーがあるTEXTAREA要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -73,7 +73,7 @@ public class ScrollBorderElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロール、ボーダーがあるTABLE要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -95,7 +95,7 @@ public class ScrollBorderElementTest extends PtlItScreenshotTestBase {
 
 	/**
 	 * 要素内スクロール、ボーダーがあるIFRAME要素を要素内スクロールオプションあり、移動オプションありを設定して撮影する。
-	 * 
+	 *
 	 * @ptl.expect スクリーンショット撮影結果が正しいこと。
 	 */
 	@Test
@@ -127,7 +127,7 @@ public class ScrollBorderElementTest extends PtlItScreenshotTestBase {
 		// border
 		double ratio = getPixelRatio();
 		int border = (int) Math.round(5.0 * ratio);
-		Color borderColor = Color.valueOf("#123456");
+		Color borderColor = Color.valueOf(image.getRGB(0, 0));
 		for (int i = 0; i < border; i++) {
 			assertThat(Color.valueOf(image.getRGB(i, centerY)), is(borderColor));
 			assertThat(Color.valueOf(image.getRGB(width - i - 1, centerY)), is(borderColor));
