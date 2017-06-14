@@ -31,6 +31,10 @@ public enum CompareOption {
 	/**
 	 * 画像の余白部分を無視して比較します。
 	 */
-	IGNORE_BLANK_SPACE;
+	IGNORE_BLANK_SPACE,
+	/**
+	 * 類似度に基づき画像の一致を判定します。
+	 */
+	SIMILARITY;
 
 }

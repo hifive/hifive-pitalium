@@ -52,11 +52,12 @@ public class SimilarityUtils {
 	 * @param rectangle
 	 * @param similarRectangle
 	 * @param offset
+	 * @return TODO
 	 * @return similarity using norm calculation pixel by pixel
 	 */
-	public static void calcSimilarity(BufferedImage expectedImage, BufferedImage actualImage, Rectangle rectangle,
-			ComparedRectangleArea similarRectangle, Offset offset) {
-		calcSimilarity(expectedImage, actualImage, rectangle, similarRectangle, offset, -1);
+	public static SimilarityUnit calcSimilarity(BufferedImage expectedImage, BufferedImage actualImage,
+			Rectangle rectangle, ComparedRectangleArea similarRectangle, Offset offset) {
+		return calcSimilarity(expectedImage, actualImage, rectangle, similarRectangle, offset, -1);
 	}
 
 	/**
@@ -71,8 +72,9 @@ public class SimilarityUtils {
 	 * @param similarityFeatureMatrix in the case of "SCALING", we use similarity already calculated. in the other
 	 *            cases, it has -1.
 	 */
-	public static void calcSimilarity(BufferedImage expectedImage, BufferedImage actualImage, Rectangle rectangle,
-			ComparedRectangleArea similarRectangle, Offset offset, double similarityFeatureMatrix) {
+	public static SimilarityUnit calcSimilarity(BufferedImage expectedImage, BufferedImage actualImage,
+			Rectangle rectangle, ComparedRectangleArea similarRectangle, Offset offset,
+			double similarityFeatureMatrix) {
 
 		Offset featureOffset = offset;
 		SimilarityUnit similarityUnit = new SimilarityUnit();
@@ -89,9 +91,10 @@ public class SimilarityUtils {
 		}
 		similarityUnit.setSimilarityFeatureMatrix(similarityFeatureMatrix);
 
-		if (similarRectangle.getType() == "UNCHECKED")
+		if (similarRectangle.getType() == "UNCHECKED") {
 			similarRectangle.setType("SIMILAR");
-		similarRectangle.setSimilarityUnit(similarityUnit);
+		}
+		return similarityUnit;
 	}
 
 	/**

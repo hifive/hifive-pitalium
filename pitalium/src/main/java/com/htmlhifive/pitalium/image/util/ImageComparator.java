@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.image.model.ComparisonParameters;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
+import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 
 /**
  * 画像の比較処理を行うComparatorの抽象クラス。このクラスを拡張して、比較方法毎にComparatorを実装します。
@@ -62,7 +63,7 @@ public abstract class ImageComparator<T extends ComparisonParameters> {
 	 * @param img2Area 画像2で比較の対象とする範囲
 	 * @return 比較結果の差分データ
 	 */
-	public DiffPoints compare(BufferedImage img1, Rectangle img1Area, BufferedImage img2, Rectangle img2Area) {
+	public ImageComparedResult compare(BufferedImage img1, Rectangle img1Area, BufferedImage img2, Rectangle img2Area) {
 		if (img1 == null || img2 == null) {
 			throw new TestRuntimeException("Both img1 and img2 is required.");
 		}

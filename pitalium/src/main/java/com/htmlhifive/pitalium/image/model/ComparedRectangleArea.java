@@ -44,6 +44,15 @@ public class ComparedRectangleArea extends RectangleArea {
 	}
 
 	/**
+	 * Constructor Set the location and size information.
+	 *
+	 * @param rectangle the rectangle area of template image
+	 */
+	public ComparedRectangleArea(double x, double y, double width, double height) {
+		super(x, y, width, height);
+	}
+
+	/**
 	 * Constructor Set the shift information when the template image is contained in the entire image.
 	 *
 	 * @param rectangle the rectangle area of template image
