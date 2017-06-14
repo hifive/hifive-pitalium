@@ -25,14 +25,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+import com.htmlhifive.pitalium.image.model.ComparisonParameters;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
 
 /**
  * 画像の比較処理を行うComparatorの抽象クラス。このクラスを拡張して、比較方法毎にComparatorを実装します。
  */
-public abstract class ImageComparator {
+public abstract class ImageComparator<T extends ComparisonParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ImageComparator.class);
+
+	/**
+	 * 比較パラメータ
+	 */
+	protected T parameters;
 
 	/**
 	 * コンストラクタ
@@ -41,8 +47,15 @@ public abstract class ImageComparator {
 	}
 
 	/**
+	 * コンストラクタ
+	 */
+	protected ImageComparator(T parameters) {
+		this.parameters = parameters;
+	}
+
+	/**
 	 * 2枚の画像を比較し、差分の一覧を取得します。
-	 * 
+	 *
 	 * @param img1 画像1
 	 * @param img1Area 画像1で比較の対象とする範囲
 	 * @param img2 画像2
@@ -80,7 +93,7 @@ public abstract class ImageComparator {
 
 	/**
 	 * 画像サイズを比較し、差分を検出した座標の一覧を取得します。
-	 * 
+	 *
 	 * @param img1 画像１
 	 * @param img2 画像２
 	 * @param offsetX 画像１の元画像からのX方向オフセット値
@@ -153,7 +166,7 @@ public abstract class ImageComparator {
 
 	/**
 	 * 画像を比較し、差分を検出した座標の一覧を取得します。
-	 * 
+	 *
 	 * @param image1 画像１
 	 * @param image2 画像２
 	 * @param offsetX 画像１の元画像からのX方向オフセット値
@@ -164,7 +177,7 @@ public abstract class ImageComparator {
 
 	/**
 	 * 指定エリアで切り出した画像を取得します。
-	 * 
+	 *
 	 * @param image 元画像
 	 * @param area 切り出すエリア
 	 * @return 切り出した画像

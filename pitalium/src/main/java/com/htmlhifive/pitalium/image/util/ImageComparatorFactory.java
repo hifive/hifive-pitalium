@@ -18,6 +18,7 @@ package com.htmlhifive.pitalium.image.util;
 import java.util.Arrays;
 
 import com.htmlhifive.pitalium.image.model.CompareOption;
+import com.htmlhifive.pitalium.image.model.ComparisonParameters;
 
 /**
  * 比較方法に対応するImageComparatorを生成するファクトリクラス
@@ -34,7 +35,7 @@ public final class ImageComparatorFactory {
 
 	/**
 	 * ImageComparatorFactoryのインスタンスを取得します。
-	 * 
+	 *
 	 * @return ImageComparatorFactoryのインスタンス（シングルトン）
 	 */
 	public static ImageComparatorFactory getInstance() {
@@ -43,11 +44,11 @@ public final class ImageComparatorFactory {
 
 	/**
 	 * 比較方法に対応したImageComparatorを取得します。
-	 * 
+	 *
 	 * @param options 比較方法（比較オプション）
 	 * @return ImageComparatorオブジェクト
 	 */
-	public ImageComparator getImageComparator(CompareOption[] options) {
+	public ImageComparator<? extends ComparisonParameters> getImageComparator(CompareOption[] options) {
 		if (options != null && options.length > 0
 				&& Arrays.asList(options).contains(CompareOption.IGNORE_CLEAR_PIXELS)) {
 			return new IgnoringClearPixelsImageComparator();

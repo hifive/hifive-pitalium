@@ -23,10 +23,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.htmlhifive.pitalium.image.model.ComparisonParameters;
+
 /**
  * 通常の方法で画像比較
  */
-class DefaultImageComparator extends ImageComparator {
+class DefaultImageComparator extends ImageComparator<ComparisonParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultImageComparator.class);
 

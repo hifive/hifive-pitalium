@@ -74,7 +74,7 @@ public final class ImageUtils {
 	 */
 	public static DiffPoints compare(BufferedImage image1, Rectangle imageArea1, BufferedImage image2,
 			Rectangle imageArea2, CompareOption[] options) {
-		ImageComparator comparator = ImageComparatorFactory.getInstance().getImageComparator(options);
+		ImageComparator<?> comparator = ImageComparatorFactory.getInstance().getImageComparator(options);
 		return comparator.compare(image1, imageArea1, image2, imageArea2);
 	}
 
