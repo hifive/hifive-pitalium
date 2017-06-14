@@ -15,6 +15,8 @@
  */
 package com.htmlhifive.pitalium.image.model;
 
+import java.awt.Rectangle;
+
 /**
  * This class has information about location shift of given rectangle area.
  */
@@ -37,7 +39,7 @@ public class ComparedRectangleArea extends RectangleArea {
 	 *
 	 * @param rectangle the rectangle area of template image
 	 */
-	public ComparedRectangleArea(RectangleArea rectangle) {
+	public ComparedRectangleArea(Rectangle rectangle) {
 		super(rectangle);
 	}
 
@@ -48,7 +50,7 @@ public class ComparedRectangleArea extends RectangleArea {
 	 * @param xShift how many pixels the template image is shifted rightward
 	 * @param yShift how many pixels the template image is shifted downward
 	 */
-	public ComparedRectangleArea(RectangleArea rectangle, int xShift, int yShift) {
+	public ComparedRectangleArea(Rectangle rectangle, int xShift, int yShift) {
 		this(rectangle);
 		this.xShift = xShift;
 		this.yShift = yShift;

@@ -64,11 +64,11 @@ public class RectangleArea implements Serializable {
 		this.height = height;
 	}
 
-	public RectangleArea(RectangleArea area) {
-		this.x = area.x;
-		this.y = area.y;
-		this.width = area.width;
-		this.height = area.height;
+	public RectangleArea(Rectangle rectangle) {
+		this.x = rectangle.x;
+		this.y = rectangle.y;
+		this.width = rectangle.width;
+		this.height = rectangle.height;
 	}
 
 	/**
