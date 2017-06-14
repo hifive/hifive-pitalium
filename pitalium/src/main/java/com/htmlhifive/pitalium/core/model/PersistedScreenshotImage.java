@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.htmlhifive.pitalium.image.model;
+package com.htmlhifive.pitalium.core.model;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -28,6 +28,7 @@ import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.io.PersistMetadata;
 import com.htmlhifive.pitalium.core.io.Persister;
 import com.htmlhifive.pitalium.core.io.ResourceUnavailableException;
+import com.htmlhifive.pitalium.image.model.ScreenshotImage;
 
 /**
  * {@link Persister}からの読み込みが可能なスクリーンショット画像を表すクラス
