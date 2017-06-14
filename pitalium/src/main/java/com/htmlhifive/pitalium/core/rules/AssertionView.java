@@ -66,6 +66,7 @@ import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriverFactory;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriverManager;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
+import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.image.model.ScreenshotImage;
 import com.htmlhifive.pitalium.image.util.ImageUtils;
@@ -668,7 +669,7 @@ public class AssertionView extends TestWatcher {
 			LOG.debug("[Comparison start] ({})", current);
 			ImageRectanglePair currentImage = prepareScreenshotImageForCompare(current);
 			ImageRectanglePair expectedImage = prepareScreenshotImageForCompare(expected);
-			DiffPoints compareResult = ImageUtils.compare(currentImage.image, currentImage.rectangle,
+			ImageComparedResult compareResult = ImageUtils.compare(currentImage.image, currentImage.rectangle,
 					expectedImage.image, expectedImage.rectangle, current.getOptions());
 			assertFail |= compareResult.isFailed();
 			if (compareResult.isFailed()) {
@@ -685,7 +686,7 @@ public class AssertionView extends TestWatcher {
 			if (compareResult.isFailed()) {
 				LOG.debug("[Create diff image] ({})", current);
 				BufferedImage diffImage = ImageUtils.getDiffImage(expectedImage.image, currentImage.image,
-						compareResult);
+						(DiffPoints) compareResult);
 
 				// Metadata作成して保存
 				ScreenAreaResult target = current.getTarget();

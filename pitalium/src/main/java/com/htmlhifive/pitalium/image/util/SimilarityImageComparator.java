@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import com.htmlhifive.pitalium.image.model.ComparedRectangleArea;
-import com.htmlhifive.pitalium.image.model.DiffPoints;
+import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 import com.htmlhifive.pitalium.image.model.Offset;
 import com.htmlhifive.pitalium.image.model.SimilarityComparisonParameters;
 import com.htmlhifive.pitalium.image.model.SimilarityImageComparedResult;
@@ -20,7 +20,7 @@ public class SimilarityImageComparator extends ImageComparator<SimilarityCompari
 	}
 
 	@Override
-	public DiffPoints compare(BufferedImage img1, Rectangle img1Area, BufferedImage img2, Rectangle img2Area) {
+	public ImageComparedResult compare(BufferedImage img1, Rectangle img1Area, BufferedImage img2, Rectangle img2Area) {
 		Offset offset = new Offset(img2Area.x - img1Area.x, img2Area.y - img1Area.y);
 		SimilarityUnit unit = SimilarityUtils.calcSimilarity(img1, img2, img1Area, new ComparedRectangleArea(img2Area),
 				offset);

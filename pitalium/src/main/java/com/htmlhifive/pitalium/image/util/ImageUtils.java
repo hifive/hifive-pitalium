@@ -43,6 +43,7 @@ import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.image.model.CompareOption;
 import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
+import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 import com.htmlhifive.pitalium.image.model.ObjectGroup;
 import com.htmlhifive.pitalium.image.model.Offset;
 
@@ -72,7 +73,7 @@ public final class ImageUtils {
 	 * @param options 比較オプション
 	 * @return 比較結果
 	 */
-	public static DiffPoints compare(BufferedImage image1, Rectangle imageArea1, BufferedImage image2,
+	public static ImageComparedResult compare(BufferedImage image1, Rectangle imageArea1, BufferedImage image2,
 			Rectangle imageArea2, CompareOption[] options) {
 		ImageComparator<?> comparator = ImageComparatorFactory.getInstance().getImageComparator(options);
 		return comparator.compare(image1, imageArea1, image2, imageArea2);
