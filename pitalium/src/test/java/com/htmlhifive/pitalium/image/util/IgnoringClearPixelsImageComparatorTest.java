@@ -34,6 +34,7 @@ import org.junit.rules.ExpectedException;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
+import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 
 public class IgnoringClearPixelsImageComparatorTest {
 
@@ -71,7 +72,8 @@ public class IgnoringClearPixelsImageComparatorTest {
 	public void testCompare() throws Exception {
 		BufferedImage image = ImageIO.read(getClass().getResource("hifive_logo.png"));
 		Rectangle rectangle = new Rectangle(0, 0, image.getWidth(), image.getHeight());
-		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image, rectangle, image, rectangle);
+		ImageComparedResult result = new IgnoringClearPixelsImageComparator().compare(image, rectangle, image,
+				rectangle);
 
 		assertThat(result.isSucceeded(), is(true));
 	}
@@ -85,7 +87,8 @@ public class IgnoringClearPixelsImageComparatorTest {
 		Rectangle rectangle1 = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo_part.png"));
 		Rectangle rectangle2 = new Rectangle(0, 0, image2.getWidth(), image2.getHeight());
-		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle1, image2, rectangle2);
+		ImageComparedResult result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle1, image2,
+				rectangle2);
 
 		assertThat(result.isFailed(), is(true));
 	}
@@ -106,7 +109,8 @@ public class IgnoringClearPixelsImageComparatorTest {
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
 
-		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2, rectangle);
+		DiffPoints result = (DiffPoints) new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2,
+				rectangle);
 
 		assertThat(result.isFailed(), is(true));
 		assertThat(result.getDiffPoints().size(), is(1));
@@ -130,7 +134,8 @@ public class IgnoringClearPixelsImageComparatorTest {
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
 
-		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2, rectangle);
+		ImageComparedResult result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2,
+				rectangle);
 
 		assertThat(result.isSucceeded(), is(true));
 		assertThat(result.isFailed(), is(false));
@@ -152,7 +157,8 @@ public class IgnoringClearPixelsImageComparatorTest {
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
 
-		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2, rectangle);
+		ImageComparedResult result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2,
+				rectangle);
 
 		assertThat(result.isSucceeded(), is(true));
 		assertThat(result.isFailed(), is(false));
@@ -174,7 +180,8 @@ public class IgnoringClearPixelsImageComparatorTest {
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
 
-		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2, rectangle);
+		ImageComparedResult result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2,
+				rectangle);
 
 		assertThat(result.isSucceeded(), is(true));
 		assertThat(result.isFailed(), is(false));
@@ -199,7 +206,8 @@ public class IgnoringClearPixelsImageComparatorTest {
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
 
-		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2, rectangle);
+		ImageComparedResult result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2,
+				rectangle);
 
 		assertThat(result.isSucceeded(), is(true));
 		assertThat(result.isFailed(), is(false));
@@ -224,7 +232,8 @@ public class IgnoringClearPixelsImageComparatorTest {
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
 
-		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2, rectangle);
+		DiffPoints result = (DiffPoints) new IgnoringClearPixelsImageComparator().compare(image1, rectangle, image2,
+				rectangle);
 
 		assertThat(result.isFailed(), is(true));
 		assertThat(result.getDiffPoints().size(), is(1));
@@ -242,7 +251,8 @@ public class IgnoringClearPixelsImageComparatorTest {
 		BufferedImage image = ImageIO.read(getClass().getResource("hifive_logo.png"));
 		Rectangle rectangle1 = new Rectangle(0, 0, image.getWidth(), image.getHeight());
 		Rectangle rectangle2 = new Rectangle(0, 0, image.getWidth() - 1, image.getHeight() - 1);
-		DiffPoints result = new IgnoringClearPixelsImageComparator().compare(image, rectangle1, image, rectangle2);
+		DiffPoints result = (DiffPoints) new IgnoringClearPixelsImageComparator().compare(image, rectangle1, image,
+				rectangle2);
 
 		assertThat(result.isFailed(), is(true));
 		assertThat(result.getDiffPoints().isEmpty(), is(true));

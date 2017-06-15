@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import com.htmlhifive.pitalium.image.model.CompareOption;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
+import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 
 public class ImageUtilsTest {
 
@@ -46,7 +47,7 @@ public class ImageUtilsTest {
 		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo.png"));
 		Rectangle rect2 = new Rectangle(0, 0, image2.getWidth(), image2.getHeight());
 
-		DiffPoints result = ImageUtils.compare(image1, rect1, image2, rect2, new CompareOption[0]);
+		ImageComparedResult result = ImageUtils.compare(image1, rect1, image2, rect2, new CompareOption[0]);
 		assertThat(result.isSucceeded(), is(true));
 	}
 
@@ -62,7 +63,7 @@ public class ImageUtilsTest {
 
 		image2.setRGB(10, 10, 0x000000);
 
-		DiffPoints result = ImageUtils.compare(image1, rect1, image2, rect2, new CompareOption[0]);
+		ImageComparedResult result = ImageUtils.compare(image1, rect1, image2, rect2, new CompareOption[0]);
 		assertThat(result.isFailed(), is(true));
 	}
 

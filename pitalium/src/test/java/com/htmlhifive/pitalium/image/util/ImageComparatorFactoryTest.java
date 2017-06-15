@@ -19,7 +19,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.htmlhifive.pitalium.image.model.CompareOption;
+import com.htmlhifive.pitalium.image.model.CompareOptionType;
+import com.htmlhifive.pitalium.image.model.ComparisonParameters;
 
 public class ImageComparatorFactoryTest {
 
@@ -27,26 +28,26 @@ public class ImageComparatorFactoryTest {
 
 	@Test
 	public void compareOptionがnullの場合はデフォルト() throws Exception {
-		ImageComparator actual = instance.getImageComparator(null);
+		ImageComparator<? extends ComparisonParameters> actual = instance.getImageComparator(null);
 		assertTrue(actual instanceof DefaultImageComparator);
 	}
 
 	@Test
 	public void compareOptionの要素数が0の場合はデフォルト() throws Exception {
-		ImageComparator actual = instance.getImageComparator(new CompareOption[0]);
+		ImageComparator actual = instance.getImageComparator(new CompareOptionType[0]);
 		assertTrue(actual instanceof DefaultImageComparator);
 	}
 
 	@Test
 	public void compareOptionにIGNORE_CLEAR_PIXELSが含まれていたらIgnoringClearPixelsImageComparator() throws Exception {
-		ImageComparator actual = instance
-				.getImageComparator(new CompareOption[] { CompareOption.STRICT, CompareOption.IGNORE_CLEAR_PIXELS });
+		ImageComparator actual = instance.getImageComparator(
+				new CompareOptionType[] { CompareOptionType.STRICT, CompareOptionType.IGNORE_CLEAR_PIXELS });
 		assertTrue(actual instanceof IgnoringClearPixelsImageComparator);
 	}
 
 	@Test
 	public void compareOptionにIGNORE_CLEAR_PIXELSが含まれていなかったら場合はデフォルト() throws Exception {
-		ImageComparator actual = instance.getImageComparator(new CompareOption[] { CompareOption.STRICT });
+		ImageComparator actual = instance.getImageComparator(new CompareOptionType[] { CompareOptionType.STRICT });
 		assertTrue(actual instanceof DefaultImageComparator);
 	}
 
