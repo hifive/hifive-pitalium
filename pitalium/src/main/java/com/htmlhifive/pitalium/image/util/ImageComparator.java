@@ -58,6 +58,19 @@ public abstract class ImageComparator<T extends ComparisonParameters> {
 	 * 2枚の画像を比較し、差分の一覧を取得します。
 	 *
 	 * @param img1 画像1
+	 * @param img2 画像2
+	 * @return 比較結果の差分データ
+	 */
+	public ImageComparedResult compare(BufferedImage img1, BufferedImage img2) {
+		Rectangle rect1 = new Rectangle(img1.getWidth(), img1.getHeight());
+		Rectangle rect2 = new Rectangle(img2.getWidth(), img2.getHeight());
+		return compare(img1, rect1, img2, rect2);
+	}
+
+	/**
+	 * 2枚の画像を比較し、差分の一覧を取得します。
+	 *
+	 * @param img1 画像1
 	 * @param img1Area 画像1で比較の対象とする範囲
 	 * @param img2 画像2
 	 * @param img2Area 画像2で比較の対象とする範囲
