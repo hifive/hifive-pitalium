@@ -14,6 +14,21 @@ import com.htmlhifive.pitalium.image.model.SimilarityUnit;
 
 public class SimilarityImageComparator extends ImageComparator<SimilarityComparisonParameters> {
 
+	/**
+	 * デフォルトコンストラクタ
+	 */
+	SimilarityImageComparator() {
+	}
+
+	/**
+	 * 引数ありのコンストラクタ
+	 *
+	 * @param parameters 比較用パラメータ
+	 */
+	SimilarityImageComparator(SimilarityComparisonParameters parameters) {
+		this.parameters = parameters;
+	}
+
 	@Override
 	protected List<Point> compare(BufferedImage image1, BufferedImage image2, int offsetX, int offsetY) {
 		return null;

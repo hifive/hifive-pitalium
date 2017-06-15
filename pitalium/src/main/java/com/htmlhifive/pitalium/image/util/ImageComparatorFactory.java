@@ -19,6 +19,7 @@ import com.htmlhifive.pitalium.image.model.CompareOption;
 import com.htmlhifive.pitalium.image.model.CompareOptionType;
 import com.htmlhifive.pitalium.image.model.ComparisonParameters;
 import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
+import com.htmlhifive.pitalium.image.model.SimilarityComparisonParameters;
 
 /**
  * 比較方法に対応するImageComparatorを生成するファクトリクラス
@@ -56,6 +57,9 @@ public final class ImageComparatorFactory {
 				}
 				if (option.getType() == CompareOptionType.DEFAULT) {
 					return new DefaultImageComparator((DefaultComparisonParameters) option.getParameters());
+				}
+				if (option.getType() == CompareOptionType.SIMILARITY) {
+					return new SimilarityImageComparator((SimilarityComparisonParameters) option.getParameters());
 				}
 			}
 		}
