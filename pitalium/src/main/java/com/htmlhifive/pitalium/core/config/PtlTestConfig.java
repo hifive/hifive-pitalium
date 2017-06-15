@@ -48,6 +48,7 @@ public class PtlTestConfig {
 	private EnvironmentConfig environment;
 	private PersisterConfig persisterConfig;
 	private TestAppConfig testApp;
+	private ComparisonConfig comparisonConfig;
 
 	/**
 	 * コンストラクタ
@@ -290,6 +291,22 @@ public class PtlTestConfig {
 
 			persisterConfig = getConfig(PersisterConfig.class);
 			return persisterConfig;
+		}
+	}
+
+	/**
+	 * 比較方法に関する設定を取得します。
+	 *
+	 * @return 比較方法に関する設定
+	 */
+	public ComparisonConfig getComparisonConfig() {
+		synchronized (this) {
+			if (comparisonConfig != null) {
+				return comparisonConfig;
+			}
+
+			comparisonConfig = getConfig(ComparisonConfig.class);
+			return comparisonConfig;
 		}
 	}
 

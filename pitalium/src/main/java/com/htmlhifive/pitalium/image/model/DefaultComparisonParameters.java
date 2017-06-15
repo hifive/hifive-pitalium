@@ -20,12 +20,32 @@ package com.htmlhifive.pitalium.image.model;
  */
 public class DefaultComparisonParameters extends ComparisonParameters {
 
+	/**
+	 * 色を違うとみなすための閾値
+	 */
 	private double threshold = 0.0;
 
+	/**
+	 * デフォルトコンストラクタ
+	 */
+	public DefaultComparisonParameters() {
+
+	}
+
+	/**
+	 * パラメータありのコンストラクタ
+	 *
+	 * @param threshold 閾値
+	 */
 	public DefaultComparisonParameters(double threshold) {
 		this.threshold = threshold;
 	}
 
+	/**
+	 * 閾値を取得します。
+	 *
+	 * @return 閾値
+	 */
 	public double getThreshold() {
 		return threshold;
 	}

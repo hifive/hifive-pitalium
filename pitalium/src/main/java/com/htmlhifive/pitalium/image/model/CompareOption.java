@@ -1,6 +1,8 @@
 package com.htmlhifive.pitalium.image.model;
 
-public class CompareOption {
+import java.io.Serializable;
+
+public class CompareOption implements Serializable {
 
 	CompareOptionType type;
 

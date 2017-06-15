@@ -37,6 +37,7 @@ class DefaultImageComparator extends ImageComparator<DefaultComparisonParameters
 	 * コンストラクタ
 	 */
 	DefaultImageComparator() {
+		this(new DefaultComparisonParameters());
 	}
 
 	DefaultImageComparator(DefaultComparisonParameters parameters) {
