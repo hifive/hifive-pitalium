@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.image.model.CompareOption;
-import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
+import com.htmlhifive.pitalium.image.model.ComparisonParameterDefaults;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
 import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 import com.htmlhifive.pitalium.image.model.ObjectGroup;
@@ -642,7 +642,7 @@ public final class ImageUtils {
 	 */
 	public static boolean getObjectRectangle(BufferedImage image, Rectangle rectangle) {
 
-		int maxMargin = DefaultComparisonParameters.getDefaultGroupDistance();
+		int maxMargin = ComparisonParameterDefaults.getDefaultGroupDistance();
 		int x = (int) rectangle.getX(), y = (int) rectangle.getY(), w = (int) rectangle.getWidth(),
 				h = (int) rectangle.getHeight();
 		BufferedImage subImage = image.getSubimage(x, y, w, h);
@@ -972,8 +972,8 @@ public final class ImageUtils {
 	}
 
 	public static Rectangle getTightDiffArea(Rectangle rectangle, int xLimit, int yLimit) {
-		int minMargin = Math.min(DefaultComparisonParameters.getDefaultGroupDistance() / 2,
-				DefaultComparisonParameters.getSplitGroupDistance() / 2);
+		int minMargin = Math.min(ComparisonParameterDefaults.getDefaultGroupDistance() / 2,
+				ComparisonParameterDefaults.getSplitGroupDistance() / 2);
 		int x = (int) rectangle.getX(), y = (int) rectangle.getY(), width = (int) rectangle.getWidth(),
 				height = (int) rectangle.getHeight();
 		// check if the rectangle meets the boundary

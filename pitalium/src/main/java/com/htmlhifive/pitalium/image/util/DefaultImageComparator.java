@@ -15,6 +15,7 @@
  */
 package com.htmlhifive.pitalium.image.util;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -23,12 +24,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.htmlhifive.pitalium.image.model.ComparisonParameters;
+import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
 
 /**
  * 通常の方法で画像比較
  */
-class DefaultImageComparator extends ImageComparator<ComparisonParameters> {
+class DefaultImageComparator extends ImageComparator<DefaultComparisonParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultImageComparator.class);
 
@@ -48,9 +49,17 @@ class DefaultImageComparator extends ImageComparator<ComparisonParameters> {
 		int[] rgb1 = ImageUtils.getRGB(image1, width, height);
 		int[] rgb2 = ImageUtils.getRGB(image2, width, height);
 
+		double diffThreshold = parameters.getThreshold();
+
 		List<Point> diffPoints = new ArrayList<Point>();
 		for (int i = 0, length = rgb1.length; i < length; i++) {
-			if (rgb1[i] != rgb2[i]) {
+			Color color1 = new Color(rgb1[i]);
+			Color color2 = new Color(rgb2[i]);
+
+			int r = color1.getRed() - color2.getRed();
+			int g = color1.getGreen() - color2.getGreen();
+			int b = color1.getBlue() - color2.getBlue();
+			if (r * r + g * g + b * b > 3 * 255 * 255 * diffThreshold * diffThreshold) {
 				int x = (i % width) + offsetX;
 				int y = (i / width) + offsetY;
 
@@ -58,6 +67,7 @@ class DefaultImageComparator extends ImageComparator<ComparisonParameters> {
 				diffPoints.add(diffPoint);
 				LOG.trace("[Compare] Diff found ({}, {}). #{} <=> #{}", diffPoint.x, diffPoint.y,
 						Integer.toHexString(rgb1[i]), Integer.toHexString(rgb2[i]));
+
 			}
 		}
 

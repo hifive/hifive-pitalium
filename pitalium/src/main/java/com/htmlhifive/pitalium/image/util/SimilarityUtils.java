@@ -20,7 +20,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.htmlhifive.pitalium.image.model.ComparedRectangleArea;
-import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
+import com.htmlhifive.pitalium.image.model.ComparisonParameterDefaults;
 import com.htmlhifive.pitalium.image.model.Offset;
 import com.htmlhifive.pitalium.image.model.SimilarityUnit;
 
@@ -152,7 +152,7 @@ public class SimilarityUtils {
 				actualWidth = (int) rectangle.getWidth(), actualHeight = (int) rectangle.getHeight();
 		int maxMove;
 		if (offset == null) {
-			maxMove = DefaultComparisonParameters.getMaxMove();
+			maxMove = ComparisonParameterDefaults.getMaxMove();
 			offset = new Offset(0, 0);
 		} else {
 			maxMove = 0;
@@ -406,7 +406,7 @@ public class SimilarityUtils {
 				actualWidth = (int) rectangle.getWidth(), actualHeight = (int) rectangle.getHeight();
 		int maxMove;
 		if (offset == null) {
-			maxMove = DefaultComparisonParameters.getMaxMove();
+			maxMove = ComparisonParameterDefaults.getMaxMove();
 			offset = new Offset(0, 0);
 		} else {
 			maxMove = 0;
@@ -459,7 +459,7 @@ public class SimilarityUtils {
 		int totalDiffCount, totalDiffMin = -1; // difference from 0
 		double similarityThresDiff, similarityTotalDiff;
 		double norm = 0, min = -1;
-		double diffThreshold = DefaultComparisonParameters.getDiffThreshold();
+		double diffThreshold = ComparisonParameterDefaults.getDiffThreshold();
 
 		// Find the best match moving sub-image.
 		for (int y = 0; y <= topMove + downMove; y++) {
