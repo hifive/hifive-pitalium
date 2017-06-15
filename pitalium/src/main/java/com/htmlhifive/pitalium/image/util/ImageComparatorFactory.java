@@ -15,9 +15,8 @@
  */
 package com.htmlhifive.pitalium.image.util;
 
-import java.util.Arrays;
-
 import com.htmlhifive.pitalium.image.model.CompareOption;
+import com.htmlhifive.pitalium.image.model.CompareOptionType;
 import com.htmlhifive.pitalium.image.model.ComparisonParameters;
 
 /**
@@ -49,9 +48,12 @@ public final class ImageComparatorFactory {
 	 * @return ImageComparatorオブジェクト
 	 */
 	public ImageComparator<? extends ComparisonParameters> getImageComparator(CompareOption[] options) {
-		if (options != null && options.length > 0
-				&& Arrays.asList(options).contains(CompareOption.IGNORE_CLEAR_PIXELS)) {
-			return new IgnoringClearPixelsImageComparator();
+		if (options != null && options.length > 0) {
+			for (CompareOption option : options) {
+				if (option.getType() == CompareOptionType.IGNORE_CLEAR_PIXELS) {
+					return new IgnoringClearPixelsImageComparator();
+				}
+			}
 		}
 		return new DefaultImageComparator();
 	}

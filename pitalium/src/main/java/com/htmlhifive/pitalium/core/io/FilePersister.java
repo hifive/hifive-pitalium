@@ -65,7 +65,7 @@ public class FilePersister implements Persister {
 	private static final TypeReference<Map<String, Map<String, String>>> EXPECTED_IDS_REFERENCE = new TypeReference<Map<String, Map<String, String>>>() {
 	};
 
-	private final FilePersisterConfig config;
+	protected FilePersisterConfig config;
 	private final FileNameFormatter targetResultFileNameFormatter;
 	private final FileNameFormatter screenshotFileNameFormatter;
 	private final FileNameFormatter diffFileNameFormatter;

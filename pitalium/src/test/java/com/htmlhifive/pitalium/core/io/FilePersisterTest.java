@@ -43,12 +43,12 @@ import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.config.FilePersisterConfig;
 import com.htmlhifive.pitalium.core.model.IndexDomSelector;
+import com.htmlhifive.pitalium.core.model.PersistedScreenshotImage;
 import com.htmlhifive.pitalium.core.model.ScreenshotResult;
 import com.htmlhifive.pitalium.core.model.SelectorType;
 import com.htmlhifive.pitalium.core.model.TargetResult;
 import com.htmlhifive.pitalium.core.model.TestResult;
 import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
-import com.htmlhifive.pitalium.image.model.PersistedScreenshotImage;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.image.model.ScreenshotImage;
 

@@ -669,6 +669,11 @@ public class AssertionView extends TestWatcher {
 			LOG.debug("[Comparison start] ({})", current);
 			ImageRectanglePair currentImage = prepareScreenshotImageForCompare(current);
 			ImageRectanglePair expectedImage = prepareScreenshotImageForCompare(expected);
+
+			//			if (current.getOptions() == null || current.getOptions().length == 0) {
+			//				current.
+			//			}
+
 			ImageComparedResult compareResult = ImageUtils.compare(currentImage.image, currentImage.rectangle,
 					expectedImage.image, expectedImage.rectangle, current.getOptions());
 			assertFail |= compareResult.isFailed();

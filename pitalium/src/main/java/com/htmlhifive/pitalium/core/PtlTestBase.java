@@ -17,10 +17,6 @@ package com.htmlhifive.pitalium.core;
 
 import java.util.List;
 
-import com.htmlhifive.pitalium.core.rules.AssumeCapability;
-import com.htmlhifive.pitalium.core.rules.PtlWebDriverCloser;
-import com.htmlhifive.pitalium.junit.ParameterizedClassRule;
-import com.htmlhifive.pitalium.junit.PtlBlockJUnit4ClassRunnerWithParametersFactory;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -28,9 +24,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import com.htmlhifive.pitalium.core.rules.AssertionView;
+import com.htmlhifive.pitalium.core.rules.AssumeCapability;
+import com.htmlhifive.pitalium.core.rules.PtlWebDriverCloser;
 import com.htmlhifive.pitalium.core.rules.ResultCollector;
 import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
+import com.htmlhifive.pitalium.junit.ParameterizedClassRule;
+import com.htmlhifive.pitalium.junit.PtlBlockJUnit4ClassRunnerWithParametersFactory;
 
 /**
  * テスト実行用の基底クラス。テスト実行に必要な&#064;Rule、&#064;ClassRuleが定義されています。<br/>
@@ -79,7 +79,7 @@ public abstract class PtlTestBase {
 
 	/**
 	 * Capabilityの読み込みを行います。
-	 * 
+	 *
 	 * @return Capabilityのリスト
 	 */
 	@Parameterized.Parameters(name = "{0}")

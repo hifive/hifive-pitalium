@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.htmlhifive.pitalium.image.model;
+package com.htmlhifive.pitalium.core.model;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -39,8 +39,10 @@ import com.htmlhifive.pitalium.core.io.PersistMetadata;
 import com.htmlhifive.pitalium.core.io.Persister;
 import com.htmlhifive.pitalium.core.io.ResourceUnavailableException;
 import com.htmlhifive.pitalium.core.model.IndexDomSelector;
+import com.htmlhifive.pitalium.core.model.PersistedScreenshotImage;
 import com.htmlhifive.pitalium.core.model.SelectorType;
 import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
+import com.htmlhifive.pitalium.image.model.ScreenshotImage;
 import com.htmlhifive.pitalium.image.util.ImageUtils;
 
 public class PersistedScreenshotImageTest {
