@@ -39,6 +39,10 @@ class DefaultImageComparator extends ImageComparator<DefaultComparisonParameters
 	DefaultImageComparator() {
 	}
 
+	DefaultImageComparator(DefaultComparisonParameters parameters) {
+		this.parameters = parameters;
+	}
+
 	@Override
 	protected List<Point> compare(BufferedImage image1, BufferedImage image2, int offsetX, int offsetY) {
 		LOG.trace("[Compare] image1[w: {}, h: {}], image2[w: {}, h: {}], offset: ({}, {})", image1.getWidth(),

@@ -18,6 +18,7 @@ package com.htmlhifive.pitalium.image.util;
 import com.htmlhifive.pitalium.image.model.CompareOption;
 import com.htmlhifive.pitalium.image.model.CompareOptionType;
 import com.htmlhifive.pitalium.image.model.ComparisonParameters;
+import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
 
 /**
  * 比較方法に対応するImageComparatorを生成するファクトリクラス
@@ -52,6 +53,9 @@ public final class ImageComparatorFactory {
 			for (CompareOption option : options) {
 				if (option.getType() == CompareOptionType.IGNORE_CLEAR_PIXELS) {
 					return new IgnoringClearPixelsImageComparator();
+				}
+				if (option.getType() == CompareOptionType.DEFAULT) {
+					return new DefaultImageComparator((DefaultComparisonParameters) option.getParameters());
 				}
 			}
 		}

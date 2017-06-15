@@ -21,6 +21,10 @@ package com.htmlhifive.pitalium.image.model;
 public enum CompareOptionType {
 
 	/**
+	 * 各pixelごとに色が一致するかどうかを比較します。
+	 */
+	DEFAULT,
+	/**
 	 * 画像の位置・サイズを含め厳密に比較します。
 	 */
 	STRICT,
