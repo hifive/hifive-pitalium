@@ -21,6 +21,7 @@ import java.awt.image.BufferedImage;
 
 import com.htmlhifive.pitalium.image.model.ComparedRectangleArea;
 import com.htmlhifive.pitalium.image.model.ComparisonParameterDefaults;
+import com.htmlhifive.pitalium.image.model.DiffCategory;
 import com.htmlhifive.pitalium.image.model.Offset;
 import com.htmlhifive.pitalium.image.model.SimilarityUnit;
 
@@ -91,8 +92,8 @@ public class SimilarityUtils {
 		}
 		similarityUnit.setSimilarityFeatureMatrix(similarityFeatureMatrix);
 
-		if (similarRectangle.getType() == "UNCHECKED") {
-			similarRectangle.setType("SIMILAR");
+		if (similarRectangle.getCategory() == null) {
+			similarRectangle.setCategory(DiffCategory.SIMILAR);
 		}
 		return similarityUnit;
 	}

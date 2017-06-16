@@ -12,7 +12,7 @@ import com.htmlhifive.pitalium.image.model.SimilarityComparisonParameters;
 import com.htmlhifive.pitalium.image.model.SimilarityImageComparedResult;
 import com.htmlhifive.pitalium.image.model.SimilarityUnit;
 
-public class SimilarityImageComparator extends ImageComparator<SimilarityComparisonParameters> {
+class SimilarityImageComparator extends ImageComparator<SimilarityComparisonParameters> {
 
 	/**
 	 * デフォルトコンストラクタ

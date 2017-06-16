@@ -18,31 +18,30 @@ package com.htmlhifive.pitalium.image.model;
 /**
  * 画像の比較オプションを表すenumクラス。
  */
-public enum CompareOptionType {
+public enum DiffCategory {
 
 	/**
-	 * 各pixelごとに色が一致するかどうかを比較します。
+	 * shift（位置のずれ）による差分
 	 */
-	DEFAULT,
-	/**
-	 * 画像の位置・サイズを含め厳密に比較します。
-	 */
-	STRICT,
-	/**
-	 * 透明度が0xFF以外のpixelは無視して比較します。
-	 */
-	IGNORE_CLEAR_PIXELS,
-	/**
-	 * 画像の余白部分を無視して比較します。
-	 */
-	IGNORE_BLANK_SPACE,
-	/**
-	 * 類似度に基づき画像の一致を判定します。
-	 */
-	SIMILARITY,
+	SHIFT,
 
 	/**
-	 * 差分の原因にの種類に基づき画像の一致を判定します。
+	 * missing（要素が存在しないこと）による差分
 	 */
-	CATEGORY;
+	MISSING,
+
+	/**
+	 * scaling（領域の拡縮）による差分
+	 */
+	SCALING,
+
+	/**
+	 * text（テキストのサブピクセルレンダリング）による
+	 */
+	TEXT,
+
+	/**
+	 * text（テキストのサブピクセルレンダリング）による
+	 */
+	SIMILAR
 }

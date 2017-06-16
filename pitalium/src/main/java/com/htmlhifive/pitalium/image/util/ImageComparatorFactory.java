@@ -15,6 +15,7 @@
  */
 package com.htmlhifive.pitalium.image.util;
 
+import com.htmlhifive.pitalium.image.model.CategoryComparisonParameters;
 import com.htmlhifive.pitalium.image.model.CompareOption;
 import com.htmlhifive.pitalium.image.model.CompareOptionType;
 import com.htmlhifive.pitalium.image.model.ComparisonParameters;
@@ -60,6 +61,9 @@ public final class ImageComparatorFactory {
 				}
 				if (option.getType() == CompareOptionType.SIMILARITY) {
 					return new SimilarityImageComparator((SimilarityComparisonParameters) option.getParameters());
+				}
+				if (option.getType() == CompareOptionType.CATEGORY) {
+					return new CategoryImageComparator((CategoryComparisonParameters) option.getParameters());
 				}
 			}
 		}

@@ -22,7 +22,7 @@ import java.awt.Rectangle;
  */
 public class ComparedRectangleArea extends RectangleArea {
 
-	private String type = "UNCHECKED";
+	private DiffCategory category = null;
 
 	/**
 	 * The negative value of xShift means the left side, the positive value of it means the right side, and the negative
@@ -63,7 +63,7 @@ public class ComparedRectangleArea extends RectangleArea {
 		this(rectangle);
 		this.xShift = xShift;
 		this.yShift = yShift;
-		this.type = "SHIFT";
+		this.category = DiffCategory.SHIFT;
 	}
 
 	/**
@@ -73,30 +73,30 @@ public class ComparedRectangleArea extends RectangleArea {
 	 * @param y
 	 * @param width
 	 * @param height
-	 * @param type
+	 * @param category
 	 * @param xShift
 	 * @param yShift
 	 * @param similarityUnit
 	 */
-	public ComparedRectangleArea(int x, int y, int width, int height, String type, int xShift, int yShift,
+	public ComparedRectangleArea(int x, int y, int width, int height, DiffCategory category, int xShift, int yShift,
 			SimilarityUnit similarityUnit) {
 		super(x, y, width, height);
-		this.type = type;
+		this.category = category;
 		this.xShift = xShift;
 		this.yShift = yShift;
 		this.similarityUnit = similarityUnit;
 	}
 
 	public ComparedRectangleArea() {
-		this(0, 0, 0, 0, "UNCHECKED", 0, 0, null);
+		this(0, 0, 0, 0, null, 0, 0, null);
 	}
 
-	public String getType() {
-		return type;
+	public DiffCategory getCategory() {
+		return category;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setCategory(DiffCategory category) {
+		this.category = category;
 	}
 
 	public int getXShift() {
