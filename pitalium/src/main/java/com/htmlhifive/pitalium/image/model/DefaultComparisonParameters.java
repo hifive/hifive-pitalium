@@ -15,6 +15,8 @@
  */
 package com.htmlhifive.pitalium.image.model;
 
+import java.util.Map;
+
 /**
  * 比較用のパラメータを保持するクラス
  */
@@ -39,6 +41,18 @@ public class DefaultComparisonParameters extends ComparisonParameters {
 	 */
 	public DefaultComparisonParameters(double threshold) {
 		this.threshold = threshold;
+	}
+
+	/**
+	 * mapを受けるコンストラクタ
+	 *
+	 * @param map 閾値を持つmap
+	 */
+	public DefaultComparisonParameters(Map<String, Object> map) {
+		Object thresholdStr = map.get("threshold");
+		if (thresholdStr != null) {
+			this.threshold = (Double) thresholdStr;
+		}
 	}
 
 	/**

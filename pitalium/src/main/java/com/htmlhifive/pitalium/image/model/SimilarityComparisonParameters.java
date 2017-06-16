@@ -15,6 +15,8 @@
  */
 package com.htmlhifive.pitalium.image.model;
 
+import java.util.Map;
+
 public class SimilarityComparisonParameters extends ComparisonParameters {
 	/**
 	 * 各pixelの色の差分ノルムに基づく類似度で一致とみなす閾値
@@ -36,6 +38,14 @@ public class SimilarityComparisonParameters extends ComparisonParameters {
 	 */
 	private final double totalDiffThreshold;
 
+	/**
+	 * パラメータありコンストラクタ
+	 *
+	 * @param pixleByPixelThreshold
+	 * @param featherMatrixThreshold
+	 * @param thresDiffThreshold
+	 * @param totalDiffThreshold
+	 */
 	public SimilarityComparisonParameters(double pixleByPixelThreshold, double featherMatrixThreshold,
 			double thresDiffThreshold, double totalDiffThreshold) {
 		super();
@@ -43,6 +53,19 @@ public class SimilarityComparisonParameters extends ComparisonParameters {
 		this.featherMatrixThreshold = featherMatrixThreshold;
 		this.thresDiffThreshold = thresDiffThreshold;
 		this.totalDiffThreshold = totalDiffThreshold;
+	}
+
+	/**
+	 * mapを引数とするコンストラクタ
+	 *
+	 * @param parameters
+	 */
+	public SimilarityComparisonParameters(Map<String, Object> parameters) {
+		super();
+		this.pixleByPixelThreshold = (Double) parameters.get("getpixleByPixelThreshold");
+		this.featherMatrixThreshold = (Double) parameters.get("featherMatrixThreshold");
+		this.thresDiffThreshold = (Double) parameters.get("thresDiffThreshold");
+		this.totalDiffThreshold = (Double) parameters.get("totalDiffThreshold");
 	}
 
 	/**

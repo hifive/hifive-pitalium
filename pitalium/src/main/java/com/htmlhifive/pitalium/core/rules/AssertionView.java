@@ -153,8 +153,8 @@ public class AssertionView extends TestWatcher {
 
 		LOG.info("[Testcase failed] (verified {} errors)", verifyErrors.size());
 		TestResultManager.getInstance().cancelUpdateExpectedId(className);
-		String errors = StringUtils.join(
-				FluentIterable.from(verifyErrors).transform(new Function<AssertionError, String>() {
+		String errors = StringUtils
+				.join(FluentIterable.from(verifyErrors).transform(new Function<AssertionError, String>() {
 					@Override
 					public String apply(AssertionError error) {
 						return error.getMessage();
@@ -241,7 +241,8 @@ public class AssertionView extends TestWatcher {
 	 * @param screenshotId スクリーンショットを識別するID
 	 */
 	public void assertView(String message, String screenshotId) {
-		assertView(message, screenshotId, asList(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"))), null);
+		assertView(message, screenshotId, asList(new CompareTarget(ScreenArea.of(SelectorType.TAG_NAME, "body"))),
+				null);
 	}
 
 	/**
@@ -472,8 +473,8 @@ public class AssertionView extends TestWatcher {
 	 * @return バリデーション結果
 	 */
 	private ValidateResult validateTargetResults(List<TargetResult> targetResults, List<CompareTarget> compareTargets) {
-		return new ValidateResult(validateTargetElementHasSize(targetResults), validateDomSelectorTargetExists(
-				targetResults, compareTargets));
+		return new ValidateResult(validateTargetElementHasSize(targetResults),
+				validateDomSelectorTargetExists(targetResults, compareTargets));
 	}
 
 	/**
@@ -540,8 +541,8 @@ public class AssertionView extends TestWatcher {
 				capabilities);
 		List<TargetResult> processes = new ArrayList<TargetResult>(targetResults.size());
 		for (TargetResult target : targetResults) {
-			processes.add(new TargetResult(toTargetForJson(target.getTarget()),
-					toExcludesForJson(target.getExcludes()), target.getImage()));
+			processes.add(new TargetResult(toTargetForJson(target.getTarget()), toExcludesForJson(target.getExcludes()),
+					target.getImage()));
 		}
 
 		TestResultManager.getInstance().getPersister().saveTargetResults(currentMetadata, processes);
@@ -557,16 +558,17 @@ public class AssertionView extends TestWatcher {
 	 */
 	private ScreenshotResult takeCaptureAndPersistImage(String screenshotId, List<CompareTarget> compareTargets,
 			List<DomSelector> hiddenElementsSelectors) {
-		ScreenshotResult screenshotResult = driver
-				.takeScreenshot(screenshotId, compareTargets, hiddenElementsSelectors);
+		ScreenshotResult screenshotResult = driver.takeScreenshot(screenshotId, compareTargets,
+				hiddenElementsSelectors);
 		LOG.trace("(takeCaptureAndPersistImage) (ssid: {}) result: {}", screenshotId, screenshotResult);
 
 		// Persist all screenshots
 		Persister persister = TestResultManager.getInstance().getPersister();
 		ScreenshotImage entireScreenshotImage = screenshotResult.getEntireScreenshotImage();
 		if (entireScreenshotImage.isImageCached()) {
-			persister.saveScreenshot(new PersistMetadata(currentId, className, methodName, screenshotId, null, null,
-					capabilities), entireScreenshotImage.get());
+			persister.saveScreenshot(
+					new PersistMetadata(currentId, className, methodName, screenshotId, null, null, capabilities),
+					entireScreenshotImage.get());
 		}
 
 		for (TargetResult targetResult : screenshotResult.getTargetResults()) {
@@ -605,13 +607,14 @@ public class AssertionView extends TestWatcher {
 			ValidateResult validateResult) {
 		List<TargetResult> processes = new ArrayList<TargetResult>(targetResults.size());
 		for (TargetResult target : targetResults) {
-			processes.add(new TargetResult(null, toTargetForJson(target.getTarget()), toExcludesForJson(target
-					.getExcludes()), target.isMoveTarget(), target.getHiddenElementSelectors()));
+			processes.add(
+					new TargetResult(null, toTargetForJson(target.getTarget()), toExcludesForJson(target.getExcludes()),
+							target.isMoveTarget(), target.getHiddenElementSelectors()));
 		}
 
 		for (DomSelector selector : validateResult.noElementSelectors) {
-			processes.add(new TargetResult(null, new ScreenAreaResult(null, null, new ScreenArea(selector)), null,
-					null, null));
+			processes.add(new TargetResult(null, new ScreenAreaResult(null, null, new ScreenArea(selector)), null, null,
+					null));
 		}
 
 		ExecResult result = validateResult.isValid() ? null : ExecResult.FAILURE;
@@ -639,8 +642,8 @@ public class AssertionView extends TestWatcher {
 			IndexDomSelector selector = current.getTarget().getSelector();
 			if (selector != null && validateResult.noAreaElementSelectors.contains(selector)) {
 				processes.add(new TargetResult(ExecResult.FAILURE, toTargetForJson(current.getTarget()),
-						toExcludesForJson(current.getExcludes()), current.isMoveTarget(), current
-								.getHiddenElementSelectors()));
+						toExcludesForJson(current.getExcludes()), current.isMoveTarget(),
+						current.getHiddenElementSelectors()));
 				LOG.debug("[Comparison skipped] ({})", current.getTarget());
 				continue;
 			}
@@ -655,8 +658,9 @@ public class AssertionView extends TestWatcher {
 				});
 			} catch (NoSuchElementException e) {
 				LOG.error("[Comparison failed] No element found for target ({}).", current.getTarget());
-				processes.add(new TargetResult(null, toTargetForJson(current.getTarget()), toExcludesForJson(current
-						.getExcludes()), current.isMoveTarget(), current.getHiddenElementSelectors()));
+				processes.add(new TargetResult(null, toTargetForJson(current.getTarget()),
+						toExcludesForJson(current.getExcludes()), current.isMoveTarget(),
+						current.getHiddenElementSelectors()));
 				assertFail = true;
 
 				continue;
@@ -683,8 +687,8 @@ public class AssertionView extends TestWatcher {
 			}
 
 			processes.add(new TargetResult(compareResult.isSucceeded() ? ExecResult.SUCCESS : ExecResult.FAILURE,
-					toTargetForJson(current.getTarget()), toExcludesForJson(current.getExcludes()), current
-							.isMoveTarget(), current.getHiddenElementSelectors()));
+					toTargetForJson(current.getTarget()), toExcludesForJson(current.getExcludes()),
+					current.isMoveTarget(), current.getHiddenElementSelectors()));
 
 			// 比較でFailだった場合、差分の画像を作成
 			if (compareResult.isFailed()) {
@@ -699,16 +703,16 @@ public class AssertionView extends TestWatcher {
 					metadata = new PersistMetadata(currentId, className, methodName, screenshotId, null,
 							target.getRectangle(), capabilities);
 				} else {
-					metadata = new PersistMetadata(currentId, className, methodName, screenshotId,
-							target.getSelector(), null, capabilities);
+					metadata = new PersistMetadata(currentId, className, methodName, screenshotId, target.getSelector(),
+							null, capabilities);
 				}
 				TestResultManager.getInstance().getPersister().saveDiffImage(metadata, diffImage);
 			}
 		}
 
 		for (DomSelector selector : validateResult.noElementSelectors) {
-			processes.add(new TargetResult(null, new ScreenAreaResult(null, null, new ScreenArea(selector)), null,
-					null, null));
+			processes.add(new TargetResult(null, new ScreenAreaResult(null, null, new ScreenArea(selector)), null, null,
+					null));
 		}
 
 		return new ScreenshotResult(screenshotId, assertFail ? ExecResult.FAILURE : ExecResult.SUCCESS, expectedId,

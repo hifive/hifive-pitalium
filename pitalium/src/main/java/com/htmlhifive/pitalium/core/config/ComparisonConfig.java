@@ -16,11 +16,16 @@
 package com.htmlhifive.pitalium.core.config;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.image.model.CompareOption;
+import com.htmlhifive.pitalium.image.model.CompareOptionType;
+import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
+import com.htmlhifive.pitalium.image.model.SimilarityComparisonParameters;
 
 /**
  * 比較方法に関する設定
@@ -31,10 +36,11 @@ public class ComparisonConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	// TODO: できればクラスで受けたい
 	/**
 	 * 比較方法
 	 */
-	private List<CompareOption> options;
+	private List<Map<String, Object>> options;
 
 	/**
 	 * コンストラクタ
@@ -48,7 +54,30 @@ public class ComparisonConfig implements Serializable {
 	 * @return 比較方法
 	 */
 	public List<CompareOption> getOptions() {
-		return options;
+		if (options == null) {
+			return null;
+		}
+
+		List<CompareOption> ret = new ArrayList<>();
+		for (Map<String, Object> map : options) {
+			CompareOptionType type = CompareOptionType.valueOf(map.get("type").toString());
+			Map<String, Object> parameters = (Map<String, Object>) map.get("parameters");
+			if (parameters == null) {
+				ret.add(new CompareOption(type));
+				continue;
+			}
+
+			switch (type) {
+				case SIMILARITY:
+					ret.add(new CompareOption(type, new SimilarityComparisonParameters(parameters)));
+					continue;
+				default:
+					ret.add(new CompareOption(type, new DefaultComparisonParameters(parameters)));
+					continue;
+			}
+		}
+
+		return ret;
 	}
 
 	/**
@@ -56,46 +85,9 @@ public class ComparisonConfig implements Serializable {
 	 *
 	 * @param options 比較方法
 	 */
-	void setOptions(List<CompareOption> options) {
+	void setOptions(List<Map<String, Object>> options) {
 		this.options = options;
 	}
-
-	/**
-	 * 比較方法を設定します。
-	 *
-	 * @param options 比較方法
-	 */
-	//	void setOptions(Map<String, ?>[] optionMaps) {
-	//		CompareOption[] options = new CompareOption[optionMaps.length];
-	//		int i = 0;
-	//		for (Map<String, ?> option : optionMaps) {
-	//			CompareOptionType type = CompareOptionType.valueOf((String) option.get("type"));
-	//			if (type == null) {
-	//				throw new TestRuntimeException("the type is not correct. type=" + type);
-	//			}
-	//			Map<String, Object> p = (Map<String, Object>) option.get("parameters");
-	//			if (p == null) {
-	//				options[i] = new CompareOption(type);
-	//			} else {
-	//				options[i] = new CompareOption(type, createParametersInstance(type).);
-	//			}
-	//
-	//			CompareOption o = new CompareOption();
-	//		}
-	//
-	//		this.options = options;
-	//	}
-	//
-	//	private Class<?> createParametersInstance(CompareOptionType type, Map<String, Object> params) {
-	//		switch (type) {
-	//			case DEFAULT:
-	//				return new DefaultComparisonParameters(params);
-	//			case SIMILARITY:
-	//				return new SimilarityComparisonParameters(params);
-	//			default:
-	//				return new DefaultComparisonParameters(params);
-	//		}
-	//	}
 
 	@Override
 	public String toString() {
