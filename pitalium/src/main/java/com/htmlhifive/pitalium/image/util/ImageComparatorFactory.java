@@ -17,8 +17,9 @@ package com.htmlhifive.pitalium.image.util;
 
 import com.htmlhifive.pitalium.image.model.CompareOption;
 import com.htmlhifive.pitalium.image.model.CompareOptionType;
-import com.htmlhifive.pitalium.image.model.DefaultCompareOption;
-import com.htmlhifive.pitalium.image.model.SimilarityComparieOption;
+import com.htmlhifive.pitalium.image.model.ComparisonParameters;
+import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
+import com.htmlhifive.pitalium.image.model.SimilarityComparisonParameters;
 
 /**
  * 比較方法に対応するImageComparatorを生成するファクトリクラス
@@ -48,17 +49,17 @@ public final class ImageComparatorFactory {
 	 * @param options 比較方法（比較オプション）
 	 * @return ImageComparatorオブジェクト
 	 */
-	public ImageComparator<? extends CompareOption> getImageComparator(CompareOption[] options) {
+	public ImageComparator<? extends ComparisonParameters> getImageComparator(CompareOption[] options) {
 		if (options != null && options.length > 0) {
 			for (CompareOption option : options) {
 				if (option.getType() == CompareOptionType.IGNORE_CLEAR_PIXELS) {
 					return new IgnoringClearPixelsImageComparator();
 				}
 				if (option.getType() == CompareOptionType.DEFAULT) {
-					return new DefaultImageComparator((DefaultCompareOption) option);
+					return new DefaultImageComparator((DefaultComparisonParameters) option.getParameters());
 				}
 				if (option.getType() == CompareOptionType.SIMILARITY) {
-					return new SimilarityImageComparator((SimilarityComparieOption) option);
+					return new SimilarityImageComparator((SimilarityComparisonParameters) option.getParameters());
 				}
 			}
 		}

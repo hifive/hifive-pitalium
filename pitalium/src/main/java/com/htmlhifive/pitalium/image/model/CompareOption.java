@@ -2,9 +2,11 @@ package com.htmlhifive.pitalium.image.model;
 
 import java.io.Serializable;
 
-public abstract class CompareOption implements Serializable {
+public class CompareOption implements Serializable {
 
-	protected CompareOptionType type;
+	CompareOptionType type;
+
+	ComparisonParameters parameters;
 
 	/**
 	 * CompareOptionクラスを生成する
@@ -23,9 +25,27 @@ public abstract class CompareOption implements Serializable {
 	}
 
 	/**
+	 * CompareOptionクラスを生成する
+	 *
+	 * @param type
+	 * @param parameters
+	 */
+	public CompareOption(CompareOptionType type, ComparisonParameters parameters) {
+		this.type = type;
+		this.parameters = parameters;
+	}
+
+	/**
 	 * @return type
 	 */
 	public CompareOptionType getType() {
 		return type;
+	}
+
+	/**
+	 * @return parameters
+	 */
+	public ComparisonParameters getParameters() {
+		return parameters;
 	}
 }

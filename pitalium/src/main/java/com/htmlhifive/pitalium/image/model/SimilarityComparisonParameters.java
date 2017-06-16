@@ -15,7 +15,7 @@
  */
 package com.htmlhifive.pitalium.image.model;
 
-public class SimilarityComparieOption extends CompareOption {
+public class SimilarityComparisonParameters extends ComparisonParameters {
 	/**
 	 * 各pixelの色の差分ノルムに基づく類似度で一致とみなす閾値
 	 */
@@ -36,7 +36,7 @@ public class SimilarityComparieOption extends CompareOption {
 	 */
 	private final double totalDiffThreshold;
 
-	public SimilarityComparieOption(double pixleByPixelThreshold, double featherMatrixThreshold,
+	public SimilarityComparisonParameters(double pixleByPixelThreshold, double featherMatrixThreshold,
 			double thresDiffThreshold, double totalDiffThreshold) {
 		super();
 		this.pixleByPixelThreshold = pixleByPixelThreshold;
