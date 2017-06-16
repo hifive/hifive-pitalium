@@ -3,7 +3,7 @@ package com.htmlhifive.pitalium.image.model;
 public class SimilarityImageComparedResult extends ImageComparedResult {
 
 	/**
-	 * 類似度にも続く計算結果
+	 * 類似度に基づく計算結果
 	 */
 	private SimilarityUnit similarityUnit;
 
