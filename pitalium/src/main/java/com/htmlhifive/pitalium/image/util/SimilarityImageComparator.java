@@ -8,11 +8,11 @@ import java.util.List;
 import com.htmlhifive.pitalium.image.model.ComparedRectangleArea;
 import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 import com.htmlhifive.pitalium.image.model.Offset;
-import com.htmlhifive.pitalium.image.model.SimilarityComparisonParameters;
+import com.htmlhifive.pitalium.image.model.SimilarityComparieOption;
 import com.htmlhifive.pitalium.image.model.SimilarityImageComparedResult;
 import com.htmlhifive.pitalium.image.model.SimilarityUnit;
 
-public class SimilarityImageComparator extends ImageComparator<SimilarityComparisonParameters> {
+public class SimilarityImageComparator extends ImageComparator<SimilarityComparieOption> {
 
 	/**
 	 * デフォルトコンストラクタ
@@ -25,7 +25,7 @@ public class SimilarityImageComparator extends ImageComparator<SimilarityCompari
 	 *
 	 * @param parameters 比較用パラメータ
 	 */
-	SimilarityImageComparator(SimilarityComparisonParameters parameters) {
+	SimilarityImageComparator(SimilarityComparieOption parameters) {
 		this.parameters = parameters;
 	}
 

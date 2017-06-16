@@ -24,12 +24,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
+import com.htmlhifive.pitalium.image.model.DefaultCompareOption;
 
 /**
  * 通常の方法で画像比較
  */
-class DefaultImageComparator extends ImageComparator<DefaultComparisonParameters> {
+class DefaultImageComparator extends ImageComparator<DefaultCompareOption> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultImageComparator.class);
 
@@ -37,10 +37,10 @@ class DefaultImageComparator extends ImageComparator<DefaultComparisonParameters
 	 * コンストラクタ
 	 */
 	DefaultImageComparator() {
-		this(new DefaultComparisonParameters());
+		this(new DefaultCompareOption());
 	}
 
-	DefaultImageComparator(DefaultComparisonParameters parameters) {
+	DefaultImageComparator(DefaultCompareOption parameters) {
 		this.parameters = parameters;
 	}
 

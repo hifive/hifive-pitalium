@@ -23,12 +23,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.htmlhifive.pitalium.image.model.ComparisonParameters;
+import com.htmlhifive.pitalium.image.model.CompareOption;
 
 /**
  * 透明度が0xFFでないピクセルは無視して画像比較
  */
-class IgnoringClearPixelsImageComparator extends ImageComparator<ComparisonParameters> {
+class IgnoringClearPixelsImageComparator extends ImageComparator<CompareOption> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(IgnoringClearPixelsImageComparator.class);
 

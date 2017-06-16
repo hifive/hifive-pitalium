@@ -25,14 +25,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
-import com.htmlhifive.pitalium.image.model.ComparisonParameters;
+import com.htmlhifive.pitalium.image.model.CompareOption;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
 import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 
 /**
  * 画像の比較処理を行うComparatorの抽象クラス。このクラスを拡張して、比較方法毎にComparatorを実装します。
  */
-public abstract class ImageComparator<T extends ComparisonParameters> {
+public abstract class ImageComparator<T extends CompareOption> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ImageComparator.class);
 
