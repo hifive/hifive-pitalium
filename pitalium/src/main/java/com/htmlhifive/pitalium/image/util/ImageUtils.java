@@ -257,8 +257,7 @@ public final class ImageUtils {
 		Graphics2D marker;
 		if (extend) {
 			//画像が、マーカーの範囲を超えている場合コピーする
-			markedImg = new BufferedImage(markerMaxX - markerMinX, markerMaxY - markerMinY,
-					BufferedImage.TYPE_INT_ARGB);
+			markedImg = new BufferedImage(markerMaxX - markerMinX, markerMaxY - markerMinY, BufferedImage.TYPE_INT_ARGB);
 			marker = (Graphics2D) markedImg.getGraphics();
 			marker.setBackground(Color.GRAY);
 			marker.clearRect(0, 0, markerMaxX - markerMinX, markerMaxY - markerMinY);
@@ -279,8 +278,8 @@ public final class ImageUtils {
 			marker.setColor(new Color(markerR, markerG, markerB, markerA));
 			marker.setStroke(new BasicStroke(markeStroke));
 			final int markerPadding = 2;
-			marker.drawRect(area.x - markerPadding - markerMinX, area.y - markerPadding - markerMinY,
-					area.width + markerPadding * 2, area.height + markerPadding * 2);
+			marker.drawRect(area.x - markerPadding - markerMinX, area.y - markerPadding - markerMinY, area.width
+					+ markerPadding * 2, area.height + markerPadding * 2);
 		}
 
 		return markedImg;
@@ -397,8 +396,8 @@ public final class ImageUtils {
 
 		if (start.y <= end.y) {
 			final int rectMargin = 3;
-			areas.add(new Rectangle(-rectMargin, start.y - rectMargin, end.x + rectMargin * 2,
-					end.y - start.y + rectMargin * 2));
+			areas.add(new Rectangle(-rectMargin, start.y - rectMargin, end.x + rectMargin * 2, end.y - start.y
+					+ rectMargin * 2));
 		}
 
 		return areas;
@@ -451,8 +450,8 @@ public final class ImageUtils {
 		int height = image.getHeight();
 		LOG.trace(
 				"(Trim) image(top: {}, left: {}, bottom: {}, right; {}). [w: {}; h: {}] -> [x: {}; y: {}; w: {}; h: {}].",
-				trimTop, trimLeft, trimBottom, trimRight, width, height, trimLeft, trimTop,
-				width - trimLeft - trimRight, height - trimTop - trimBottom);
+				trimTop, trimLeft, trimBottom, trimRight, width, height, trimLeft, trimTop, width - trimLeft
+						- trimRight, height - trimTop - trimBottom);
 		return image.getSubimage(trimLeft, trimTop, width - trimLeft - trimRight, height - trimTop - trimBottom);
 	}
 
@@ -643,8 +642,8 @@ public final class ImageUtils {
 	public static boolean getObjectRectangle(BufferedImage image, Rectangle rectangle) {
 
 		int maxMargin = ComparisonParameterDefaults.getDefaultGroupDistance();
-		int x = (int) rectangle.getX(), y = (int) rectangle.getY(), w = (int) rectangle.getWidth(),
-				h = (int) rectangle.getHeight();
+		int x = (int) rectangle.getX(), y = (int) rectangle.getY(), w = (int) rectangle.getWidth(), h = (int) rectangle
+				.getHeight();
 		BufferedImage subImage = image.getSubimage(x, y, w, h);
 
 		// if rectangle is not big enough, do not find object rectangle
@@ -663,15 +662,15 @@ public final class ImageUtils {
 				edgeMap[i][j] = subImage.getRGB(j + 1, i + 1) != subImage.getRGB(j, i); // NW corner
 				edgeMap[i][width - 1 - j] = subImage.getRGB(width - j, i + 1) != subImage.getRGB(width - j + 1, i); // NE corner
 				edgeMap[height - 1 - i][j] = subImage.getRGB(j + 1, height - i) != subImage.getRGB(j, height - i + 1); // SW corner
-				edgeMap[height - 1 - i][width - 1 - j] = subImage.getRGB(width - j, height - i) != subImage
-						.getRGB(width - j + 1, height - i + 1); // SE corner
+				edgeMap[height - 1 - i][width - 1 - j] = subImage.getRGB(width - j, height - i) != subImage.getRGB(
+						width - j + 1, height - i + 1); // SE corner
 			}
 
 			// on the top and bottom bridge areas using vertical filter.
 			for (int j = maxMargin; j < width - maxMargin; j++) {
 				edgeMap[i][j] = subImage.getRGB(j + 1, i + 1) != subImage.getRGB(j + 1, i); // top bridge area
-				edgeMap[height - 1 - i][j] = subImage.getRGB(j + 1, height - i) != subImage.getRGB(j + 1,
-						height - i + 1); // bottom bridge area
+				edgeMap[height - 1 - i][j] = subImage.getRGB(j + 1, height - i) != subImage.getRGB(j + 1, height - i
+						+ 1); // bottom bridge area
 			}
 
 			// on the left and right bridge areas using horizontal filter.
@@ -683,9 +682,8 @@ public final class ImageUtils {
 
 		// shrink edgeMap down to (2*maxMargin+1) by (2*maxMargin+1) by using these bridges.
 		int shrinkLength = 2 * maxMargin + 1;
-		boolean[][] shrinkMap = new boolean[shrinkLength][shrinkLength],
-				verticalMap = new boolean[shrinkLength][shrinkLength], // to check vertical direction
-				horizontalMap = new boolean[shrinkLength][shrinkLength]; // to check horizontal direction
+		boolean[][] shrinkMap = new boolean[shrinkLength][shrinkLength], verticalMap = new boolean[shrinkLength][shrinkLength], // to check vertical direction
+		horizontalMap = new boolean[shrinkLength][shrinkLength]; // to check horizontal direction
 
 		// initialize shrink map
 		for (int i = 0; i < maxMargin; i++) {
@@ -738,10 +736,8 @@ public final class ImageUtils {
 				verticalMap[maxMargin - j][i] &= verticalMap[maxMargin - j + 1][i];
 				verticalMap[maxMargin + j][i] &= verticalMap[maxMargin + j - 1][i];
 				// expand right
-				verticalMap[maxMargin - j][shrinkLength - 1 - i] &= verticalMap[maxMargin - j + 1][shrinkLength - 1
-						- i];
-				verticalMap[maxMargin + j][shrinkLength - 1 - i] &= verticalMap[maxMargin + j - 1][shrinkLength - 1
-						- i];
+				verticalMap[maxMargin - j][shrinkLength - 1 - i] &= verticalMap[maxMargin - j + 1][shrinkLength - 1 - i];
+				verticalMap[maxMargin + j][shrinkLength - 1 - i] &= verticalMap[maxMargin + j - 1][shrinkLength - 1 - i];
 				// expand top
 				horizontalMap[i][maxMargin - j] &= horizontalMap[i][maxMargin - j + 1];
 				horizontalMap[i][maxMargin + j] &= horizontalMap[i][maxMargin + j - 1];
@@ -974,8 +970,8 @@ public final class ImageUtils {
 	public static Rectangle getTightDiffArea(Rectangle rectangle, int xLimit, int yLimit) {
 		int minMargin = Math.min(ComparisonParameterDefaults.getDefaultGroupDistance() / 2,
 				ComparisonParameterDefaults.getSplitGroupDistance() / 2);
-		int x = (int) rectangle.getX(), y = (int) rectangle.getY(), width = (int) rectangle.getWidth(),
-				height = (int) rectangle.getHeight();
+		int x = (int) rectangle.getX(), y = (int) rectangle.getY(), width = (int) rectangle.getWidth(), height = (int) rectangle
+				.getHeight();
 		// check if the rectangle meets the boundary
 		if (x > 0) {
 			x += minMargin;
@@ -1069,8 +1065,7 @@ public final class ImageUtils {
 	 * @param diffThreshold threshold to ignore small difference
 	 * @return Offset contains offsetX and offsetY
 	 */
-	public static Offset findDominantOffset(BufferedImage expectedImage, BufferedImage actualImage,
-			double diffThreshold) {
+	public static Offset findDominantOffset(BufferedImage expectedImage, BufferedImage actualImage, double diffThreshold) {
 
 		// we don't need to check all elements, only check one element in every STEP*STEP elements
 		int STEP = 5;
@@ -1257,8 +1252,7 @@ public final class ImageUtils {
 	 * @param offset dominant offset between two images
 	 * @return subImage of expectedImage at dominant offset
 	 */
-	public static BufferedImage getDominantImage(BufferedImage expectedImage, BufferedImage actualImage,
-			Offset offset) {
+	public static BufferedImage getDominantImage(BufferedImage expectedImage, BufferedImage actualImage, Offset offset) {
 
 		// initialize size
 		int expectedWidth = expectedImage.getWidth(), expectedHeight = expectedImage.getHeight();
