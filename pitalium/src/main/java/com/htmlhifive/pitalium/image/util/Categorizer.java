@@ -39,10 +39,10 @@ public class Categorizer {
 		BufferedImage subActualImage = actualImage.getSubimage(x, y, w, h);
 		double[] expectedIndicator = ImageUtils.countSubpixel(subExpectedImage);
 		double[] actualIndicator = ImageUtils.countSubpixel(subActualImage);
-		if ((expectedIndicator[0] > ComparisonParameterDefaults.getSubpixelRateThreshold()
-				&& expectedIndicator[1] > ComparisonParameterDefaults.getSubpixelPerLineThreshold())
-				|| (actualIndicator[0] > ComparisonParameterDefaults.getSubpixelRateThreshold()
-						&& actualIndicator[1] > ComparisonParameterDefaults.getSubpixelPerLineThreshold())) {
+		if ((expectedIndicator[0] > ComparisonParameterDefaults.getSubpixelRateThreshold() && expectedIndicator[1] > ComparisonParameterDefaults
+				.getSubpixelPerLineThreshold())
+				|| (actualIndicator[0] > ComparisonParameterDefaults.getSubpixelRateThreshold() && actualIndicator[1] > ComparisonParameterDefaults
+						.getSubpixelPerLineThreshold())) {
 			return true;
 		}
 		return false;
@@ -61,17 +61,17 @@ public class Categorizer {
 	 */
 	public static boolean CheckShift(BufferedImage expectedImage, BufferedImage actualImage,
 			List<ComparedRectangleArea> ComparedRectangles, Rectangle rectangle) {
-		int minWidth = Math.min(expectedImage.getWidth(), actualImage.getWidth()),
-				minHeight = Math.min(expectedImage.getHeight(), actualImage.getHeight());
+		int minWidth = Math.min(expectedImage.getWidth(), actualImage.getWidth()), minHeight = Math.min(
+				expectedImage.getHeight(), actualImage.getHeight());
 
 		// set range to be checked
-		int x = (int) rectangle.getX(), y = (int) rectangle.getY(), w = (int) rectangle.getWidth(),
-				h = (int) rectangle.getHeight();
+		int x = (int) rectangle.getX(), y = (int) rectangle.getY(), w = (int) rectangle.getWidth(), h = (int) rectangle
+				.getHeight();
 		int maxShift = ComparisonParameterDefaults.getMaxShift();
-		int leftMove = Math.min(maxShift, x - 1), rightMove = Math.min(maxShift, minWidth - (x + w)),
-				topMove = Math.min(maxShift, y - 1), downMove = Math.min(maxShift, minHeight - (y + h));
-		Rectangle entireFrame = new Rectangle(x - leftMove, y - topMove, w + leftMove + rightMove,
-				h + topMove + downMove);
+		int leftMove = Math.min(maxShift, x - 1), rightMove = Math.min(maxShift, minWidth - (x + w)), topMove = Math
+				.min(maxShift, y - 1), downMove = Math.min(maxShift, minHeight - (y + h));
+		Rectangle entireFrame = new Rectangle(x - leftMove, y - topMove, w + leftMove + rightMove, h + topMove
+				+ downMove);
 		BufferedImage entireImage = ImageUtils.getSubImage(expectedImage, entireFrame);
 		BufferedImage templateImage = ImageUtils.getSubImage(actualImage, rectangle);
 
@@ -105,8 +105,7 @@ public class Categorizer {
 
 					// If the template matches at this position, create new ComparedRectangle and add it in the list
 					if (ImageUtils.imageEquals(cropEntire, templateImage)) {
-						ComparedRectangleArea newMatch = new ComparedRectangleArea(rectangle, leftMove - j,
-								topMove - i);
+						ComparedRectangleArea newMatch = new ComparedRectangleArea(rectangle, leftMove - j, topMove - i);
 						ComparedRectangles.add(newMatch);
 						return true;
 					}
@@ -167,13 +166,13 @@ public class Categorizer {
 	 * @param rectangle
 	 * @return true if two objects are same (or similar enough) and have different size
 	 */
-	public static boolean checkScaling(BufferedImage expectedImage, BufferedImage actualImage, Rectangle expectedObject,
-			Rectangle actualObject) {
+	public static boolean checkScaling(BufferedImage expectedImage, BufferedImage actualImage,
+			Rectangle expectedObject, Rectangle actualObject) {
 
 		// check scale factor
 		double maximumScaleFactor = ComparisonParameterDefaults.getMaximumScaleFactor();
-		double expectedWidth = expectedObject.getWidth(), expectedHeight = expectedObject.getHeight(),
-				actualWidth = actualObject.getWidth(), actualHeight = actualObject.getHeight();
+		double expectedWidth = expectedObject.getWidth(), expectedHeight = expectedObject.getHeight(), actualWidth = actualObject
+				.getWidth(), actualHeight = actualObject.getHeight();
 		if (expectedWidth > actualWidth * maximumScaleFactor || actualWidth > expectedWidth * maximumScaleFactor
 				|| expectedHeight > actualHeight * maximumScaleFactor
 				|| actualHeight > expectedHeight * maximumScaleFactor)

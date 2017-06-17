@@ -134,10 +134,9 @@ public class ImagePair {
 			if (ImageUtils.getObjectRectangle(expectedImage, expectedObject)
 					&& ImageUtils.getObjectRectangle(actualImage, actualObject)) {
 
-				int x1 = (int) expectedObject.getX(), y1 = (int) expectedObject.getY(),
-						w1 = (int) expectedObject.getWidth(), h1 = (int) expectedObject.getHeight(),
-						x2 = (int) actualObject.getX(), y2 = (int) actualObject.getY(),
-						w2 = (int) actualObject.getWidth(), h2 = (int) actualObject.getHeight();
+				int x1 = (int) expectedObject.getX(), y1 = (int) expectedObject.getY(), w1 = (int) expectedObject
+						.getWidth(), h1 = (int) expectedObject.getHeight(), x2 = (int) actualObject.getX(), y2 = (int) actualObject
+						.getY(), w2 = (int) actualObject.getWidth(), h2 = (int) actualObject.getHeight();
 
 				if (w1 == w2 && h1 == h2) {
 					// case 1 : the same object size and the same location
