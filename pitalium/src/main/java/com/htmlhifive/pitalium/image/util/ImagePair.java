@@ -249,7 +249,15 @@ public class ImagePair {
 			CompareOption[] options = new CompareOption[] { new CompareOption(null, params) };
 			ImageComparedResult DP = ImageComparatorFactory.getInstance().getImageComparator(options)
 					.compare(expectedImage, frame, actualImage, actualFrame);
-			return ImageUtils.convertDiffPointsToObjectGroups((DiffPoints) DP, group_distance);
+			List<ObjectGroup> groups = ImageUtils.convertDiffPointsToObjectGroups((DiffPoints) DP, group_distance);
+
+			// check boundary and update rectangles' positions if needed
+			for (ObjectGroup g : groups) {
+				Rectangle current = g.getRectangle();
+				Rectangle intersection = current.intersection(frame);
+				current.setBounds(intersection);
+			}
+			return groups;
 		}
 
 		// divide into 4 sub-frames
