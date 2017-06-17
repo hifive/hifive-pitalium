@@ -15,7 +15,6 @@
  */
 package com.htmlhifive.pitalium.image.model;
 
-
 /**
  * 比較用のパラメータを保持するクラス
  */
