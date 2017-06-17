@@ -74,8 +74,7 @@ public class SimilarityUtils {
 	 *            cases, it has -1.
 	 */
 	public static SimilarityUnit calcSimilarity(BufferedImage expectedImage, BufferedImage actualImage,
-			Rectangle rectangle, ComparedRectangleArea similarRectangle, Offset offset,
-			double similarityFeatureMatrix) {
+			Rectangle rectangle, ComparedRectangleArea similarRectangle, Offset offset, double similarityFeatureMatrix) {
 
 		Offset featureOffset = offset;
 		SimilarityUnit similarityUnit = new SimilarityUnit();
@@ -147,10 +146,10 @@ public class SimilarityUtils {
 			Rectangle rectangle, Offset offset) {
 
 		// set range to be checked
-		int minWidth = Math.min(expectedImage.getWidth(), actualImage.getWidth()),
-				minHeight = Math.min(expectedImage.getHeight(), actualImage.getHeight());
-		int actualX = (int) rectangle.getX(), actualY = (int) rectangle.getY(),
-				actualWidth = (int) rectangle.getWidth(), actualHeight = (int) rectangle.getHeight();
+		int minWidth = Math.min(expectedImage.getWidth(), actualImage.getWidth()), minHeight = Math.min(
+				expectedImage.getHeight(), actualImage.getHeight());
+		int actualX = (int) rectangle.getX(), actualY = (int) rectangle.getY(), actualWidth = (int) rectangle
+				.getWidth(), actualHeight = (int) rectangle.getHeight();
 		int maxMove;
 		if (offset == null) {
 			maxMove = ComparisonParameterDefaults.getMaxMove();
@@ -158,12 +157,11 @@ public class SimilarityUtils {
 		} else {
 			maxMove = 0;
 		}
-		int leftMove = Math.min(maxMove, actualX - 1),
-				rightMove = Math.min(maxMove, minWidth - (actualX + actualWidth)),
-				topMove = Math.min(maxMove, actualY - 1),
-				downMove = Math.min(maxMove, minHeight - (actualY + actualHeight));
-		int expectedX = actualX - leftMove - offset.getX(), expectedY = actualY - topMove - offset.getY(),
-				expectedWidth = actualWidth + leftMove + rightMove, expectedHeight = actualHeight + topMove + downMove;
+		int leftMove = Math.min(maxMove, actualX - 1), rightMove = Math
+				.min(maxMove, minWidth - (actualX + actualWidth)), topMove = Math.min(maxMove, actualY - 1), downMove = Math
+				.min(maxMove, minHeight - (actualY + actualHeight));
+		int expectedX = actualX - leftMove - offset.getX(), expectedY = actualY - topMove - offset.getY(), expectedWidth = actualWidth
+				+ leftMove + rightMove, expectedHeight = actualHeight + topMove + downMove;
 
 		// initialize sub-image.
 		Rectangle entireFrame = new Rectangle(expectedX, expectedY, expectedWidth, expectedHeight);
@@ -297,8 +295,8 @@ public class SimilarityUtils {
 	public static double calcSimilarityByFeatureMatrix(BufferedImage expectedImage, BufferedImage actualImage,
 			Rectangle expectedFrame, Rectangle actualFrame) {
 
-		int expectedWidth = (int) expectedFrame.getWidth(), expectedHeight = (int) expectedFrame.getHeight(),
-				actualWidth = (int) actualFrame.getWidth(), actualHeight = (int) actualFrame.getHeight();
+		int expectedWidth = (int) expectedFrame.getWidth(), expectedHeight = (int) expectedFrame.getHeight(), actualWidth = (int) actualFrame
+				.getWidth(), actualHeight = (int) actualFrame.getHeight();
 		BufferedImage expectedSubImage = ImageUtils.getSubImage(expectedImage, expectedFrame);
 		BufferedImage actualSubImage = ImageUtils.getSubImage(actualImage, actualFrame);
 
@@ -333,9 +331,9 @@ public class SimilarityUtils {
 		/* Calculate the feature matrix. */
 
 		// initialize the size of grid.
-		int expectedGridWidth = expectedWidth / FeatureCol, expectedGridHeight = expectedHeight / FeatureRow,
-				expectedGridArea = expectedGridWidth * expectedGridHeight, actualGridWidth = actualWidth / FeatureCol,
-				actualGridHeight = actualHeight / FeatureRow, actualGridArea = actualGridWidth * actualGridHeight;
+		int expectedGridWidth = expectedWidth / FeatureCol, expectedGridHeight = expectedHeight / FeatureRow, expectedGridArea = expectedGridWidth
+				* expectedGridHeight, actualGridWidth = actualWidth / FeatureCol, actualGridHeight = actualHeight
+				/ FeatureRow, actualGridArea = actualGridWidth * actualGridHeight;
 		int rSum, gSum, bSum; // Sum of Red, Green, and Blue.
 
 		Color[][] expectedFeature = new Color[FeatureRow][FeatureCol];
@@ -401,10 +399,10 @@ public class SimilarityUtils {
 			Rectangle rectangle, SimilarityUnit similarityUnit, Offset offset) {
 
 		// set range to be checked
-		int minWidth = Math.min(expectedImage.getWidth(), actualImage.getWidth()),
-				minHeight = Math.min(expectedImage.getHeight(), actualImage.getHeight());
-		int actualX = (int) rectangle.getX(), actualY = (int) rectangle.getY(),
-				actualWidth = (int) rectangle.getWidth(), actualHeight = (int) rectangle.getHeight();
+		int minWidth = Math.min(expectedImage.getWidth(), actualImage.getWidth()), minHeight = Math.min(
+				expectedImage.getHeight(), actualImage.getHeight());
+		int actualX = (int) rectangle.getX(), actualY = (int) rectangle.getY(), actualWidth = (int) rectangle
+				.getWidth(), actualHeight = (int) rectangle.getHeight();
 		int maxMove;
 		if (offset == null) {
 			maxMove = ComparisonParameterDefaults.getMaxMove();
@@ -412,12 +410,11 @@ public class SimilarityUtils {
 		} else {
 			maxMove = 0;
 		}
-		int leftMove = Math.min(maxMove, actualX - 1),
-				rightMove = Math.min(maxMove, minWidth - (actualX + actualWidth)),
-				topMove = Math.min(maxMove, actualY - 1),
-				downMove = Math.min(maxMove, minHeight - (actualY + actualHeight));
-		int expectedX = actualX - leftMove - offset.getX(), expectedY = actualY - topMove - offset.getY(),
-				expectedWidth = actualWidth + leftMove + rightMove, expectedHeight = actualHeight + topMove + downMove;
+		int leftMove = Math.min(maxMove, actualX - 1), rightMove = Math
+				.min(maxMove, minWidth - (actualX + actualWidth)), topMove = Math.min(maxMove, actualY - 1), downMove = Math
+				.min(maxMove, minHeight - (actualY + actualHeight));
+		int expectedX = actualX - leftMove - offset.getX(), expectedY = actualY - topMove - offset.getY(), expectedWidth = actualWidth
+				+ leftMove + rightMove, expectedHeight = actualHeight + topMove + downMove;
 
 		// initialize sub-image.
 		Rectangle entireFrame = new Rectangle(expectedX, expectedY, expectedWidth, expectedHeight);
