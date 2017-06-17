@@ -195,7 +195,7 @@ public class ImagePair {
 		for (ComparedRectangleArea resultRectangle : ComparedRectangles) {
 			// implement all similarity calculations and categorization, and then build ComparedRectangle
 			SimilarityUnit unit = SimilarityUtils.calcSimilarity(expectedImage, actualImage,
-					resultRectangle.toRectangle(), resultRectangle, offset);
+					resultRectangle.toRectangle(), resultRectangle, null);
 			resultRectangle.setSimilarityUnit(unit);
 
 			if (resultRectangle.getCategory() != DiffCategory.SHIFT && resultRectangle.getCategory() != null) {
