@@ -17,11 +17,20 @@ package com.htmlhifive.pitalium.image.model;
 
 import java.io.Serializable;
 
+/**
+ * 比較時の設定情報を保持するクラス
+ */
 public class CompareOption implements Serializable {
 
-	CompareOptionType type;
+	/**
+	 * 比較種別
+	 */
+	private CompareOptionType type;
 
-	ComparisonParameters parameters;
+	/**
+	 * 比較時の設定
+	 */
+	private ComparisonParameters parameters;
 
 	/**
 	 * CompareOptionクラスを生成する
