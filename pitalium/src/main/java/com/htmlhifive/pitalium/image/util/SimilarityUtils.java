@@ -218,8 +218,7 @@ public class SimilarityUtils {
 					}
 				}
 
-				actualFeature[row][col] = new Color((int) (rSum / GridArea), (int) (gSum / GridArea),
-						(int) (bSum / GridArea));
+				actualFeature[row][col] = new Color(rSum / GridArea, gSum / GridArea, bSum / GridArea);
 			}
 		}
 
@@ -252,8 +251,7 @@ public class SimilarityUtils {
 										+ (GridWidth * col + (x + j))];
 							}
 						}
-						expectedFeature[row][col] = new Color((int) (rSum / GridArea), (int) (gSum / GridArea),
-								(int) (bSum / GridArea));
+						expectedFeature[row][col] = new Color(rSum / GridArea, gSum / GridArea, bSum / GridArea);
 					}
 				}
 
@@ -355,8 +353,8 @@ public class SimilarityUtils {
 								+ (expectedGridWidth * col + j)];
 					}
 				}
-				expectedFeature[row][col] = new Color((int) (rSum / expectedGridArea), (int) (gSum / expectedGridArea),
-						(int) (bSum / expectedGridArea));
+				expectedFeature[row][col] = new Color(rSum / expectedGridArea, gSum / expectedGridArea, bSum
+						/ expectedGridArea);
 
 				// Calculate the feature value actualFeature[row][col].
 				rSum = 0;
@@ -370,8 +368,7 @@ public class SimilarityUtils {
 					}
 				}
 
-				actualFeature[row][col] = new Color((int) (rSum / actualGridArea), (int) (gSum / actualGridArea),
-						(int) (bSum / actualGridArea));
+				actualFeature[row][col] = new Color(rSum / actualGridArea, gSum / actualGridArea, bSum / actualGridArea);
 			}
 		}
 

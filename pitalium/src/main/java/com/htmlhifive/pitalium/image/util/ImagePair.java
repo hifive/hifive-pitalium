@@ -138,11 +138,7 @@ public class ImagePair {
 
 				if (w1 == w2 && h1 == h2) {
 					// case 1 : the same object size and the same location
-					if (x1 == x2 && y1 == y2) {
-						offset = new Offset(0, 0);
-
-						// case 2 : the same object size but different location
-					} else {
+					if (x1 != x2 || y1 != y2) {
 						offset = new Offset(x2 - x1, y2 - y1);
 						SimilarityUnit unit = SimilarityUtils.calcSimilarity(expectedImage, actualImage, rectangle,
 								resultRectangle, offset);
@@ -259,8 +255,12 @@ public class ImagePair {
 
 		// divide into 4 sub-frames
 		Rectangle nw, ne, sw, se;
-		int x = (int) frame.getX(), y = (int) frame.getY(), w = (int) frame.getWidth(), h = (int) frame.getHeight();
-		int subW = Math.round(w / 2), subH = Math.round(h / 2);
+		int x = (int) frame.getX();
+		int y = (int) frame.getY();
+		int w = (int) frame.getWidth();
+		int h = (int) frame.getHeight();
+		int subW = (int) Math.round(frame.getWidth() / 2);
+		int subH = (int) Math.round(frame.getHeight() / 2);
 		nw = new Rectangle(x, y, subW, subH);
 		ne = new Rectangle(x + subW, y, w - subW, subH);
 		sw = new Rectangle(x, y + subH, subW, h - subH);
@@ -311,7 +311,7 @@ public class ImagePair {
 			return;
 		}
 
-		int margin = (int) (group_distance / 2); // To extract ACTUAL different region
+		int margin = group_distance / 2; // To extract ACTUAL different region
 		int sub_margin = margin + BORDER_WIDTH; // Remove border from actual different region
 		List<Rectangle> removeList = new ArrayList<Rectangle>();
 		List<Rectangle> addList = new ArrayList<Rectangle>();

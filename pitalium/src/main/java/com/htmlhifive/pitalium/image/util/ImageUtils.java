@@ -865,12 +865,12 @@ public final class ImageUtils {
 		double avg = 0;
 		int countValid = 0;
 		for (int i = 0; i < countPerLine.length; i++) {
-			avg += (double) countPerLine[i];
+			avg += countPerLine[i];
 			if (countPerLine[i] != 0) {
 				countValid++;
 			}
 		}
-		avg /= (double) countValid;
+		avg /= countValid;
 		return new double[] { rate, avg };
 	}
 

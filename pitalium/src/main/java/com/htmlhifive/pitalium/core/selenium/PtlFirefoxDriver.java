@@ -30,8 +30,6 @@ import com.htmlhifive.pitalium.core.model.ScreenshotParams;
  */
 class PtlFirefoxDriver extends SplitScreenshotWebDriver {
 
-	private static final String GET_PAGE_HEIGHT_SCRIPT = "var body = document.body; return body.scrollHeight";
-
 	/**
 	 * コンストラクタ
 	 *

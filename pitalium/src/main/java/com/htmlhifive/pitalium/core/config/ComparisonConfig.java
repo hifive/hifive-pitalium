@@ -53,6 +53,7 @@ public class ComparisonConfig implements Serializable {
 	 *
 	 * @return 比較方法
 	 */
+	@SuppressWarnings("unchecked")
 	public List<CompareOption> getOptions() {
 		if (options == null) {
 			return null;

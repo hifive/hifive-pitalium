@@ -67,7 +67,7 @@ public class ParameterizedThreads extends Parameterized {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param clss クラス
 	 * @throws Throwable スレッドで発生したエラーおよび例外
 	 */
