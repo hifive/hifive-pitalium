@@ -15,6 +15,9 @@
  */
 package com.htmlhifive.pitalium.image.model;
 
+/**
+ * 類似度に基づき、比較を行う機能の結果を保持するクラス
+ */
 public class SimilarityImageComparedResult extends ImageComparedResult {
 
 	/**

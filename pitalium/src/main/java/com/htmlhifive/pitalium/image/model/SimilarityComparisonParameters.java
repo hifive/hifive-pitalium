@@ -17,6 +17,9 @@ package com.htmlhifive.pitalium.image.model;
 
 import java.util.Map;
 
+/**
+ * 類似度に基づき、比較を行う機能のパラメータを保持するクラス
+ */
 public class SimilarityComparisonParameters extends ComparisonParameters {
 	/**
 	 * 各pixelの色の差分ノルムに基づく類似度で一致とみなす閾値

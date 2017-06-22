@@ -27,6 +27,9 @@ import com.htmlhifive.pitalium.image.model.SimilarityComparisonParameters;
 import com.htmlhifive.pitalium.image.model.SimilarityImageComparedResult;
 import com.htmlhifive.pitalium.image.model.SimilarityUnit;
 
+/**
+ * 類似度に基づき、比較の合否判定を行うComparator
+ */
 class SimilarityImageComparator extends ImageComparator<SimilarityComparisonParameters> {
 
 	/**
