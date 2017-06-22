@@ -45,7 +45,7 @@ public class ObjectGroup {
 	 */
 	public ObjectGroup(Point p, int groupDistance) {
 		int margin = groupDistance / 2;
-		rectangle = new Rectangle(p.x - margin, p.y - margin, groupDistance, groupDistance);
+		rectangle = new Rectangle(p.x - margin, p.y - margin, 2 * margin + 1, 2 * margin + 1);
 	}
 
 	/**

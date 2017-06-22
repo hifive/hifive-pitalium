@@ -16,10 +16,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.htmlhifive.pitalium.image.model.CompareOption;
 import com.htmlhifive.pitalium.image.model.ComparedRectangleArea;
 import com.htmlhifive.pitalium.image.model.ComparisonParameterDefaults;
-import com.htmlhifive.pitalium.image.model.ComparisonParameters;
 import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
 import com.htmlhifive.pitalium.image.model.DiffCategory;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
@@ -244,10 +242,9 @@ public class ImagePair {
 				actualFrame.setLocation((int) frame.getX() + offset.getX(), (int) frame.getY() + offset.getY());
 			}
 
-			ComparisonParameters params = new DefaultComparisonParameters(diffThreshold);
-			CompareOption[] options = new CompareOption[] { new CompareOption(null, params) };
-			ImageComparedResult DP = ImageComparatorFactory.getInstance().getImageComparator(options)
-					.compare(expectedImage, frame, actualImage, actualFrame);
+			DefaultComparisonParameters params = new DefaultComparisonParameters(diffThreshold);
+			ImageComparedResult DP = new DefaultImageComparator(params).compare(expectedImage, frame, actualImage,
+					actualFrame);
 			List<ObjectGroup> groups = ImageUtils.convertDiffPointsToObjectGroups((DiffPoints) DP, group_distance);
 
 			// check boundary and update rectangles' positions if needed
