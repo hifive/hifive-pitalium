@@ -77,8 +77,7 @@ public class SimilarityUtils {
 			Rectangle rectangle, ComparedRectangleArea similarRectangle, Offset offset, double similarityFeatureMatrix) {
 
 		Offset featureOffset = offset;
-		SimilarityUnit similarityUnit = new SimilarityUnit();
-		calcSimilarityPixelByPixel(expectedImage, actualImage, rectangle, similarityUnit, offset);
+		SimilarityUnit similarityUnit = calcSimilarityPixelByPixel(expectedImage, actualImage, rectangle, offset);
 
 		/* calculate similarity using feature matrix. */
 		int comparedRectangleWidth = (int) rectangle.getWidth(), comparedRectangleHeight = (int) rectangle.getHeight();
@@ -391,9 +390,10 @@ public class SimilarityUtils {
 	 * @param rectangle The rectangle area where to compare.
 	 * @param similarityUnit
 	 * @param offset best match offset. If default offset is given, don't find the best match.
+	 * @return
 	 */
-	public static void calcSimilarityPixelByPixel(BufferedImage expectedImage, BufferedImage actualImage,
-			Rectangle rectangle, SimilarityUnit similarityUnit, Offset offset) {
+	public static SimilarityUnit calcSimilarityPixelByPixel(BufferedImage expectedImage, BufferedImage actualImage,
+			Rectangle rectangle, Offset offset) {
 
 		// set range to be checked
 		int minWidth = Math.min(expectedImage.getWidth(), actualImage.getWidth()), minHeight = Math.min(
@@ -514,10 +514,6 @@ public class SimilarityUtils {
 			offset.setX(bestX);
 			offset.setY(bestY);
 		}
-		similarityUnit.setXSimilar(offset.getX());
-		similarityUnit.setYSimilar(offset.getY());
-		similarityUnit.setSimilarityPixelByPixel(similarity);
-		similarityUnit.setSimilarityThresDiff(similarityThresDiff);
-		similarityUnit.setSimilarityTotalDiff(similarityTotalDiff);
+		return new SimilarityUnit(offset.getX(), offset.getY(), similarity, 0, similarityThresDiff, similarityTotalDiff);
 	}
 }

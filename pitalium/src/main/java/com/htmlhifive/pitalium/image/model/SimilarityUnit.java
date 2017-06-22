@@ -20,8 +20,8 @@ package com.htmlhifive.pitalium.image.model;
  */
 public class SimilarityUnit {
 
-	private int XSimilar;
-	private int YSimilar;
+	private int xOffset;
+	private int yOffset;
 	private double similarityPixelByPixel;
 	private double similarityFeatureMatrix;
 	private double similarityThresDiff;
@@ -30,10 +30,10 @@ public class SimilarityUnit {
 	/**
 	 * Default constructor
 	 */
-	public SimilarityUnit(int XSimilar, int YSimilar, double similarityPixelByPixel, double similarityFeatureMatrix,
+	public SimilarityUnit(int xOffset, int yOffset, double similarityPixelByPixel, double similarityFeatureMatrix,
 			double similarityThresDiff, double similarityTotalDiff) {
-		this.XSimilar = XSimilar;
-		this.YSimilar = YSimilar;
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
 		this.similarityPixelByPixel = similarityPixelByPixel;
 		this.similarityFeatureMatrix = similarityFeatureMatrix;
 		this.similarityThresDiff = similarityThresDiff;
@@ -45,25 +45,25 @@ public class SimilarityUnit {
 	}
 
 	/**
-	 * @return X-direction Similar at the best match with the highest similarity
+	 * @return X-direction Offset at the best match with the highest similarity
 	 */
-	public int getXSimilar() {
-		return XSimilar;
+	public int getXOffset() {
+		return xOffset;
 	}
 
-	public void setXSimilar(int XSimilar) {
-		this.XSimilar = XSimilar;
+	public void setXOffset(int xOffset) {
+		this.xOffset = xOffset;
 	}
 
 	/**
-	 * @return Y-direction Similar at the best match with the highest similarity
+	 * @return Y-direction Offset at the best match with the highest similarity
 	 */
-	public int getYSimilar() {
-		return YSimilar;
+	public int getYOffset() {
+		return yOffset;
 	}
 
-	public void setYSimilar(int YSimilar) {
-		this.YSimilar = YSimilar;
+	public void setYOffset(int yOffset) {
+		this.yOffset = yOffset;
 	}
 
 	/**
