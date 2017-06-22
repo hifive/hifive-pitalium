@@ -1719,6 +1719,22 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	}
 
 	/**
+	 * 可視範囲の幅さを指定してページのスクロール回数を取得します。
+	 *
+	 * @param clientWidth 可視範囲の幅さ
+	 * @return スクロール回数
+	 */
+	long getHorizontalScrollNum(double clientWidth) {
+		double scrollWidth = getScrollWidth();
+
+		if (clientWidth >= scrollWidth) {
+			return 0;
+		}
+
+		return (int) (Math.ceil(scrollWidth / clientWidth)) - 1;
+	}
+
+	/**
 	 * 現在のページの幅を取得します。
 	 *
 	 * @return ページの幅（整数px）
