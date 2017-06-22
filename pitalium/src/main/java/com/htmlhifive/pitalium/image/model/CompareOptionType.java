@@ -25,17 +25,9 @@ public enum CompareOptionType {
 	 */
 	DEFAULT,
 	/**
-	 * 画像の位置・サイズを含め厳密に比較します。
-	 */
-	STRICT,
-	/**
 	 * 透明度が0xFF以外のpixelは無視して比較します。
 	 */
 	IGNORE_CLEAR_PIXELS,
-	/**
-	 * 画像の余白部分を無視して比較します。
-	 */
-	IGNORE_BLANK_SPACE,
 	/**
 	 * 類似度に基づき画像の一致を判定します。
 	 */
