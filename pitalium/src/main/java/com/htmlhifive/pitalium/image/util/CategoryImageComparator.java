@@ -21,6 +21,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import com.htmlhifive.pitalium.image.model.CategoryComparisonParameters;
+import com.htmlhifive.pitalium.image.model.CategoryImageComparedResult;
 import com.htmlhifive.pitalium.image.model.ComparedRectangleArea;
 import com.htmlhifive.pitalium.image.model.DiffCategory;
 import com.htmlhifive.pitalium.image.model.ImageComparedResult;

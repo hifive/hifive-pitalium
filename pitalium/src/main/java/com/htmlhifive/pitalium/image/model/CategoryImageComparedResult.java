@@ -1,9 +1,6 @@
-package com.htmlhifive.pitalium.image.util;
+package com.htmlhifive.pitalium.image.model;
 
 import java.util.List;
-
-import com.htmlhifive.pitalium.image.model.ComparedRectangleArea;
-import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 
 /**
  * カテゴリ分類に基づく、比較結果を保持するクラス
