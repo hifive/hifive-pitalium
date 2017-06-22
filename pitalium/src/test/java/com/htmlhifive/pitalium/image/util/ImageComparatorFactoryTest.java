@@ -15,12 +15,11 @@
  */
 package com.htmlhifive.pitalium.image.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import com.htmlhifive.pitalium.image.model.CompareOption;
-import com.htmlhifive.pitalium.image.model.CompareOptionType;
 import com.htmlhifive.pitalium.image.model.ComparisonParameters;
 
 public class ImageComparatorFactoryTest {
@@ -36,21 +35,6 @@ public class ImageComparatorFactoryTest {
 	@Test
 	public void compareOptionの要素数が0の場合はデフォルト() throws Exception {
 		ImageComparator<? extends ComparisonParameters> actual = instance.getImageComparator(new CompareOption[0]);
-		assertTrue(actual instanceof DefaultImageComparator);
-	}
-
-	@Test
-	public void compareOptionにIGNORE_CLEAR_PIXELSが含まれていたらIgnoringClearPixelsImageComparator() throws Exception {
-		ImageComparator<? extends ComparisonParameters> actual = instance
-				.getImageComparator(new CompareOption[] { new CompareOption(CompareOptionType.STRICT),
-						new CompareOption(CompareOptionType.IGNORE_CLEAR_PIXELS) });
-		assertTrue(actual instanceof IgnoringClearPixelsImageComparator);
-	}
-
-	@Test
-	public void compareOptionにIGNORE_CLEAR_PIXELSが含まれていなかったら場合はデフォルト() throws Exception {
-		ImageComparator<? extends ComparisonParameters> actual = instance
-				.getImageComparator(new CompareOption[] { new CompareOption(CompareOptionType.STRICT) });
 		assertTrue(actual instanceof DefaultImageComparator);
 	}
 
