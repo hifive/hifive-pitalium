@@ -251,9 +251,10 @@ public class ImagePair {
 			List<ObjectGroup> groups = ImageUtils.convertDiffPointsToObjectGroups((DiffPoints) DP, group_distance);
 
 			// check boundary and update rectangles' positions if needed
+			Rectangle boundary = new Rectangle(0, 0, expectedImage.getWidth(), expectedImage.getHeight());
 			for (ObjectGroup g : groups) {
 				Rectangle current = g.getRectangle();
-				Rectangle intersection = current.intersection(frame);
+				Rectangle intersection = current.intersection(boundary);
 				current.setBounds(intersection);
 			}
 			return groups;
