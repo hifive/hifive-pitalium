@@ -26,27 +26,33 @@ import com.htmlhifive.pitalium.image.model.ObjectGroup;
 import com.htmlhifive.pitalium.image.model.Offset;
 import com.htmlhifive.pitalium.image.model.SimilarityUnit;
 
+/**
+ * the class which executes comparison of two images and holds its result
+ */
 public class ImagePair {
 
 	// after constructor, expectedImage and actualImage are assigned.
 	// they can be sub-image of their own image to make their sizes the same.
-	BufferedImage expectedImage;
-	BufferedImage actualImage;
-	private int width, height; // the size of intersection of two images
+	private BufferedImage expectedImage;
+	private BufferedImage actualImage;
+	private int width;
+	private int height; // the size of intersection of two images
 
-	int sizeRelationType;
-	Offset offset; // Dominant offset between two images
+	private int sizeRelationType;
+	private Offset offset; // Dominant offset between two images
 
 	private List<Rectangle> rectangles;
-	private List<ComparedRectangleArea> ComparedRectangles;
-	private double entireSimilarity, minSimilarity;
+	private List<ComparedRectangleArea> comparedRectangles;
+	private double entireSimilarity;
+	private double minSimilarity;
 
 	// Default criteria to split over-merged rectangle
 	private static final int BORDER_WIDTH = 10;
 	private static final int OVERMERGED_WIDTH = 200;
 	private static final int OVERMERGED_HEIGHT = 300;
 	private static final int SPLIT_ITERATION = 10;
-	private static final boolean boundary_option = false;
+	private static final boolean BOUNDARY_OPTION = false;
+	private static final int BASE_BOUND = 50;
 
 	/**
 	 * Constructor implement all comparison steps, so that we can use ComparedRectangles as results after constructor.
@@ -63,7 +69,7 @@ public class ImagePair {
 		// assign (sub) image with same size
 		this.expectedImage = ImageUtils.getDominantImage(expectedImage, actualImage, offset);
 		this.actualImage = ImageUtils.getDominantImage(actualImage, expectedImage, offset);
-		ComparedRectangles = new ArrayList<ComparedRectangleArea>();
+		comparedRectangles = new ArrayList<ComparedRectangleArea>();
 		width = Math.min(expectedImage.getWidth(), actualImage.getWidth());
 		height = Math.min(expectedImage.getHeight(), actualImage.getHeight());
 		entireSimilarity = 0;
@@ -94,7 +100,7 @@ public class ImagePair {
 		rectangles = buildDiffAreas(entireFrame, group_distance);
 
 		// split over-merged rectangles into smaller ones if possible
-		SplitRectangles(rectangles, SPLIT_ITERATION, group_distance);
+		splitRectangles(rectangles, SPLIT_ITERATION, group_distance);
 		ImageUtils.removeOverlappingRectangles(rectangles);
 		ImageUtils.removeRedundantRectangles(rectangles, width, height);
 	}
@@ -113,7 +119,7 @@ public class ImagePair {
 				offset = new Offset(0, 0); // we fix the position of actual sub-image.
 
 				/** if this rectangle is shift, then process shift information in CheckShift method **/
-			} else if (Categorizer.CheckShift(expectedImage, actualImage, ComparedRectangles, rectangle)) {
+			} else if (Categorizer.CheckShift(expectedImage, actualImage, comparedRectangles, rectangle)) {
 				// if shift, skip similarity calculation.
 				continue;
 
@@ -153,7 +159,7 @@ public class ImagePair {
 						} else {
 							resultRectangle.setSimilarityUnit(unit);
 						}
-						ComparedRectangles.add(resultRectangle);
+						comparedRectangles.add(resultRectangle);
 						continue;
 					}
 
@@ -169,14 +175,14 @@ public class ImagePair {
 						resultRectangle.setSimilarityUnit(unit);
 
 						// insert the result rectangle into the list of ComparedRectangles
-						ComparedRectangles.add(resultRectangle);
+						comparedRectangles.add(resultRectangle);
 						continue;
 					}
 				}
 			}
 
 			// insert the result rectangle into the list of ComparedRectangles
-			ComparedRectangles.add(resultRectangle);
+			comparedRectangles.add(resultRectangle);
 		}
 	}
 
@@ -185,7 +191,7 @@ public class ImagePair {
 	 */
 	private void calcEntireSimilarity() {
 		double entireDifference = 0;
-		for (ComparedRectangleArea resultRectangle : ComparedRectangles) {
+		for (ComparedRectangleArea resultRectangle : comparedRectangles) {
 			// implement all similarity calculations and categorization, and then build ComparedRectangle
 			SimilarityUnit unit = SimilarityUtils.calcSimilarity(expectedImage, actualImage,
 					resultRectangle.toRectangle(), resultRectangle, null);
@@ -230,9 +236,7 @@ public class ImagePair {
 		// if you want to compare STRICTLY, you should set this value as 0.
 		double diffThreshold = ComparisonParameterDefaults.getDiffThreshold();
 
-		// base case for recursive building
-		int base_bound = 50;
-		if (frame.getWidth() < base_bound || frame.getHeight() < base_bound) {
+		if (frame.getWidth() < BASE_BOUND || frame.getHeight() < BASE_BOUND) {
 			Rectangle actualFrame = frame;
 			if (offset != null) {
 				actualFrame.setLocation((int) frame.getX() + offset.getX(), (int) frame.getY() + offset.getY());
@@ -266,19 +270,12 @@ public class ImagePair {
 		sw = new Rectangle(x, y + subH, subW, h - subH);
 		se = new Rectangle(x + subW, y + subH, w - subW, h - subH);
 
-		// list of object groups built in each sub-frame
-		List<ObjectGroup> NW, NE, SW, SE;
-		NW = buildObjectGroups(nw, group_distance, offset);
-		NE = buildObjectGroups(ne, group_distance, offset);
-		SW = buildObjectGroups(sw, group_distance, offset);
-		SE = buildObjectGroups(se, group_distance, offset);
-
 		// merge 4 sub-frames
 		List<ObjectGroup> mergeGroups = new ArrayList<ObjectGroup>();
-		mergeGroups.addAll(NW);
-		mergeGroups.addAll(NE);
-		mergeGroups.addAll(SW);
-		mergeGroups.addAll(SE);
+		mergeGroups.addAll(buildObjectGroups(nw, group_distance, offset));
+		mergeGroups.addAll(buildObjectGroups(ne, group_distance, offset));
+		mergeGroups.addAll(buildObjectGroups(sw, group_distance, offset));
+		mergeGroups.addAll(buildObjectGroups(se, group_distance, offset));
 
 		// merge all possible object groups
 		return ObjectGroup.mergeAllPossibleObjects(mergeGroups);
@@ -304,7 +301,7 @@ public class ImagePair {
 	 * @param splitIteration Iteration number for split implementation
 	 * @param group_distance distance for grouping
 	 */
-	private void SplitRectangles(List<Rectangle> rectangles, int splitIteration, int group_distance) {
+	private void splitRectangles(List<Rectangle> rectangles, int splitIteration, int group_distance) {
 
 		// Terminate recursion after splitIteration-times
 		if (splitIteration < 1) {
@@ -370,7 +367,7 @@ public class ImagePair {
 				if (splitRectangles.size() != 1 || !subRectangle.equals(splitRectangles.get(0))) {
 
 					// if there exists splitRectangle which is still over-merged, split it recursively
-					SplitRectangles(splitRectangles, splitIteration - 1, split_group_distance);
+					splitRectangles(splitRectangles, splitIteration - 1, split_group_distance);
 
 					// Record the rectangles which will be removed and added
 					for (Rectangle splitRectangle : splitRectangles) {
@@ -393,7 +390,7 @@ public class ImagePair {
 							}
 						}
 
-						if (boundary_option) {
+						if (BOUNDARY_OPTION) {
 							addList.addAll(boundaryList);
 						}
 						boundaryList.clear();
@@ -457,7 +454,7 @@ public class ImagePair {
 	 * @return the list of result ComparedRectangles
 	 */
 	public List<ComparedRectangleArea> getComparedRectangles() {
-		return ComparedRectangles;
+		return comparedRectangles;
 	}
 
 	/**
