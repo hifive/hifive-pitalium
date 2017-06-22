@@ -25,6 +25,9 @@ import com.htmlhifive.pitalium.image.model.ComparedRectangleArea;
 import com.htmlhifive.pitalium.image.model.DiffCategory;
 import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 
+/**
+ * カテゴリ分類に基づく、比較の実行を行うComparator
+ */
 class CategoryImageComparator extends ImageComparator<CategoryComparisonParameters> {
 
 	/**

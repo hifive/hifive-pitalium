@@ -30,6 +30,14 @@ public class Categorizer {
 	public Categorizer() {
 	};
 
+	/**
+	 * check whether given differences come from sub pixel rendering
+	 *
+	 * @param expectedImage expected image
+	 * @param actualImage actual image
+	 * @param rectangle rectangle of comparison area
+	 * @return whether given differences come from sub pixel rendering
+	 */
 	public static boolean CheckSubpixel(BufferedImage expectedImage, BufferedImage actualImage, Rectangle rectangle) {
 		int x = rectangle.x;
 		int y = rectangle.y;
@@ -52,7 +60,7 @@ public class Categorizer {
 	 * Check the sub-image of actualImage in the given rectangle area is contained in expectedImage at the same or
 	 * nearby location if then, create ComparedRectangle with shift information and insert it into ComparedRectangles
 	 * list.
-	 * 
+	 *
 	 * @param expectedImage
 	 * @param actualImage
 	 * @param ComparedRectangles list of ComparedRectangle
@@ -68,8 +76,10 @@ public class Categorizer {
 		int x = (int) rectangle.getX(), y = (int) rectangle.getY(), w = (int) rectangle.getWidth(), h = (int) rectangle
 				.getHeight();
 		int maxShift = ComparisonParameterDefaults.getMaxShift();
-		int leftMove = Math.min(maxShift, x - 1), rightMove = Math.min(maxShift, minWidth - (x + w)), topMove = Math
-				.min(maxShift, y - 1), downMove = Math.min(maxShift, minHeight - (y + h));
+		int leftMove = Math.min(maxShift, x - 1);
+		int rightMove = Math.min(maxShift, minWidth - (x + w));
+		int topMove = Math.min(maxShift, y - 1);
+		int downMove = Math.min(maxShift, minHeight - (y + h));
 		Rectangle entireFrame = new Rectangle(x - leftMove, y - topMove, w + leftMove + rightMove, h + topMove
 				+ downMove);
 		BufferedImage entireImage = ImageUtils.getSubImage(expectedImage, entireFrame);
@@ -117,7 +127,7 @@ public class Categorizer {
 
 	/**
 	 * Check whether the given area is different due to object missing
-	 * 
+	 *
 	 * @param expectedImage
 	 * @param actualImage
 	 * @param rectangle
@@ -160,7 +170,7 @@ public class Categorizer {
 
 	/**
 	 * check scaling using object detection
-	 * 
+	 *
 	 * @param expectedImage
 	 * @param actualImage
 	 * @param rectangle
@@ -171,8 +181,10 @@ public class Categorizer {
 
 		// check scale factor
 		double maximumScaleFactor = ComparisonParameterDefaults.getMaximumScaleFactor();
-		double expectedWidth = expectedObject.getWidth(), expectedHeight = expectedObject.getHeight(), actualWidth = actualObject
-				.getWidth(), actualHeight = actualObject.getHeight();
+		double expectedWidth = expectedObject.getWidth();
+		double expectedHeight = expectedObject.getHeight();
+		double actualWidth = actualObject.getWidth();
+		double actualHeight = actualObject.getHeight();
 		if (expectedWidth > actualWidth * maximumScaleFactor || actualWidth > expectedWidth * maximumScaleFactor
 				|| expectedHeight > actualHeight * maximumScaleFactor
 				|| actualHeight > expectedHeight * maximumScaleFactor)
