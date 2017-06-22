@@ -642,13 +642,16 @@ public final class ImageUtils {
 	public static boolean getObjectRectangle(BufferedImage image, Rectangle rectangle) {
 
 		int maxMargin = ComparisonParameterDefaults.getDefaultGroupDistance();
-		int x = (int) rectangle.getX(), y = (int) rectangle.getY(), w = (int) rectangle.getWidth(), h = (int) rectangle
-				.getHeight();
+		int x = (int) rectangle.getX();
+		int y = (int) rectangle.getY();
+		int w = (int) rectangle.getWidth();
+		int h = (int) rectangle.getHeight();
 		BufferedImage subImage = image.getSubimage(x, y, w, h);
 
 		// if rectangle is not big enough, do not find object rectangle
 		// use 3*maxMargin here, in order to assume that object is bigger than margin by margin
-		int width = w - 2, height = h - 2; //	width and height of edge map
+		int width = w - 2;
+		int height = h - 2; //	width and height of edge map
 		if (width <= 3 * maxMargin || height <= 3 * maxMargin) {
 			return false;
 		}
@@ -682,8 +685,9 @@ public final class ImageUtils {
 
 		// shrink edgeMap down to (2*maxMargin+1) by (2*maxMargin+1) by using these bridges.
 		int shrinkLength = 2 * maxMargin + 1;
-		boolean[][] shrinkMap = new boolean[shrinkLength][shrinkLength], verticalMap = new boolean[shrinkLength][shrinkLength], // to check vertical direction
-		horizontalMap = new boolean[shrinkLength][shrinkLength]; // to check horizontal direction
+		boolean[][] shrinkMap = new boolean[shrinkLength][shrinkLength];
+		boolean[][] verticalMap = new boolean[shrinkLength][shrinkLength]; // to check vertical direction
+		boolean[][] horizontalMap = new boolean[shrinkLength][shrinkLength]; // to check horizontal direction
 
 		// initialize shrink map
 		for (int i = 0; i < maxMargin; i++) {
@@ -911,13 +915,17 @@ public final class ImageUtils {
 		// check containing relation and record what to remove
 		for (int i = 0; i < rectangles.size(); i++) {
 			Rectangle rect1 = rectangles.get(i);
-			int xLeft1 = (int) rect1.getX(), xRight1 = (int) (rect1.getX() + rect1.getWidth());
-			int yTop1 = (int) rect1.getY(), yBottom1 = (int) (rect1.getY() + rect1.getHeight());
+			int xLeft1 = (int) rect1.getX();
+			int xRight1 = (int) (rect1.getX() + rect1.getWidth());
+			int yTop1 = (int) rect1.getY();
+			int yBottom1 = (int) (rect1.getY() + rect1.getHeight());
 
 			for (int j = i + 1; j < rectangles.size(); j++) {
 				Rectangle rect2 = rectangles.get(j);
-				int xLeft2 = (int) rect2.getX(), xRight2 = (int) (rect2.getX() + rect2.getWidth());
-				int yTop2 = (int) rect2.getY(), yBottom2 = (int) (rect2.getY() + rect2.getHeight());
+				int xLeft2 = (int) rect2.getX();
+				int xRight2 = (int) (rect2.getX() + rect2.getWidth());
+				int yTop2 = (int) rect2.getY();
+				int yBottom2 = (int) (rect2.getY() + rect2.getHeight());
 
 				// check rect1 contains rect2
 				if (xLeft1 - smallDiff <= xLeft2 && yTop1 - smallDiff <= yTop2 && xRight1 + smallDiff >= xRight2
@@ -967,6 +975,14 @@ public final class ImageUtils {
 		rectangle.setRect(x, y, Math.max(width, 1), Math.max(height, 1));
 	}
 
+	/**
+	 * get tight differences area
+	 *
+	 * @param rectangle
+	 * @param xLimit
+	 * @param yLimit
+	 * @return
+	 */
 	public static Rectangle getTightDiffArea(Rectangle rectangle, int xLimit, int yLimit) {
 		int minMargin = Math.min(ComparisonParameterDefaults.getDefaultGroupDistance() / 2,
 				ComparisonParameterDefaults.getSplitGroupDistance() / 2);
@@ -991,6 +1007,12 @@ public final class ImageUtils {
 		return new Rectangle(x, y, width, height);
 	}
 
+	/**
+	 * cpnvert objectGroups to areas
+	 *
+	 * @param objectGroups
+	 * @return
+	 */
 	public static List<Rectangle> convertObjectGroupsToAreas(List<ObjectGroup> objectGroups) {
 		// Create a list of the Rectangle from diffGroups
 		List<Rectangle> rectangles = new ArrayList<Rectangle>();
