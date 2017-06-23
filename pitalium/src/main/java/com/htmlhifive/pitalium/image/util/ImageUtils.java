@@ -137,7 +137,7 @@ public final class ImageUtils {
 	public static double[][] calcIntegralImage(BufferedImage source) {
 		double[][] integralImage = new double[source.getHeight()][source.getWidth()];
 		Raster raster = source.getRaster();
-		int[] pixel = new int[raster.getNumDataElements()];
+		int[] pixel = new int[raster.getNumBands()];
 		double leftNum;
 		double upNum;
 		double leftUpNum;
@@ -146,7 +146,11 @@ public final class ImageUtils {
 				leftNum = (x == 0) ? 0 : integralImage[y][x - 1];
 				upNum = (y == 0) ? 0 : integralImage[y - 1][x];
 				leftUpNum = (x == 0 || y == 0) ? 0 : integralImage[y - 1][x - 1];
-				integralImage[y][x] = leftNum + upNum + raster.getPixel(x, y, pixel)[0] - leftUpNum;
+				try {
+					integralImage[y][x] = leftNum + upNum + raster.getPixel(x, y, pixel)[0] - leftUpNum;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return integralImage;
