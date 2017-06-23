@@ -292,6 +292,10 @@ public final class ImageUtils {
 	 * @return 近似の四角形のリスト
 	 */
 	static List<Rectangle> convertDiffPointsToAreas(DiffPoints diffPoints) {
+		if (diffPoints == null) {
+			return new ArrayList<Rectangle>();
+		}
+
 		List<Rectangle> areas = convertDiffPointsToAreas(diffPoints.getDiffPoints());
 		areas.addAll(convertSizeDiffPointsToAreas(diffPoints.getSizeDiffPoints()));
 		return areas;
