@@ -16,7 +16,7 @@
 		<dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.8.1" conf="default" />
 		<dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.8.1" conf="default" />
 		<dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.8.7" conf="default" />
-		<dependency org="org.seleniumhq.selenium" name="selenium-support" rev="3.3.1" conf="default"/>
+		<dependency org="org.seleniumhq.selenium" name="selenium-support" rev="3.4.0" conf="default"/>
 		<dependency org="net.sourceforge.cobertura" name="cobertura" rev="2.1.1" conf="default"/>
 		<dependency org="org.powermock" name="powermock-api-mockito" rev="1.6.6" conf="test->default" />
 		<dependency org="org.powermock" name="powermock-module-junit4" rev="1.6.6" conf="test->default" />
