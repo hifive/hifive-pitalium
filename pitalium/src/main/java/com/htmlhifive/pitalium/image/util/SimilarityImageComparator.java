@@ -54,9 +54,10 @@ class SimilarityImageComparator extends ImageComparator<SimilarityComparisonPara
 
 	@Override
 	public ImageComparedResult compare(BufferedImage img1, Rectangle img1Area, BufferedImage img2, Rectangle img2Area) {
-		Offset offset = new Offset(img2Area.x - img1Area.x, img2Area.y - img1Area.y);
-		SimilarityUnit unit = SimilarityUtils.calcSimilarity(img1, img2, img1Area, new ComparedRectangleArea(img2Area),
-				offset);
+		Offset offset = new Offset(img1Area.x - img2Area.x, img1Area.y - img2Area.y);
+		Rectangle rect = new Rectangle(img1Area.x, img1Area.y, Math.min(img1Area.width, img2Area.width), Math.min(
+				img1Area.height, img2Area.height));
+		SimilarityUnit unit = SimilarityUtils.calcSimilarity(img2, img1, rect, new ComparedRectangleArea(rect), offset);
 
 		boolean isSucceed = true;
 		if (parameters.getPixleByPixelThreshold() > unit.getSimilarityPixelByPixel()) {

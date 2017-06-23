@@ -18,9 +18,7 @@ package com.htmlhifive.pitalium.image.util;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 import com.htmlhifive.pitalium.image.model.DiffPoints;
 
@@ -40,7 +38,7 @@ public class DiffImageMaker {
 
 	/**
 	 * 2枚の画像と画像間の差分を指定してImageMakerを生成します。
-	 * 
+	 *
 	 * @param leftImage 左側の画像
 	 * @param rightImage 右側の画像
 	 * @param diffPoints 差分データ
@@ -53,7 +51,7 @@ public class DiffImageMaker {
 
 	/**
 	 * 2枚の画像と画像間の差分を指定してImageMakerを生成します。
-	 * 
+	 *
 	 * @param leftImage 左側の画像
 	 * @param rightImage 右側の画像
 	 * @param diffPoints 差分データ
@@ -73,7 +71,7 @@ public class DiffImageMaker {
 
 	/**
 	 * 左側の画像を取得します。
-	 * 
+	 *
 	 * @return 左側の画像
 	 */
 	public BufferedImage getLeftImage() {
@@ -82,7 +80,7 @@ public class DiffImageMaker {
 
 	/**
 	 * 右側の画像を取得します。
-	 * 
+	 *
 	 * @return 右側の画像
 	 */
 	public BufferedImage getRightImage() {
@@ -91,7 +89,7 @@ public class DiffImageMaker {
 
 	/**
 	 * 差分データを取得します。
-	 * 
+	 *
 	 * @return 差分データ
 	 */
 	public DiffPoints getDiffPoints() {
@@ -100,7 +98,7 @@ public class DiffImageMaker {
 
 	/**
 	 * 左画像のラベルを取得します。
-	 * 
+	 *
 	 * @return 左画像のラベル
 	 */
 	public String getLeftImageLabel() {
@@ -109,7 +107,7 @@ public class DiffImageMaker {
 
 	/**
 	 * 左画像のラベルを設定します。
-	 * 
+	 *
 	 * @param leftImageLabel 左画像のラベル
 	 */
 	public void setLeftImageLabel(String leftImageLabel) {
@@ -118,7 +116,7 @@ public class DiffImageMaker {
 
 	/**
 	 * 右画像のラベルを取得します。
-	 * 
+	 *
 	 * @return 右画像のラベル
 	 */
 	public String getRightImageLabel() {
@@ -127,7 +125,7 @@ public class DiffImageMaker {
 
 	/**
 	 * 右画像のラベルを設定します。
-	 * 
+	 *
 	 * @param rightImageLabel 右画像のラベル
 	 */
 	public void setRightImageLabel(String rightImageLabel) {
@@ -138,19 +136,10 @@ public class DiffImageMaker {
 
 	/**
 	 * 差分を表示する画像を作成し、{@link BufferedImage}として返します。
-	 * 
+	 *
 	 * @return 差分画像
 	 */
 	public BufferedImage execute() {
-		List<Point> diffPointList = diffPoints.getDiffPoints();
-		List<Point> sizeDiffPointList = diffPoints.getSizeDiffPoints();
-
-		if (sizeDiffPointList == null || (diffPointList != null && diffPointList.isEmpty())) {
-			if (sizeDiffPointList == null || sizeDiffPointList.isEmpty()) {
-				return null;
-			}
-		}
-
 		// Diff画像の生成
 		BufferedImage expectedBaseImage = ImageUtils.getMarkedImage(leftImage, diffPoints);
 		final int border = 1;
