@@ -36,12 +36,12 @@ public enum DiffCategory {
 	SCALING,
 
 	/**
-	 * text（テキストのサブピクセルレンダリング）による
+	 * text（テキストのサブピクセルレンダリング）による差分
 	 */
 	TEXT,
 
 	/**
-	 * text（テキストのサブピクセルレンダリング）による
+	 * その他の原因による差分
 	 */
 	SIMILAR
 }
