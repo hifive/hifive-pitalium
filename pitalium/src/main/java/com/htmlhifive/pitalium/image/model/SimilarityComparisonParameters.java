@@ -24,22 +24,22 @@ public class SimilarityComparisonParameters extends ComparisonParameters {
 	/**
 	 * 各pixelの色の差分ノルムに基づく類似度で一致とみなす閾値
 	 */
-	private final double pixleByPixelThreshold;
+	private double pixleByPixelThreshold = 0.0;
 
 	/**
 	 * 各セルの特徴量を計算した行列に基づく類似度で一致とみなす閾値
 	 */
-	private final double featherMatrixThreshold;
+	private double featherMatrixThreshold = 0.0;
 
 	/**
 	 * ある程度色が異なるセルの色の違いに基づく類似度で一致とみなす閾値
 	 */
-	private final double thresDiffThreshold;
+	private double thresDiffThreshold = 0.0;
 
 	/**
 	 * 全ての異なる色のセル違いに基づく類似度で一致とみなす閾値
 	 */
-	private final double totalDiffThreshold;
+	private double totalDiffThreshold = 0.0;
 
 	/**
 	 * パラメータありコンストラクタ
@@ -65,10 +65,18 @@ public class SimilarityComparisonParameters extends ComparisonParameters {
 	 */
 	public SimilarityComparisonParameters(Map<String, Object> parameters) {
 		super();
-		this.pixleByPixelThreshold = (Double) parameters.get("getpixleByPixelThreshold");
-		this.featherMatrixThreshold = (Double) parameters.get("featherMatrixThreshold");
-		this.thresDiffThreshold = (Double) parameters.get("thresDiffThreshold");
-		this.totalDiffThreshold = (Double) parameters.get("totalDiffThreshold");
+		if (parameters.containsKey("pixleByPixelThreshold")) {
+			this.pixleByPixelThreshold = (Double) parameters.get("pixleByPixelThreshold");
+		}
+		if (parameters.containsKey("featherMatrixThreshold")) {
+			this.featherMatrixThreshold = (Double) parameters.get("featherMatrixThreshold");
+		}
+		if (parameters.containsKey("thresDiffThreshold")) {
+			this.thresDiffThreshold = (Double) parameters.get("thresDiffThreshold");
+		}
+		if (parameters.containsKey("totalDiffThreshold")) {
+			this.totalDiffThreshold = (Double) parameters.get("totalDiffThreshold");
+		}
 	}
 
 	/**
