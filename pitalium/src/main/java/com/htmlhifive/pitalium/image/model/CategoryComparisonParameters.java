@@ -15,7 +15,10 @@
  */
 package com.htmlhifive.pitalium.image.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * カテゴリ分類による比較のパラメータを保持するクラス
@@ -77,6 +80,35 @@ public class CategoryComparisonParameters extends ComparisonParameters {
 					break;
 			}
 		}
+	}
+
+	/**
+	 * リストを引数とするコンストラクタ
+	 *
+	 * @param parameters
+	 */
+	public CategoryComparisonParameters(List<DiffCategory> acceptCategories) {
+		this(acceptCategories.toArray(new DiffCategory[acceptCategories.size()]));
+	}
+
+	/**
+	 * mapを引数とするコンストラクタ
+	 *
+	 * @param parameters
+	 */
+	public CategoryComparisonParameters(Map<String, Object> parameters) {
+		this(toDiffCategoryArray(parameters.containsKey("acceptCategories") ? (ArrayList<String>) parameters
+				.get("acceptCategories") : new ArrayList<String>()));
+	}
+
+	private static DiffCategory[] toDiffCategoryArray(List<String> acceptCategories) {
+		DiffCategory[] categories = new DiffCategory[acceptCategories.size()];
+		int i = 0;
+		for (String category : acceptCategories) {
+			categories[i] = DiffCategory.valueOf(category);
+			i++;
+		}
+		return categories;
 	}
 
 	/**

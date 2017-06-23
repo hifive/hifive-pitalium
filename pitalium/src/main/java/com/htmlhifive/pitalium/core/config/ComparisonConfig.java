@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
+import com.htmlhifive.pitalium.image.model.CategoryComparisonParameters;
 import com.htmlhifive.pitalium.image.model.CompareOption;
 import com.htmlhifive.pitalium.image.model.CompareOptionType;
 import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
@@ -68,9 +69,13 @@ public class ComparisonConfig implements Serializable {
 				continue;
 			}
 
+			// TODO:本来はfactoryに入るべき？デシリアライズ時に拡張クラスを指定できると一番良い
 			switch (type) {
 				case SIMILARITY:
 					ret.add(new CompareOption(type, new SimilarityComparisonParameters(parameters)));
+					continue;
+				case CATEGORY:
+					ret.add(new CompareOption(type, new CategoryComparisonParameters(parameters)));
 					continue;
 				default:
 					ret.add(new CompareOption(type, new DefaultComparisonParameters(parameters)));
