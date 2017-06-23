@@ -9,7 +9,7 @@
 	<property name="target.java.encoding" value="UTF-8" />
 	<property name="target.java.version" value="1.8" />
 	<property name="target.java.source.version" value="1.8" />
-	
+
 	<!-- ソースフォルダの設定 -->
 	<property name="target.main.src.dir" value="src/main/java" />
 	<property name="target.main.res.dir" value="src/main/resources" />
@@ -26,7 +26,7 @@
 	<property name="target.cobertura.instrument.dir" value="${target.cobertura.dir}/instrument" />
 	<property name="target.cobertura.datafile" value="${target.cobertura.dir}/cobertura.ser" />
 	<property name="target.javadoc.dir" value="${basedir}/target/doc" />
-	
+
 	<!-- jarファイルの設定 -->
 	<property name="target.jar.name" value="${current.project.name}-${target.project.version}.jar" />
 	<property name="target.srcjar.name" value="${current.project.name}-${target.project.version}-sources.jar" />
@@ -34,17 +34,17 @@
 	<!-- 各ゴールで実行する/除外するテストの設定 -->
 	<property name="ut.include.dir" value="**/common/util/*.java,**/core/**/*.java,**/image/**/*.java,**/junit/*.java" />
 	<property name="ut.exclude.dir" value="" />
-	<property name="it.screenshot.includes" value="**/it/screenshot2/**/*.java" />
-	<property name="it.screenshot.excludes" value="**/it/screenshot2/scroll/*.java,**/it/screenshot2/*.java,**/package-info.java" />
-	<property name="it.screenshot.scroll.includes" value="**/it/screenshot2/scroll/*.java" />
+	<property name="it.screenshot.includes" value="**/it/screenshot/**/*.java" />
+	<property name="it.screenshot.excludes" value="**/it/screenshot/scroll/*.java,**/it/screenshot/*.java,**/package-info.java" />
+	<property name="it.screenshot.scroll.includes" value="**/it/screenshot/scroll/*.java" />
 	<property name="it.screenshot.scroll.excludes" value="**/package-info.java" />
-	<property name="it.assertion.set_expected.includes" value="**/it/assertion2/**/*.java" />
-	<property name="it.assertion.set_expected.excludes" value="**/it/assertion2/scroll/*.java,**/it/assertion2/*.java,**/package-info.java" />
-	<property name="it.assertion.scroll.set_expected.includes" value="**/it/assertion2/scroll/*.java" />
+	<property name="it.assertion.set_expected.includes" value="**/it/assertion/**/*.java" />
+	<property name="it.assertion.set_expected.excludes" value="**/it/assertion/scroll/*.java,**/it/assertion/*.java,**/package-info.java" />
+	<property name="it.assertion.scroll.set_expected.includes" value="**/it/assertion/scroll/*.java" />
 	<property name="it.assertion.scroll.set_expected.excludes" value="**/package-info.java" />
-	<property name="it.assertion.includes" value="**/it/assertion2/**/*.java" />
-	<property name="it.assertion.excludes" value="**/it/assertion2/scroll/*.java,**/it/assertion2/*.java,**/package-info.java" />
-	<property name="it.assertion.scroll.includes" value="**/it/assertion2/scroll/*.java" />
+	<property name="it.assertion.includes" value="**/it/assertion/**/*.java" />
+	<property name="it.assertion.excludes" value="**/it/assertion/scroll/*.java,**/it/assertion/*.java,**/package-info.java" />
+	<property name="it.assertion.scroll.includes" value="**/it/assertion/scroll/*.java" />
 	<property name="it.assertion.scroll.excludes" value="**/package-info.java" />
 
 	<!-- テスト実行用設定ファイル名 -->
@@ -199,35 +199,35 @@
 			</batchtest>
 		</junit>
 	</target>
-	
+
 	<!-- =================================
         target: it_test_exec
         ================================= -->
 	<target name="it_test_exec" description="結合テスト (exec) を行います。">
 		<antcall target="it_exec_test_all" />
 	</target>
-	
+
 	<!-- =================================
         target: it_test_screenshot_set_expected
         ================================= -->
 	<target name="it_test_screenshot_set_expected" description="結合テスト（screenshot)をSET_EXPECTEDモードで実行します。">
 		<antcall target="it_screenshot_set_expected_all" />
 	</target>
-	
+
 	<!-- =================================
 	        target: it_test_assertion_set_expected
 	        ================================= -->
 	<target name="it_test_assertion_set_expected" description="結合テスト（assertion)をSET_EXPECTEDモードで実行します。">
 		<antcall target="it_assertion_set_expected_all" />
 	</target>
-	
+
 	<!-- =================================
         target: it_test_screenshot
         ================================= -->
 	<target name="it_test_screenshot" description="結合テスト (screenshot) を行います。">
 		<antcall target="it_screenshot_test_all" />
 	</target>
-	
+
 	<!-- =================================
         target: it_test_assertion
         ================================= -->
