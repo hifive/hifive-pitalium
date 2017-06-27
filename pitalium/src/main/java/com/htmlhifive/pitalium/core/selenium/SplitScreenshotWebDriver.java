@@ -122,6 +122,8 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				double captureLeft = 0d;
 				long scrollLeft = -1L;
 				long currentHScrollAmount = 0;
+				long horizontalScrollNum = -1;
+				int currentHorizontalScrollNum = 0;
 				List<BufferedImage> lineImages = new ArrayList<BufferedImage>();
 
 				// 次の撮影位置までスクロール
@@ -130,6 +132,9 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				// スクロール位置を確認
 				long currentScrollLeft = Math.round(getCurrentScrollLeft());
 				while (scrollLeft != currentScrollLeft) {
+					if (horizontalScrollNum >= 0 && currentHorizontalScrollNum > horizontalScrollNum) {
+						break;
+					}
 					currentHScrollAmount = currentScrollLeft - scrollLeft;
 					scrollLeft = currentScrollLeft;
 					LOG.trace("[GetMinimumScreenshot] horizontal scrollAmount: {}, scrollLeft: {}",
@@ -161,6 +166,11 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 						imageHeight = image.getHeight();
 					}
 
+					// 1回目のキャプチャの幅さを見てスクロール回数をセット
+					if (horizontalScrollNum < 0) {
+						horizontalScrollNum = getHorizontalScrollNum(image.getWidth());
+					}
+
 					// 次のキャプチャ開始位置を設定
 					captureLeft += calcHorizontalScrollIncrement(windowWidth);
 
@@ -173,6 +183,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 					// 次の撮影位置までスクロール
 					scrollTo(captureLeft, captureTop);
+					currentHorizontalScrollNum++;
 
 					// スクロール位置を確認
 					currentScrollLeft = Math.round(getCurrentScrollLeft());
