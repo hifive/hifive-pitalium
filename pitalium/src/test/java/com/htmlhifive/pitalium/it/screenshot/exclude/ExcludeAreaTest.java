@@ -16,12 +16,14 @@
 
 package com.htmlhifive.pitalium.it.screenshot.exclude;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
 import org.junit.Test;
+import org.openqa.selenium.WebElement;
 
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.core.model.TargetResult;
@@ -43,9 +45,11 @@ public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 		openBasicColorPage();
 
 		Rect rect = getPixelRectById("colorColumn2");
+		Rect containerRect = getPixelRectById("container");
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget()
 				.addExclude(rect.x, rect.y, rect.width, rect.height).addNewTargetById("container").moveTarget(true)
-				.addExclude(rect.x, rect.y, rect.width, rect.height).moveTarget(true).build();
+				.addExclude(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height)
+				.moveTarget(true).build();
 		assertionView.assertView(arg);
 
 		// Check
@@ -60,10 +64,8 @@ public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 		// Container
 		TargetResult containerResult = results.get(1);
 		assertThat(containerResult.getExcludes(), hasSize(1));
-
-		Rect containerRect = getPixelRectById("container");
-		assertThat(containerResult.getExcludes().get(0).getRectangle(),
-				is(new RectangleArea(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height)));
+		assertThat(containerResult.getExcludes().get(0).getRectangle(), is(new RectangleArea(rect.x - containerRect.x,
+				rect.y - containerRect.y, rect.width, rect.height)));
 	}
 
 	/**
@@ -76,9 +78,11 @@ public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 		openBasicColorPage();
 
 		Rect rect = getPixelRectById("colorColumn2");
+		Rect containerRect = getPixelRectById("container");
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget()
 				.addExclude(rect.x, rect.y, rect.width, rect.height).addNewTargetById("container").moveTarget(false)
-				.addExclude(rect.x, rect.y, rect.width, rect.height).moveTarget(false).build();
+				.addExclude(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height)
+				.moveTarget(false).build();
 		assertionView.assertView(arg);
 
 		// Check
@@ -94,9 +98,66 @@ public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 		TargetResult containerResult = results.get(1);
 		assertThat(containerResult.getExcludes(), hasSize(1));
 
-		Rect containerRect = getPixelRectById("container");
-		assertThat(containerResult.getExcludes().get(0).getRectangle(),
-				is(new RectangleArea(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height)));
+		assertThat(containerResult.getExcludes().get(0).getRectangle(), is(new RectangleArea(rect.x - containerRect.x,
+				rect.y - containerRect.y, rect.width, rect.height)));
 	}
 
+	/**
+	 * 座標によるtargetの場合、範囲を指定して除外する。
+	 *
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
+	@Test
+	public void excludeNonScrollTargetByCoordinate() throws Exception {
+		openScrollPage();
+
+		Rect containerRect = getPixelRectById("no-overflow-inner");
+		WebElement line = driver.executeJavaScript("" + "var div = document.getElementById('no-overflow-inner');"
+				+ "var line = div.getElementsByClassName('gradation-row');" + "return line[0];");
+		Rect rect = getPixelRect(line);
+
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetById("no-overflow-inner")
+				.addExclude(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height).build();
+		assertionView.assertView(arg);
+
+		// Check
+		List<TargetResult> results = loadTargetResults("s");
+		assertThat(results, hasSize(1));
+
+		// Container
+		TargetResult containerResult = results.get(0);
+		assertThat(containerResult.getExcludes(), hasSize(1));
+		assertThat(containerResult.getExcludes().get(0).getRectangle(), is(new RectangleArea(rect.x - containerRect.x,
+				rect.y - containerRect.y, rect.width, rect.height)));
+	}
+
+	/**
+	 * 範囲を指定して除外する。DOM要素になるtargetはスクロールがない。
+	 *
+	 * @ptl.expect 除外領域が正しく保存されていること。
+	 */
+	@Test
+	public void excludeCoordinateTargetByCoordinate() throws Exception {
+		openScrollPage();
+
+		Rect containerRect = getPixelRectById("no-overflow-inner");
+		WebElement line = driver.executeJavaScript("" + "var div = document.getElementById('no-overflow-inner');"
+				+ "var line = div.getElementsByClassName('gradation-row');" + "return line[0];");
+		Rect rect = getPixelRect(line);
+
+		ScreenshotArgument arg = ScreenshotArgument.builder("s")
+				.addNewTarget(containerRect.x, containerRect.y, containerRect.width, containerRect.height)
+				.addExclude(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height).build();
+		assertionView.assertView(arg);
+
+		// Check
+		List<TargetResult> results = loadTargetResults("s");
+		assertThat(results, hasSize(1));
+
+		// Container
+		TargetResult containerResult = results.get(0);
+		assertThat(containerResult.getExcludes(), hasSize(1));
+		assertThat(containerResult.getExcludes().get(0).getRectangle(), is(new RectangleArea(rect.x - containerRect.x,
+				rect.y - containerRect.y, rect.width, rect.height)));
+	}
 }

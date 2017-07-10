@@ -807,7 +807,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 			Pair<CompareTarget, ScreenshotParams> pair = targetParams.get(i);
 			// Exclude領域の座標を更新
 			for (ScreenAreaWrapper wrapper : pair.getRight().getExcludes()) {
-				wrapper.setArea(wrapper.getArea().move(0, partialScrollTops[i] * scale));
+				if (wrapper.getSelector() != null) {
+					wrapper.setArea(wrapper.getArea().move(0, partialScrollTops[i] * scale));
+				}
 			}
 			// 画像の結合
 			List<BufferedImage> targetScreenshots = allTargetScreenshots.get(i);
@@ -907,7 +909,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 		// Exclude領域の座標を更新
 		for (ScreenAreaWrapper wrapper : params.getExcludes()) {
-			wrapper.setArea(wrapper.getArea().move(0, scrollTop * scale));
+			if (wrapper.getSelector() != null) {
+				wrapper.setArea(wrapper.getArea().move(0, scrollTop * scale));
+			}
 		}
 
 		LOG.debug("[TakeMoveScreenshot (image processing start)]");
@@ -1403,7 +1407,9 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 		LOG.trace("[CropScreenshot] Move excludes. (deltaX: {}, deltaY: {})", deltaX, deltaY);
 		for (ScreenAreaWrapper wrapper : params.getExcludes()) {
-			wrapper.setArea(wrapper.getArea().move(deltaX, deltaY));
+			if (wrapper.getSelector() != null) {
+				wrapper.setArea(wrapper.getArea().move(deltaX, deltaY));
+			}
 		}
 
 		return targetImage;
@@ -1553,7 +1559,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		params.getTarget().updatePosition(currentScale, moveX, moveY);
 
 		for (ScreenAreaWrapper wrapper : params.getExcludes()) {
-			wrapper.updatePosition(currentScale, moveX, moveY);
+			wrapper.updatePosition(currentScale);
 		}
 	}
 
