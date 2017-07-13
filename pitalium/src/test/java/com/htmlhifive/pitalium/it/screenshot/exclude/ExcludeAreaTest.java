@@ -16,9 +16,8 @@
 
 package com.htmlhifive.pitalium.it.screenshot.exclude;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -36,7 +35,7 @@ import com.htmlhifive.pitalium.it.screenshot.PtlItScreenshotTestBase;
 public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 
 	/**
-	 * 範囲を指定して除外する。moveオブションあり。
+	 * 範囲を指定して除外する。moveオプションあり。
 	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
@@ -64,12 +63,12 @@ public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 		// Container
 		TargetResult containerResult = results.get(1);
 		assertThat(containerResult.getExcludes(), hasSize(1));
-		assertThat(containerResult.getExcludes().get(0).getRectangle(), is(new RectangleArea(rect.x - containerRect.x,
-				rect.y - containerRect.y, rect.width, rect.height)));
+		assertThat(containerResult.getExcludes().get(0).getRectangle(),
+				is(new RectangleArea(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height)));
 	}
 
 	/**
-	 * 範囲を指定して除外する。moveオブションなし。
+	 * 範囲を指定して除外する。moveオプションなし。
 	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
@@ -98,12 +97,12 @@ public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 		TargetResult containerResult = results.get(1);
 		assertThat(containerResult.getExcludes(), hasSize(1));
 
-		assertThat(containerResult.getExcludes().get(0).getRectangle(), is(new RectangleArea(rect.x - containerRect.x,
-				rect.y - containerRect.y, rect.width, rect.height)));
+		assertThat(containerResult.getExcludes().get(0).getRectangle(),
+				is(new RectangleArea(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height)));
 	}
 
 	/**
-	 * 座標によるtargetの場合、範囲を指定して除外する。
+	 * DOM指定によるtarget（スクロールなし）の場合、範囲を指定して除外する。
 	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
@@ -127,12 +126,12 @@ public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 		// Container
 		TargetResult containerResult = results.get(0);
 		assertThat(containerResult.getExcludes(), hasSize(1));
-		assertThat(containerResult.getExcludes().get(0).getRectangle(), is(new RectangleArea(rect.x - containerRect.x,
-				rect.y - containerRect.y, rect.width, rect.height)));
+		assertThat(containerResult.getExcludes().get(0).getRectangle(),
+				is(new RectangleArea(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height)));
 	}
 
 	/**
-	 * 範囲を指定して除外する。DOM要素になるtargetはスクロールがない。
+	 * 座標によるtargetの場合、範囲を指定して除外する。
 	 *
 	 * @ptl.expect 除外領域が正しく保存されていること。
 	 */
@@ -157,7 +156,7 @@ public class ExcludeAreaTest extends PtlItScreenshotTestBase {
 		// Container
 		TargetResult containerResult = results.get(0);
 		assertThat(containerResult.getExcludes(), hasSize(1));
-		assertThat(containerResult.getExcludes().get(0).getRectangle(), is(new RectangleArea(rect.x - containerRect.x,
-				rect.y - containerRect.y, rect.width, rect.height)));
+		assertThat(containerResult.getExcludes().get(0).getRectangle(),
+				is(new RectangleArea(rect.x - containerRect.x, rect.y - containerRect.y, rect.width, rect.height)));
 	}
 }

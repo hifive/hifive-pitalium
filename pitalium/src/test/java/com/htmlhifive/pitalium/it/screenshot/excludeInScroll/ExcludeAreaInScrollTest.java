@@ -16,10 +16,9 @@
 
 package com.htmlhifive.pitalium.it.screenshot.excludeInScroll;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeFalse;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
