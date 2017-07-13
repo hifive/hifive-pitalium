@@ -119,22 +119,7 @@
         	<syspropertyset refid="proxy.settings" />
         	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
             <formatter type="xml"/>
-            <test name="com.htmlhifive.pitalium.it.exec.multitest.FirstOfMultipleTest" todir="${target.junit.report.dir}"/>
-            <classpath refid="test.classpath"/>
-        </junit>
-        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
-        	<syspropertyset refid="proxy.settings" />
-        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
-            <formatter type="xml"/>
-            <test name="com.htmlhifive.pitalium.it.exec.multitest.SecondOfMultipleTest" todir="${target.junit.report.dir}"/>
-            <classpath refid="test.classpath"/>
-        </junit>
-        <junit fork="yes" printsummary="withOutAndErr" dir="${target.cobertura.dir}">
-        	<syspropertyset refid="proxy.settings" />
-        	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
-            <formatter type="xml"/>
-            <test name="com.htmlhifive.pitalium.it.exec.multitest.MultipleClassCheckResultTest" todir="${target.junit.report.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=EnvironmentConfig_test.json"/>
+            <test name="com.htmlhifive.pitalium.it.exec.multitest.MultipleClassTest" todir="${target.junit.report.dir}"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>
