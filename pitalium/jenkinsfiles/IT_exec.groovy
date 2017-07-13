@@ -51,7 +51,7 @@ node {
 	bat("copy /Y pitalium\\target\\work\\test-classes\\ci\\capabilities_UT_IT_exec.json pitalium\\target\\work\\test-classes\\capabilities.json")
 
 	// テスト実行
-	withEnv(["ANT_OPTS=-Dant.proxy.host=${ANT_PROXY_HOST} -Dant.proxy.port=${ANT_PROXY_PORT}"]) {
+	withEnv(["ANT_OPTS=-Dant.proxy.host=${ANT_PROXY_HOST} -Dant.proxy.port=${ANT_PROXY_PORT} -Dhub.host=${HUB_HOST}"]) {
 		bat("${antHome}/bin/ant.bat -file pitalium/ci_build.xml it_test_exec && exit %%ERRORLEVEL%%")
 	}
 
