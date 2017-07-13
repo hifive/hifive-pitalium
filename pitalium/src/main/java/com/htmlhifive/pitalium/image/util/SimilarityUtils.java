@@ -217,6 +217,10 @@ public class SimilarityUtils {
 			}
 		}
 
+		if (offset == null) {
+			offset = new Offset(0, 0);
+		}
+
 		if (prep.maxMove != 0) {
 			offset.setX(bestX);
 			offset.setY(bestY);
@@ -247,8 +251,8 @@ public class SimilarityUtils {
 
 		// initialize the size of grid.
 		int expectedGridWidth = prep.expectedWidth / FeatureCol, expectedGridHeight = prep.expectedHeight / FeatureRow, expectedGridArea = expectedGridWidth
-				* expectedGridHeight, actualGridWidth = prep.actualWidth / FeatureCol, actualGridHeight = prep.actualHeight
-				/ FeatureRow, actualGridArea = actualGridWidth * actualGridHeight;
+			* expectedGridHeight, actualGridWidth = prep.actualWidth / FeatureCol, actualGridHeight = prep.actualHeight
+			/ FeatureRow, actualGridArea = actualGridWidth * actualGridHeight;
 		int rSum, gSum, bSum; // Sum of Red, Green, and Blue.
 
 		Color[][] expectedFeature = new Color[FeatureRow][FeatureCol];
@@ -271,7 +275,7 @@ public class SimilarityUtils {
 					}
 				}
 				expectedFeature[row][col] = new Color(rSum / expectedGridArea, gSum / expectedGridArea, bSum
-						/ expectedGridArea);
+					/ expectedGridArea);
 
 				// Calculate the feature value actualFeature[row][col].
 				rSum = 0;
@@ -385,6 +389,10 @@ public class SimilarityUtils {
 		similarityThresDiff = (double) Math.round(similarityThresDiff * 100) / 100;
 		similarityTotalDiff = (double) Math.round(similarityTotalDiff * 100) / 100;
 
+		if (offset == null) {
+			offset = new Offset(0, 0);
+		}
+
 		if (prep.maxMove != 0) {
 			offset.setX(bestX);
 			offset.setY(bestY);
@@ -435,7 +443,7 @@ public class SimilarityUtils {
 			Rectangle expectedFrame, Rectangle actualFrame, CalcSimilarityPrep prep) {
 
 		int expectedWidth = (int) expectedFrame.getWidth(), expectedHeight = (int) expectedFrame.getHeight(), actualWidth = (int) actualFrame
-				.getWidth(), actualHeight = (int) actualFrame.getHeight();
+			.getWidth(), actualHeight = (int) actualFrame.getHeight();
 		BufferedImage expectedSubImage = ImageUtils.getSubImage(expectedImage, expectedFrame);
 		BufferedImage actualSubImage = ImageUtils.getSubImage(actualImage, actualFrame);
 
@@ -498,8 +506,8 @@ public class SimilarityUtils {
 		}
 
 		public CalcSimilarityPrep(int expectedWidth, int expectedHeight, int actualWidth, int actualHeight,
-				int maxMove, int rightMove, int leftMove, int downMove, int topMove, int[] actualBlue,
-				int[] actualGreen, int[] actualRed, int[] expectedBlue, int[] expectedGreen, int[] expectedRed) {
+			int maxMove, int rightMove, int leftMove, int downMove, int topMove, int[] actualBlue,
+			int[] actualGreen, int[] actualRed, int[] expectedBlue, int[] expectedGreen, int[] expectedRed) {
 			this.expectedWidth = expectedWidth;
 			this.expectedHeight = expectedHeight;
 			this.actualWidth = actualWidth;
