@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import org.junit.rules.ExpectedException;
 
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
+import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 
 public class DefaultImageComparatorTest {
 
@@ -71,7 +72,7 @@ public class DefaultImageComparatorTest {
 	public void testCompare() throws Exception {
 		BufferedImage image = ImageIO.read(getClass().getResource("hifive_logo.png"));
 		Rectangle rectangle = new Rectangle(0, 0, image.getWidth(), image.getHeight());
-		DiffPoints result = new DefaultImageComparator().compare(image, rectangle, image, rectangle);
+		ImageComparedResult result = new DefaultImageComparator().compare(image, rectangle, image, rectangle);
 
 		assertThat(result.isSucceeded(), is(true));
 	}
@@ -85,7 +86,7 @@ public class DefaultImageComparatorTest {
 		Rectangle rectangle1 = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo_part.png"));
 		Rectangle rectangle2 = new Rectangle(0, 0, image2.getWidth(), image2.getHeight());
-		DiffPoints result = new DefaultImageComparator().compare(image1, rectangle1, image2, rectangle2);
+		ImageComparedResult result = new DefaultImageComparator().compare(image1, rectangle1, image2, rectangle2);
 
 		assertThat(result.isFailed(), is(true));
 	}
@@ -106,7 +107,7 @@ public class DefaultImageComparatorTest {
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image2.getHeight());
 
-		DiffPoints result = new DefaultImageComparator().compare(image1, rectangle, image2, rectangle);
+		DiffPoints result = (DiffPoints) new DefaultImageComparator().compare(image1, rectangle, image2, rectangle);
 
 		assertThat(result.isFailed(), is(true));
 		assertThat(result.getDiffPoints().size(), is(1));
@@ -116,7 +117,7 @@ public class DefaultImageComparatorTest {
 
 	/**
 	 * 端に差分がある場合 => 失敗
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -124,7 +125,7 @@ public class DefaultImageComparatorTest {
 		BufferedImage image = ImageIO.read(getClass().getResource("hifive_logo.png"));
 		Rectangle rectangle1 = new Rectangle(0, 0, image.getWidth(), image.getHeight());
 		Rectangle rectangle2 = new Rectangle(0, 0, image.getWidth() - 1, image.getHeight() - 1);
-		DiffPoints result = new DefaultImageComparator().compare(image, rectangle1, image, rectangle2);
+		DiffPoints result = (DiffPoints) new DefaultImageComparator().compare(image, rectangle1, image, rectangle2);
 
 		assertThat(result.isFailed(), is(true));
 		assertThat(result.getDiffPoints().isEmpty(), is(true));

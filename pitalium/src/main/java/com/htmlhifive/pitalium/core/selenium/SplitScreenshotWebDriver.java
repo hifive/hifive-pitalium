@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,6 @@ import com.htmlhifive.pitalium.image.util.ImageUtils;
  */
 abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
-	private double scale = DEFAULT_SCREENSHOT_SCALE;
-
 	/**
 	 * コンストラクタ
 	 * 
@@ -48,7 +46,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	@Override
 	protected TargetResult getTargetResult(CompareTarget compareTarget, List<DomSelector> hiddenElementSelectors,
 			ScreenshotParams params, ScreenshotParams... additionalParams) {
-		scale = DEFAULT_SCREENSHOT_SCALE;
+		resetScreenshotScale();
 		return super.getTargetResult(compareTarget, hiddenElementSelectors, params, additionalParams);
 	}
 
@@ -104,12 +102,14 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 			// スクロール位置を確認
 			long currentScrollTop = Math.round(getCurrentScrollTop());
 
-			// スクロール回数を調べておく
-			long scrollNum = getScrollNum();
+			long scrollNum = -1;
 			int currentScrollNum = 0;
 
 			// Vertical scroll
-			while (scrollTop != currentScrollTop && currentScrollNum <= scrollNum) {
+			while (scrollTop != currentScrollTop) {
+				if (scrollNum >= 0 && currentScrollNum > scrollNum) {
+					break;
+				}
 				currentVScrollAmount = currentScrollTop - scrollTop;
 				scrollTop = currentScrollTop;
 				LOG.trace("[GetMinimumScreenshot] vertical scrollAmount: {}, scrollTop: {}", currentVScrollAmount,
@@ -122,6 +122,8 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				double captureLeft = 0d;
 				long scrollLeft = -1L;
 				long currentHScrollAmount = 0;
+				long horizontalScrollNum = -1;
+				int currentHorizontalScrollNum = 0;
 				List<BufferedImage> lineImages = new ArrayList<BufferedImage>();
 
 				// 次の撮影位置までスクロール
@@ -130,6 +132,9 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				// スクロール位置を確認
 				long currentScrollLeft = Math.round(getCurrentScrollLeft());
 				while (scrollLeft != currentScrollLeft) {
+					if (horizontalScrollNum >= 0 && currentHorizontalScrollNum > horizontalScrollNum) {
+						break;
+					}
 					currentHScrollAmount = currentScrollLeft - scrollLeft;
 					scrollLeft = currentScrollLeft;
 					LOG.trace("[GetMinimumScreenshot] horizontal scrollAmount: {}, scrollLeft: {}",
@@ -145,19 +150,25 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 					// 画像のサイズからscaleを計算（初回のみ）
 					if (Double.isNaN(currentScale)) {
 						currentScale = calcScale(windowWidth, image.getWidth());
-						scale = currentScale;
-						LOG.trace("[GetMinimumScreenshot] scale: {}", scale);
+						setScreenshotScale(currentScale);
+						LOG.trace("[GetMinimumScreenshot] scale: {}", currentScale);
 					}
 
 					// 次の画像と重なる部分を切り取っておく
-					if (scale != DEFAULT_SCREENSHOT_SCALE) {
-						image = trimOverlap(captureTop, captureLeft, windowHeight, windowWidth, scale, image);
+					if (getScreenshotScale() != DEFAULT_SCREENSHOT_SCALE) {
+						image = trimOverlap(captureTop, captureLeft, windowHeight, windowWidth, getScreenshotScale(),
+								image);
 					}
 
 					// 今回撮った画像をリストに追加
 					lineImages.add(image);
 					if (imageHeight < 0) {
 						imageHeight = image.getHeight();
+					}
+
+					// 1回目のキャプチャの幅さを見てスクロール回数をセット
+					if (horizontalScrollNum < 0) {
+						horizontalScrollNum = getHorizontalScrollNum(image.getWidth());
 					}
 
 					// 次のキャプチャ開始位置を設定
@@ -172,21 +183,27 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 					// 次の撮影位置までスクロール
 					scrollTo(captureLeft, captureTop);
+					currentHorizontalScrollNum++;
 
 					// スクロール位置を確認
 					currentScrollLeft = Math.round(getCurrentScrollLeft());
 				}
 
 				// 右端の画像の重複部分をトリムする
-				trimRightImage(lineImages, currentHScrollAmount, bodyElement, scale);
+				trimRightImage(lineImages, currentHScrollAmount, bodyElement, getScreenshotScale());
 
 				images.add(lineImages);
+
+				// 1回目のキャプチャの高さを見てスクロール回数をセット
+				if (scrollNum < 0) {
+					scrollNum = getScrollNum(lineImages.get(0).getHeight());
+				}
 
 				// 次のキャプチャ開始位置を設定
 				double scrollIncrement = 0;
 				if (headerHeight > 0) {
 					// HeaderHeightがある場合、画像の高さからスクロール幅を逆算
-					scrollIncrement = calcVerticalScrollIncrementWithHeader(imageHeight, scale);
+					scrollIncrement = calcVerticalScrollIncrementWithHeader(imageHeight, getScreenshotScale());
 				} else {
 					scrollIncrement = calcVerticalScrollIncrement(windowHeight);
 
@@ -212,7 +229,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 		}
 
 		// 末尾の画像の重複部分をトリムする
-		trimBottomImages(images, currentVScrollAmount, bodyElement, scale);
+		trimBottomImages(images, currentVScrollAmount, bodyElement, getScreenshotScale());
 
 		BufferedImage screenshot = ImageUtils.merge(images);
 		LOG.trace("[GetMinimumScreenshot finished]");
@@ -275,11 +292,6 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 	 */
 	protected double calcHorizontalScrollIncrement(long windowWidth) {
 		return windowWidth;
-	}
-
-	@Override
-	protected double getScreenshotScale() {
-		return scale;
 	}
 
 	/**

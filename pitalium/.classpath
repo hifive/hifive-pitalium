@@ -4,44 +4,48 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+	<classpathentry kind="lib" path="libs/cglib-nodep-3.2.4.jar"/>
+	<classpathentry kind="lib" path="libs/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="libs/commons-exec-1.3.jar"/>
+	<classpathentry kind="lib" path="libs/commons-io-2.5.jar"/>
+	<classpathentry kind="lib" path="libs/commons-lang3-3.5.jar"/>
+	<classpathentry kind="lib" path="libs/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="libs/gson-2.8.0.jar"/>
+	<classpathentry kind="lib" path="libs/guava-21.0.jar"/>
+	<classpathentry kind="lib" path="libs/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="libs/java-hamcrest-2.0.0.0.jar"/>
+	<classpathentry kind="lib" path="libs/httpclient-4.5.3.jar"/>
+	<classpathentry kind="lib" path="libs/httpcore-4.4.6.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-annotations-2.8.0.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-core-2.8.7.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-databind-2.8.7.jar"/>
+	<classpathentry kind="lib" path="libs/javassist-3.21.0-GA.jar"/>
+	<classpathentry kind="lib" path="libs/jna-4.1.0.jar"/>
+	<classpathentry kind="lib" path="libs/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="libs/log4j-api-2.8.1.jar"/>
+	<classpathentry kind="lib" path="libs/log4j-core-2.8.1.jar"/>
+	<classpathentry kind="lib" path="libs/log4j-slf4j-impl-2.8.1.jar"/>
+	<classpathentry kind="lib" path="libs/mockito-core-1.10.19.jar"/>
+	<classpathentry kind="lib" path="libs/objenesis-2.4.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-api-mockito-1.6.6.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-api-support-1.6.6.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-core-1.6.6.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-module-junit4-1.6.6.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-module-junit4-common-1.6.6.jar"/>
+	<classpathentry kind="lib" path="libs/powermock-reflect-1.6.6.jar"/>
+	<classpathentry kind="lib" path="libs/selenium-api-3.4.0.jar"/>
+	<classpathentry kind="lib" path="libs/selenium-remote-driver-3.4.0.jar"/>
+	<classpathentry kind="lib" path="libs/selenium-support-3.4.0.jar"/>
+	<classpathentry kind="lib" path="libs/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="src" path=".apt_generated">
+		<attributes>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="libs/cglib-nodep-2.1_3.jar"/>
-	<classpathentry kind="lib" path="libs/commons-codec-1.10.jar"/>
-	<classpathentry kind="lib" path="libs/commons-exec-1.3.jar"/>
-	<classpathentry kind="lib" path="libs/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="libs/commons-lang3-3.4.jar"/>
-	<classpathentry kind="lib" path="libs/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="libs/gson-2.3.1.jar"/>
-	<classpathentry kind="lib" path="libs/guava-19.0.jar"/>
-	<classpathentry kind="lib" path="libs/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="libs/httpclient-4.5.1.jar"/>
-	<classpathentry kind="lib" path="libs/httpcore-4.4.3.jar"/>
-	<classpathentry kind="lib" path="libs/jackson-annotations-2.7.0.jar"/>
-	<classpathentry kind="lib" path="libs/jackson-core-2.7.3.jar"/>
-	<classpathentry kind="lib" path="libs/jackson-databind-2.7.3.jar"/>
-	<classpathentry kind="lib" path="libs/javassist-3.20.0-GA.jar"/>
-	<classpathentry kind="lib" path="libs/jna-4.1.0.jar"/>
-	<classpathentry kind="lib" path="libs/junit-4.12.jar"/>
-	<classpathentry kind="lib" path="libs/log4j-api-2.5.jar"/>
-	<classpathentry kind="lib" path="libs/log4j-core-2.5.jar"/>
-	<classpathentry kind="lib" path="libs/log4j-slf4j-impl-2.5.jar"/>
-	<classpathentry kind="lib" path="libs/mockito-core-1.10.19.jar"/>
-	<classpathentry kind="lib" path="libs/netty-3.5.7.Final.jar"/>
-	<classpathentry kind="lib" path="libs/objenesis-2.1.jar"/>
-	<classpathentry kind="lib" path="libs/powermock-api-mockito-1.6.4.jar"/>
-	<classpathentry kind="lib" path="libs/powermock-api-support-1.6.4.jar"/>
-	<classpathentry kind="lib" path="libs/powermock-core-1.6.4.jar"/>
-	<classpathentry kind="lib" path="libs/powermock-module-junit4-1.6.4.jar"/>
-	<classpathentry kind="lib" path="libs/powermock-module-junit4-common-1.6.4.jar"/>
-	<classpathentry kind="lib" path="libs/powermock-reflect-1.6.4.jar"/>
-	<classpathentry kind="lib" path="libs/selenium-api-2.53.0.jar"/>
-	<classpathentry kind="lib" path="libs/selenium-java-2.53.0.jar"/>
-	<classpathentry kind="lib" path="libs/selenium-remote-driver-2.53.0.jar"/>
-	<classpathentry kind="lib" path="libs/selenium-support-2.53.0.jar"/>
-	<classpathentry kind="lib" path="libs/slf4j-api-1.7.21.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

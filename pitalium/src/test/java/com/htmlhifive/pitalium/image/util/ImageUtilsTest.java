@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import com.htmlhifive.pitalium.image.model.CompareOption;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
+import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 
 public class ImageUtilsTest {
 
@@ -46,7 +47,7 @@ public class ImageUtilsTest {
 		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo.png"));
 		Rectangle rect2 = new Rectangle(0, 0, image2.getWidth(), image2.getHeight());
 
-		DiffPoints result = ImageUtils.compare(image1, rect1, image2, rect2, new CompareOption[0]);
+		ImageComparedResult result = ImageUtils.compare(image1, rect1, image2, rect2, new CompareOption[0]);
 		assertThat(result.isSucceeded(), is(true));
 	}
 
@@ -62,7 +63,7 @@ public class ImageUtilsTest {
 
 		image2.setRGB(10, 10, 0x000000);
 
-		DiffPoints result = ImageUtils.compare(image1, rect1, image2, rect2, new CompareOption[0]);
+		ImageComparedResult result = ImageUtils.compare(image1, rect1, image2, rect2, new CompareOption[0]);
 		assertThat(result.isFailed(), is(true));
 	}
 
@@ -179,6 +180,24 @@ public class ImageUtilsTest {
 		BufferedImage actual = ImageUtils.trim(image, 2, 2, 2, 2);
 
 		assertThat(ImageUtils.imageEquals(expected, actual), is(true));
+	}
+
+	//</editor-fold>
+
+	//<editor-fold desc="trim">
+
+	/**
+	 * BufferedImageからRGBのint配列を取得するテスト。
+	 */
+	@Test
+	public void testGetRGB() throws Exception {
+		BufferedImage image = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		int width = image.getWidth();
+		int height = image.getHeight();
+
+		int[] expected = image.getRGB(0, 0, width, height, null, 0, width);
+		int[] actual = ImageUtils.getRGB(image, width, height);
+		assertArrayEquals(expected, actual);
 	}
 
 	//</editor-fold>

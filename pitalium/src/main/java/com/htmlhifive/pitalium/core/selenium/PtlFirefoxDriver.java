@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,11 @@ import com.htmlhifive.pitalium.core.model.ScreenshotParams;
 /**
  * Firefoxで利用する{@link org.openqa.selenium.WebDriver}
  */
-class PtlFirefoxDriver extends PtlWebDriver {
+class PtlFirefoxDriver extends SplitScreenshotWebDriver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -71,6 +71,20 @@ class PtlFirefoxDriver extends PtlWebDriver {
 				images.set(i, trimTargetPadding(el, images.get(i), i, images.size()));
 			}
 		}
+	}
+
+	@Override
+	long getScrollNum(double clientHeight) {
+		WebElementMargin margin = ((PtlWebElement) findElementByTagName("body")).getMargin();
+		double pageHeight = getScrollHeight() + margin.getTop() + margin.getBottom();
+		return (int) (Math.ceil(pageHeight / clientHeight)) - 1;
+	}
+
+	@Override
+	long getHorizontalScrollNum(double clientWidth) {
+		WebElementMargin margin = ((PtlWebElement) findElementByTagName("body")).getMargin();
+		double pageWidth = getScrollWidth() + margin.getLeft() + margin.getRight();
+		return (int) (Math.ceil(pageWidth / clientWidth)) - 1;
 	}
 
 	@Override

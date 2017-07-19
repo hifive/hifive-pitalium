@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,6 @@ package com.htmlhifive.pitalium.core;
 
 import java.util.List;
 
-import com.htmlhifive.pitalium.core.rules.PtlWebDriverCloser;
-import com.htmlhifive.pitalium.junit.ParameterizedClassRule;
-import com.htmlhifive.pitalium.junit.PtlBlockJUnit4ClassRunnerWithParametersFactory;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -27,9 +24,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import com.htmlhifive.pitalium.core.rules.AssertionView;
+import com.htmlhifive.pitalium.core.rules.AssumeCapability;
+import com.htmlhifive.pitalium.core.rules.PtlWebDriverCloser;
 import com.htmlhifive.pitalium.core.rules.ResultCollector;
 import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
+import com.htmlhifive.pitalium.junit.ParameterizedClassRule;
+import com.htmlhifive.pitalium.junit.PtlBlockJUnit4ClassRunnerWithParametersFactory;
 
 /**
  * テスト実行用の基底クラス。テスト実行に必要な&#064;Rule、&#064;ClassRuleが定義されています。<br/>
@@ -59,6 +60,12 @@ public abstract class PtlTestBase {
 	public AssertionView assertionView = new AssertionView();
 
 	/**
+	 * &#064;Rule {@link com.htmlhifive.pitalium.core.annotation.CapabilityFilter}を使用してテスト実行のフィルタリングを行う。
+	 */
+	@Rule
+	public AssumeCapability assumeCapability = new AssumeCapability();
+
+	/**
 	 * このインスタンスに割り当てられたcapability
 	 */
 	@Parameterized.Parameter
@@ -72,7 +79,7 @@ public abstract class PtlTestBase {
 
 	/**
 	 * Capabilityの読み込みを行います。
-	 * 
+	 *
 	 * @return Capabilityのリスト
 	 */
 	@Parameterized.Parameters(name = "{0}")
@@ -85,6 +92,7 @@ public abstract class PtlTestBase {
 	 */
 	@Before
 	public void setUp() {
+		assumeCapability.assumeCapability(capabilities);
 		driver = assertionView.createDriver(capabilities);
 	}
 }

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Pitalium Test (Common Page)</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css">
+  <style type="text/css">
+    body {
+      padding-bottom: 20px;
+    }
+
+    /* Disable animation */
+    .no-transition {
+      transition: height 0.0s;
+    }
+
+    .color-column {
+      height: 150px;
+    }
+
+    .color-column-0 {
+      background: #ff0000;
+    }
+
+    .color-column-1 {
+      background: #00ff00;
+    }
+
+    .color-column-2 {
+      background: #0000ff;
+    }
+
+    .image-column div {
+      width: 100%;
+      height: 100px;
+    }
+  </style>
+
+  <!--[if lt IE 9]>
+    <script src="libs/html5shiv/html5shiv.min.js"></script>
+    <script src="libs/respond/respond.min.js"></script>
+  <![endif]-->
+
+</head>
+<body>
+
+<!-- Fixed navbar -->
+<div class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href=".">Pitalium Test Page</a>
+      </div>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse no-transition">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="gradation.html">Gradation</a></li>
+        <li><a href="element-scroll.html">Element Scroll</a></li>
+        <li><a href="iframe.html">iframe</a></li>
+      </ul>
+      <form class="navbar-form navbar-right">
+        <div class="form-group">
+          <input type="text" class="form-control" name="search" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Fixed navbar -->
+
+<!-- Contents -->
+<div id="container" class="container">
+  <div id="textRow" class="row text-row hidden">
+    <div id="textColumn0" class="col-md-4 text-column text-column-0">
+      <h2>Title 1
+        <small>Subtitle</small>
+      </h2>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat.
+      </p>
+    </div>
+    <div id="textColumn1" class="col-md-4 text-column text-column-1">
+      <h2>Title 2
+        <small>Subtitle</small>
+      </h2>
+      <p>
+        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem
+        aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+      </p>
+    </div>
+    <div id="textColumn2" class="col-md-4 text-column text-column-2">
+      <h2>Title 3
+        <small>Subtitle</small>
+      </h2>
+      <p>
+        But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I
+        will give you a complete account of the system, ...
+      </p>
+    </div>
+  </div>
+  <div id="colorRow" class="row color-row hidden">
+    <div id="colorColumn0" class="col-md-4 color-column color-column-0"></div>
+    <div id="colorColumn1" class="col-md-4 color-column color-column-1"></div>
+    <div id="colorColumn2" class="col-md-4 color-column color-column-2"></div>
+  </div>
+  <div id="imageRow" class="row image-row hidden">
+    <div id="imageColumn0" class="col-md-4 image-column image-column-0">
+      <h2>PNG</h2>
+      <div>
+        <img src="img/logo-png.png" style="max-width: 100%; max-height: 100%;">
+      </div>
+    </div>
+    <div id="imageColumn1" class="col-md-4 image-column image-column-1">
+      <h2>JPEG</h2>
+      <div>
+        <img src="img/logo-jpg.jpg" style="max-width: 100%; max-height: 100%;">
+      </div>
+    </div>
+    <div id="imageColumn2" class="col-md-4 image-column image-column-2">
+      <h2>JPEG (compressed)</h2>
+      <div>
+        <img src="img/logo-jpg-compressed.jpg" style="max-width: 100%; max-height: 100%;">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Contents -->
+
+<!-- scripts -->
+<script type="text/javascript" src="libs/jquery/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="libs/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript">
+  (function () {
+    'use strict';
+
+    var query = getQueryString();
+    var types = query.get('type', 'text').split(',');
+    for (var i = 0; i < types.length; i++) {
+      var type = types[i];
+      $('.' + type + '-row').toggleClass('hidden');
+    }
+    if (query.get('date', '') === 'true') {
+      $('.text-column h2 small').text(getFormatDate());
+    }
+
+  })();
+</script>
+
+</body>
+</html>

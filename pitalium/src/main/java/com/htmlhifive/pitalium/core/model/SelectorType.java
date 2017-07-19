@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,9 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import com.google.common.base.Supplier;
+import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 
 /**
  * セレクタの種別を表す定数クラス
@@ -127,8 +130,22 @@ public enum SelectorType {
 	 * @param selector セレクタ
 	 * @return セレクタに一致した最初の要素
 	 */
-	public WebElement findElement(WebElement element, String selector) {
-		return element.findElement(by(selector));
+	public WebElement findElement(final WebElement element, final String selector) {
+		if (!(element instanceof PtlWebElement)) {
+			return element.findElement(by(selector));
+		}
+
+		final PtlWebElement el = (PtlWebElement) element;
+		if (!el.isFrame()) {
+			return el.findElement(by(selector));
+		}
+
+		return el.executeInFrame(el, new Supplier<WebElement>() {
+			@Override
+			public WebElement get() {
+				return el.findElement(by(selector));
+			}
+		});
 	}
 
 	/**
@@ -138,8 +155,22 @@ public enum SelectorType {
 	 * @param selector セレクタ
 	 * @return セレクタに一致した要素のリスト
 	 */
-	public List<WebElement> findElements(WebElement element, String selector) {
-		return element.findElements(by(selector));
+	public List<WebElement> findElements(final WebElement element, final String selector) {
+		if (!(element instanceof PtlWebElement)) {
+			return element.findElements(by(selector));
+		}
+
+		final PtlWebElement el = (PtlWebElement) element;
+		if (!el.isFrame()) {
+			return el.findElements(by(selector));
+		}
+
+		return el.executeInFrame(el, new Supplier<List<WebElement>>() {
+			@Override
+			public List<WebElement> get() {
+				return el.findElements(by(selector));
+			}
+		});
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,20 @@
 package com.htmlhifive.pitalium.core.model;
 
 import java.io.Serializable;
+import java.util.List;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 
 /**
  * DOM要素を指定するためのセレクタを保持するクラス。
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DomSelector implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -39,15 +45,33 @@ public class DomSelector implements Serializable {
 	private final String value;
 
 	/**
+	 * フレームを指定するセレクタ
+	 */
+	private final DomSelector parentSelector;
+
+	/**
 	 * DOM要素をセレクタの種別と値で指定します。
 	 * 
 	 * @param type セレクタの種別
 	 * @param value セレクタの値
 	 */
+	public DomSelector(SelectorType type, String value) {
+		this(type, value, null);
+	}
+
+	/**
+	 * DOM要素をセレクタの種別と値で指定します。
+	 * 
+	 * @param type セレクタの種別
+	 * @param value セレクタの値
+	 * @param parentSelector フレームを指定するセレクタ
+	 */
 	@JsonCreator
-	public DomSelector(@JsonProperty("type") SelectorType type, @JsonProperty("value") String value) {
+	public DomSelector(@JsonProperty("type") SelectorType type, @JsonProperty("value") String value,
+			@JsonProperty("parentSelector") DomSelector parentSelector) {
 		this.type = type;
 		this.value = value;
+		this.parentSelector = parentSelector;
 	}
 
 	/**
@@ -69,33 +93,115 @@ public class DomSelector implements Serializable {
 	}
 
 	/**
-	 * 同じDOMを表すセレクタか否かを調べます。
+	 * フレームを指定するセレクタを取得します。
 	 * 
-	 * @param o 比較対象オブジェクト
-	 * @return セレクタの種別と値が一致すればtrue。
+	 * @return フレームを指定するセレクタ
 	 */
+	public DomSelector getParentSelector() {
+		return parentSelector;
+	}
+
+	/**
+	 * このDomSelectorが指し示す要素を取得します。
+	 * 
+	 * @param driver WebDriver
+	 * @return このDomSelectorが指し示す要素
+	 */
+	public WebElement findElement(WebDriver driver) {
+		if (parentSelector == null) {
+			return type.findElement(driver, value);
+		}
+
+		WebElement frameElement = parentSelector.findElement(driver);
+		return type.findElement(frameElement, value);
+	}
+
+	/**
+	 * このDomSelectorが指し示す要素を取得します。
+	 * 
+	 * @param element 要素を検索するDOMのルート要素
+	 * @return このDomSelectorが指し示す要素
+	 */
+	public WebElement findElement(WebElement element) {
+		if (parentSelector == null) {
+			return type.findElement(element, value);
+		}
+
+		WebElement frameElement = parentSelector.findElement(element);
+		return type.findElement(frameElement, value);
+	}
+
+	/**
+	 * このDomSelectorが指し示す要素を取得します。
+	 * 
+	 * @param driver WebDriver
+	 * @return このDomSelectorが指し示す要素
+	 */
+	@SuppressWarnings("unchecked")
+	public List<WebElement> findElements(WebDriver driver) {
+		if (parentSelector == null) {
+			return type.findElements(driver, value);
+		}
+
+		WebElement frameElement = parentSelector.findElement(driver);
+		return type.findElements(frameElement, value);
+	}
+
+	/**
+	 * このDomSelectorが指し示す要素を取得します。
+	 * 
+	 * @param element 要素を検索するDOMのルート要素
+	 * @return このDomSelectorが指し示す要素
+	 */
+	@SuppressWarnings("unchecked")
+	public List<WebElement> findElements(WebElement element) {
+		if (parentSelector == null) {
+			return type.findElements(element, value);
+		}
+
+		WebElement frameElement = parentSelector.findElement(element);
+		return type.findElements(frameElement, value);
+	}
+
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (obj == null) {
 			return false;
 		}
-
-		DomSelector that = (DomSelector) o;
-
-		if (type != that.type) {
+		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		return value.equals(that.value);
+		DomSelector other = (DomSelector) obj;
+		if (parentSelector == null) {
+			if (other.parentSelector != null) {
+				return false;
+			}
+		} else if (!parentSelector.equals(other.parentSelector)) {
+			return false;
+		}
+		if (type != other.type) {
+			return false;
+		}
+		if (value == null) {
+			if (other.value != null) {
+				return false;
+			}
+		} else if (!value.equals(other.value)) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = type.hashCode();
-		final int hashPrime = 31;
-		result = hashPrime * result + value.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((parentSelector == null) ? 0 : parentSelector.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ public class PtlTestConfig {
 	private EnvironmentConfig environment;
 	private PersisterConfig persisterConfig;
 	private TestAppConfig testApp;
+	private ComparisonConfig comparisonConfig;
 
 	/**
 	 * コンストラクタ
@@ -58,7 +59,7 @@ public class PtlTestConfig {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param startupArguments プロパティ一覧
 	 */
 	@VisibleForTesting
@@ -68,7 +69,7 @@ public class PtlTestConfig {
 
 	/**
 	 * JVM起動引数からテストに関するプロパティ一覧を取得します。
-	 * 
+	 *
 	 * @return プロパティのマップ
 	 */
 	static Map<String, String> getSystemStartupArguments() {
@@ -91,7 +92,7 @@ public class PtlTestConfig {
 
 	/**
 	 * {@link PtlTestConfig}のインスタンスを取得します。
-	 * 
+	 *
 	 * @return インスタンス
 	 */
 	public static synchronized PtlTestConfig getInstance() {
@@ -105,7 +106,7 @@ public class PtlTestConfig {
 
 	/**
 	 * 設定情報を取得します。
-	 * 
+	 *
 	 * @param clss 設定情報を保持するためのクラス
 	 * @param <T> 設定情報を保持するクラスの型
 	 * @return 設定情報
@@ -116,7 +117,7 @@ public class PtlTestConfig {
 
 	/**
 	 * 設定情報を取得します。
-	 * 
+	 *
 	 * @param clss 設定情報を保持するためのクラス
 	 * @param <T> 設定情報を保持するクラスの型
 	 * @param name 設定項目名
@@ -159,7 +160,7 @@ public class PtlTestConfig {
 
 	/**
 	 * {@link PtlConfigurationProperty}が設定されているフィールドに対し値を設定します。
-	 * 
+	 *
 	 * @param object 値を設定するオブジェクト
 	 * @param arguments 設定する値
 	 */
@@ -217,7 +218,7 @@ public class PtlTestConfig {
 
 	/**
 	 * 文字列から指定された型のオブジェクトに変換します。
-	 * 
+	 *
 	 * @param type 変換後の型（String, int(Integer), double(Double),Enumのうちどれか）
 	 * @param value 変換する文字列
 	 * @return 変換後のオブジェクト
@@ -227,6 +228,8 @@ public class PtlTestConfig {
 	static Object convertFromString(Class<?> type, String value) throws IllegalArgumentException, TestRuntimeException {
 		if (type == String.class) {
 			return value;
+		} else if (type == boolean.class || type == Boolean.class) {
+			return Boolean.parseBoolean(value);
 		} else if (type == int.class || type == Integer.class) {
 			return Integer.parseInt(value);
 		} else if (type == double.class || type == Double.class) {
@@ -245,7 +248,7 @@ public class PtlTestConfig {
 
 	/**
 	 * ツールを実行するための共通設定を取得します。
-	 * 
+	 *
 	 * @return ツール共通設定
 	 */
 	public EnvironmentConfig getEnvironment() {
@@ -261,7 +264,7 @@ public class PtlTestConfig {
 
 	/**
 	 * テスト対象のページの共通設定を取得します。
-	 * 
+	 *
 	 * @return テスト対象ページの共通設定
 	 */
 	public TestAppConfig getTestAppConfig() {
@@ -277,7 +280,7 @@ public class PtlTestConfig {
 
 	/**
 	 * 画像やテスト結果の入出力に関する設定を取得します。
-	 * 
+	 *
 	 * @return 画像やテスト結果の入出力に関する設定
 	 */
 	public PersisterConfig getPersisterConfig() {
@@ -292,8 +295,24 @@ public class PtlTestConfig {
 	}
 
 	/**
+	 * 比較方法に関する設定を取得します。
+	 *
+	 * @return 比較方法に関する設定
+	 */
+	public ComparisonConfig getComparisonConfig() {
+		synchronized (this) {
+			if (comparisonConfig != null) {
+				return comparisonConfig;
+			}
+
+			comparisonConfig = getConfig(ComparisonConfig.class);
+			return comparisonConfig;
+		}
+	}
+
+	/**
 	 * 設定情報をファイルから読み出します。
-	 * 
+	 *
 	 * @param <T> 読み出すクラスの型
 	 * @param clss 読み出すクラス
 	 * @param fileName ファイル名

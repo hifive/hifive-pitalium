@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,10 +74,11 @@ public final class TestResultManager {
 
 	/**
 	 * 初期化します。
-	 * 
+	 *
 	 * @param environment 環境設定情報
 	 */
 	@VisibleForTesting
+	@SuppressWarnings("unchecked")
 	TestResultManager(EnvironmentConfig environment) {
 		currentId = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date());
 		currentMode = environment.getExecMode();
@@ -120,7 +121,7 @@ public final class TestResultManager {
 
 	/**
 	 * {@link TestResultManager}のインスタンスを取得します。
-	 * 
+	 *
 	 * @return {@link TestResultManager}のインスタンス
 	 */
 	public static synchronized TestResultManager getInstance() {
@@ -134,7 +135,7 @@ public final class TestResultManager {
 
 	/**
 	 * 現在のテストIDを取得します。
-	 * 
+	 *
 	 * @return 現在のテストID
 	 */
 	public String getCurrentId() {
@@ -143,7 +144,7 @@ public final class TestResultManager {
 
 	/**
 	 * データ永続化インターフェースを取得します。
-	 * 
+	 *
 	 * @return {@link Persister}
 	 */
 	public Persister getPersister() {
@@ -154,7 +155,7 @@ public final class TestResultManager {
 
 	/**
 	 * 指定したクラスのテスト結果を初期化します。
-	 * 
+	 *
 	 * @param className 対象のクラス名
 	 */
 	public void initializeTestResult(String className) {
@@ -170,13 +171,17 @@ public final class TestResultManager {
 
 	/**
 	 * 指定したクラスのテスト結果を保存します。
-	 * 
+	 *
 	 * @param className 対象のクラス名
 	 */
 	public void exportTestResult(String className) {
 		synchronized (holders) {
 			if (!holders.containsKey(className)) {
 				throw new TestRuntimeException("TestResult does not exist for " + className);
+			}
+
+			if (currentMode.equals(ExecMode.SKIP)) {
+				return;
 			}
 
 			LOG.trace("[Export TestResult] ({})", className);
@@ -194,7 +199,7 @@ public final class TestResultManager {
 
 	/**
 	 * 指定したクラスのスクリーンショット撮影・比較結果を追加します。
-	 * 
+	 *
 	 * @param className 対象のクラス名
 	 * @param result スクリーンショット撮影・比較結果
 	 */
@@ -228,7 +233,7 @@ public final class TestResultManager {
 
 	/**
 	 * ExpectedIdの一覧を取得します。
-	 * 
+	 *
 	 * @return ExpectedIdの一覧
 	 */
 	@VisibleForTesting
@@ -238,7 +243,7 @@ public final class TestResultManager {
 
 	/**
 	 * 指定したクラス・メソッドのExpectedIdを取得します。対象のIDが存在しない場合{@link TestRuntimeException}になります。
-	 * 
+	 *
 	 * @param className 対象のテストクラス名
 	 * @param methodName 対象のテストメソッド名
 	 * @return テストクラス名、テストメソッド名に一致するExpectedId
@@ -260,7 +265,7 @@ public final class TestResultManager {
 
 	/**
 	 * ExpectedIdを現在のIDで更新します。
-	 * 
+	 *
 	 * @param className 対象のテストクラス名
 	 * @param methodName 対象のテストメソッド名
 	 */
@@ -285,7 +290,7 @@ public final class TestResultManager {
 
 	/**
 	 * 指定のテストクラスに対するExpectedIdの更新をキャンセルします。
-	 * 
+	 *
 	 * @param className 対象のテストクラス名
 	 */
 	public void cancelUpdateExpectedId(String className) {
@@ -309,7 +314,7 @@ public final class TestResultManager {
 
 	/**
 	 * ExpectedIdの一覧を保存します。
-	 * 
+	 *
 	 * @param className 対象のテストクラス名
 	 */
 	public void exportExpectedIds(String className) {

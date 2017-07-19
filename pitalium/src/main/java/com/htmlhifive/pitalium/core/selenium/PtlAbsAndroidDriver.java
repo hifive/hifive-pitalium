@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,14 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.net.URL;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Android端末で利用する{@link org.openqa.selenium.WebDriver}の抽象クラス。
  */
 abstract class PtlAbsAndroidDriver extends SplitScreenshotWebDriver {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PtlAbsAndroidDriver.class);
-
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
@@ -41,6 +36,11 @@ abstract class PtlAbsAndroidDriver extends SplitScreenshotWebDriver {
 	@Override
 	protected double calcScale(double windowWidth, double imageWidth) {
 		return imageWidth / windowWidth;
+	}
+
+	@Override
+	long getScrollNum(double clientHeight) {
+		return super.getScrollNum();
 	}
 
 }

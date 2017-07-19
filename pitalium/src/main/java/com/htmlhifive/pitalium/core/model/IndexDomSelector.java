@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 package com.htmlhifive.pitalium.core.model;
+
+import static java.util.Collections.*;
+
+import java.util.List;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,7 +54,18 @@ public class IndexDomSelector extends DomSelector {
 	 * @param index 対象とする要素のインデックス
 	 */
 	public IndexDomSelector(DomSelector selector, Integer index) {
-		this(selector.getType(), selector.getValue(), index);
+		this(selector.getType(), selector.getValue(), selector.getParentSelector(), index);
+	}
+
+	/**
+	 * DOM要素をセレクタの種別と値で指定します。セレクタに一致する要素のうち、index番目の要素を指定します。
+	 * 
+	 * @param type セレクタの種別
+	 * @param value セレクタの値
+	 * @param index 対象とする要素のインデックス
+	 */
+	public IndexDomSelector(SelectorType type, String value, Integer index) {
+		this(type, value, null, index);
 	}
 
 	/**
@@ -59,8 +77,8 @@ public class IndexDomSelector extends DomSelector {
 	 */
 	@JsonCreator
 	public IndexDomSelector(@JsonProperty("type") SelectorType type, @JsonProperty("value") String value,
-			@JsonProperty("index") Integer index) {
-		super(type, value);
+			@JsonProperty("frameSelector") DomSelector frameSelector, @JsonProperty("index") Integer index) {
+		super(type, value, frameSelector);
 		this.index = index;
 	}
 
@@ -71,6 +89,26 @@ public class IndexDomSelector extends DomSelector {
 	 */
 	public Integer getIndex() {
 		return index;
+	}
+
+	@Override
+	public WebElement findElement(WebDriver driver) {
+		return index == null ? super.findElement(driver) : super.findElements(driver).get(index);
+	}
+
+	@Override
+	public WebElement findElement(WebElement element) {
+		return index == null ? super.findElement(element) : super.findElements(element).get(index);
+	}
+
+	@Override
+	public List<WebElement> findElements(WebDriver driver) {
+		return index == null ? super.findElements(driver) : singletonList(findElement(driver));
+	}
+
+	@Override
+	public List<WebElement> findElements(WebElement element) {
+		return index == null ? super.findElements(element) : singletonList(findElement(element));
 	}
 
 	/**

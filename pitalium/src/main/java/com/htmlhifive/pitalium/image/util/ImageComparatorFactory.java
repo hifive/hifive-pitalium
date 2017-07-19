@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,12 @@
  */
 package com.htmlhifive.pitalium.image.util;
 
+import com.htmlhifive.pitalium.image.model.CategoryComparisonParameters;
 import com.htmlhifive.pitalium.image.model.CompareOption;
+import com.htmlhifive.pitalium.image.model.CompareOptionType;
+import com.htmlhifive.pitalium.image.model.ComparisonParameters;
+import com.htmlhifive.pitalium.image.model.DefaultComparisonParameters;
+import com.htmlhifive.pitalium.image.model.SimilarityComparisonParameters;
 
 /**
  * 比較方法に対応するImageComparatorを生成するファクトリクラス
@@ -32,7 +37,7 @@ public final class ImageComparatorFactory {
 
 	/**
 	 * ImageComparatorFactoryのインスタンスを取得します。
-	 * 
+	 *
 	 * @return ImageComparatorFactoryのインスタンス（シングルトン）
 	 */
 	public static ImageComparatorFactory getInstance() {
@@ -41,12 +46,27 @@ public final class ImageComparatorFactory {
 
 	/**
 	 * 比較方法に対応したImageComparatorを取得します。
-	 * 
+	 *
 	 * @param options 比較方法（比較オプション）
 	 * @return ImageComparatorオブジェクト
 	 */
-	public ImageComparator getImageComparator(CompareOption[] options) {
-		// TODO implements ImageComparator for each options.
+	public ImageComparator<? extends ComparisonParameters> getImageComparator(CompareOption[] options) {
+		if (options != null && options.length > 0) {
+			for (CompareOption option : options) {
+				if (option.getType() == CompareOptionType.IGNORE_CLEAR_PIXELS) {
+					return new IgnoringClearPixelsImageComparator();
+				}
+				if (option.getType() == CompareOptionType.DEFAULT) {
+					return new DefaultImageComparator((DefaultComparisonParameters) option.getParameters());
+				}
+				if (option.getType() == CompareOptionType.SIMILARITY) {
+					return new SimilarityImageComparator((SimilarityComparisonParameters) option.getParameters());
+				}
+				if (option.getType() == CompareOptionType.CATEGORY) {
+					return new CategoryImageComparator((CategoryComparisonParameters) option.getParameters());
+				}
+			}
+		}
 		return new DefaultImageComparator();
 	}
 }

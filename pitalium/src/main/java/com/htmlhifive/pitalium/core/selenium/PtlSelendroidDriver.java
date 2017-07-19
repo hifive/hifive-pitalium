@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,11 +66,11 @@ class PtlSelendroidDriver extends PtlAbsAndroidDriver {
 				trimBottom = (int) Math.round(targetBorder.getBottom() * currentScale)
 						+ (int) Math.round(1 * currentScale);
 			} else if (num >= size - 1) {
-				trimTop = (int) Math.round(targetBorder.getTop() * currentScale) + (int) Math.round(1 * currentScale);
+				trimTop = (int) Math.round(targetBorder.getTop() * currentScale);
 			} else {
 				trimBottom = (int) Math.round(targetBorder.getBottom() * currentScale)
 						+ (int) Math.round(1 * currentScale);
-				trimTop = (int) Math.round(targetBorder.getTop() * currentScale) + (int) Math.round(1 * currentScale);
+				trimTop = (int) Math.round(targetBorder.getTop() * currentScale);
 			}
 		}
 

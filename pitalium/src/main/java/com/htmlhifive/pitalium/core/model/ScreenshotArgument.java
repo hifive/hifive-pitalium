@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,8 @@ import com.htmlhifive.pitalium.common.util.JSONUtils;
  * @author nakatani
  */
 public class ScreenshotArgument {
+
+	// TODO 各種APIのフレーム対応
 
 	private final String screenshotId;
 

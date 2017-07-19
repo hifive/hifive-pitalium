@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,7 +142,8 @@ public abstract class PtlWebDriverFactory {
 			PtlWebDriver driver = createWebDriver(url);
 			driver.setEnvironmentConfig(environmentConfig);
 			driver.setBaseUrl(testAppConfig.getBaseUrl());
-			driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS);
+			driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS)
+					.setScriptTimeout(environmentConfig.getScriptTimeout(), TimeUnit.SECONDS);
 			if (!isMobile()) {
 				driver.manage().window()
 						.setSize(new Dimension(testAppConfig.getWindowWidth(), testAppConfig.getWindowHeight()));

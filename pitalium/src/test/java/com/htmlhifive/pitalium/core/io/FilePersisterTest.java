@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,12 +43,12 @@ import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.config.FilePersisterConfig;
 import com.htmlhifive.pitalium.core.model.IndexDomSelector;
+import com.htmlhifive.pitalium.core.model.PersistedScreenshotImage;
 import com.htmlhifive.pitalium.core.model.ScreenshotResult;
 import com.htmlhifive.pitalium.core.model.SelectorType;
 import com.htmlhifive.pitalium.core.model.TargetResult;
 import com.htmlhifive.pitalium.core.model.TestResult;
 import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
-import com.htmlhifive.pitalium.image.model.PersistedScreenshotImage;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.image.model.ScreenshotImage;
 

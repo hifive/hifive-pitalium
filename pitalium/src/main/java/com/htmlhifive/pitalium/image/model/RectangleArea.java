@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * 位置とサイズを指定して、矩形領域オブジェクトを生成します。
-	 * 
+	 *
 	 * @param x 左上のx座標
 	 * @param y 左上のy座標
 	 * @param width 幅
@@ -64,9 +64,16 @@ public class RectangleArea implements Serializable {
 		this.height = height;
 	}
 
+	public RectangleArea(Rectangle rectangle) {
+		this.x = rectangle.x;
+		this.y = rectangle.y;
+		this.width = rectangle.width;
+		this.height = rectangle.height;
+	}
+
 	/**
 	 * x座標を取得します。
-	 * 
+	 *
 	 * @return x座標
 	 */
 	public double getX() {
@@ -75,7 +82,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * y座標を取得します。
-	 * 
+	 *
 	 * @return y座標
 	 */
 	public double getY() {
@@ -84,7 +91,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * 要素の幅を取得します。
-	 * 
+	 *
 	 * @return 幅
 	 */
 	public double getWidth() {
@@ -93,7 +100,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * 要素の高さを取得します。
-	 * 
+	 *
 	 * @return 高さ
 	 */
 	public double getHeight() {
@@ -102,7 +109,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * 座標・サイズの小数点以下の値を切り捨てた矩形領域を生成します。
-	 * 
+	 *
 	 * @return 小数点以下を切り捨てた値を持つ矩形領域
 	 */
 	public RectangleArea floor() {
@@ -111,7 +118,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * 座標・サイズの小数点以下の値を四捨五入した矩形領域を生成します。
-	 * 
+	 *
 	 * @return 小数点以下を四捨五入した値を持つ矩形領域
 	 */
 	public RectangleArea round() {
@@ -120,7 +127,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * 座標・サイズの小数点以下の値を切り上げた矩形領域を生成します。
-	 * 
+	 *
 	 * @return 小数点以下を切り上げた値を持つ矩形領域
 	 */
 	public RectangleArea ceil() {
@@ -129,7 +136,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * 指定量移動させた矩形領域を生成します。
-	 * 
+	 *
 	 * @param deltaX X座標方向の移動量
 	 * @param deltaY Y座標方向の移動量
 	 * @return 移動後の矩形領域
@@ -140,7 +147,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * スケールを適用します。
-	 * 
+	 *
 	 * @param scale スケール
 	 * @return スケールを適用した矩形領域
 	 */
@@ -155,7 +162,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * 四捨五入された位置・座標を持った{@link Rectangle}に変換します。
-	 * 
+	 *
 	 * @return 四捨五入された位置・座標を持った{@link Rectangle}
 	 */
 	public Rectangle toRectangle() {
@@ -165,7 +172,7 @@ public class RectangleArea implements Serializable {
 
 	/**
 	 * 同じ矩形領域を表すか調べます。
-	 * 
+	 *
 	 * @param o 比較対象のオブジェクト
 	 * @return 位置・サイズが一致すればtrue
 	 */

@@ -1,0 +1,273 @@
+<?xml version="1.0"?>
+<project name="pitalium" default="build">
+
+	<!-- プロジェクト名 -->
+	<basename property="current.project.name" file="${basedir}" suffix="${ant.file}" />
+
+	<!-- プロジェクトの設定 -->
+	<property name="target.project.version" value="1.1.0" />
+	<property name="target.java.encoding" value="UTF-8" />
+	<property name="target.java.version" value="1.8" />
+	<property name="target.java.source.version" value="1.8" />
+
+	<!-- ソースフォルダの設定 -->
+	<property name="target.main.src.dir" value="src/main/java" />
+	<property name="target.main.res.dir" value="src/main/resources" />
+	<property name="target.test.src.dir" value="src/test/java" />
+	<property name="target.test.res.dir" value="src/test/resources" />
+
+	<!-- 出力先の設定 -->
+	<property name="target.lib.dir" value="libs" />
+	<property name="target.work.dir" value="target/work" />
+	<property name="target.main.bin.dir" value="${target.work.dir}/classes" />
+	<property name="target.test.bin.dir" value="${target.work.dir}/test-classes" />
+	<property name="target.junit.report.dir" value="${target.work.dir}/test-reports" />
+	<property name="target.cobertura.dir" value="${target.work.dir}/test-cobertura" />
+	<property name="target.cobertura.instrument.dir" value="${target.cobertura.dir}/instrument" />
+	<property name="target.cobertura.datafile" value="${target.cobertura.dir}/cobertura.ser" />
+	<property name="target.javadoc.dir" value="${basedir}/target/doc" />
+
+	<!-- jarファイルの設定 -->
+	<property name="target.jar.name" value="${current.project.name}-${target.project.version}.jar" />
+	<property name="target.srcjar.name" value="${current.project.name}-${target.project.version}-sources.jar" />
+
+	<!-- 各ゴールで実行する/除外するテストの設定 -->
+	<property name="ut.include.dir" value="**/common/util/*.java,**/core/**/*.java,**/image/**/*.java,**/junit/*.java" />
+	<property name="ut.exclude.dir" value="" />
+	<property name="it.screenshot.includes" value="**/it/screenshot/**/*.java" />
+	<property name="it.screenshot.excludes" value="**/it/screenshot/scroll/*.java,**/it/screenshot/*.java,**/package-info.java" />
+	<property name="it.screenshot.scroll.includes" value="**/it/screenshot/scroll/*.java" />
+	<property name="it.screenshot.scroll.excludes" value="**/package-info.java" />
+	<property name="it.assertion.set_expected.includes" value="**/it/assertion/**/*.java" />
+	<property name="it.assertion.set_expected.excludes" value="**/it/assertion/scroll/*.java,**/it/assertion/*.java,**/package-info.java" />
+	<property name="it.assertion.scroll.set_expected.includes" value="**/it/assertion/scroll/*.java" />
+	<property name="it.assertion.scroll.set_expected.excludes" value="**/package-info.java" />
+	<property name="it.assertion.includes" value="**/it/assertion/**/*.java" />
+	<property name="it.assertion.excludes" value="**/it/assertion/scroll/*.java,**/it/assertion/*.java,**/package-info.java" />
+	<property name="it.assertion.scroll.includes" value="**/it/assertion/scroll/*.java" />
+	<property name="it.assertion.scroll.excludes" value="**/package-info.java" />
+
+	<!-- テスト実行用設定ファイル名 -->
+	<property name="set_expected.config.file" value="environmentConfig.json" />
+	<property name="run_test.config.file" value="environmentConfig_test.json" />
+
+	<!-- プロキシ設定 -->
+	<propertyset id="proxy.settings">
+		<propertyref name="ant.proxy.host" />
+		<propertyref name="ant.proxy.port" />
+	</propertyset>
+
+	<!-- ライブラリのパス  -->
+	<path id="target.lib.path">
+		<fileset id="lib" dir="${target.lib.dir}" includes="*.jar" />
+	</path>
+
+	<!-- コンパイル時のパス -->
+	<path id="required.classpath">
+		<pathelement location="${target.main.bin.dir}" />
+		<path refid="target.lib.path" />
+	</path>
+
+	<!-- 作業フォルダを絶対パスとして再定義 -->
+	<property name="target.work.location" location="${target.work.dir}" />
+
+	<!-- coberturaタスク定義 -->
+	<path id="cobertura.classpath">
+		<fileset dir="${target.lib.dir}">
+			<include name="cobertura-*.jar" />
+			<include name="slf4j-*.jar" />
+			<include name="log4j-*.jar" />
+			<include name="oro-*.jar" />
+			<include name="asm-*.jar" />
+			<include name="commons-lang3-*.jar" />
+		</fileset>
+	</path>
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+
+	<!-- テスト実行時のパス -->
+	<path id="test.classpath">
+		<pathelement location="${target.cobertura.instrument.dir}" />
+		<pathelement location="${target.test.bin.dir}" />
+		<path refid="required.classpath" />
+		<path refid="target.lib.path" />
+		<path refid="cobertura.classpath" />
+	</path>
+
+	<!-- ビルドファイルのインポート -->
+	<import file="it_run_exec.xml"/>
+	<import file="it_run_screenshot_set_expected.xml"/>
+	<import file="it_run_screenshot.xml"/>
+	<import file="it_run_assertion_set_expected.xml" />
+	<import file="it_run_assertion.xml" />
+
+	<!-- =================================
+          target: clean
+         ================================= -->
+	<target name="clean" description="初期化します">
+		<delete failonerror="false" verbose="true" includeemptydirs="true">
+			<!-- workをクリア -->
+			<fileset dir="${target.work.dir}" includes="**/*" />
+		</delete>
+	</target>
+
+
+	<!-- =================================
+          target: compile
+         ================================= -->
+	<target name="compile" description="コンパイルします">
+		<mkdir dir="${target.main.bin.dir}" />
+		<javac srcdir="${target.main.src.dir}" destdir="${target.main.bin.dir}" classpathref="required.classpath" debug="on" source="${target.java.source.version}" target="${target.java.version}" encoding="${target.java.encoding}" includeantruntime="false">
+			<compilerarg compiler="modern" line="-deprecation -g" />
+		</javac>
+		<copy todir="${target.main.bin.dir}" preservelastmodified="true">
+			<fileset dir="${target.main.res.dir}">
+				<include name="**" />
+			</fileset>
+		</copy>
+	</target>
+
+
+	<!-- =================================
+          target: build
+         ================================= -->
+	<target name="build" depends="compile" description="jarを生成します">
+		<mkdir dir="${target.work.dir}" />
+		<jar destfile="${target.work.location}/${target.jar.name}">
+			<fileset dir="${target.main.bin.dir}" includes="**" />
+		</jar>
+		<jar destfile="${target.work.location}/${target.srcjar.name}">
+			<fileset dir="${target.main.src.dir}" includes="**" />
+		</jar>
+	</target>
+
+	<!-- =================================
+          target: test_compile
+         ================================= -->
+	<target name="test_compile" description="テストコードのコンパイルを行います" depends="compile">
+		<mkdir dir="${target.test.bin.dir}" />
+		<javac srcdir="${target.test.src.dir}" destdir="${target.test.bin.dir}" debug="on" source="${target.java.source.version}" target="${target.java.version}" encoding="${target.java.encoding}" includeantruntime="false">
+			<compilerarg compiler="modern" line="-deprecation -g" />
+			<classpath>
+				<pathelement location="${target.test.bin.dir}" />
+				<path refid="required.classpath" />
+				<path refid="target.lib.path" />
+			</classpath>
+		</javac>
+		<copy todir="${target.test.bin.dir}" preservelastmodified="true">
+			<fileset dir="${target.test.res.dir}">
+				<include name="**" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- =================================
+        target: cobertura-instrument
+        ================================= -->
+	<target name="test_instrument" depends="test_compile" description="カバレッジ取得用にinstrumentを行います">
+		<cobertura-instrument todir="${target.cobertura.instrument.dir}" datafile="${target.cobertura.datafile}">
+			<ignore regex="org.apache.log4j.*" />
+			<fileset dir="${target.main.bin.dir}">
+				<include name="**/*.class" />
+			</fileset>
+			<classpath refid="required.classpath" />
+		</cobertura-instrument>
+		<copy todir="${target.cobertura.instrument.dir}" preservelastmodified="true">
+			<fileset dir="${target.main.bin.dir}">
+				<exclude name="**/*.class" />
+			</fileset>
+		</copy>
+	</target>
+
+
+	<!-- =================================
+        target: unit_test
+        ================================= -->
+	<target name="unit_test" description="単体テストを行います。">
+		<property environment="env" />
+		<echo message="${ut.include.dir}" />
+		<mkdir dir="${target.junit.report.dir}" />
+		<junit fork="yes" printsummary="yes" maxmemory="1024m" dir="${target.cobertura.dir}">
+			<syspropertyset refid="proxy.settings" />
+			<jvmarg value="-XX:-UseSplitVerifier" />
+			<formatter type="xml" />
+			<classpath refid="test.classpath" />
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
+
+			<batchtest fork="yes" todir="${target.junit.report.dir}">
+				<fileset dir="${target.test.src.dir}" includes="${ut.include.dir}" excludes="${ut.exclude.dir}">
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- =================================
+        target: it_test_exec
+        ================================= -->
+	<target name="it_test_exec" description="結合テスト (exec) を行います。">
+		<antcall target="it_exec_test_all" />
+	</target>
+
+	<!-- =================================
+        target: it_test_screenshot_set_expected
+        ================================= -->
+	<target name="it_test_screenshot_set_expected" description="結合テスト（screenshot)をSET_EXPECTEDモードで実行します。">
+		<antcall target="it_screenshot_set_expected_all" />
+	</target>
+
+	<!-- =================================
+	        target: it_test_assertion_set_expected
+	        ================================= -->
+	<target name="it_test_assertion_set_expected" description="結合テスト（assertion)をSET_EXPECTEDモードで実行します。">
+		<antcall target="it_assertion_set_expected_all" />
+	</target>
+
+	<!-- =================================
+        target: it_test_screenshot
+        ================================= -->
+	<target name="it_test_screenshot" description="結合テスト (screenshot) を行います。">
+		<antcall target="it_screenshot_test_all" />
+	</target>
+
+	<!-- =================================
+        target: it_test_assertion
+        ================================= -->
+	<target name="it_test_assertion" description="結合テスト (assertion) をRUN_TESTモードで実行します。">
+		<antcall target="it_assertion_all" />
+	</target>
+
+    <!-- =================================
+	        target: merge-report
+	     ================================= -->
+	<target name="merge_report" description="カバレッジレポートをマージします">
+		<mkdir dir="${target.cobertura.dir}" />
+		<cobertura-merge datafile="${target.cobertura.datafile}">
+			<fileset dir="${cobertura.report.dir}">
+				<include name="**/*.ser" />
+			</fileset>
+		</cobertura-merge>
+	</target>
+
+
+	<!-- =================================
+        target: cobertura-report
+        ================================= -->
+	<target name="test_report" depends="merge_report" description="テスト結果を集計します">
+		<cobertura-report format="xml" destdir="${target.cobertura.dir}" datafile="${target.cobertura.datafile}" encoding="${target.java.encoding}">
+			<fileset dir="${target.main.src.dir}">
+				<include name="**/*.java" />
+			</fileset>
+		</cobertura-report>
+	</target>
+
+
+	<!-- =================================
+          target: all
+         ================================= -->
+	<target name="all" depends="clean" description="全てを実行します">
+		<antcall target="test_instrument" />
+		<antcall target="unit_test" />
+		<antcall target="it_test_exec" />
+		<antcall target="it_test_screenshot" />
+		<antcall target="it_test_assertion" />
+	</target>
+</project>

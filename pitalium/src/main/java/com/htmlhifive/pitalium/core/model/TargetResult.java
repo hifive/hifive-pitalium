@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ public class TargetResult implements Serializable {
 
 	/**
 	 * 結果オブジェクトを生成します。
-	 * 
+	 *
 	 * @param target スクリーンショット・比較の対象領域
 	 * @param excludes 比較時の除外領域
 	 * @param image スクリーンショット画像
@@ -85,21 +85,21 @@ public class TargetResult implements Serializable {
 
 	/**
 	 * 結果オブジェクトを生成します。
-	 * 
+	 *
 	 * @param result 比較結果
 	 * @param target スクリーンショット・比較の対象領域
 	 * @param excludes 比較時の除外領域
 	 * @param moveTarget スクリーンショット取得時に{@link #target}の領域を定位置に移動したかどうか
 	 * @param hiddenElementSelectors スクリーンショット取得時に非表示にした要素のセレクタ
 	 */
-	public TargetResult(ExecResult result, ScreenAreaResult target, List<ScreenAreaResult> excludes,
-			Boolean moveTarget, List<DomSelector> hiddenElementSelectors) {
+	public TargetResult(ExecResult result, ScreenAreaResult target, List<ScreenAreaResult> excludes, Boolean moveTarget,
+			List<DomSelector> hiddenElementSelectors) {
 		this(result, target, excludes, moveTarget, hiddenElementSelectors, null, null);
 	}
 
 	/**
 	 * 結果オブジェクトを生成します。
-	 * 
+	 *
 	 * @param result 比較結果
 	 * @param target スクリーンショット・比較の対象領域
 	 * @param excludes 比較時の除外領域
@@ -108,8 +108,8 @@ public class TargetResult implements Serializable {
 	 * @param image スクリーンショット画像
 	 * @param options 比較オプション
 	 */
-	public TargetResult(ExecResult result, ScreenAreaResult target, List<ScreenAreaResult> excludes,
-			Boolean moveTarget, List<DomSelector> hiddenElementSelectors, ScreenshotImage image, CompareOption[] options) {
+	public TargetResult(ExecResult result, ScreenAreaResult target, List<ScreenAreaResult> excludes, Boolean moveTarget,
+			List<DomSelector> hiddenElementSelectors, ScreenshotImage image, CompareOption[] options) {
 		this.result = result;
 		this.target = target;
 		this.moveTarget = moveTarget;
@@ -122,7 +122,7 @@ public class TargetResult implements Serializable {
 
 	/**
 	 * 比較時に除外した領域を設定します。
-	 * 
+	 *
 	 * @param excludes 比較時の除外領域
 	 */
 	void setExcludes(List<ScreenAreaResult> excludes) {
@@ -136,7 +136,7 @@ public class TargetResult implements Serializable {
 
 	/**
 	 * スクリーンショット撮影時に非表示にした要素を設定します。
-	 * 
+	 *
 	 * @param hiddenElementSelectors 非表示にした要素のセレクタ
 	 */
 	void setHiddenElementSelectors(List<DomSelector> hiddenElementSelectors) {
@@ -150,7 +150,7 @@ public class TargetResult implements Serializable {
 
 	/**
 	 * 比較結果を取得します。
-	 * 
+	 *
 	 * @return 比較結果
 	 */
 	public ExecResult getResult() {
@@ -159,7 +159,7 @@ public class TargetResult implements Serializable {
 
 	/**
 	 * スクリーンショット取得・比較の対象として指定した領域を取得します。
-	 * 
+	 *
 	 * @return 指定した領域を表すオブジェクト
 	 */
 	public ScreenAreaResult getTarget() {
@@ -168,7 +168,7 @@ public class TargetResult implements Serializable {
 
 	/**
 	 * 比較時に除外した領域を取得します。
-	 * 
+	 *
 	 * @return 比較時の除外領域
 	 */
 	public List<ScreenAreaResult> getExcludes() {
@@ -177,7 +177,7 @@ public class TargetResult implements Serializable {
 
 	/**
 	 * スクリーンショット撮影時に{@link #target}の領域を定位置に移動したかどうかを返します。
-	 * 
+	 *
 	 * @return 撮影時に指定領域を移動したか否か。移動した場合はtrue
 	 */
 	public Boolean isMoveTarget() {
@@ -186,7 +186,7 @@ public class TargetResult implements Serializable {
 
 	/**
 	 * スクリーンショット撮影時に非表示にした要素を取得します。
-	 * 
+	 *
 	 * @return 非表示にした要素
 	 */
 	public List<DomSelector> getHiddenElementSelectors() {
@@ -195,7 +195,7 @@ public class TargetResult implements Serializable {
 
 	/**
 	 * スクリーンショット画像を取得します。
-	 * 
+	 *
 	 * @return スクリーンショット画像
 	 */
 	public ScreenshotImage getImage() {
@@ -204,7 +204,7 @@ public class TargetResult implements Serializable {
 
 	/**
 	 * 比較オプションを取得します。
-	 * 
+	 *
 	 * @return 比較オプション
 	 */
 	public CompareOption[] getOptions() {

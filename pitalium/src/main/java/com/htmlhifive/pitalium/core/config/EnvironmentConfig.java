@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ public class EnvironmentConfig implements Serializable {
 	private static final int DEFAULT_MAX_THREAD_COUNT = 16;
 	private static final int DEFAULT_MAX_THREAD_EXECUTE_TIME = 3600;
 	private static final int DEFAULT_MAX_DRIVER_WAIT = 30;
+	private static final int DEFAULT_SCRIPT_TIMEOUT = 30;
 
 	/**
 	 * テスト実行モード
@@ -63,6 +64,11 @@ public class EnvironmentConfig implements Serializable {
 	 * WebDriverによるブラウザ操作の最大待ち時間（秒）
 	 */
 	private int maxDriverWait = DEFAULT_MAX_DRIVER_WAIT;
+
+	/**
+	 * 非同期スクリプトに最大待ち時間（秒）
+	 */
+	private int scriptTimeout = DEFAULT_SCRIPT_TIMEOUT;
 
 	/**
 	 * Capabilitie設定ファイルのファイルパス
@@ -142,6 +148,15 @@ public class EnvironmentConfig implements Serializable {
 	 */
 	public int getMaxDriverWait() {
 		return maxDriverWait;
+	}
+
+	/**
+	 * 非同期スクリプトに最大待ち時間を取得します。
+	 * 
+	 * @return 非同期スクリプトに最大待ち時間（秒）
+	 */
+	public int getScriptTimeout() {
+		return scriptTimeout;
 	}
 
 	/**
@@ -235,6 +250,15 @@ public class EnvironmentConfig implements Serializable {
 	}
 
 	/**
+	 * 非同期スクリプトに最大待ち時間を設定します。
+	 * 
+	 * @param scriptTimeout 非同期スクリプトに最大待ち時間（秒）
+	 */
+	void setScriptTimeout(int scriptTimeout) {
+		this.scriptTimeout = scriptTimeout;
+	}
+
+	/**
 	 * Capability設定ファイルのファイルパスを設定します。
 	 * 
 	 * @param capabilitiesFilePath Capability設定ファイルのファイルパス
@@ -304,6 +328,7 @@ public class EnvironmentConfig implements Serializable {
 			ev.setMaxThreadCount(config.maxThreadCount);
 			ev.setMaxThreadExecuteTime(config.maxThreadExecuteTime);
 			ev.setMaxDriverWait(config.maxDriverWait);
+			ev.setScriptTimeout(config.scriptTimeout);
 			ev.setCapabilitiesFilePath(config.capabilitiesFilePath);
 			ev.setPersister(config.persister);
 			ev.setWebDriverSessionLevel(config.webDriverSessionLevel);
@@ -374,6 +399,17 @@ public class EnvironmentConfig implements Serializable {
 		 */
 		public Builder maxDriverWait(int maxDriverWait) {
 			config.maxDriverWait = maxDriverWait;
+			return this;
+		}
+
+		/**
+		 * 非同期スクリプトに最大待ち時間を設定します。
+		 * 
+		 * @param scriptTimeout 非同期スクリプトに最大待ち時間（秒）
+		 * @return このビルダーオブジェクト自身
+		 */
+		public Builder scriptTimeout(int scriptTimeout) {
+			config.scriptTimeout = scriptTimeout;
 			return this;
 		}
 

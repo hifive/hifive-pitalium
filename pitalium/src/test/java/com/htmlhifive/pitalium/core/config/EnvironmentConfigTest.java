@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ public class EnvironmentConfigTest {
 		assertThat(env.getMaxThreadCount(), is(100));
 		assertThat(env.getMaxThreadExecuteTime(), is(200));
 		assertThat(env.getMaxDriverWait(), is(300));
+		assertThat(env.getScriptTimeout(), is(10));
 		assertThat(env.getCapabilitiesFilePath(), is("test.json"));
 		assertThat(env.getPersister(), is("test"));
 		assertThat(env.isDebug(), is(true));
@@ -83,6 +84,7 @@ public class EnvironmentConfigTest {
 		assertThat(config.getMaxThreadCount(), is(16));
 		assertThat(config.getMaxThreadExecuteTime(), is(3600));
 		assertThat(config.getMaxDriverWait(), is(30));
+		assertThat(config.getScriptTimeout(), is(30));
 		assertThat(config.getCapabilitiesFilePath(), is("capabilities.json"));
 		assertThat(config.getPersister(), is("com.htmlhifive.pitalium.core.io.FilePersister"));
 		assertThat(config.getWebDriverSessionLevel(), is(WebDriverSessionLevel.TEST_CASE));
@@ -102,6 +104,7 @@ public class EnvironmentConfigTest {
 				.maxThreadCount(1)
 				.maxThreadExecuteTime(2)
 				.maxDriverWait(10)
+				.scriptTimeout(11)
 				.capabilitiesFilePath("cap.json")
 				.persister("persister")
 				.webDriverSessionLevel(WebDriverSessionLevel.GLOBAL)
@@ -115,6 +118,7 @@ public class EnvironmentConfigTest {
 		assertThat(config.getMaxThreadCount(), is(1));
 		assertThat(config.getMaxThreadExecuteTime(), is(2));
 		assertThat(config.getMaxDriverWait(), is(10));
+		assertThat(config.getScriptTimeout(), is(11));
 		assertThat(config.getCapabilitiesFilePath(), is("cap.json"));
 		assertThat(config.getPersister(), is("persister"));
 		assertThat(config.getWebDriverSessionLevel(), is(WebDriverSessionLevel.GLOBAL));

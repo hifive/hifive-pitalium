@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2016 NS Solutions Corporation
+ * Copyright (C) 2015-2017 NS Solutions Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,11 @@ public enum ExecMode {
 		public boolean isRunTest() {
 			return true;
 		}
-	};
+	},
+	/**
+	 * 画像の取得・比較ともに行いません。
+	 */
+	SKIP;
 
 	/**
 	 * 当該モードでは合否判定を行うかどうかを返します。
@@ -46,5 +50,4 @@ public enum ExecMode {
 	public boolean isRunTest() {
 		return false;
 	}
-
 }
