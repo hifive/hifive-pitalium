@@ -28,7 +28,7 @@ public class ObjectGroup {
 	/**
 	 * グループ化可能な距離のデフォルト値 高速化メモリ節約のため、四角形を作るため誤差が出る
 	 */
-	private static final int DEFAULT_GROUP_DISTANCE = 10;
+	public static final int DEFAULT_GROUP_DISTANCE = 10;
 
 	/**
 	 * rectangle which represent object
