@@ -21,7 +21,11 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.remote.BrowserType;
 
 import com.htmlhifive.pitalium.core.model.ScreenAreaResult;
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
@@ -33,6 +37,9 @@ import com.htmlhifive.pitalium.it.screenshot.PtlItScreenshotTestBase;
  */
 public class ExcludeNoSuchElementTest extends PtlItScreenshotTestBase {
 
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
 	/**
 	 * 存在しない要素を除外する。
 	 * 
@@ -43,6 +50,10 @@ public class ExcludeNoSuchElementTest extends PtlItScreenshotTestBase {
 		openBasicColorPage();
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget().addExcludeById("noSuchElement").build();
+
+		if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+			expectedException.expect(NoSuchElementException.class);
+		}
 		assertionView.assertView(arg);
 
 		// Check
@@ -61,6 +72,9 @@ public class ExcludeNoSuchElementTest extends PtlItScreenshotTestBase {
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget().addExcludeById("container")
 				.addNewTarget().addExcludeById("noSuchElement").build();
+		if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+			expectedException.expect(NoSuchElementException.class);
+		}
 		assertionView.assertView(arg);
 
 		// Check

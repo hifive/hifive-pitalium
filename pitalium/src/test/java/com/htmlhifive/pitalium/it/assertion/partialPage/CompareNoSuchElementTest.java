@@ -21,6 +21,8 @@ import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.remote.BrowserType;
 
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.it.assertion.PtlItAssertionTestBase;
@@ -50,7 +52,12 @@ public class CompareNoSuchElementTest extends PtlItAssertionTestBase {
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetById("textColumn0").build();
 
 		if (isRunTest()) {
-			expectedException.expect(AssertionError.class);
+			if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+				expectedException.expect(NoSuchElementException.class);
+			} else {
+				expectedException.expect(AssertionError.class);
+			}
+
 			assertionView.assertView(arg);
 			fail();
 			return;

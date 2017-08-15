@@ -18,10 +18,15 @@ package com.htmlhifive.pitalium.it.screenshot.iframe;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeFalse;
 
 import java.awt.image.BufferedImage;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.remote.BrowserType;
 
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.it.screenshot.PtlItScreenshotTestBase;
@@ -31,6 +36,9 @@ import com.htmlhifive.pitalium.it.screenshot.PtlItScreenshotTestBase;
  */
 public class HiddenInFrameTest extends PtlItScreenshotTestBase {
 
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
 	/**
 	 * BODYを撮影する際に、IFRAME内の要素を非表示に設定する。
 	 * 
@@ -38,6 +46,7 @@ public class HiddenInFrameTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void captureBody() throws Exception {
+		assumeFalse("Skip Safari hidden test.", BrowserType.SAFARI.equals(capabilities.getBrowserName()));
 		openIFramePage();
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget().moveTarget(true).scrollTarget(false)
@@ -65,6 +74,7 @@ public class HiddenInFrameTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void captureIFrame() throws Exception {
+		assumeFalse("Skip Safari hidden test.", BrowserType.SAFARI.equals(capabilities.getBrowserName()));
 		openIFramePage();
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByClassName("content").moveTarget(true)
@@ -96,6 +106,9 @@ public class HiddenInFrameTest extends PtlItScreenshotTestBase {
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget().moveTarget(true).scrollTarget(false)
 				.addHiddenElementsByClassName("not-exists").inFrameByClassName("content").build();
+		if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+			expectedException.expect(NoSuchElementException.class);
+		}
 		assertionView.assertView(arg);
 
 		// エラーにならない
@@ -113,6 +126,9 @@ public class HiddenInFrameTest extends PtlItScreenshotTestBase {
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByClassName("content").moveTarget(true)
 				.scrollTarget(true).addHiddenElementsByClassName("not-exists").inFrameByClassName("content").build();
+		if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+			expectedException.expect(NoSuchElementException.class);
+		}
 		assertionView.assertView(arg);
 
 		// エラーにならない

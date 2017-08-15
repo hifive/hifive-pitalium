@@ -21,6 +21,8 @@ import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.remote.BrowserType;
 
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.it.screenshot.PtlItScreenshotTestBase;
@@ -44,10 +46,13 @@ public class NoSuchElementTest extends PtlItScreenshotTestBase {
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetById("notExists").build();
 
-		expectedException.expect(AssertionError.class);
-		expectedException.expectMessage("Invalid selector found");
+		if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+			expectedException.expect(NoSuchElementException.class);
+		} else {
+			expectedException.expect(AssertionError.class);
+			expectedException.expectMessage("Invalid selector found");
+		}
 		assertionView.assertView(arg);
-
 		fail();
 	}
 
@@ -64,10 +69,13 @@ public class NoSuchElementTest extends PtlItScreenshotTestBase {
 				.addNewTargetById("notExists") // not exists
 				.build();
 
-		expectedException.expect(AssertionError.class);
-		expectedException.expectMessage("Invalid selector found");
+		if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+			expectedException.expect(NoSuchElementException.class);
+		} else {
+			expectedException.expect(AssertionError.class);
+			expectedException.expectMessage("Invalid selector found");
+		}
 		assertionView.assertView(arg);
-
 		fail();
 	}
 

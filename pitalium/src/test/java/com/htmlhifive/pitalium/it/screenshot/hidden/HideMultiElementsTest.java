@@ -18,10 +18,15 @@ package com.htmlhifive.pitalium.it.screenshot.hidden;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeFalse;
 
 import java.awt.image.BufferedImage;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.remote.BrowserType;
 
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.it.screenshot.PtlItScreenshotTestBase;
@@ -31,6 +36,9 @@ import com.htmlhifive.pitalium.it.screenshot.PtlItScreenshotTestBase;
  */
 public class HideMultiElementsTest extends PtlItScreenshotTestBase {
 
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
 	/**
 	 * 単体セレクタで複数の要素を指定して非表示にする。
 	 * 
@@ -38,6 +46,7 @@ public class HideMultiElementsTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void singleTarget() throws Exception {
+		assumeFalse("Skip Safari hidden test.", BrowserType.SAFARI.equals(capabilities.getBrowserName()));
 		openBasicColorPage();
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget()
@@ -64,6 +73,7 @@ public class HideMultiElementsTest extends PtlItScreenshotTestBase {
 	 */
 	@Test
 	public void multiTargets() throws Exception {
+		assumeFalse("Skip Safari hidden test.", BrowserType.SAFARI.equals(capabilities.getBrowserName()));
 		openBasicColorPage();
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget().addHiddenElementsById("colorColumn0")
@@ -94,6 +104,9 @@ public class HideMultiElementsTest extends PtlItScreenshotTestBase {
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget().addHiddenElementsById("not-exists")
 				.addHiddenElementsById("colorColumn1").addHiddenElementsById("colorColumn2").build();
+		if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+			expectedException.expect(NoSuchElementException.class);
+		}
 		assertionView.assertView(arg);
 
 		// Check

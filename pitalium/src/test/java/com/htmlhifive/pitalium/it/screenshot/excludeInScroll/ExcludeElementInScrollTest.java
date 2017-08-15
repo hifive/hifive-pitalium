@@ -20,8 +20,12 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.BrowserType;
 
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.core.model.TargetResult;
@@ -32,6 +36,9 @@ import com.htmlhifive.pitalium.it.screenshot.PtlItScreenshotTestBase;
  * 要素内スクロールと除外設定を組み合わせるテスト
  */
 public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	/**
 	 * 要素内スクロールの撮影において、最初から見えている要素を指定して除外する。
@@ -105,6 +112,9 @@ public class ExcludeElementInScrollTest extends PtlItScreenshotTestBase {
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByCssSelector("#table-scroll > tbody")
 				.addExcludeById("not-exists").build();
+		if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+			expectedException.expect(NoSuchElementException.class);
+		}
 		assertionView.assertView(arg);
 
 		// Check
