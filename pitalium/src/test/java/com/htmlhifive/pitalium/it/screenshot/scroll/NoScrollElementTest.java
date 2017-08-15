@@ -48,7 +48,7 @@ public class NoScrollElementTest extends PtlItScreenshotTestBase {
 		// Check
 		double ratio = getPixelRatio();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(ratio)));
+		assertThat(image, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class NoScrollElementTest extends PtlItScreenshotTestBase {
 		// Check
 		double ratio = getPixelRatio();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(ratio)));
+		assertThat(image, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
 	}
 
 }

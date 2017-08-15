@@ -23,7 +23,9 @@ import static org.junit.Assert.*;
 import java.awt.image.BufferedImage;
 
 import org.junit.Test;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.BrowserType;
 
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.it.RequireVisualCheck;
@@ -55,7 +57,7 @@ public class ScrollMarginElementTest extends PtlItScreenshotTestBase {
 		Rect rect = getPixelRectById("div-scroll");
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		assertThat(image.getHeight(), is(greaterThan((int) rect.height)));
-		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1)));
+		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -107,11 +109,16 @@ public class ScrollMarginElementTest extends PtlItScreenshotTestBase {
 		int x = image.getWidth() / 2;
 		int y = 0;
 		int cellCount = 0;
-		while (cellCount * 16 <= 240) {
+		float cellHeight = 20;
+		if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())
+				&& Platform.MAC.equals(capabilities.getPlatform())) {
+			cellHeight = 20.45f;
+		}
+		while (cellCount <= 15) {
 			int color = cellCount * 16;
 			Color expect = Color.rgb(color, color, color);
 			cellCount++;
-			int maxY = (int) Math.round(cellCount * 20 * ratio);
+			int maxY = (int) Math.round(cellCount * cellHeight * ratio);
 			while (y < maxY) {
 				Color actual = Color.valueOf(image.getRGB(x, y));
 				assertThat(String.format("Point (%d, %d) is not match.", x, y), actual, is(expect));
@@ -145,7 +152,7 @@ public class ScrollMarginElementTest extends PtlItScreenshotTestBase {
 		// 2pxボーダーが写るので無視する
 		int border = (int) Math.round(2 * ratio);
 		image = image.getSubimage(border, border, image.getWidth() - border * 2, image.getHeight() - border * 2);
-		assertThat(image, is(gradationWithBorder(ratio)));
+		assertThat(image, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	private void setMarginTo(WebElement target) {
