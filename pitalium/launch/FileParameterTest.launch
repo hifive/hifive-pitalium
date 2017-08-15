@@ -13,5 +13,5 @@
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.htmlhifive.pitalium.it.exec.param.FileParameterTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="pitalium"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\param\EnvironmentConfig_FileParameterTest.json -Dcom.htmlhifive.pitalium.persisterConfig=com\htmlhifive\pitalium\it\exec\param\PersisterConfig_FileParameterTest.json -Dcom.htmlhifive.pitalium.testAppConfig=com\htmlhifive\pitalium\it\exec\param\TestAppConfig_FileParameterTest.json"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dcom.htmlhifive.pitalium.environmentConfig=environmentConfig.json -Dcom.htmlhifive.pitalium.persisterConfig=com\htmlhifive\pitalium\it\exec\param\PersisterConfig_FileParameterTest.json -Dcom.htmlhifive.pitalium.testAppConfig=com\htmlhifive\pitalium\it\exec\param\TestAppConfig_FileParameterTest.json"/>
 </launchConfiguration>

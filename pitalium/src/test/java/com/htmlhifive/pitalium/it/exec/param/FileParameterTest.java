@@ -15,20 +15,28 @@
  */
 package com.htmlhifive.pitalium.it.exec.param;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.htmlhifive.pitalium.common.exception.JSONException;
+import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.PtlTestBase;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
-import com.htmlhifive.pitalium.core.config.ExecMode;
 import com.htmlhifive.pitalium.core.config.FilePersisterConfig;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.config.TestAppConfig;
@@ -37,7 +45,6 @@ import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FileParameterTest extends PtlTestBase {
-
 	private static WebDriver checkConfigTestDriver = null;
 
 	/**
@@ -48,7 +55,10 @@ public class FileParameterTest extends PtlTestBase {
 	 * 設定が反映されたことを確認できるものは、実際の挙動を確認する.
 	 */
 	@Test
-	public void checkConfig() {
+	public void checkConfig() throws Exception {
+		Map<String, Object> sourceEnvironmentConfig = readEnvironmentConfig("environmentConfig.json",
+				EnvironmentConfig.class);
+
 		driver.get(null);
 
 		PtlTestConfig config = PtlTestConfig.getInstance();
@@ -56,11 +66,12 @@ public class FileParameterTest extends PtlTestBase {
 		// 実行設定の内容のチェック
 		EnvironmentConfig env = config.getEnvironment();
 		TestAppConfig appConfig = config.getTestAppConfig();
-		assertEquals(ExecMode.RUN_TEST, env.getExecMode()); //実行モード
+		assertEquals(sourceEnvironmentConfig.get("execMode"), env.getExecMode().toString()); //実行モード
 
 		// hubのアドレスのチェック
-		String EXPECTED_HUB_HOST = "localhost";
-		int EXPECTED_HUB_POST = 4444;
+		String EXPECTED_HUB_HOST = sourceEnvironmentConfig.get("hubHost").toString();
+		int EXPECTED_HUB_POST = sourceEnvironmentConfig.containsKey("hubPost") ? Integer
+				.parseInt(sourceEnvironmentConfig.get("hubPost").toString()) : 4444;
 
 		assertEquals(EXPECTED_HUB_HOST, env.getHubHost());
 		assertEquals(EXPECTED_HUB_POST, env.getHubPort());
@@ -72,19 +83,48 @@ public class FileParameterTest extends PtlTestBase {
 
 		// capabilityの内容のチェック
 		PtlCapabilities cap = driver.getCapabilities();
-		assertEquals("com\\htmlhifive\\pitalium\\it\\exec\\param\\capabilities_FileParameterTest.json",
-				env.getCapabilitiesFilePath());
-		assertEquals(Platform.WINDOWS, cap.getPlatform());
-		assertEquals("WINDOWS", cap.getCapability("os"));
-		assertEquals("firefox", cap.getBrowserName());
+		String EXPECTED_CAPABILITIES_FILE_PATH = sourceEnvironmentConfig.containsKey("capabilitiesFilePath") ? sourceEnvironmentConfig
+				.get("capabilitiesFilePath").toString() : "capabilities.json";
+		List<Map<String, Object>> sourceCapabilities = readCapabilitiesFromFileOrResources(EXPECTED_CAPABILITIES_FILE_PATH);
+		assertEquals(EXPECTED_CAPABILITIES_FILE_PATH, env.getCapabilitiesFilePath());
+		boolean found = false;
+		String os = null;
+		String browserName = null;
+		for (int i = 0; i < sourceCapabilities.size(); i++) {
+			if (sourceCapabilities.get(i).get("platform").equals(cap.getPlatform().toString())
+					&& sourceCapabilities.get(i).get("os").equals(cap.getCapability("os").toString())
+					&& sourceCapabilities.get(i).get("browserName").equals(cap.getCapability("browserName").toString())) {
+				os = cap.getCapability("os").toString().toLowerCase();
+				browserName = cap.getCapability("browserName").toString().toLowerCase();
+				found = true;
+				break;
+			}
+		}
+		assertTrue(found);
 
 		// 実際のUAを取得して確認
-		String userAgent = (String) driver.executeScript("return navigator.userAgent");
-		assertTrue(userAgent.contains("Windows"));
-		assertTrue(userAgent.contains("Firefox"));
+		String userAgent = driver.executeScript("return navigator.userAgent").toString().toLowerCase();
+		assertTrue(userAgent.contains(os));
+		assertTrue(userAgent.contains(browserName));
 
 		// driverのセッションレベル
-		assertEquals(WebDriverSessionLevel.TEST_CLASS, env.getWebDriverSessionLevel());
+		WebDriverSessionLevel webDriverSessionLevel = WebDriverSessionLevel.TEST_CASE;
+		if (sourceEnvironmentConfig.containsKey("webDriverSessionLevel")) {
+			switch (sourceEnvironmentConfig.get("webDriverSessionLevel").toString()) {
+				case "TEST_CASE":
+					webDriverSessionLevel = WebDriverSessionLevel.TEST_CASE;
+					break;
+
+				case "TEST_CLASS":
+					webDriverSessionLevel = WebDriverSessionLevel.TEST_CLASS;
+					break;
+
+				default:
+					webDriverSessionLevel = WebDriverSessionLevel.TEST_CASE;
+					break;
+			}
+		}
+		assertEquals(webDriverSessionLevel, env.getWebDriverSessionLevel());
 		checkConfigTestDriver = driver; // 2つめのテストで同一であることを確認するため、プロパティで保持
 
 		// persisterの内容のチェック
@@ -108,9 +148,84 @@ public class FileParameterTest extends PtlTestBase {
 	}
 
 	@Test
-	public void checkWebDriverSessionConfig() {
-		// WebDriverのセッションレベルの設定を確認
-		// TEST_CLASSを指定しているので、1つめのテストとdriverが同じことを確認する
-		assertEquals(checkConfigTestDriver, driver);
+	public void checkWebDriverSessionConfig() throws Exception {
+		Map<String, Object> sourceEnvironmentConfig = readEnvironmentConfig("environmentConfig.json",
+				EnvironmentConfig.class);
+		if (sourceEnvironmentConfig.containsKey("webDriverSessionLevel")) {
+			switch (sourceEnvironmentConfig.get("webDriverSessionLevel").toString()) {
+			// WebDriverのセッションレベルの設定を確認
+			// TEST_CLASSを指定しているので、1つめのテストとdriverが同じことを確認する
+				case "TEST_CLASS":
+					assertEquals(checkConfigTestDriver, driver);
+					break;
+
+				case "GLOBAL":
+					assertEquals(checkConfigTestDriver, driver);
+					break;
+
+				default:
+					assertTrue(checkConfigTestDriver != driver);
+					break;
+			}
+		}
 	}
+
+	/**
+	 * resourceをファイルまたはリソースファイルから読み込みます。
+	 * 
+	 * @param filePath ファイルパス
+	 * @return 読み込んだCapabilities
+	 * @throws IOException
+	 */
+	private static Map<String, Object> readEnvironmentConfig(String filePath, Class className) throws IOException {
+
+		TypeReference<Map<String, Object>> reference = new TypeReference<Map<String, Object>>() {
+		};
+		try {
+			// Read from file
+			return JSONUtils.readValue(new File(filePath), reference);
+		} catch (JSONException e) {
+			// Read from resources
+			InputStream in = null;
+			try {
+				in = className.getClassLoader().getResourceAsStream(filePath);
+				return JSONUtils.readValue(in, reference);
+			} catch (Exception e1) {
+				throw new TestRuntimeException("Failed to load capabilities", e1);
+			} finally {
+				if (in != null) {
+					in.close();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Capabilitiesをファイルまたはリソースファイルから読み込みます。
+	 * 
+	 * @param filePath ファイルパス
+	 * @return 読み込んだCapabilities
+	 */
+	private List<Map<String, Object>> readCapabilitiesFromFileOrResources(String filePath) throws Exception {
+		TypeReference<List<Map<String, Object>>> reference = new TypeReference<List<Map<String, Object>>>() {
+		};
+		try {
+			// Read from file
+			return JSONUtils.readValue(new File(filePath), reference);
+		} catch (JSONException e) {
+			// Read from resources
+			InputStream in = null;
+			try {
+				in = PtlCapabilities.class.getClassLoader().getResourceAsStream(filePath);
+				return JSONUtils.readValue(in, reference);
+			} catch (Exception e1) {
+				throw new TestRuntimeException("Failed to load capabilities", e1);
+			} finally {
+				if (in != null) {
+					in.close();
+				}
+			}
+		}
+	}
+
 }
