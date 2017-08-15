@@ -39,7 +39,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestName;
 import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
@@ -83,31 +82,6 @@ public class AssertionView_VerifyTest {
 
 	@Rule
 	public RuleChain chain = RuleChain.outerRule(expectedException).around(new TestWatcher() {
-		@Override
-		protected void succeeded(Description description) {
-			MockitoAnnotations.initMocks(AssertionView_VerifyTest.this);
-
-			mockStatic(PtlTestConfig.class);
-			when(PtlTestConfig.getInstance()).thenReturn(testConfig);
-			when(testConfig.getEnvironment().getWebDriverSessionLevel()).thenReturn(WebDriverSessionLevel.TEST_CASE);
-
-			mockStatic(PtlWebDriverFactory.class);
-			when(PtlWebDriverFactory.getInstance(any(PtlCapabilities.class))).thenReturn(driverFactory);
-
-			mockStatic(TestResultManager.class);
-			when(TestResultManager.getInstance()).thenReturn(testResultManager);
-			when(testResultManager.getCurrentId()).thenReturn("2015_01_01_01_01_01");
-
-			try {
-				BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/hifive_logo.png"));
-				screenshotResult = createScreenshotResult(image);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-
-			when(driverFactory.getDriver().takeScreenshot(anyString(), any(List.class), any(List.class))).thenReturn(
-					screenshotResult);
-		}
 	}).around(assertionView);
 
 	@Rule
@@ -117,6 +91,30 @@ public class AssertionView_VerifyTest {
 
 	@Before
 	public void initializeAssertionView() throws Exception {
+		MockitoAnnotations.initMocks(AssertionView_VerifyTest.this);
+		try {
+			BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/hifive_logo.png"));
+			screenshotResult = createScreenshotResult(image);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+		mockStatic(PtlWebDriverFactory.class);
+		when(PtlWebDriverFactory.getInstance(any(PtlCapabilities.class))).thenReturn(driverFactory);
+		when(driverFactory.getDriver().takeScreenshot(anyString(), any(List.class), any(List.class))).thenReturn(
+				screenshotResult);
+		when(driverFactory.getDriver().takeScreenshot(anyString())).thenReturn(screenshotResult);
+
+		mockStatic(TestResultManager.class);
+		when(TestResultManager.getInstance()).thenReturn(testResultManager);
+		when(testResultManager.getCurrentId()).thenReturn("2015_01_01_01_01_01");
+
+		mockStatic(PtlTestConfig.class);
+		when(PtlTestConfig.getInstance()).thenReturn(testConfig);
+		when(testConfig.getEnvironment().getExecMode()).thenReturn(ExecMode.RUN_TEST);
+		when(testConfig.getEnvironment().getWebDriverSessionLevel()).thenReturn(WebDriverSessionLevel.TEST_CASE);
+		when(testConfig.getComparisonConfig().getOptions()).thenReturn(new ArrayList<>());
+
 		assertionView.createDriver(new PtlCapabilities(new HashMap<String, Object>()));
 	}
 
@@ -136,7 +134,6 @@ public class AssertionView_VerifyTest {
 	 */
 	@Test
 	public void verifyView_runTest_success() throws Exception {
-		when(testConfig.getEnvironment().getExecMode()).thenReturn(ExecMode.RUN_TEST);
 		when(testResultManager.getPersister().loadTargetResults(any(PersistMetadata.class))).thenReturn(
 				screenshotResult.getTargetResults());
 
@@ -151,7 +148,6 @@ public class AssertionView_VerifyTest {
 	public void verifyView_runTest_failed() throws Exception {
 		BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/hifive_logo_part.png"));
 
-		when(testConfig.getEnvironment().getExecMode()).thenReturn(ExecMode.RUN_TEST);
 		when(testResultManager.getPersister().loadTargetResults(any(PersistMetadata.class))).thenReturn(
 				createScreenshotResult(image).getTargetResults());
 

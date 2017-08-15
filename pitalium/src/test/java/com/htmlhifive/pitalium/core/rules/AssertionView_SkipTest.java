@@ -24,7 +24,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestName;
 import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
@@ -74,30 +73,6 @@ public class AssertionView_SkipTest {
 
 	@Rule
 	public RuleChain chain = RuleChain.outerRule(expectedException).around(new TestWatcher() {
-		@Override
-		protected void succeeded(Description description) {
-			MockitoAnnotations.initMocks(AssertionView_SkipTest.this);
-
-			mockStatic(PtlTestConfig.class);
-			when(PtlTestConfig.getInstance()).thenReturn(testConfig);
-			when(testConfig.getEnvironment().getWebDriverSessionLevel()).thenReturn(WebDriverSessionLevel.TEST_CASE);
-
-			mockStatic(PtlWebDriverFactory.class);
-			when(PtlWebDriverFactory.getInstance(any(PtlCapabilities.class))).thenReturn(driverFactory);
-			when(driverFactory.getDriver()).thenReturn(driver);
-
-			mockStatic(TestResultManager.class);
-			when(TestResultManager.getInstance()).thenReturn(testResultManager);
-			when(testResultManager.getCurrentId()).thenReturn("2016_01_01_01_01_01");
-
-			try {
-				BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/hifive_logo.png"));
-				screenshotResult = createScreenshotResult(image);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-
-		}
 	}).around(assertionView);
 
 	@Rule
@@ -107,6 +82,28 @@ public class AssertionView_SkipTest {
 
 	@Before
 	public void initializeAssertionView() throws Exception {
+		MockitoAnnotations.initMocks(AssertionView_SkipTest.this);
+
+		mockStatic(PtlTestConfig.class);
+		when(PtlTestConfig.getInstance()).thenReturn(testConfig);
+		when(testConfig.getEnvironment().getWebDriverSessionLevel()).thenReturn(WebDriverSessionLevel.TEST_CASE);
+
+		mockStatic(PtlWebDriverFactory.class);
+		when(PtlWebDriverFactory.getInstance(any(PtlCapabilities.class))).thenReturn(driverFactory);
+		when(driverFactory.getDriver()).thenReturn(driver);
+
+		mockStatic(TestResultManager.class);
+		when(TestResultManager.getInstance()).thenReturn(testResultManager);
+		when(testResultManager.getCurrentId()).thenReturn("2016_01_01_01_01_01");
+
+		try {
+			BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/hifive_logo.png"));
+			screenshotResult = createScreenshotResult(image);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		when(driver.takeScreenshot(anyString(), any(List.class), any(List.class))).thenReturn(screenshotResult);
+
 		assertionView.createDriver(new PtlCapabilities(new HashMap<String, Object>()));
 	}
 
@@ -118,8 +115,6 @@ public class AssertionView_SkipTest {
 	@Test
 	public void assertView_skip() throws Exception {
 		when(testConfig.getEnvironment().getExecMode()).thenReturn(ExecMode.SKIP);
-		when(driver.takeScreenshot(anyString(), any(List.class), any(List.class)))
-				.thenReturn(screenshotResult);
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("ssid").build();
 		assertionView.assertView(arg);
@@ -136,8 +131,6 @@ public class AssertionView_SkipTest {
 	@Test
 	public void verifyView_skip() throws Exception {
 		when(testConfig.getEnvironment().getExecMode()).thenReturn(ExecMode.SKIP);
-		when(driver.takeScreenshot(anyString(), any(List.class), any(List.class)))
-				.thenReturn(screenshotResult);
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("ssid").build();
 		assertionView.verifyView(arg);
@@ -146,15 +139,14 @@ public class AssertionView_SkipTest {
 	}
 
 	private ScreenshotResult createScreenshotResult(BufferedImage image) {
-		ScreenAreaResult screenAreaResult = new ScreenAreaResult(new IndexDomSelector(SelectorType.TAG_NAME, "body", 0),
-				new RectangleArea(0, 0, image.getWidth(), image.getHeight()),
-				ScreenArea.of(SelectorType.TAG_NAME, "body"));
+		ScreenAreaResult screenAreaResult = new ScreenAreaResult(
+				new IndexDomSelector(SelectorType.TAG_NAME, "body", 0), new RectangleArea(0, 0, image.getWidth(),
+						image.getHeight()), ScreenArea.of(SelectorType.TAG_NAME, "body"));
 		TargetResult targetResult = new TargetResult(screenAreaResult, new ArrayList<ScreenAreaResult>(),
 				new ScreenshotImage(image));
 
-		return new ScreenshotResult("ssid", null, null, Collections.singletonList(targetResult),
-				getClass().getSimpleName(), testName.getMethodName(), new HashMap<String, Object>(),
-				new ScreenshotImage(image));
+		return new ScreenshotResult("ssid", null, null, Collections.singletonList(targetResult), getClass()
+				.getSimpleName(), testName.getMethodName(), new HashMap<String, Object>(), new ScreenshotImage(image));
 	}
 
 }
