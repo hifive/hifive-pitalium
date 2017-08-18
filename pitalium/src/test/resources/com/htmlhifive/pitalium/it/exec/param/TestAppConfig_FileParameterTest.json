@@ -1,5 +1,5 @@
 {
-	"baseUrl": "http://localhost:8080/dummyUrl",
+	"baseUrl": "http://localhost/dummyUrl",
 	"windowHeight": 980,
 	"windowWidth": 1200
 }

@@ -15,8 +15,7 @@
  */
 package com.htmlhifive.pitalium.it.exec.param;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +55,8 @@ public class FileParameterTest extends PtlTestBase {
 	 */
 	@Test
 	public void checkConfig() throws Exception {
-		Map<String, Object> sourceEnvironmentConfig = readEnvironmentConfig("environmentConfig.json",
+		Map<String, Object> sourceEnvironmentConfig = readEnvironmentConfig(
+				"com\\htmlhifive\\pitalium\\it\\exec\\param\\EnvironmentConfig_FileParameterTest.json",
 				EnvironmentConfig.class);
 
 		driver.get(null);
@@ -70,8 +70,8 @@ public class FileParameterTest extends PtlTestBase {
 
 		// hubのアドレスのチェック
 		String EXPECTED_HUB_HOST = sourceEnvironmentConfig.get("hubHost").toString();
-		int EXPECTED_HUB_POST = sourceEnvironmentConfig.containsKey("hubPost") ? Integer
-				.parseInt(sourceEnvironmentConfig.get("hubPost").toString()) : 4444;
+		int EXPECTED_HUB_POST = sourceEnvironmentConfig.containsKey("hubPost")
+				? Integer.parseInt(sourceEnvironmentConfig.get("hubPost").toString()) : 4444;
 
 		assertEquals(EXPECTED_HUB_HOST, env.getHubHost());
 		assertEquals(EXPECTED_HUB_POST, env.getHubPort());
@@ -83,9 +83,10 @@ public class FileParameterTest extends PtlTestBase {
 
 		// capabilityの内容のチェック
 		PtlCapabilities cap = driver.getCapabilities();
-		String EXPECTED_CAPABILITIES_FILE_PATH = sourceEnvironmentConfig.containsKey("capabilitiesFilePath") ? sourceEnvironmentConfig
-				.get("capabilitiesFilePath").toString() : "capabilities.json";
-		List<Map<String, Object>> sourceCapabilities = readCapabilitiesFromFileOrResources(EXPECTED_CAPABILITIES_FILE_PATH);
+		String EXPECTED_CAPABILITIES_FILE_PATH = sourceEnvironmentConfig.containsKey("capabilitiesFilePath")
+				? sourceEnvironmentConfig.get("capabilitiesFilePath").toString() : "capabilities.json";
+		List<Map<String, Object>> sourceCapabilities = readCapabilitiesFromFileOrResources(
+				EXPECTED_CAPABILITIES_FILE_PATH);
 		assertEquals(EXPECTED_CAPABILITIES_FILE_PATH, env.getCapabilitiesFilePath());
 		boolean found = false;
 		String os = null;
@@ -93,7 +94,8 @@ public class FileParameterTest extends PtlTestBase {
 		for (int i = 0; i < sourceCapabilities.size(); i++) {
 			if (sourceCapabilities.get(i).get("platform").equals(cap.getPlatform().toString())
 					&& sourceCapabilities.get(i).get("os").equals(cap.getCapability("os").toString())
-					&& sourceCapabilities.get(i).get("browserName").equals(cap.getCapability("browserName").toString())) {
+					&& sourceCapabilities.get(i).get("browserName")
+							.equals(cap.getCapability("browserName").toString())) {
 				os = cap.getCapability("os").toString().toLowerCase();
 				browserName = cap.getCapability("browserName").toString().toLowerCase();
 				found = true;
@@ -134,7 +136,7 @@ public class FileParameterTest extends PtlTestBase {
 		assertEquals(EXPECTED_FOLDER, persisterConf.getResultDirectory());
 		//		assertTrue(new File(EXPECTED_FOLDER).exists()); // 指定したフォルダが生成されている.
 
-		String EXPECTED_BASE_URL = "http://localhost:8080/dummyUrl";
+		String EXPECTED_BASE_URL = "http://localhost/dummyUrl";
 		assertEquals(EXPECTED_BASE_URL, driver.getCurrentUrl()); // 空文字で開いたのでベースURLがそのまま開く
 
 		// ウィンドウの設定のチェック
@@ -149,12 +151,13 @@ public class FileParameterTest extends PtlTestBase {
 
 	@Test
 	public void checkWebDriverSessionConfig() throws Exception {
-		Map<String, Object> sourceEnvironmentConfig = readEnvironmentConfig("environmentConfig.json",
+		Map<String, Object> sourceEnvironmentConfig = readEnvironmentConfig(
+				"com\\htmlhifive\\pitalium\\it\\exec\\param\\EnvironmentConfig_FileParameterTest.json",
 				EnvironmentConfig.class);
 		if (sourceEnvironmentConfig.containsKey("webDriverSessionLevel")) {
 			switch (sourceEnvironmentConfig.get("webDriverSessionLevel").toString()) {
-			// WebDriverのセッションレベルの設定を確認
-			// TEST_CLASSを指定しているので、1つめのテストとdriverが同じことを確認する
+				// WebDriverのセッションレベルの設定を確認
+				// TEST_CLASSを指定しているので、1つめのテストとdriverが同じことを確認する
 				case "TEST_CLASS":
 					assertEquals(checkConfigTestDriver, driver);
 					break;
