@@ -66,10 +66,14 @@ import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriverFactory;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriverManager;
 import com.htmlhifive.pitalium.image.model.CompareOption;
+import com.htmlhifive.pitalium.image.model.CompareOptionType;
 import com.htmlhifive.pitalium.image.model.DiffPoints;
 import com.htmlhifive.pitalium.image.model.ImageComparedResult;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.image.model.ScreenshotImage;
+import com.htmlhifive.pitalium.image.model.SimilarityComparisonParameters;
+import com.htmlhifive.pitalium.image.model.SimilarityImageComparedResult;
+import com.htmlhifive.pitalium.image.model.SimilarityUnit;
 import com.htmlhifive.pitalium.image.util.ImageUtils;
 
 /**
@@ -419,7 +423,10 @@ public class AssertionView extends TestWatcher {
 		}
 		if (!screenshotResult.getResult().isSuccess()) {
 			LOG.info("[AssertView failed] (ssid: {})", screenshotId);
-			throw Strings.isNullOrEmpty(message) ? new AssertionError() : new AssertionError(message);
+			String screenshotResultMessage = message != null ? message + screenshotResult.getMessage()
+					: screenshotResult.getMessage();
+			throw Strings.isNullOrEmpty(screenshotResultMessage) ? new AssertionError()
+					: new AssertionError(screenshotResultMessage);
 		}
 
 		LOG.info("[AssertView finished] (ssid: {})", screenshotId);
@@ -632,6 +639,7 @@ public class AssertionView extends TestWatcher {
 	private ScreenshotResult compareTargetResults(String screenshotId, String expectedId, List<TargetResult> currents,
 			List<TargetResult> expects, ValidateResult validateResult) {
 		boolean assertFail = !validateResult.isValid();
+		String message = null;
 
 		List<TargetResult> processes = new ArrayList<TargetResult>(currents.size());
 		for (final TargetResult current : currents) {
@@ -678,6 +686,22 @@ public class AssertionView extends TestWatcher {
 			assertFail |= compareResult.isFailed();
 			if (compareResult.isFailed()) {
 				LOG.error("[Comparison failed] ({})", current);
+
+				for (int i = 0; i < options.length; i++) {
+					if (options[i].getType() == CompareOptionType.SIMILARITY) {
+						SimilarityComparisonParameters parameters = (SimilarityComparisonParameters) options[i]
+								.getParameters();
+						SimilarityUnit unit = ((SimilarityImageComparedResult) compareResult).getSimilarityUnit();
+
+						String threshold = JSONUtils.toString(parameters);
+						String similarity = JSONUtils.toString(unit);
+
+						LOG.error("[Similarity comparison parameters] ({})", threshold);
+						LOG.error("[Calculated similarity] ({})", similarity);
+
+						message = threshold + ", " + similarity;
+					}
+				}
 			} else {
 				LOG.debug("[Comparison success] ({})", current);
 			}
@@ -713,7 +737,7 @@ public class AssertionView extends TestWatcher {
 		}
 
 		return new ScreenshotResult(screenshotId, assertFail ? ExecResult.FAILURE : ExecResult.SUCCESS, expectedId,
-				processes, className, methodName, capabilities.asMap(), null);
+				processes, className, methodName, capabilities.asMap(), null, message);
 	}
 
 	/**
