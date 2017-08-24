@@ -1,0 +1,46 @@
+plugins {
+    id('java')
+    id('checkstyle')
+    id('net.saliman.cobertura').version('2.4.0')
+}
+
+version = '1.1.2'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    powermockVersion = '1.6.6'
+    log4j2Version = '2.8.1'
+}
+
+dependencies {
+    compile("junit:junit:4.12")
+    compile("org.apache.commons:commons-lang3:3.5")
+    compile("org.slf4j:slf4j-api:1.7.25")
+    compile("com.fasterxml.jackson.core:jackson-databind:2.8.7")
+    compile("org.seleniumhq.selenium:selenium-support:3.4.0")
+    compile("commons-io:commons-io:2.5")
+
+    testCompile("org.hamcrest:java-hamcrest:2.0.0.0")
+    testCompile("org.powermock:powermock-api-mockito:${powermockVersion}")
+    testCompile("org.powermock:powermock-module-junit4:${powermockVersion}")
+
+    testRuntime("org.apache.logging.log4j:log4j-slf4j-impl:${log4j2Version}")
+    testRuntime("org.apache.logging.log4j:log4j-core:${log4j2Version}")
+}
+
+checkstyle {
+    configFile = file('config/hifive-checkstyle-rule.xml')
+}
+
+tasks.withType(AbstractCompile).each {
+    it.options.encoding = 'UTF-8'
+}
+
+test {
+    include('**/common/util/*', '**/core/**/*', '**/image/**/*', '**/junit/*')
+}
+
