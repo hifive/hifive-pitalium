@@ -28,7 +28,7 @@ public class SimilarityImageComparatorTest {
 		double pixleByPixelThreshold = 1.00;
 		double featherMatrixThreshold = 0.98;
 		double thresDiffThreshold = 0.98;
-		double totalDiffThreshold = 0.98;
+		double totalDiffThreshold = 0.97;
 		SimilarityComparisonParameters param = new SimilarityComparisonParameters(pixleByPixelThreshold,
 				featherMatrixThreshold, thresDiffThreshold, totalDiffThreshold);
 		SimilarityImageComparator similarityImageComparator = new SimilarityImageComparator(param);
@@ -52,7 +52,7 @@ public class SimilarityImageComparatorTest {
 		double pixleByPixelThreshold = 0.99;
 		double featherMatrixThreshold = 0.97;
 		double thresDiffThreshold = 0.97;
-		double totalDiffThreshold = 0.97;
+		double totalDiffThreshold = 0.96;
 		SimilarityComparisonParameters param = new SimilarityComparisonParameters(pixleByPixelThreshold,
 				featherMatrixThreshold, thresDiffThreshold, totalDiffThreshold);
 		SimilarityImageComparator similarityImageComparator = new SimilarityImageComparator(param);
@@ -76,7 +76,7 @@ public class SimilarityImageComparatorTest {
 		double pixleByPixelThreshold = 0.98;
 		double featherMatrixThreshold = 0.96;
 		double thresDiffThreshold = 0.96;
-		double totalDiffThreshold = 0.96;
+		double totalDiffThreshold = 0.95;
 		SimilarityComparisonParameters param = new SimilarityComparisonParameters(pixleByPixelThreshold,
 				featherMatrixThreshold, thresDiffThreshold, totalDiffThreshold);
 		SimilarityImageComparator similarityImageComparator = new SimilarityImageComparator(param);
