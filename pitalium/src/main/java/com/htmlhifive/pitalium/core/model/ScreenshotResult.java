@@ -66,6 +66,10 @@ public class ScreenshotResult implements Serializable {
 	 */
 	@JsonIgnore
 	private ScreenshotImage entireScreenshotImage;
+	/**
+	 * メッセージ
+	 */
+	private String message;
 
 	/**
 	 * 空の結果オブジェクトを生成します。
@@ -75,18 +79,19 @@ public class ScreenshotResult implements Serializable {
 
 	/**
 	 * 結果オブジェクトを生成します。
-	 * 
+	 *
 	 * @param screenshotId スクリーンショットID
 	 * @param targetResults 指定した領域のスクリーンショット・比較結果のリスト
 	 * @param entireScreenshotImage 全体スクリーンショット画像
 	 */
-	public ScreenshotResult(String screenshotId, List<TargetResult> targetResults, ScreenshotImage entireScreenshotImage) {
-		this(screenshotId, null, null, targetResults, null, null, null, entireScreenshotImage);
+	public ScreenshotResult(String screenshotId, List<TargetResult> targetResults,
+			ScreenshotImage entireScreenshotImage) {
+		this(screenshotId, null, null, targetResults, null, null, null, entireScreenshotImage, null);
 	}
 
 	/**
 	 * 結果オブジェクトを生成します。
-	 * 
+	 *
 	 * @param screenshotId スクリーンショットID
 	 * @param result 比較結果
 	 * @param expectedId 期待結果のID
@@ -96,9 +101,28 @@ public class ScreenshotResult implements Serializable {
 	 * @param capabilities 実行時に指定したCapability
 	 * @param entireScreenshotImage 全体スクリーンショット画像
 	 */
-	public ScreenshotResult(String screenshotId, ExecResult result, String expectedId,
-			List<TargetResult> targetResults, String testClass, String testMethod, Map<String, ?> capabilities,
-			ScreenshotImage entireScreenshotImage) {
+	public ScreenshotResult(String screenshotId, ExecResult result, String expectedId, List<TargetResult> targetResults,
+			String testClass, String testMethod, Map<String, ?> capabilities, ScreenshotImage entireScreenshotImage) {
+		this(screenshotId, result, expectedId, targetResults, testClass, testMethod, capabilities,
+				entireScreenshotImage, null);
+	}
+
+	/**
+	 * 結果オブジェクトを生成します。
+	 *
+	 * @param screenshotId スクリーンショットID
+	 * @param result 比較結果
+	 * @param expectedId 期待結果のID
+	 * @param targetResults 指定した領域のスクリーンショット・比較結果のリスト
+	 * @param testClass 実行したテストクラス名
+	 * @param testMethod 実行したテストメソッド名
+	 * @param capabilities 実行時に指定したCapability
+	 * @param entireScreenshotImage 全体スクリーンショット画像
+	 * @param message メッセージ
+	 */
+	public ScreenshotResult(String screenshotId, ExecResult result, String expectedId, List<TargetResult> targetResults,
+			String testClass, String testMethod, Map<String, ?> capabilities, ScreenshotImage entireScreenshotImage,
+			String message) {
 		this.screenshotId = screenshotId;
 		this.result = result;
 		this.expectedId = expectedId;
@@ -106,13 +130,14 @@ public class ScreenshotResult implements Serializable {
 		this.testMethod = testMethod;
 		this.capabilities = capabilities;
 		this.entireScreenshotImage = entireScreenshotImage;
+		this.message = message;
 
 		setTargetResults(targetResults);
 	}
 
 	/**
 	 * 対象領域のスクリーンショット・比較結果リストを設定します。
-	 * 
+	 *
 	 * @param targetResults 対象領域の結果オブジェクトのリスト
 	 */
 	void setTargetResults(List<TargetResult> targetResults) {
@@ -126,7 +151,7 @@ public class ScreenshotResult implements Serializable {
 
 	/**
 	 * スクリーンショットIDを取得します。
-	 * 
+	 *
 	 * @return スクリーンショットID
 	 */
 	public String getScreenshotId() {
@@ -135,7 +160,7 @@ public class ScreenshotResult implements Serializable {
 
 	/**
 	 * 比較結果を取得します。
-	 * 
+	 *
 	 * @return 比較結果
 	 */
 	public ExecResult getResult() {
@@ -144,7 +169,7 @@ public class ScreenshotResult implements Serializable {
 
 	/**
 	 * 期待結果として使用したIDを取得します。
-	 * 
+	 *
 	 * @return 期待結果のID
 	 */
 	public String getExpectedId() {
@@ -153,7 +178,7 @@ public class ScreenshotResult implements Serializable {
 
 	/**
 	 * 対象領域のスクリーンショット・比較結果リストを取得します。
-	 * 
+	 *
 	 * @return 対象領域の結果オブジェクトのリスト
 	 */
 	public List<TargetResult> getTargetResults() {
@@ -162,7 +187,7 @@ public class ScreenshotResult implements Serializable {
 
 	/**
 	 * 実行したテストクラス名を取得します。
-	 * 
+	 *
 	 * @return テストクラス名
 	 */
 	public String getTestClass() {
@@ -171,7 +196,7 @@ public class ScreenshotResult implements Serializable {
 
 	/**
 	 * 実行したテストメソッド名を取得します。
-	 * 
+	 *
 	 * @return テストメソッド名
 	 */
 	public String getTestMethod() {
@@ -180,7 +205,7 @@ public class ScreenshotResult implements Serializable {
 
 	/**
 	 * 実行時に指定したCapabilityを取得します。
-	 * 
+	 *
 	 * @return capability
 	 */
 	public Map<String, ?> getCapabilities() {
@@ -189,11 +214,20 @@ public class ScreenshotResult implements Serializable {
 
 	/**
 	 * 全体スクリーンショット画像を取得します。
-	 * 
+	 *
 	 * @return 全体スクリーンショット画像
 	 */
 	public ScreenshotImage getEntireScreenshotImage() {
 		return entireScreenshotImage;
+	}
+
+	/**
+	 * メッセージを取得します。
+	 *
+	 * @return メッセージ
+	 */
+	public String getMessage() {
+		return message;
 	}
 
 	@Override
@@ -225,7 +259,10 @@ public class ScreenshotResult implements Serializable {
 		if (testMethod != null ? !testMethod.equals(that.testMethod) : that.testMethod != null) {
 			return false;
 		}
-		return !(capabilities != null ? !capabilities.equals(that.capabilities) : that.capabilities != null);
+		if (capabilities != null ? !capabilities.equals(that.capabilities) : that.capabilities != null) {
+			return false;
+		}
+		return !(message != null ? !message.equals(that.message) : that.message != null);
 
 	}
 
@@ -239,6 +276,7 @@ public class ScreenshotResult implements Serializable {
 		result1 = hashPrime * result1 + (testClass != null ? testClass.hashCode() : 0);
 		result1 = hashPrime * result1 + (testMethod != null ? testMethod.hashCode() : 0);
 		result1 = hashPrime * result1 + (capabilities != null ? capabilities.hashCode() : 0);
+		result1 = hashPrime * result1 + (message != null ? message.hashCode() : 0);
 		return result1;
 	}
 
