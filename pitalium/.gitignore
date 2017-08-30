@@ -3,3 +3,5 @@
 /logs/
 /results/
 /test-result/
+/.gradle/
+/build/
