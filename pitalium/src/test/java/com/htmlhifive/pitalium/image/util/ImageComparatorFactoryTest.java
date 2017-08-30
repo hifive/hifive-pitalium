@@ -15,11 +15,12 @@
  */
 package com.htmlhifive.pitalium.image.util;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import com.htmlhifive.pitalium.image.model.CompareOption;
+import com.htmlhifive.pitalium.image.model.CompareOptionType;
 import com.htmlhifive.pitalium.image.model.ComparisonParameters;
 
 public class ImageComparatorFactoryTest {
@@ -36,6 +37,72 @@ public class ImageComparatorFactoryTest {
 	public void compareOptionの要素数が0の場合はデフォルト() throws Exception {
 		ImageComparator<? extends ComparisonParameters> actual = instance.getImageComparator(new CompareOption[0]);
 		assertTrue(actual instanceof DefaultImageComparator);
+	}
+
+	/**
+	 * compareOptionがIGNORE_CLEAR_PIXELSの場合はIgnoringClearPixelsImageComparatorのインスタンスを返すテスト。
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void compareOptionIgnoreClearPixels() throws Exception {
+		CompareOption[] options = new CompareOption[] { new CompareOption(CompareOptionType.IGNORE_CLEAR_PIXELS) };
+
+		ImageComparator<? extends ComparisonParameters> actual = instance.getImageComparator(options);
+		assertTrue(actual instanceof IgnoringClearPixelsImageComparator);
+	}
+
+	/**
+	 * compareOptionがDEFAULTの場合はDefaultImageComparatorのインスタンスを返すテスト。
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void compareOptionDefault() throws Exception {
+		CompareOption[] options = new CompareOption[] { new CompareOption(CompareOptionType.DEFAULT) };
+
+		ImageComparator<? extends ComparisonParameters> actual = instance.getImageComparator(options);
+		assertTrue(actual instanceof DefaultImageComparator);
+	}
+
+	/**
+	 * compareOptionがSIMILARITYの場合はSimilarityImageComparatorのインスタンスを返すテスト。
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void compareOptionSimilarity() throws Exception {
+		CompareOption[] options = new CompareOption[] { new CompareOption(CompareOptionType.SIMILARITY) };
+
+		ImageComparator<? extends ComparisonParameters> actual = instance.getImageComparator(options);
+		assertTrue(actual instanceof SimilarityImageComparator);
+	}
+
+	/**
+	 * compareOptionがCATEGORYの場合はCategoryImageComparatorのインスタンスを返すテスト。
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void compareOptionCategory() throws Exception {
+		CompareOption[] options = new CompareOption[] { new CompareOption(CompareOptionType.CATEGORY) };
+
+		ImageComparator<? extends ComparisonParameters> actual = instance.getImageComparator(options);
+		assertTrue(actual instanceof CategoryImageComparator);
+	}
+
+	/**
+	 * compareOptionが複数の場合は配列の1番目のオプションが適応されたインスタンスを返すテスト。
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void compareOptions() throws Exception {
+		CompareOption[] options = new CompareOption[] { new CompareOption(CompareOptionType.IGNORE_CLEAR_PIXELS),
+				new CompareOption(CompareOptionType.SIMILARITY), new CompareOption(CompareOptionType.CATEGORY) };
+
+		ImageComparator<? extends ComparisonParameters> actual = instance.getImageComparator(options);
+		assertTrue(actual instanceof IgnoringClearPixelsImageComparator);
 	}
 
 }
