@@ -143,7 +143,7 @@
         	<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
             <formatter type="xml"/>
             <test name="com.htmlhifive.pitalium.it.exec.param.FileParameterTest" todir="${target.junit.report.dir}"/>
-            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\param\EnvironmentConfig_FileParameterTest.json"/>
+            <jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=com\htmlhifive\pitalium\it\exec\param\EnvironmentConfig_FileParameterTest.json -Dcom.htmlhifive.pitalium.persisterConfig=com\htmlhifive\pitalium\it\exec\param\PersisterConfig_FileParameterTest.json -Dcom.htmlhifive.pitalium.testAppConfig=com\htmlhifive\pitalium\it\exec\param\TestAppConfig_FileParameterTest.json"/>
             <classpath refid="test.classpath"/>
         </junit>
     </target>

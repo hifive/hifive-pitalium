@@ -19,7 +19,11 @@ package com.htmlhifive.pitalium.it.screenshot.iframe;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.remote.BrowserType;
 
 import com.google.common.base.Supplier;
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
@@ -32,6 +36,9 @@ import com.htmlhifive.pitalium.it.screenshot.PtlItScreenshotTestBase;
  * iframe内の要素を除外設定とするテスト
  */
 public class ExcludeInFrameTest extends PtlItScreenshotTestBase {
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	/**
 	 * BODYを撮影する際にiframe内外の要素を除外する。
@@ -116,6 +123,9 @@ public class ExcludeInFrameTest extends PtlItScreenshotTestBase {
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTarget().moveTarget(true).scrollTarget(false)
 				.addExcludeByClassName("not-exists").addExcludeByClassName("not-exists").inFrameByClassName("content")
 				.build();
+		if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+			expectedException.expect(NoSuchElementException.class);
+		}
 		assertionView.assertView(arg);
 
 		// Check
@@ -156,6 +166,9 @@ public class ExcludeInFrameTest extends PtlItScreenshotTestBase {
 
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByClassName("content").moveTarget(true)
 				.scrollTarget(true).addExcludeByClassName("not-exists").build();
+		if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
+			expectedException.expect(NoSuchElementException.class);
+		}
 		assertionView.assertView(arg);
 
 		// Check

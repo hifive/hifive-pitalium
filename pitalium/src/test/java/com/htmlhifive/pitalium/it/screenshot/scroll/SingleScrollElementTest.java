@@ -24,6 +24,8 @@ import static org.junit.Assume.*;
 import java.awt.image.BufferedImage;
 
 import org.junit.Test;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.BrowserType;
 
 import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
 import com.htmlhifive.pitalium.it.RequireVisualCheck;
@@ -59,7 +61,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 						+ "return borderWidth;").doubleValue();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		assertThat(image.getHeight(), is((int) (rect.height + Math.round(border * ratio) * 2)));
-		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1)));
+		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -107,10 +109,15 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		int x = image.getWidth() / 2;
 		int y = 0;
 		int cellCount = 0;
-		while (cellCount * 16 <= 240) {
-			Color expect = Color.valueOf(image.getRGB(0, (int) Math.round(cellCount * 20 * ratio)));
+		float cellHeight = 20;
+		if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())
+				&& Platform.MAC.equals(capabilities.getPlatform())) {
+			cellHeight = 20.45f;
+		}
+		while (cellCount <= 15) {
+			Color expect = Color.valueOf(image.getRGB(0, (int) Math.round(cellCount * cellHeight * ratio)));
 			cellCount++;
-			int maxY = (int) Math.round(cellCount * 20 * ratio);
+			int maxY = (int) Math.round(cellCount * cellHeight * ratio);
 			while (y < maxY) {
 				Color actual = Color.valueOf(image.getRGB(x, y));
 				assertThat(String.format("Point (%d, %d) is not match.", x, y), actual, is(expect));
@@ -141,7 +148,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		// 2pxボーダーが写るので無視する
 		int border = (int) Math.round(ratio * 2);
 		image = image.getSubimage(border, border, image.getWidth() - border * 2, image.getHeight() - border * 2);
-		assertThat(image, is(gradationWithBorder(ratio)));
+		assertThat(image, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -169,7 +176,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 						+ "return borderWidth;").doubleValue();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		assertThat(image.getHeight(), is((int) (rect.height + Math.round(border * ratio) * 2)));
-		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1)));
+		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -217,15 +224,14 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		int x = image.getWidth() / 2;
 		int y = 0;
 		int cellCount = 0;
-		while (cellCount * 16 <= 240) {
+		while (y < image.getHeight()) {
 			Color expect = Color.valueOf(image.getRGB(0, (int) Math.round(cellCount * 20 * ratio)));
-			cellCount++;
-			int maxY = (int) Math.round(cellCount * 20 * ratio);
-			while (y < maxY) {
-				Color actual = Color.valueOf(image.getRGB(x, y));
-				assertThat(String.format("Point (%d, %d) is not match.", x, y), actual, is(expect));
-				y++;
+			Color actual = Color.valueOf(image.getRGB(x, y));
+			if (!expect.equals(actual)) {
+				cellCount++;
+				continue;
 			}
+			y++;
 		}
 	}
 
@@ -251,7 +257,7 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		// 1pxボーダーが写るので無視する
 		int border = (int) Math.round(ratio * 2);
 		image = image.getSubimage(border, border, image.getWidth() - border * 2, image.getHeight() - border * 2);
-		assertThat(image, is(gradationWithBorder(ratio)));
+		assertThat(image, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -317,10 +323,15 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		int x = image.getWidth() / 2;
 		int y = 0;
 		int cellCount = 0;
-		while (cellCount * 16 <= 240 && y < image.getHeight()) {
-			Color expect = Color.valueOf(image.getRGB(0, (int) Math.round(cellCount * 20 * ratio) + 1));
+		float cellHeight = 20;
+		if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())
+				&& Platform.MAC.equals(capabilities.getPlatform())) {
+			cellHeight = 20.45f;
+		}
+		while (cellCount * 16 <= image.getHeight() && y < image.getHeight()) {
+			Color expect = Color.valueOf(image.getRGB(0, (int) Math.round(cellCount * cellHeight * ratio) + 1));
 			cellCount++;
-			int maxY = (int) Math.round(cellCount * 20 * ratio);
+			int maxY = (int) Math.round(cellCount * cellHeight * ratio);
 			while (y < maxY && y < image.getHeight()) {
 				Color actual = Color.valueOf(image.getRGB(x, y));
 				try {
@@ -426,10 +437,15 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		int x = image.getWidth() / 2;
 		int y = 0;
 		int cellCount = 0;
-		while (cellCount * 16 <= 240 && y < image.getHeight()) {
-			Color expect = Color.valueOf(image.getRGB(0, (int) Math.round(cellCount * 20 * ratio)));
+		float cellHeight = 20;
+		if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())
+				&& Platform.MAC.equals(capabilities.getPlatform())) {
+			cellHeight = 20.45f;
+		}
+		while (cellCount * 16 <= image.getHeight() && y < image.getHeight()) {
+			Color expect = Color.valueOf(image.getRGB(0, (int) Math.round(cellCount * cellHeight * ratio) + 1));
 			cellCount++;
-			int maxY = (int) Math.round(cellCount * 20 * ratio);
+			int maxY = (int) Math.round(cellCount * cellHeight * ratio);
 			while (y < maxY && y < image.getHeight()) {
 				Color actual = Color.valueOf(image.getRGB(x, y));
 				try {

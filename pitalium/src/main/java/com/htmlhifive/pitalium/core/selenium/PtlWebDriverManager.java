@@ -70,7 +70,7 @@ public final class PtlWebDriverManager {
 								return WebDriverSessionLevel.TEST_CLASS;
 							default:
 								// 未到達コード
-								return WebDriverSessionLevel.TEST_CLASS;
+								return configSessionLevel;
 						}
 					}
 

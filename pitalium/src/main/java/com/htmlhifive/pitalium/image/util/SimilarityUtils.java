@@ -227,8 +227,8 @@ public class SimilarityUtils {
 		}
 		double similarity = 1 - min;
 
-		// round similarity to 2 decimal places.
-		similarity = (double) Math.round(similarity * 100) / 100;
+		// floor similarity to 2 decimal places.
+		similarity = Math.floor(similarity * 100) / 100;
 
 		return similarity;
 	}
@@ -298,8 +298,8 @@ public class SimilarityUtils {
 
 		double similarity = 1 - calcFeatureDistance(expectedFeature, actualFeature);
 
-		// round similarity to 2 decimal places.
-		similarity = (double) Math.round(similarity * 100) / 100;
+		// floor similarity to 2 decimal places.
+		similarity = Math.floor(similarity * 100) / 100;
 
 		return similarity;
 	}
@@ -384,10 +384,10 @@ public class SimilarityUtils {
 		similarityThresDiff = 1 - (double) thresDiffMin / (prep.actualWidth * prep.actualHeight);
 		similarityTotalDiff = 1 - (double) totalDiffMin / (prep.actualWidth * prep.actualHeight);
 
-		// round similarities to 2 decimal place.
-		similarity = (double) Math.round(similarity * 100) / 100;
-		similarityThresDiff = (double) Math.round(similarityThresDiff * 100) / 100;
-		similarityTotalDiff = (double) Math.round(similarityTotalDiff * 100) / 100;
+		// floor similarities to 2 decimal place.
+		similarity = Math.floor(similarity * 100) / 100;
+		similarityThresDiff = Math.floor(similarityThresDiff * 100) / 100;
+		similarityTotalDiff = Math.floor(similarityTotalDiff * 100) / 100;
 
 		if (offset == null) {
 			offset = new Offset(0, 0);

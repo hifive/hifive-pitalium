@@ -35,4 +35,10 @@ public abstract class PtlItScreenshotTestBase extends PtlItTestBase {
 		super.setUp();
 	}
 
+	/**
+	 * @return
+	 */
+	protected boolean isIgnoreCorners() {
+		return isMacOS() && isChrome();
+	}
 }

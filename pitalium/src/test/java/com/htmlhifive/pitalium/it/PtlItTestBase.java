@@ -28,6 +28,7 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.BrowserType;
 import org.slf4j.Logger;
@@ -202,6 +203,24 @@ public class PtlItTestBase extends PtlTestBase {
 	 */
 	public boolean isMicrosoftEdge() {
 		return BrowserType.EDGE.equals(capabilities.getBrowserName());
+	}
+
+	/**
+	 * 現在テスト中のブラウザがChromeかどうかを取得します。
+	 */
+	public boolean isChrome() {
+		return BrowserType.CHROME.equals(capabilities.getBrowserName());
+	}
+
+	/**
+	 * 現在テスト中のOSがMacOSかどうかを取得します。
+	 */
+	public boolean isMacOS() {
+		Platform flatForm = Platform.extractFromSysProperty(capabilities.getPlatformName());
+		return Platform.MAC.equals(flatForm) || Platform.SNOW_LEOPARD.equals(flatForm)
+				|| Platform.MOUNTAIN_LION.equals(flatForm) || Platform.MAVERICKS.equals(flatForm)
+				|| Platform.YOSEMITE.equals(flatForm) || Platform.EL_CAPITAN.equals(flatForm)
+				|| Platform.SIERRA.equals(flatForm);
 	}
 
 	/**
@@ -406,8 +425,8 @@ public class PtlItTestBase extends PtlTestBase {
 		public Rect toExcludeRect() {
 			double x = Math.floor(this.x);
 			double y = Math.floor(this.y);
-			double width = Math.ceil(this.x + this.width) - x;
-			double height = Math.ceil(this.y + this.height) - y;
+			double width = Math.ceil(this.x + Math.round(this.width)) - x;
+			double height = Math.ceil(this.y + Math.round(this.height)) - y;
 			return new Rect(x, y, width, height);
 		}
 
@@ -624,6 +643,8 @@ public class PtlItTestBase extends PtlTestBase {
 
 		private static Color expectedBorderColor;
 
+		private boolean isIgnoreCorners_;
+
 		public static IsGradation gradation() {
 			return new IsGradation();
 		}
@@ -691,6 +712,11 @@ public class PtlItTestBase extends PtlTestBase {
 			this.borderStroke = borderStroke;
 		}
 
+		public IsGradation ignoreCorner(boolean isIgnoreCorners) {
+			this.isIgnoreCorners_ = isIgnoreCorners;
+			return this;
+		}
+
 		@Override
 		public boolean matchesSafely(BufferedImage image, Description mismatch) {
 
@@ -740,13 +766,18 @@ public class PtlItTestBase extends PtlTestBase {
 				Color actual = Color.valueOf(image.getRGB(x, y));
 				Color expected = Color.rgb(red, 0, 0xff);
 				if (!actual.equals(expected)) {
-					// IEでは色の変化が一定でなくなるため、次の値も確認
-					if (!actual.equals(Color.rgb(red + 1, 0, 0xff))) {
-						mismatch.appendText(
-								String.format("%s @horizontal (%d, %d), expect=%s\n", actual.red, x, y, red));
-						return false;
+					if (this.isIgnoreCorners_
+							&& (actual.equals(Color.rgb(red - 1, 0, 0xff)) || actual.equals(Color.rgb(red, 0, 0xfe)))) {
+						// Ignore on Chrome (Mac)
+					} else {
+						if (!actual.equals(Color.rgb(red + 1, 0, 0xff))) {
+							// IEでは色の変化が一定でなくなるため、次の値も確認
+							mismatch.appendText(String.format("%s @horizontal (%d, %d), expect=%s\n", actual.red, x, y,
+									red));
+							return false;
+						}
+						red++;
 					}
-					red++;
 				}
 				if (i % blockPixelSize == blockPixelSize - 1) {
 					red += 8;
@@ -757,19 +788,29 @@ public class PtlItTestBase extends PtlTestBase {
 			// Vertical
 			int green = Color.valueOf(image.getRGB(border, border)).green;
 
+			int skipY = 0;
+			if (isIgnoreCorners_) {
+				skipY = PtlTestConfig.getInstance().getTestAppConfig().getWindowHeight() - 74 - 40;
+			}
 			for (int i = 0; i < height - border * 2; i++) {
 				int x = border;
 				int y = border + i;
 				Color actual = Color.valueOf(image.getRGB(x, y));
 				Color expected = Color.rgb(0, green, 0xff);
 				if (!actual.equals(expected)) {
-					// IEでは色の変化が一定でなくなるため、次の値も確認
-					if (!actual.equals(Color.rgb(0, green + 1, 0xff))) {
-						mismatch.appendText(
-								String.format("%s @vertical (%d, %d), expect=%s\n", actual, x, y, expected));
-						return false;
+					if (isIgnoreCorners_
+							&& ((y - skipY + 5) % skipY < 5 || actual.equals(Color.rgb(0, green, 0xfe)) || actual
+									.equals(Color.rgb(0, green - 1, 0xfe)))) {
+						// Ignore corners
+					} else {
+						if (!actual.equals(Color.rgb(0, green + 1, 0xff))) {
+							// IEでは色の変化が一定でなくなるため、次の値も確認
+							mismatch.appendText(String.format("%s @vertical (%d, %d), expect=%s\n", actual, x, y,
+									expected));
+							return false;
+						}
+						green++;
 					}
-					green++;
 				}
 				if (i % blockPixelSize == blockPixelSize - 1) {
 					green += 8;

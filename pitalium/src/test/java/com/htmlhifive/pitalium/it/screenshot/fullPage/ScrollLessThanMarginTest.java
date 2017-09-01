@@ -56,7 +56,7 @@ public class ScrollLessThanMarginTest extends PtlItScreenshotTestBase {
 		int marginPixel = (int) Math.round(margin * ratio);
 		BufferedImage gradationImage = image.getSubimage(0, marginPixel, image.getWidth(), image.getHeight()
 				- marginPixel);
-		assertThat(gradationImage, is(gradationWithBorder(ratio)));
+		assertThat(gradationImage, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class ScrollLessThanMarginTest extends PtlItScreenshotTestBase {
 		int marginPixel = (int) Math.round(margin * ratio);
 		BufferedImage gradationImage = image.getSubimage(marginPixel, 0, image.getWidth() - marginPixel,
 				image.getHeight());
-		assertThat(gradationImage, is(gradationWithBorder(ratio)));
+		assertThat(gradationImage, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
 	}
 
 }

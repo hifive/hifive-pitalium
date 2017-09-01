@@ -49,7 +49,7 @@ public class SingleElementByAreaTest extends PtlItScreenshotTestBase {
 		// Check image
 		double ratio = getPixelRatio();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradation(ratio)));
+		assertThat(image, is(gradation(ratio).ignoreCorner(isIgnoreCorners())));
 
 		Rect rect = getRectById("container");
 		assertThat(image.getWidth(), is((int) rect.width));
@@ -73,7 +73,7 @@ public class SingleElementByAreaTest extends PtlItScreenshotTestBase {
 		// Check image
 		double ratio = getPixelRatio();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradation(ratio)));
+		assertThat(image, is(gradation(ratio).ignoreCorner(isIgnoreCorners())));
 
 		Rect rect = getRectById("container");
 		assertThat(image.getWidth(), is((int) rect.width));
@@ -97,7 +97,7 @@ public class SingleElementByAreaTest extends PtlItScreenshotTestBase {
 		// Check image
 		double ratio = getPixelRatio();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradation(ratio)));
+		assertThat(image, is(gradation(ratio).ignoreCorner(isIgnoreCorners())));
 
 		Rect pixelRect = getPixelRectById("container");
 		assertThat(image.getWidth(), is((int) Math.round(pixelRect.width)));

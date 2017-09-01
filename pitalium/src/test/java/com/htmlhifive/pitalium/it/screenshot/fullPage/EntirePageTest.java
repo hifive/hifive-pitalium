@@ -46,7 +46,7 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 
 		// 画像のチェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio)));
+		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 
 		// 画像のチェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio)));
+		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 
 		// 画像のチェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio)));
+		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 
 		// 画像のチェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio)));
+		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 
 		// 画像のチェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio)));
+		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 
 		// 画像のチェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio)));
+		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 
 		// 画像のチェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio)));
+		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 
 		// 画像のチェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio)));
+		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -189,7 +189,7 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 
 		// 画像のチェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio)));
+		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
 	}
 
 	/**
@@ -206,7 +206,6 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 
 		// 画像のチェック
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio)));
+		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
 	}
-
 }
