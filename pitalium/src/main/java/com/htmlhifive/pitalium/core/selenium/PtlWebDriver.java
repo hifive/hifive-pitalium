@@ -1606,7 +1606,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 *
 	 * @return 撮影したスクリーンショット
 	 */
-	protected final BufferedImage getScreenshotAsBufferedImage() {
+	protected BufferedImage getScreenshotAsBufferedImage() {
 		try {
 			byte[] data = getScreenshotAs(OutputType.BYTES);
 			return ImageIO.read(new ByteArrayInputStream(data));
@@ -1718,13 +1718,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @return スクロール回数
 	 */
 	long getScrollNum(double clientHeight) {
-		double scrollHeight = getScrollHeight();
-
-		if (clientHeight >= scrollHeight) {
-			return 0;
-		}
-
-		return (int) (Math.ceil(scrollHeight / clientHeight)) - 1;
+		double pageHeight = getCurrentPageHeight();
+		return (int) (Math.ceil(pageHeight / clientHeight)) - 1;
 	}
 
 	/**
@@ -1734,13 +1729,8 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @return スクロール回数
 	 */
 	long getHorizontalScrollNum(double clientWidth) {
-		double scrollWidth = getScrollWidth();
-
-		if (clientWidth >= scrollWidth) {
-			return 0;
-		}
-
-		return (int) (Math.ceil(scrollWidth / clientWidth)) - 1;
+		double pageWidth = getCurrentPageWidth();
+		return (int) (Math.ceil(pageWidth / clientWidth)) - 1;
 	}
 
 	/**

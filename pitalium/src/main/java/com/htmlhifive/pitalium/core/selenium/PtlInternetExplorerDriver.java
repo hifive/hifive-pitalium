@@ -23,7 +23,7 @@ import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 /**
  * Internet Explorerで利用する{@link org.openqa.selenium.WebDriver}
  */
-class PtlInternetExplorerDriver extends PtlWebDriver {
+class PtlInternetExplorerDriver extends SplitScreenshotWebDriver {
 
 	private final int chromeWidth;
 
