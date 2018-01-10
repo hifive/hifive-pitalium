@@ -74,20 +74,6 @@ class PtlFirefoxDriver extends SplitScreenshotWebDriver {
 	}
 
 	@Override
-	long getScrollNum(double clientHeight) {
-		WebElementMargin margin = ((PtlWebElement) findElementByTagName("body")).getMargin();
-		double pageHeight = getScrollHeight() + margin.getTop() + margin.getBottom();
-		return (int) (Math.ceil(pageHeight / clientHeight)) - 1;
-	}
-
-	@Override
-	long getHorizontalScrollNum(double clientWidth) {
-		WebElementMargin margin = ((PtlWebElement) findElementByTagName("body")).getMargin();
-		double pageWidth = getScrollWidth() + margin.getLeft() + margin.getRight();
-		return (int) (Math.ceil(pageWidth / clientWidth)) - 1;
-	}
-
-	@Override
 	protected int calcTrimTop(int imageHeight, long scrollAmount, PtlWebElement targetElement, double currentScale) {
 		int trimTop = super.calcTrimTop(imageHeight, scrollAmount, targetElement, currentScale);
 		// firefoxのtextareaは上下paddingが常に表示されるため、上padding分trim量を減らす
