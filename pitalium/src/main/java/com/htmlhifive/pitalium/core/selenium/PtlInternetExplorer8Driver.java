@@ -41,9 +41,9 @@ class PtlInternetExplorer8Driver extends PtlInternetExplorerDriver {
 	}
 
 	@Override
-	public BufferedImage getEntirePageScreenshot() {
+	protected BufferedImage getScreenshotAsBufferedImage() {
 		// IE7,8は上下左右2pxを削る
-		BufferedImage screenshot = super.getEntirePageScreenshot();
+		BufferedImage screenshot = super.getScreenshotAsBufferedImage();
 		return ImageUtils.trim(screenshot, 2, 2, 2, 2);
 	}
 }
