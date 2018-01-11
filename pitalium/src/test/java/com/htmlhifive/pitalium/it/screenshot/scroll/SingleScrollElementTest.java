@@ -55,13 +55,16 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		double ratio = getPixelRatio();
 		Rect rect = getPixelRectBySelector("#div-scroll > #div-scroll-inner");
 		// IEはborderWidthが空文字なのでborderLeftWidthを見る
-		double border = driver.<Number> executeJavaScript(
-				"" + "var el = document.getElementById('div-scroll');" + "var style = window.getComputedStyle(el);"
-						+ "var borderWidth = parseFloat(style.borderWidth || style.borderLeftWidth);"
-						+ "return borderWidth;").doubleValue();
+		double border = driver.<Number> executeJavaScript("" + "var el = document.getElementById('div-scroll');"
+				+ "var style = window.getComputedStyle(el);"
+				+ "var borderWidth = parseFloat(style.borderWidth || style.borderLeftWidth);" + "return borderWidth;")
+				.doubleValue();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		assertThat(image.getHeight(), is((int) (rect.height + Math.round(border * ratio) * 2)));
-		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1).ignoreCorner(isIgnoreCorners())));
+
+		if (!isSkipColorCheck()) {
+			assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1)));
+		}
 	}
 
 	/**
@@ -145,10 +148,12 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		assertThat(image.getHeight(), is(greaterThan((int) rect.height)));
 
-		// 2pxボーダーが写るので無視する
-		int border = (int) Math.round(ratio * 2);
-		image = image.getSubimage(border, border, image.getWidth() - border * 2, image.getHeight() - border * 2);
-		assertThat(image, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
+		if (!isSkipColorCheck()) {
+			// 2pxボーダーが写るので無視する
+			int border = (int) Math.round(ratio * 2);
+			image = image.getSubimage(border, border, image.getWidth() - border * 2, image.getHeight() - border * 2);
+			assertThat(image, is(gradationWithBorder(ratio)));
+		}
 	}
 
 	/**
@@ -170,13 +175,15 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		double ratio = getPixelRatio();
 		Rect rect = getPixelRectBySelector("#div-scroll > #div-scroll-inner");
 		// IEはborderWidthが空文字なのでborderLeftWidthを見る
-		double border = driver.<Number> executeJavaScript(
-				"" + "var el = document.getElementById('div-scroll');" + "var style = window.getComputedStyle(el);"
-						+ "var borderWidth = parseFloat(style.borderWidth || style.borderLeftWidth);"
-						+ "return borderWidth;").doubleValue();
+		double border = driver.<Number> executeJavaScript("" + "var el = document.getElementById('div-scroll');"
+				+ "var style = window.getComputedStyle(el);"
+				+ "var borderWidth = parseFloat(style.borderWidth || style.borderLeftWidth);" + "return borderWidth;")
+				.doubleValue();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		assertThat(image.getHeight(), is((int) (rect.height + Math.round(border * ratio) * 2)));
-		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1).ignoreCorner(isIgnoreCorners())));
+		if (!isSkipColorCheck()) {
+			assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1)));
+		}
 	}
 
 	/**
@@ -254,10 +261,12 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		assertThat(image.getHeight(), is(greaterThan((int) rect.height)));
 
-		// 1pxボーダーが写るので無視する
-		int border = (int) Math.round(ratio * 2);
-		image = image.getSubimage(border, border, image.getWidth() - border * 2, image.getHeight() - border * 2);
-		assertThat(image, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
+		if (!isSkipColorCheck()) {
+			// 1pxボーダーが写るので無視する
+			int border = (int) Math.round(ratio * 2);
+			image = image.getSubimage(border, border, image.getWidth() - border * 2, image.getHeight() - border * 2);
+			assertThat(image, is(gradationWithBorder(ratio)));
+		}
 	}
 
 	/**
@@ -291,8 +300,8 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 	public void takeTextareaScreenshot_notScroll_move() throws Exception {
 		openScrollPage();
 
-		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetById("textarea-scroll")
-				.scrollTarget(false).moveTarget(true).build();
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetById("textarea-scroll").scrollTarget(false)
+				.moveTarget(true).build();
 		assertionView.assertView(arg);
 
 		// Check
@@ -362,8 +371,8 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 	public void takeIFrameScreenshot_notScroll_move() throws Exception {
 		openScrollPage();
 
-		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByName("iframe-scroll")
-				.scrollTarget(false).moveTarget(true).build();
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByName("iframe-scroll").scrollTarget(false)
+				.moveTarget(true).build();
 		assertionView.assertView(arg);
 
 		// Check
@@ -405,8 +414,8 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 	public void takeTextareaScreenshot_notScroll_notMove() throws Exception {
 		openScrollPage();
 
-		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetById("textarea-scroll")
-				.scrollTarget(false).moveTarget(false).build();
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetById("textarea-scroll").scrollTarget(false)
+				.moveTarget(false).build();
 		assertionView.assertView(arg);
 
 		// Check
@@ -476,8 +485,8 @@ public class SingleScrollElementTest extends PtlItScreenshotTestBase {
 	public void takeIFrameScreenshot_notScroll_notMove() throws Exception {
 		openScrollPage();
 
-		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByName("iframe-scroll")
-				.scrollTarget(false).moveTarget(false).build();
+		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByName("iframe-scroll").scrollTarget(false)
+				.moveTarget(false).build();
 		assertionView.assertView(arg);
 
 		// Check

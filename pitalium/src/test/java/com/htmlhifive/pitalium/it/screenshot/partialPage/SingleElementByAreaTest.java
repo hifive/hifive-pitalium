@@ -46,10 +46,12 @@ public class SingleElementByAreaTest extends PtlItScreenshotTestBase {
 				.addNewTarget(pixelRect.x, pixelRect.y, pixelRect.width, pixelRect.height).moveTarget(true).build();
 		assertionView.assertView(arg);
 
-		// Check image
-		double ratio = getPixelRatio();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradation(ratio).ignoreCorner(isIgnoreCorners())));
+		if (!isSkipColorCheck()) {
+			// Check image
+			double ratio = getPixelRatio();
+			assertThat(image, is(gradation(ratio)));
+		}
 
 		Rect rect = getRectById("container");
 		assertThat(image.getWidth(), is((int) rect.width));
@@ -70,10 +72,12 @@ public class SingleElementByAreaTest extends PtlItScreenshotTestBase {
 				.addNewTarget(pixelRect.x, pixelRect.y, pixelRect.width, pixelRect.height).moveTarget(false).build();
 		assertionView.assertView(arg);
 
-		// Check image
-		double ratio = getPixelRatio();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradation(ratio).ignoreCorner(isIgnoreCorners())));
+		if (!isSkipColorCheck()) {
+			// Check image
+			double ratio = getPixelRatio();
+			assertThat(image, is(gradation(ratio)));
+		}
 
 		Rect rect = getRectById("container");
 		assertThat(image.getWidth(), is((int) rect.width));
@@ -94,10 +98,12 @@ public class SingleElementByAreaTest extends PtlItScreenshotTestBase {
 				.moveTarget(true).build();
 		assertionView.assertView(arg);
 
-		// Check image
-		double ratio = getPixelRatio();
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradation(ratio).ignoreCorner(isIgnoreCorners())));
+		if (!isSkipColorCheck()) {
+			// Check image
+			double ratio = getPixelRatio();
+			assertThat(image, is(gradation(ratio)));
+		}
 
 		Rect pixelRect = getPixelRectById("container");
 		assertThat(image.getWidth(), is((int) Math.round(pixelRect.width)));
