@@ -43,4 +43,9 @@ abstract class PtlAbsAndroidDriver extends SplitScreenshotWebDriver {
 		return super.getScrollNum();
 	}
 
+	@Override
+	long getHorizontalScrollNum(double clientWidth) {
+		return super.getHorizontalScrollNum();
+	}
+
 }

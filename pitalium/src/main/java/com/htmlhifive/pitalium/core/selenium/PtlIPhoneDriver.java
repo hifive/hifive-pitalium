@@ -158,7 +158,8 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 	}
 
 	@Override
-	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image, int num, int size, double currentScale) {
+	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image, int num, int size,
+			double currentScale) {
 		LOG.trace("(trimTargetBorder) el: {}; image[w: {}, h: {}], num: {}, size: {}", el, image.getWidth(),
 				image.getHeight(), num, size);
 
@@ -207,6 +208,11 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 	@Override
 	long getScrollNum(double clientHeight) {
 		return super.getScrollNum();
+	}
+
+	@Override
+	long getHorizontalScrollNum(double clientWidth) {
+		return super.getHorizontalScrollNum();
 	}
 
 }
