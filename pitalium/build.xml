@@ -5,7 +5,7 @@
 	<basename property="current.project.name" file="${basedir}" suffix="${ant.file}" />
 
 	<!-- プロジェクトの設定 -->
-	<property name="target.project.version" value="1.1.2-fix161" />
+	<property name="target.project.version" value="1.2.1-fix161" />
 	<property name="target.main.src.dir" value="src/main/java" />
 	<property name="target.main.res.dir" value="src/main/resources" />
 
