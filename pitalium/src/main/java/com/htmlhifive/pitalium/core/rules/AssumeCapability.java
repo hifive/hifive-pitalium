@@ -51,8 +51,8 @@ public class AssumeCapability extends TestWatcher {
 		// ClassのAnnotation取得
 		// MEMO: LoadingCacheを利用してClass、Annotation単位でFilter情報をキャッシュしても
 		//       参照頻度が多くないため逆に遅くなる
-		Collection<CapabilityFilter> classFilters = getFilters(Arrays.asList(description.getTestClass()
-				.getAnnotations()));
+		Collection<CapabilityFilter> classFilters = getFilters(
+				Arrays.asList(description.getTestClass().getAnnotations()));
 		if (!classFilters.isEmpty()) {
 			boolean classResult = FluentIterable.from(classFilters).anyMatch(new Predicate<CapabilityFilter>() {
 				@Override
@@ -125,7 +125,7 @@ public class AssumeCapability extends TestWatcher {
 		// FIXME: Java8対応はよ！！
 		if (filter.version().length > 0) {
 			final String version = capabilities.getVersion();
-			boolean result = FluentIterable.of(filter.version()).anyMatch(new Predicate<String>() {
+			boolean result = FluentIterable.from(filter.version()).anyMatch(new Predicate<String>() {
 				@Override
 				public boolean apply(String s) {
 					return Strings.isNullOrEmpty(s) ? Strings.isNullOrEmpty(version) : version.matches(s);
@@ -138,7 +138,7 @@ public class AssumeCapability extends TestWatcher {
 
 		if (filter.platform().length > 0) {
 			final Collection<Platform> platforms = toPlatformFamily(capabilities.getPlatform());
-			boolean result = FluentIterable.of(filter.platform()).anyMatch(new Predicate<Platform>() {
+			boolean result = FluentIterable.from(filter.platform()).anyMatch(new Predicate<Platform>() {
 				@Override
 				public boolean apply(Platform p) {
 					return p == Platform.ANY || platforms.contains(p);
@@ -151,7 +151,7 @@ public class AssumeCapability extends TestWatcher {
 
 		if (filter.browserName().length > 0) {
 			final String browserName = capabilities.getBrowserName();
-			boolean result = FluentIterable.of(filter.browserName()).anyMatch(new Predicate<String>() {
+			boolean result = FluentIterable.from(filter.browserName()).anyMatch(new Predicate<String>() {
 				@Override
 				public boolean apply(String s) {
 					return Strings.isNullOrEmpty(s) ? Strings.isNullOrEmpty(browserName) : s.equals(browserName);
@@ -164,7 +164,7 @@ public class AssumeCapability extends TestWatcher {
 
 		if (filter.deviceName().length > 0) {
 			final String deviceName = Strings.nullToEmpty((String) capabilities.getCapability("deviceName"));
-			boolean result = FluentIterable.of(filter.deviceName()).anyMatch(new Predicate<String>() {
+			boolean result = FluentIterable.from(filter.deviceName()).anyMatch(new Predicate<String>() {
 				@Override
 				public boolean apply(String s) {
 					return Strings.isNullOrEmpty(s) ? Strings.isNullOrEmpty(deviceName) : deviceName.matches(s);
@@ -180,7 +180,7 @@ public class AssumeCapability extends TestWatcher {
 		}
 
 		final String filterGroup = Strings.nullToEmpty((String) capabilities.getCapability("filterGroup"));
-		return FluentIterable.of(filter.filterGroup()).anyMatch(new Predicate<String>() {
+		return FluentIterable.from(filter.filterGroup()).anyMatch(new Predicate<String>() {
 			@Override
 			public boolean apply(String s) {
 				return Strings.isNullOrEmpty(s) ? Strings.isNullOrEmpty(filterGroup) : s.equals(filterGroup);
@@ -202,9 +202,10 @@ public class AssumeCapability extends TestWatcher {
 
 		platforms.add(platform);
 
-		Platform parent = platform;
-		while ((parent = parent.family()) != Platform.ANY) {
+		Platform parent = platform.family();
+		while (parent != null && parent != Platform.ANY) {
 			platforms.add(parent);
+			parent = parent.family();
 		}
 		return platforms;
 	}
