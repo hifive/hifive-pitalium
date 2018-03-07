@@ -15,7 +15,8 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.transform;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -1923,6 +1924,15 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				} else {
 					return Maps.transformValues(resultAsMap, this);
 				}
+			}
+
+			// Chromeの場合、resultがRemoteWebElementのリストになっている
+			// リストの中身を再帰的にapplyで呼び出すため最終的にresultはRemoteWebElementになる
+			// RemoteWebElementを返さずに、PtlChromeWebElementを返す
+			if (result instanceof RemoteWebElement) {
+				RemoteWebElement element = newRemoteWebElement();
+				element.setId(String.valueOf(((RemoteWebElement) result).getId()));
+				return element;
 			}
 
 			return super.apply(result);
