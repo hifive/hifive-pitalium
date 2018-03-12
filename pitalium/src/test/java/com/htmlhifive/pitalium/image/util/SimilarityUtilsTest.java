@@ -6,7 +6,6 @@ import static org.junit.Assert.*;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 import javax.imageio.ImageIO;
 
@@ -24,8 +23,8 @@ public class SimilarityUtilsTest {
 	 */
 	@Test
 	public void testCalcSimilarity() throws Exception {
-		BufferedImage image1 = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
-		BufferedImage image2 = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
+		BufferedImage image1 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo.png"));
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		ComparedRectangleArea similarRectangle = new ComparedRectangleArea(rectangle);
@@ -50,8 +49,8 @@ public class SimilarityUtilsTest {
 	 */
 	@Test
 	public void testCalcSimilarityWithDiff() throws Exception {
-		BufferedImage image1 = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
-		BufferedImage image2 = ImageIO.read(new File("src/test/resources/images/hifive_logo_similar.png"));
+		BufferedImage image1 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo_similar.png"));
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		ComparedRectangleArea similarRectangle = new ComparedRectangleArea(rectangle);
@@ -142,8 +141,8 @@ public class SimilarityUtilsTest {
 	 */
 	@Test
 	public void testCalcSimilarityByFeatureMatrix() throws Exception {
-		BufferedImage image1 = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
-		BufferedImage image2 = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
+		BufferedImage image1 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo.png"));
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		Offset offset = new Offset(0, 0);
@@ -167,8 +166,8 @@ public class SimilarityUtilsTest {
 	 */
 	@Test
 	public void testCalcSimilarityByFeatureMatrixWithDiff() throws Exception {
-		BufferedImage image1 = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
-		BufferedImage image2 = ImageIO.read(new File("src/test/resources/images/hifive_logo_similar.png"));
+		BufferedImage image1 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo_similar.png"));
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		Offset offset = new Offset(0, 0);
@@ -193,8 +192,8 @@ public class SimilarityUtilsTest {
 	 */
 	@Test
 	public void testCalcSimilarityPixelByPixel() throws Exception {
-		BufferedImage image1 = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
-		BufferedImage image2 = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
+		BufferedImage image1 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo.png"));
 
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		Offset offset = new Offset(0, 0);
@@ -212,8 +211,8 @@ public class SimilarityUtilsTest {
 	 */
 	@Test
 	public void testCalcSimilarityPixelByPixelWithDiff() throws Exception {
-		BufferedImage image1 = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
-		BufferedImage image2 = ImageIO.read(new File("src/test/resources/images/hifive_logo_similar.png"));
+		BufferedImage image1 = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage image2 = ImageIO.read(getClass().getResource("hifive_logo_similar.png"));
 		Rectangle rectangle = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		Offset offset = new Offset(0, 0);
 
