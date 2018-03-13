@@ -1,7 +1,5 @@
 [
 	{
-		"platform": "VISTA",
-		"os": "WINDOWS",
 		"browserName": "firefox"
 	}
 ]
