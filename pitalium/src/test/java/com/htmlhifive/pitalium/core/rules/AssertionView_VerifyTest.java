@@ -17,11 +17,11 @@
 package com.htmlhifive.pitalium.core.rules;
 
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -93,7 +93,7 @@ public class AssertionView_VerifyTest {
 	public void initializeAssertionView() throws Exception {
 		MockitoAnnotations.initMocks(AssertionView_VerifyTest.this);
 		try {
-			BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/hifive_logo.png"));
+			BufferedImage image = ImageIO.read(getClass().getResource("images/hifive_logo.png"));
 			screenshotResult = createScreenshotResult(image);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -101,8 +101,8 @@ public class AssertionView_VerifyTest {
 
 		mockStatic(PtlWebDriverFactory.class);
 		when(PtlWebDriverFactory.getInstance(any(PtlCapabilities.class))).thenReturn(driverFactory);
-		when(driverFactory.getDriver().takeScreenshot(anyString(), any(List.class), any(List.class))).thenReturn(
-				screenshotResult);
+		when(driverFactory.getDriver().takeScreenshot(anyString(), any(List.class), any(List.class)))
+				.thenReturn(screenshotResult);
 		when(driverFactory.getDriver().takeScreenshot(anyString())).thenReturn(screenshotResult);
 
 		mockStatic(TestResultManager.class);
@@ -134,8 +134,8 @@ public class AssertionView_VerifyTest {
 	 */
 	@Test
 	public void verifyView_runTest_success() throws Exception {
-		when(testResultManager.getPersister().loadTargetResults(any(PersistMetadata.class))).thenReturn(
-				screenshotResult.getTargetResults());
+		when(testResultManager.getPersister().loadTargetResults(any(PersistMetadata.class)))
+				.thenReturn(screenshotResult.getTargetResults());
 
 		assertionView.verifyView(ScreenshotArgument.builder("ssid").build());
 		assertTrue(true);
@@ -146,10 +146,10 @@ public class AssertionView_VerifyTest {
 	 */
 	@Test
 	public void verifyView_runTest_failed() throws Exception {
-		BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/hifive_logo_part.png"));
+		BufferedImage image = ImageIO.read(getClass().getResource("images/hifive_logo_part.png"));
 
-		when(testResultManager.getPersister().loadTargetResults(any(PersistMetadata.class))).thenReturn(
-				createScreenshotResult(image).getTargetResults());
+		when(testResultManager.getPersister().loadTargetResults(any(PersistMetadata.class)))
+				.thenReturn(createScreenshotResult(image).getTargetResults());
 
 		expectedException.expect(AssertionError.class);
 		expectedException.expectMessage(startsWith("Verified 1 errors"));
@@ -163,8 +163,8 @@ public class AssertionView_VerifyTest {
 	 */
 	@Test
 	public void verifyScreenshot_success() throws Exception {
-		when(testResultManager.getPersister().loadTargetResults(any(PersistMetadata.class))).thenReturn(
-				screenshotResult.getTargetResults());
+		when(testResultManager.getPersister().loadTargetResults(any(PersistMetadata.class)))
+				.thenReturn(screenshotResult.getTargetResults());
 
 		assertionView.verifyScreenshot(screenshotResult);
 		assertTrue(true);
@@ -175,10 +175,10 @@ public class AssertionView_VerifyTest {
 	 */
 	@Test
 	public void verifyScreenshot_failed() throws Exception {
-		BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/hifive_logo_part.png"));
+		BufferedImage image = ImageIO.read(getClass().getResource("images/hifive_logo_part.png"));
 
-		when(testResultManager.getPersister().loadTargetResults(any(PersistMetadata.class))).thenReturn(
-				createScreenshotResult(image).getTargetResults());
+		when(testResultManager.getPersister().loadTargetResults(any(PersistMetadata.class)))
+				.thenReturn(createScreenshotResult(image).getTargetResults());
 
 		expectedException.expect(AssertionError.class);
 		expectedException.expectMessage(startsWith("Verified 1 errors"));
@@ -192,7 +192,7 @@ public class AssertionView_VerifyTest {
 	 */
 	@Test
 	public void verifyExists_success() throws Exception {
-		BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/hifive_logo_part.png"));
+		BufferedImage image = ImageIO.read(getClass().getResource("images/hifive_logo_part.png"));
 
 		assertionView.verifyExists(image);
 		assertTrue(true);
@@ -203,7 +203,7 @@ public class AssertionView_VerifyTest {
 	 */
 	@Test
 	public void verifyExists_failed() throws Exception {
-		BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/hifive_logo_not_part.png"));
+		BufferedImage image = ImageIO.read(getClass().getResource("images/hifive_logo_not_part.png"));
 
 		expectedException.expect(AssertionError.class);
 		expectedException.expectMessage(startsWith("Verified 1 errors"));
@@ -213,14 +213,15 @@ public class AssertionView_VerifyTest {
 	}
 
 	private ScreenshotResult createScreenshotResult(BufferedImage image) {
-		ScreenAreaResult screenAreaResult = new ScreenAreaResult(
-				new IndexDomSelector(SelectorType.TAG_NAME, "body", 0), new RectangleArea(0, 0, image.getWidth(),
-						image.getHeight()), ScreenArea.of(SelectorType.TAG_NAME, "body"));
+		ScreenAreaResult screenAreaResult = new ScreenAreaResult(new IndexDomSelector(SelectorType.TAG_NAME, "body", 0),
+				new RectangleArea(0, 0, image.getWidth(), image.getHeight()),
+				ScreenArea.of(SelectorType.TAG_NAME, "body"));
 		TargetResult targetResult = new TargetResult(screenAreaResult, new ArrayList<ScreenAreaResult>(),
 				new ScreenshotImage(image));
 
-		return new ScreenshotResult("ssid", null, null, Collections.singletonList(targetResult), getClass()
-				.getSimpleName(), testName.getMethodName(), new HashMap<String, Object>(), new ScreenshotImage(image));
+		return new ScreenshotResult("ssid", null, null, Collections.singletonList(targetResult),
+				getClass().getSimpleName(), testName.getMethodName(), new HashMap<String, Object>(),
+				new ScreenshotImage(image));
 	}
 
 }
