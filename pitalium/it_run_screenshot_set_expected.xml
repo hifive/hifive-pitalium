@@ -18,27 +18,8 @@
 		</junit>
 	</target>
 	
-	<target name="screenshot_scroll" description="テストを行います。">
-		<mkdir dir="${target.junit.report.dir}" />
-		<junit fork="yes" printsummary="yes" maxmemory="1024m" dir="${target.cobertura.dir}">
-			<syspropertyset refid="proxy.settings" />
-			<jvmarg value="-XX:-UseSplitVerifier" />
-			<jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=${set_expected.config.file}"/>
-			<jvmarg line="-Dcom.htmlhifive.pitalium.testAppConfig=testAppConfig_scroll.json"/>
-			<formatter type="xml" />
-			<classpath refid="test.classpath" />
-			<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
-
-			<batchtest fork="yes" todir="${target.junit.report.dir}">
-				<fileset dir="${target.test.src.dir}" includes="${it.screenshot.scroll.includes}" excludes="${it.screenshot.scroll.excludes}">
-				</fileset>
-			</batchtest>
-		</junit>
-	</target>
-	
 	<target name="it_screenshot_set_expected_all">
 		<antcall target="screenshot_hifive" />
-		<antcall target="screenshot_scroll" />
 	</target>
 
 </project>

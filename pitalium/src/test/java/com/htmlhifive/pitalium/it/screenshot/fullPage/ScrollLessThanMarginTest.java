@@ -45,18 +45,21 @@ public class ScrollLessThanMarginTest extends PtlItScreenshotTestBase {
 				"var windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;"
 						+ "var body = document.body;" + "var height = body.getPtlBoundingClientRect().height;"
 						+ "var margin = (windowHeight - height) * 2;" + "body.style.marginTop = margin + 'px';"
-						+ "return margin;").intValue();
+						+ "return margin;")
+				.intValue();
 
 		assertionView.assertView("s");
 
-		double ratio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double ratio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		int marginPixel = (int) Math.round(margin * ratio);
-		BufferedImage gradationImage = image.getSubimage(0, marginPixel, image.getWidth(), image.getHeight()
-				- marginPixel);
-		assertThat(gradationImage, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			int marginPixel = (int) Math.round(margin * ratio);
+			BufferedImage gradationImage = image.getSubimage(0, marginPixel, image.getWidth(),
+					image.getHeight() - marginPixel);
+			assertThat(gradationImage, is(gradationWithBorder(ratio)));
+		}
 	}
 
 	/**
@@ -73,18 +76,21 @@ public class ScrollLessThanMarginTest extends PtlItScreenshotTestBase {
 				"var windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;"
 						+ "var body = document.body;" + "var width = body.getPtlBoundingClientRect().width;"
 						+ "var margin = (windowWidth - width) * 2;" + "body.style.marginLeft = margin + 'px';"
-						+ "return margin;").intValue();
+						+ "return margin;")
+				.intValue();
 
 		assertionView.assertView("s");
 
-		double ratio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double ratio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		int marginPixel = (int) Math.round(margin * ratio);
-		BufferedImage gradationImage = image.getSubimage(marginPixel, 0, image.getWidth() - marginPixel,
-				image.getHeight());
-		assertThat(gradationImage, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			int marginPixel = (int) Math.round(margin * ratio);
+			BufferedImage gradationImage = image.getSubimage(marginPixel, 0, image.getWidth() - marginPixel,
+					image.getHeight());
+			assertThat(gradationImage, is(gradationWithBorder(ratio)));
+		}
 	}
 
 }

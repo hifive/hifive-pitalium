@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 import javax.imageio.ImageIO;
 
@@ -26,11 +25,11 @@ public class CategoryImageComparatorTest {
 	@Test
 	public void testCompareMissingSucceeded() throws Exception {
 		BufferedImage expectedImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/missing_expected.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_missing_expected.png"));
 		Rectangle expectedRectangle = new Rectangle(0, 0, expectedImage.getWidth(), expectedImage.getHeight());
 		// missingの差分がある画像
 		BufferedImage actualImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/missing_actual.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_missing_actual.png"));
 		Rectangle actualRectangle = new Rectangle(0, 0, actualImage.getWidth(), actualImage.getHeight());
 
 		// missingの差分を容認するカテゴリ比較を行うComparatorを作成
@@ -56,11 +55,11 @@ public class CategoryImageComparatorTest {
 	@Test
 	public void testCompareMissingFailed() throws Exception {
 		BufferedImage expectedImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/missing_expected.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_missing_expected.png"));
 		Rectangle expectedRectangle = new Rectangle(0, 0, expectedImage.getWidth(), expectedImage.getHeight());
 		// missingの差分とtextの差分がある画像
 		BufferedImage actualImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/missing_actual_failed.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_missing_actual_failed.png"));
 		Rectangle actualRectangle = new Rectangle(0, 0, actualImage.getWidth(), actualImage.getHeight());
 
 		// missingの差分を容認するカテゴリ比較を行うComparatorを作成
@@ -87,11 +86,11 @@ public class CategoryImageComparatorTest {
 	@Test
 	public void testCompareShiftSucceeded() throws Exception {
 		BufferedImage expectedImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/shift_expected.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_shift_expected.png"));
 		Rectangle expectedRectangle = new Rectangle(0, 0, expectedImage.getWidth(), expectedImage.getHeight());
 		// shiftの差分がある画像
 		BufferedImage actualImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/shift_actual.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_shift_actual.png"));
 		Rectangle actualRectangle = new Rectangle(0, 0, actualImage.getWidth(), actualImage.getHeight());
 
 		// shiftの差分を容認するカテゴリ比較を行うComparatorを作成
@@ -117,11 +116,11 @@ public class CategoryImageComparatorTest {
 	@Test
 	public void testCompareShiftFailed() throws Exception {
 		BufferedImage expectedImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/shift_expected.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_shift_expected.png"));
 		Rectangle expectedRectangle = new Rectangle(0, 0, expectedImage.getWidth(), expectedImage.getHeight());
 		// shiftの差分とtextの差分がある画像
 		BufferedImage actualImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/shift_actual_failed.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_shift_actual_failed.png"));
 		Rectangle actualRectangle = new Rectangle(0, 0, actualImage.getWidth(), actualImage.getHeight());
 
 		// shiftの差分を容認するカテゴリ比較を行うComparatorを作成
@@ -148,11 +147,10 @@ public class CategoryImageComparatorTest {
 	@Test
 	public void testCompareTextSucceeded() throws Exception {
 		BufferedImage expectedImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/text_expected.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_text_expected.png"));
 		Rectangle expectedRectangle = new Rectangle(0, 0, expectedImage.getWidth(), expectedImage.getHeight());
 		// textの差分がある画像
-		BufferedImage actualImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/text_actual.png"));
+		BufferedImage actualImage = ImageIO.read(getClass().getResource("CategoryImageComparatorTest_text_actual.png"));
 		Rectangle actualRectangle = new Rectangle(0, 0, actualImage.getWidth(), actualImage.getHeight());
 
 		// textの差分を容認するカテゴリ比較を行うComparatorを作成
@@ -178,11 +176,11 @@ public class CategoryImageComparatorTest {
 	@Test
 	public void testCompareTextFailed() throws Exception {
 		BufferedImage expectedImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/text_expected.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_text_expected.png"));
 		Rectangle expectedRectangle = new Rectangle(0, 0, expectedImage.getWidth(), expectedImage.getHeight());
 		// textの差分とmissingの差分がある画像
 		BufferedImage actualImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/text_actual_failed.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_text_actual_failed.png"));
 		Rectangle actualRectangle = new Rectangle(0, 0, actualImage.getWidth(), actualImage.getHeight());
 
 		// textの差分を容認するカテゴリ比較を行うComparatorを作成
@@ -209,11 +207,11 @@ public class CategoryImageComparatorTest {
 	@Test
 	public void testCompareScalingSucceeded() throws Exception {
 		BufferedImage expectedImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/scaling_expected.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_scaling_expected.png"));
 		Rectangle expectedRectangle = new Rectangle(0, 0, expectedImage.getWidth(), expectedImage.getHeight());
 		// scalingの差分がある画像
 		BufferedImage actualImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/scaling_actual.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_scaling_actual.png"));
 		Rectangle actualRectangle = new Rectangle(0, 0, actualImage.getWidth(), actualImage.getHeight());
 
 		// scalingの差分を容認するカテゴリ比較を行うComparatorを作成
@@ -239,11 +237,11 @@ public class CategoryImageComparatorTest {
 	@Test
 	public void testCompareScalingFailed() throws Exception {
 		BufferedImage expectedImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/scaling_expected.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_scaling_expected.png"));
 		Rectangle expectedRectangle = new Rectangle(0, 0, expectedImage.getWidth(), expectedImage.getHeight());
 		// scalingの差分とtextの差分がある画像
 		BufferedImage actualImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/scaling_actual_failed.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_scaling_actual_failed.png"));
 		Rectangle actualRectangle = new Rectangle(0, 0, actualImage.getWidth(), actualImage.getHeight());
 
 		// scalingの差分を容認するカテゴリ比較を行うComparatorを作成
@@ -270,11 +268,11 @@ public class CategoryImageComparatorTest {
 	@Test
 	public void testCompareSimilarSucceeded() throws Exception {
 		BufferedImage expectedImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/similar_expected.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_similar_expected.png"));
 		Rectangle expectedRectangle = new Rectangle(0, 0, expectedImage.getWidth(), expectedImage.getHeight());
 		// similarの差分がある画像
 		BufferedImage actualImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/similar_actual.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_similar_actual.png"));
 		Rectangle actualRectangle = new Rectangle(0, 0, actualImage.getWidth(), actualImage.getHeight());
 
 		// similarの差分を容認するカテゴリ比較を行うComparatorを作成
@@ -300,11 +298,11 @@ public class CategoryImageComparatorTest {
 	@Test
 	public void testCompareSimilarFailed() throws Exception {
 		BufferedImage expectedImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/similar_expected.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_similar_expected.png"));
 		Rectangle expectedRectangle = new Rectangle(0, 0, expectedImage.getWidth(), expectedImage.getHeight());
 		// similarの差分とtextの差分がある画像
 		BufferedImage actualImage = ImageIO
-				.read(new File("src/test/resources/images/categoryImageComparator/similar_actual_failed.png"));
+				.read(getClass().getResource("CategoryImageComparatorTest_similar_actual_failed.png"));
 		Rectangle actualRectangle = new Rectangle(0, 0, actualImage.getWidth(), actualImage.getHeight());
 
 		// similarの差分を容認するカテゴリ比較を行うComparatorを作成

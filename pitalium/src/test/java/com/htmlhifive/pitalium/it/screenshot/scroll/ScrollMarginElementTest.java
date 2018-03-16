@@ -52,12 +52,14 @@ public class ScrollMarginElementTest extends PtlItScreenshotTestBase {
 				.moveTarget(true).build();
 		assertionView.assertView(arg);
 
-		// Check
-		double ratio = getPixelRatio();
-		Rect rect = getPixelRectById("div-scroll");
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image.getHeight(), is(greaterThan((int) rect.height)));
-		assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1).ignoreCorner(isIgnoreCorners())));
+		if (!isSkipColorCheck()) {
+			// Check
+			double ratio = getPixelRatio();
+			Rect rect = getPixelRectById("div-scroll");
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			assertThat(image.getHeight(), is(greaterThan((int) rect.height)));
+			assertThat(image, is(gradationWithBorder(ratio, Color.BLACK, 1)));
+		}
 	}
 
 	/**
@@ -106,23 +108,25 @@ public class ScrollMarginElementTest extends PtlItScreenshotTestBase {
 		// マージンが入った状態で計算されるらしいので
 		assertThat(image.getHeight(), is(greaterThan((int) (rect.height - 200 * ratio))));
 
-		int x = image.getWidth() / 2;
-		int y = 0;
-		int cellCount = 0;
-		float cellHeight = 20;
-		if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())
-				&& Platform.MAC.equals(capabilities.getPlatform())) {
-			cellHeight = 20.45f;
-		}
-		while (cellCount <= 15) {
-			int color = cellCount * 16;
-			Color expect = Color.rgb(color, color, color);
-			cellCount++;
-			int maxY = (int) Math.round(cellCount * cellHeight * ratio);
-			while (y < maxY) {
-				Color actual = Color.valueOf(image.getRGB(x, y));
-				assertThat(String.format("Point (%d, %d) is not match.", x, y), actual, is(expect));
-				y++;
+		if (!isSkipColorCheck()) {
+			int x = image.getWidth() / 2;
+			int y = 0;
+			int cellCount = 0;
+			float cellHeight = 20;
+			if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())
+					&& Platform.MAC.equals(capabilities.getPlatform())) {
+				cellHeight = 20.45f;
+			}
+			while (cellCount <= 15) {
+				int color = cellCount * 16;
+				Color expect = Color.rgb(color, color, color);
+				cellCount++;
+				int maxY = (int) Math.round(cellCount * cellHeight * ratio);
+				while (y < maxY) {
+					Color actual = Color.valueOf(image.getRGB(x, y));
+					assertThat(String.format("Point (%d, %d) is not match.", x, y), actual, is(expect));
+					y++;
+				}
 			}
 		}
 	}
@@ -149,10 +153,12 @@ public class ScrollMarginElementTest extends PtlItScreenshotTestBase {
 		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
 		assertThat(image.getHeight(), is(greaterThan((int) rect.height)));
 
-		// 2pxボーダーが写るので無視する
-		int border = (int) Math.round(2 * ratio);
-		image = image.getSubimage(border, border, image.getWidth() - border * 2, image.getHeight() - border * 2);
-		assertThat(image, is(gradationWithBorder(ratio).ignoreCorner(isIgnoreCorners())));
+		if (!isSkipColorCheck()) {
+			// 2pxボーダーが写るので無視する
+			int border = (int) Math.round(2 * ratio);
+			image = image.getSubimage(border, border, image.getWidth() - border * 2, image.getHeight() - border * 2);
+			assertThat(image, is(gradationWithBorder(ratio)));
+		}
 	}
 
 	private void setMarginTo(WebElement target) {

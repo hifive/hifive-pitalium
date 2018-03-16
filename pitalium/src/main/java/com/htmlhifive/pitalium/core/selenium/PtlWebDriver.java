@@ -15,7 +15,8 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.transform;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -1606,7 +1607,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 *
 	 * @return 撮影したスクリーンショット
 	 */
-	protected final BufferedImage getScreenshotAsBufferedImage() {
+	protected BufferedImage getScreenshotAsBufferedImage() {
 		try {
 			byte[] data = getScreenshotAs(OutputType.BYTES);
 			return ImageIO.read(new ByteArrayInputStream(data));
@@ -1718,29 +1719,19 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @return スクロール回数
 	 */
 	long getScrollNum(double clientHeight) {
-		double scrollHeight = getScrollHeight();
-
-		if (clientHeight >= scrollHeight) {
-			return 0;
-		}
-
-		return (int) (Math.ceil(scrollHeight / clientHeight)) - 1;
+		double pageHeight = getCurrentPageHeight();
+		return (int) (Math.ceil(pageHeight / clientHeight)) - 1;
 	}
 
 	/**
-	 * 可視範囲の幅さを指定してページのスクロール回数を取得します。
+	 * 可視範囲の幅を指定してページのスクロール回数を取得します。
 	 *
 	 * @param clientWidth 可視範囲の幅さ
 	 * @return スクロール回数
 	 */
 	long getHorizontalScrollNum(double clientWidth) {
-		double scrollWidth = getScrollWidth();
-
-		if (clientWidth >= scrollWidth) {
-			return 0;
-		}
-
-		return (int) (Math.ceil(scrollWidth / clientWidth)) - 1;
+		double pageWidth = getCurrentPageWidth();
+		return (int) (Math.ceil(pageWidth / clientWidth)) - 1;
 	}
 
 	/**
@@ -1933,6 +1924,15 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 				} else {
 					return Maps.transformValues(resultAsMap, this);
 				}
+			}
+
+			// Chromeの場合、resultがRemoteWebElementのリストになっている
+			// リストの中身を再帰的にapplyで呼び出すため最終的にresultはRemoteWebElementになる
+			// RemoteWebElementを返さずに、PtlChromeWebElementを返す
+			if (result instanceof RemoteWebElement) {
+				RemoteWebElement element = newRemoteWebElement();
+				element.setId(String.valueOf(((RemoteWebElement) result).getId()));
+				return element;
 			}
 
 			return super.apply(result);

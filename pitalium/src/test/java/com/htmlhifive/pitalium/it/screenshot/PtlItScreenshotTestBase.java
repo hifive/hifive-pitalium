@@ -38,7 +38,7 @@ public abstract class PtlItScreenshotTestBase extends PtlItTestBase {
 	/**
 	 * @return
 	 */
-	protected boolean isIgnoreCorners() {
+	protected boolean isSkipColorCheck() {
 		return isMacOS() && isChrome();
 	}
 }

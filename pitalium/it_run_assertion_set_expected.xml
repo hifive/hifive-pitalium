@@ -12,25 +12,7 @@
 			<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
 
 			<batchtest fork="yes" todir="${target.junit.report.dir}">
-				<fileset dir="${target.test.src.dir}" includes="${it.assertion.set_expected.includes}" excludes="${it.assertion.set_expected.excludes}">
-				</fileset>
-			</batchtest>
-		</junit>
-	</target>
-	
-	<target name="assertion_scroll_set_expected" description="テストを行います。">
-		<mkdir dir="${target.junit.report.dir}" />
-		<junit fork="yes" printsummary="yes" maxmemory="1024m" dir="${target.cobertura.dir}">
-			<syspropertyset refid="proxy.settings" />
-			<jvmarg value="-XX:-UseSplitVerifier" />
-			<jvmarg line="-Dcom.htmlhifive.pitalium.environmentConfig=${set_expected.config.file}"/>
-			<jvmarg line="-Dcom.htmlhifive.pitalium.testAppConfig=testAppConfig_scroll.json"/>
-			<formatter type="xml" />
-			<classpath refid="test.classpath" />
-			<sysproperty key="net.sourceforge.cobertura.datafile" file="${target.cobertura.datafile}" />
-
-			<batchtest fork="yes" todir="${target.junit.report.dir}">
-				<fileset dir="${target.test.src.dir}" includes="${it.assertion.scroll.set_expected.includes}" excludes="${it.assertion.scroll.set_expected.excludes}">
+				<fileset dir="${target.test.src.dir}" includes="${it.assertion.includes}" excludes="${it.assertion.excludes}">
 				</fileset>
 			</batchtest>
 		</junit>
@@ -38,7 +20,6 @@
 	
 	<target name="it_assertion_set_expected_all">
 		<antcall target="assertion_hifive_set_expected" />
-		<antcall target="assertion_scroll_set_expected" />
 	</target>
 
 </project>
