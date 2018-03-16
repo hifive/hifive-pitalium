@@ -1,9 +1,13 @@
 plugins {
     id('java')
     id('checkstyle')
+    id('signing')
+    id('maven')
     id('net.saliman.cobertura').version('2.4.0')
 }
 
+group = 'com.htmlhifive'
+archivesBaseName = 'pitalium'
 version = '1.2.2'
 sourceCompatibility = 1.8
 
@@ -44,3 +48,81 @@ test {
     include('**/common/util/*', '**/core/**/*', '**/image/**/*', '**/junit/*')
 }
 
+javadoc {
+    options.encoding = 'utf-8'
+    failOnError = false
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives(javadocJar, sourcesJar)
+}
+
+signing {
+    sign(configurations.archives)
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment ->
+                signing.signPom(deployment)
+            }
+
+            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+
+                def proxyHost = System.getProperty('https.proxyHost')
+                if (proxyHost != null) {
+                    proxy(host: proxyHost, port: System.getProperty('https.proxyPort') as int, type: 'http')
+                }
+            }
+
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+
+                def proxyHost = System.getProperty('https.proxyHost')
+                if (proxyHost != null) {
+                    proxy(host: proxyHost, port: System.getProperty('https.proxyPort') as int, type: 'http')
+                }
+            }
+
+            pom.project {
+                name('Pitalium')
+                packaging('jar')
+                description('Libraries for supporting regression testing of Web applications on multiple browsers and devices using Selenium Grid and Appium.')
+                url('https://github.com/hifive/hifive-pitalium')
+
+                scm {
+                    url('https://github.com/hifive/hifive-pitalium')
+                    connection('scm:git:git@github.com:hifive/hifive-pitalium.git')
+                    developerConnection('scm:git:git@github.com:hifive/hifive-pitalium.git')
+                }
+
+                licenses {
+                    license {
+                        name('The Apache License, Version 2.0')
+                        url('http://www.apache.org/licenses/LICENSE-2.0.txt')
+                    }
+                }
+
+                developers {
+                    developer {
+                        id('hifive')
+                        name('hifive')
+                        email('contact@htmlhifive.com')
+                    }
+                }
+            }
+        }
+    }
+}
