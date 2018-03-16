@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 import javax.imageio.ImageIO;
 
@@ -21,8 +20,8 @@ public class SimilarityImageComparatorTest {
 	 */
 	@Test
 	public void testCompareLessThanParam() throws Exception {
-		BufferedImage expectedImage = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
-		BufferedImage targetImage = ImageIO.read(new File("src/test/resources/images/hifive_logo_similar.png"));
+		BufferedImage expectedImage = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage targetImage = ImageIO.read(getClass().getResource("hifive_logo_similar.png"));
 
 		// 各Thresholdの値はhifive_logo.pngとhifive_logo_similar.pngの類似度を事前に計算したSimilarityUtils.calcSimilarityの結果を使用
 		double pixleByPixelThreshold = 1.00;
@@ -45,8 +44,8 @@ public class SimilarityImageComparatorTest {
 	 */
 	@Test
 	public void testCompareEqualParam() throws Exception {
-		BufferedImage expectedImage = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
-		BufferedImage targetImage = ImageIO.read(new File("src/test/resources/images/hifive_logo_similar.png"));
+		BufferedImage expectedImage = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage targetImage = ImageIO.read(getClass().getResource("hifive_logo_similar.png"));
 
 		// 各Thresholdの値はhifive_logo.pngとhifive_logo_similar.pngの類似度を事前に計算したSimilarityUtils.calcSimilarityの結果を使用
 		double pixleByPixelThreshold = 0.99;
@@ -69,8 +68,8 @@ public class SimilarityImageComparatorTest {
 	 */
 	@Test
 	public void testCompareGreaterThanParam() throws Exception {
-		BufferedImage expectedImage = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
-		BufferedImage targetImage = ImageIO.read(new File("src/test/resources/images/hifive_logo_similar.png"));
+		BufferedImage expectedImage = ImageIO.read(getClass().getResource("hifive_logo.png"));
+		BufferedImage targetImage = ImageIO.read(getClass().getResource("hifive_logo_similar.png"));
 
 		// 各Thresholdの値はhifive_logo.pngとhifive_logo_similar.pngの類似度を事前に計算したSimilarityUtils.calcSimilarityの結果を使用
 		double pixleByPixelThreshold = 0.98;

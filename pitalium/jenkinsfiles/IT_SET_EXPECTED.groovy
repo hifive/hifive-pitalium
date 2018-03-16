@@ -56,7 +56,7 @@ node {
 
 	// テスト実行
 	withEnv(["ANT_OPTS=-Dant.proxy.host=${ANT_PROXY_HOST} -Dant.proxy.port=${ANT_PROXY_PORT}"]) {
-		bat("${antHome}/bin/ant.bat -file pitalium/ci_build.xml it_test_screenshot_set_expected it_test_assertion_set_expected && exit %%ERRORLEVEL%%")
+		bat("${antHome}/bin/ant.bat -file pitalium/ci_build.xml it_test_assertion_set_expected && exit %%ERRORLEVEL%%")
 	 }
 
 	stage('Archive Artifact')

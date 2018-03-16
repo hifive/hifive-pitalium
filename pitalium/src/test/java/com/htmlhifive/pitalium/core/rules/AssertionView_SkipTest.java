@@ -1,12 +1,9 @@
 package com.htmlhifive.pitalium.core.rules;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -52,20 +49,16 @@ import com.htmlhifive.pitalium.image.model.ScreenshotImage;
 @PrepareForTest({ PtlTestConfig.class, TestResultManager.class, PtlWebDriverFactory.class })
 public class AssertionView_SkipTest {
 
-	@Mock(
-			answer = Answers.RETURNS_DEEP_STUBS)
+	@Mock(answer = Answers.RETURNS_DEEP_STUBS)
 	public PtlWebDriverFactory driverFactory;
 
-	@Mock(
-			answer = Answers.RETURNS_DEEP_STUBS)
+	@Mock(answer = Answers.RETURNS_DEEP_STUBS)
 	public PtlWebDriver driver;
 
-	@Mock(
-			answer = Answers.RETURNS_DEEP_STUBS)
+	@Mock(answer = Answers.RETURNS_DEEP_STUBS)
 	public TestResultManager testResultManager;
 
-	@Mock(
-			answer = Answers.RETURNS_DEEP_STUBS)
+	@Mock(answer = Answers.RETURNS_DEEP_STUBS)
 	public PtlTestConfig testConfig;
 
 	ExpectedException expectedException = ExpectedException.none();
@@ -97,7 +90,7 @@ public class AssertionView_SkipTest {
 		when(testResultManager.getCurrentId()).thenReturn("2016_01_01_01_01_01");
 
 		try {
-			BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource("images/hifive_logo.png"));
+			BufferedImage image = ImageIO.read(getClass().getResource("images/hifive_logo.png"));
 			screenshotResult = createScreenshotResult(image);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -109,7 +102,7 @@ public class AssertionView_SkipTest {
 
 	/**
 	 * assertViewをSKIPモードで実行し、takeScreenshotが呼ばれていないことを確認
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -125,7 +118,7 @@ public class AssertionView_SkipTest {
 
 	/**
 	 * verifyViewをSKIPモードで実行し、takeScreenshotが呼ばれていないことを確認
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -139,14 +132,15 @@ public class AssertionView_SkipTest {
 	}
 
 	private ScreenshotResult createScreenshotResult(BufferedImage image) {
-		ScreenAreaResult screenAreaResult = new ScreenAreaResult(
-				new IndexDomSelector(SelectorType.TAG_NAME, "body", 0), new RectangleArea(0, 0, image.getWidth(),
-						image.getHeight()), ScreenArea.of(SelectorType.TAG_NAME, "body"));
+		ScreenAreaResult screenAreaResult = new ScreenAreaResult(new IndexDomSelector(SelectorType.TAG_NAME, "body", 0),
+				new RectangleArea(0, 0, image.getWidth(), image.getHeight()),
+				ScreenArea.of(SelectorType.TAG_NAME, "body"));
 		TargetResult targetResult = new TargetResult(screenAreaResult, new ArrayList<ScreenAreaResult>(),
 				new ScreenshotImage(image));
 
-		return new ScreenshotResult("ssid", null, null, Collections.singletonList(targetResult), getClass()
-				.getSimpleName(), testName.getMethodName(), new HashMap<String, Object>(), new ScreenshotImage(image));
+		return new ScreenshotResult("ssid", null, null, Collections.singletonList(targetResult),
+				getClass().getSimpleName(), testName.getMethodName(), new HashMap<String, Object>(),
+				new ScreenshotImage(image));
 	}
 
 }

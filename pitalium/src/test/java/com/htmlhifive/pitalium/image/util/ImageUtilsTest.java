@@ -21,7 +21,6 @@ import static org.junit.Assert.*;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -216,7 +215,7 @@ public class ImageUtilsTest {
 	 */
 	@Test
 	public void testCalcIntegralImage() throws Exception {
-		BufferedImage source = ImageIO.read(new File("src/test/resources/images/imageUtils/calc_integral_image.png"));
+		BufferedImage source = ImageIO.read(getClass().getResource("ImageUtilsTest_calc_integral_image.png"));
 
 		// expectedの値はcalc_integral_image.pngで事前に計算したImageUtils.calcIntegralImageの結果を使用
 		double[][] expected = { { 255.0, 255.0, 510.0, 765.0 }, { 510.0, 765.0, 1275.0, 1530.0 },
@@ -240,7 +239,7 @@ public class ImageUtilsTest {
 		DiffPoints diffPoints = new DiffPoints(points, new ArrayList<Point>());
 
 		// expectedのget_marked_image.pngは事前に出力したImageUtils.getMarkedImageの結果を使用
-		BufferedImage expected = ImageIO.read(new File("src/test/resources/images/imageUtils/get_marked_image.png"));
+		BufferedImage expected = ImageIO.read(getClass().getResource("ImageUtilsTest_get_marked_image.png"));
 		BufferedImage actual = ImageUtils.getMarkedImage(image, diffPoints);
 
 		assertThat(ImageUtils.imageEquals(expected, actual), is(true));
@@ -254,10 +253,10 @@ public class ImageUtilsTest {
 	@Test
 	public void testConvertDiffPointsToAreas() throws Exception {
 		BufferedImage image1 = ImageIO
-				.read(new File("src/test/resources/images/imageUtils/convert_diff_points_to_areas_expected.png"));
+				.read(getClass().getResource("ImageUtilsTest_convert_diff_points_to_areas_expected.png"));
 		Rectangle rectangle1 = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		BufferedImage image2 = ImageIO
-				.read(new File("src/test/resources/images/imageUtils/convert_diff_points_to_areas_actual.png"));
+				.read(getClass().getResource("ImageUtilsTest_convert_diff_points_to_areas_actual.png"));
 		Rectangle rectangle2 = new Rectangle(0, 0, image2.getWidth(), image2.getHeight());
 
 		ImageComparedResult result = new DefaultImageComparator().compare(image1, rectangle1, image2, rectangle2);
@@ -290,10 +289,10 @@ public class ImageUtilsTest {
 	@Test
 	public void testConvertSizeDiffPointsToAreas() throws Exception {
 		BufferedImage image1 = ImageIO
-				.read(new File("src/test/resources/images/imageUtils/convert_size_diff_points_to_areas_expected.png"));
+				.read(getClass().getResource("ImageUtilsTest_convert_size_diff_points_to_areas_expected.png"));
 		Rectangle rectangle1 = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		BufferedImage image2 = ImageIO
-				.read(new File("src/test/resources/images/imageUtils/convert_size_diff_points_to_areas_actual.png"));
+				.read(getClass().getResource("ImageUtilsTest_convert_size_diff_points_to_areas_actual.png"));
 		Rectangle rectangle2 = new Rectangle(0, 0, image2.getWidth(), image2.getHeight());
 
 		ImageComparedResult result = new DefaultImageComparator().compare(image1, rectangle1, image2, rectangle2);
@@ -324,11 +323,11 @@ public class ImageUtilsTest {
 	@Test
 	public void testVerticalMerge() throws Exception {
 		List<BufferedImage> images = new ArrayList<BufferedImage>();
-		images.add(ImageIO.read(new File("src/test/resources/images/hifive_logo.png")));
-		images.add(ImageIO.read(new File("src/test/resources/images/hifive_logo.png")));
+		images.add(ImageIO.read(getClass().getResource("hifive_logo.png")));
+		images.add(ImageIO.read(getClass().getResource("hifive_logo.png")));
 
 		// expectedのvertical_merge.pngは事前に出力したImageUtils.verticalMergeの結果を使用
-		BufferedImage expected = ImageIO.read(new File("src/test/resources/images/imageUtils/vertical_merge.png"));
+		BufferedImage expected = ImageIO.read(getClass().getResource("ImageUtilsTest_vertical_merge.png"));
 		BufferedImage actual = ImageUtils.verticalMerge(images);
 
 		assertThat(ImageUtils.imageEquals(expected, actual), is(true));
@@ -343,15 +342,15 @@ public class ImageUtilsTest {
 	public void testMerge() throws Exception {
 		List<List<BufferedImage>> images = new ArrayList<List<BufferedImage>>();
 		images.add(new ArrayList<BufferedImage>());
-		images.get(0).add(ImageIO.read(new File("src/test/resources/images/hifive_logo.png")));
-		images.get(0).add(ImageIO.read(new File("src/test/resources/images/hifive_logo.png")));
+		images.get(0).add(ImageIO.read(getClass().getResource("hifive_logo.png")));
+		images.get(0).add(ImageIO.read(getClass().getResource("hifive_logo.png")));
 
 		images.add(new ArrayList<BufferedImage>());
-		images.get(1).add(ImageIO.read(new File("src/test/resources/images/hifive_logo.png")));
-		images.get(1).add(ImageIO.read(new File("src/test/resources/images/hifive_logo.png")));
+		images.get(1).add(ImageIO.read(getClass().getResource("hifive_logo.png")));
+		images.get(1).add(ImageIO.read(getClass().getResource("hifive_logo.png")));
 
 		// expectedのmerge.pngは事前に出力したImageUtils.mergeの結果を使用
-		BufferedImage expected = ImageIO.read(new File("src/test/resources/images/imageUtils/merge.png"));
+		BufferedImage expected = ImageIO.read(getClass().getResource("ImageUtilsTest_merge.png"));
 		BufferedImage actual = ImageUtils.merge(images);
 
 		assertThat(ImageUtils.imageEquals(expected, actual), is(true));
@@ -403,7 +402,7 @@ public class ImageUtilsTest {
 	 */
 	@Test
 	public void testDetectBackgroundColor() throws Exception {
-		BufferedImage b = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
+		BufferedImage b = ImageIO.read(getClass().getResource("hifive_logo.png"));
 
 		// expectedの値はhifive_logo.pngで事前に計算したImageUtils.detectBackgroundColorの結果を使用
 		int expected = 0xfff5f4f4;
@@ -419,7 +418,7 @@ public class ImageUtilsTest {
 	 */
 	@Test
 	public void testGetObjectRectangle() throws Exception {
-		BufferedImage image = ImageIO.read(new File("src/test/resources/images/imageUtils/get_object_rectangle.png"));
+		BufferedImage image = ImageIO.read(getClass().getResource("ImageUtilsTest_get_object_rectangle.png"));
 		// 取得したい領域よりもwidth, heightに+10大きく、x, yに-4移動したRectangleを作成
 		Rectangle rectangle = new Rectangle(247, 225, 109, 109);
 
@@ -454,7 +453,7 @@ public class ImageUtilsTest {
 	 */
 	@Test
 	public void testCountSubpixel() throws Exception {
-		BufferedImage bimage = ImageIO.read(new File("src/test/resources/images/imageUtils/count_subpixel.png"));
+		BufferedImage bimage = ImageIO.read(getClass().getResource("ImageUtilsTest_count_subpixel.png"));
 
 		// expectedの値はcount_subpixel.pngで事前に計算したImageUtils.countSubpixelの結果を使用
 		double[] expected = { 1.0, 124.01960784313725 };
@@ -564,10 +563,10 @@ public class ImageUtilsTest {
 	@Test
 	public void testConvertObjectGroupsToAreas() throws Exception {
 		BufferedImage image1 = ImageIO
-				.read(new File("src/test/resources/images/imageUtils/convert_object_groups_to_areas_expected.png"));
+				.read(getClass().getResource("ImageUtilsTest_convert_object_groups_to_areas_expected.png"));
 		Rectangle rectangle1 = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		BufferedImage image2 = ImageIO
-				.read(new File("src/test/resources/images/imageUtils/convert_object_groups_to_areas_actual.png"));
+				.read(getClass().getResource("ImageUtilsTest_convert_object_groups_to_areas_actual.png"));
 		Rectangle rectangle2 = new Rectangle(0, 0, image2.getWidth(), image2.getHeight());
 
 		ImageComparedResult result = new DefaultImageComparator().compare(image1, rectangle1, image2, rectangle2);
@@ -599,10 +598,10 @@ public class ImageUtilsTest {
 	@Test
 	public void testConvertDiffPointsToObjectGroups() throws Exception {
 		BufferedImage image1 = ImageIO
-				.read(new File("src/test/resources/images/imageUtils/convert_object_groups_to_areas_expected.png"));
+				.read(getClass().getResource("ImageUtilsTest_convert_object_groups_to_areas_expected.png"));
 		Rectangle rectangle1 = new Rectangle(0, 0, image1.getWidth(), image1.getHeight());
 		BufferedImage image2 = ImageIO
-				.read(new File("src/test/resources/images/imageUtils/convert_object_groups_to_areas_actual.png"));
+				.read(getClass().getResource("ImageUtilsTest_convert_object_groups_to_areas_actual.png"));
 		Rectangle rectangle2 = new Rectangle(0, 0, image2.getWidth(), image2.getHeight());
 
 		ImageComparedResult result = new DefaultImageComparator().compare(image1, rectangle1, image2, rectangle2);
@@ -629,11 +628,11 @@ public class ImageUtilsTest {
 	 */
 	@Test
 	public void testGetSubImage() throws Exception {
-		BufferedImage image = ImageIO.read(new File("src/test/resources/images/hifive_logo.png"));
+		BufferedImage image = ImageIO.read(getClass().getResource("hifive_logo.png"));
 
 		Rectangle rectangle = new Rectangle(0, 0, 30, 30);
 
-		BufferedImage expected = ImageIO.read(new File("src/test/resources/images/imageUtils/get_sub_image.png"));
+		BufferedImage expected = ImageIO.read(getClass().getResource("ImageUtilsTest_get_sub_image.png"));
 		BufferedImage actual = ImageUtils.getSubImage(image, rectangle);
 
 		assertThat(ImageUtils.imageEquals(expected, actual), is(true));
@@ -646,8 +645,8 @@ public class ImageUtilsTest {
 	 */
 	@Test
 	public void testFindDominantOffset() throws Exception {
-		BufferedImage image1 = ImageIO.read(new File("src/test/resources/images/imageUtils/dominant_expected.png"));
-		BufferedImage image2 = ImageIO.read(new File("src/test/resources/images/imageUtils/dominant_merge.png"));
+		BufferedImage image1 = ImageIO.read(getClass().getResource("ImageUtilsTest_dominant_expected.png"));
+		BufferedImage image2 = ImageIO.read(getClass().getResource("ImageUtilsTest_dominant_merge.png"));
 
 		// 0に近いほど領域の内容の違いを無視して計算する
 		// デフォルトは0.1
@@ -667,13 +666,13 @@ public class ImageUtilsTest {
 	 */
 	@Test
 	public void testGetDominantImage() throws Exception {
-		BufferedImage image1 = ImageIO.read(new File("src/test/resources/images/imageUtils/dominant_expected.png"));
-		BufferedImage image2 = ImageIO.read(new File("src/test/resources/images/imageUtils/dominant_actual.png"));
+		BufferedImage image1 = ImageIO.read(getClass().getResource("ImageUtilsTest_dominant_expected.png"));
+		BufferedImage image2 = ImageIO.read(getClass().getResource("ImageUtilsTest_dominant_actual.png"));
 
 		Offset offset = new Offset(5, 5);
 
 		// expectedのdominant_merge.pngは事前に出力したImageUtils.getDominantImageの結果を使用
-		BufferedImage expected = ImageIO.read(new File("src/test/resources/images/imageUtils/dominant_merge.png"));
+		BufferedImage expected = ImageIO.read(getClass().getResource("ImageUtilsTest_dominant_merge.png"));
 		BufferedImage actual = ImageUtils.getDominantImage(image1, image2, offset);
 
 		assertThat(ImageUtils.imageEquals(expected, actual), is(true));

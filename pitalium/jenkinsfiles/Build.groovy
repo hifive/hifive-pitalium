@@ -66,14 +66,4 @@ def createSettingFilesForAll() {
 	"windowWidth": 1280
 }"""
 			)
-	writeFile(
-			encoding: 'UTF-8',
-			file: 'pitalium\\src\\test\\resources\\testAppConfig_scroll.json',
-			text: """\
-{
-	"baseUrl": "http://${APP_HOST}/pitalium-test-site/",
-	"windowHeight": 960,
-	"windowWidth": 1280
-}"""
-			)
 }

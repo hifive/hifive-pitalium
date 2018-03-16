@@ -1,7 +1,7 @@
 [
 	{
-		"platform": "VISTA",
-		"os": "WINDOWS",
+		"platform": "WINDOWS",
+		"os": "VISTA",
 		"browserName": "internet explorer",
 		"version": "11"
 	}

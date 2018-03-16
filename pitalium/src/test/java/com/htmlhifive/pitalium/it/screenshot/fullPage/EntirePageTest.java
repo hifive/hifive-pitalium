@@ -42,11 +42,13 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		openGradationPage();
 		assertionView.assertView("s");
 
-		double pixelRatio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double pixelRatio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			assertThat(image, is(gradationWithBorder(pixelRatio)));
+		}
 	}
 
 	/**
@@ -61,11 +63,13 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByTagName("body").build();
 		assertionView.assertView(arg);
 
-		double pixelRatio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double pixelRatio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			assertThat(image, is(gradationWithBorder(pixelRatio)));
+		}
 	}
 
 	/**
@@ -83,11 +87,13 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		ScreenshotArgument arg = ScreenshotArgument.builder("s").addNewTargetByClassName("body").build();
 		assertionView.assertView(arg);
 
-		double pixelRatio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double pixelRatio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			assertThat(image, is(gradationWithBorder(pixelRatio)));
+		}
 	}
 
 	/**
@@ -100,11 +106,13 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		openGradationPage("100%", "100%");
 		assertionView.assertView("s");
 
-		double pixelRatio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double pixelRatio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			assertThat(image, is(gradationWithBorder(pixelRatio)));
+		}
 	}
 
 	/**
@@ -117,11 +125,13 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		openGradationPage("160%", "100%");
 		assertionView.assertView("s");
 
-		double pixelRatio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double pixelRatio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			assertThat(image, is(gradationWithBorder(pixelRatio)));
+		}
 	}
 
 	/**
@@ -134,11 +144,13 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		openGradationPage("240%", "100%");
 		assertionView.assertView("s");
 
-		double pixelRatio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double pixelRatio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			assertThat(image, is(gradationWithBorder(pixelRatio)));
+		}
 	}
 
 	/**
@@ -151,11 +163,13 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		openGradationPage("100%", "160%");
 		assertionView.assertView("s");
 
-		double pixelRatio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double pixelRatio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			assertThat(image, is(gradationWithBorder(pixelRatio)));
+		}
 	}
 
 	/**
@@ -168,11 +182,13 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		openGradationPage("100%", "240%");
 		assertionView.assertView("s");
 
-		double pixelRatio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double pixelRatio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			assertThat(image, is(gradationWithBorder(pixelRatio)));
+		}
 	}
 
 	/**
@@ -185,11 +201,13 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		openGradationPage("160%", "160%");
 		assertionView.assertView("s");
 
-		double pixelRatio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double pixelRatio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			assertThat(image, is(gradationWithBorder(pixelRatio)));
+		}
 	}
 
 	/**
@@ -202,10 +220,12 @@ public class EntirePageTest extends PtlItScreenshotTestBase {
 		openGradationPage("240%", "240%");
 		assertionView.assertView("s");
 
-		double pixelRatio = getPixelRatio();
+		if (!isSkipColorCheck()) {
+			double pixelRatio = getPixelRatio();
 
-		// 画像のチェック
-		BufferedImage image = loadTargetResults("s").get(0).getImage().get();
-		assertThat(image, is(gradationWithBorder(pixelRatio).ignoreCorner(isIgnoreCorners())));
+			// 画像のチェック
+			BufferedImage image = loadTargetResults("s").get(0).getImage().get();
+			assertThat(image, is(gradationWithBorder(pixelRatio)));
+		}
 	}
 }
