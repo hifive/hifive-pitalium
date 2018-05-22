@@ -1865,7 +1865,6 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 */
 	public void scrollTo(double x, double y) throws InterruptedException {
 		executeScript("window.scrollTo(arguments[0], arguments[1])", x, y);
-		Thread.sleep(SCROLL_WAIT_MS);
 	}
 
 	/**
