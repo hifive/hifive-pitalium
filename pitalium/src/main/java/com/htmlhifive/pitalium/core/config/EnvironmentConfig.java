@@ -38,6 +38,12 @@ public class EnvironmentConfig implements Serializable {
 	/**
 	 * テスト実行モード
 	 */
+	@PtlConfigurationProperty("autoResizeWindow")
+	private boolean autoResizeWindow = false;
+
+	/**
+	 * テスト実行モード
+	 */
 	@PtlConfigurationProperty("execMode")
 	private ExecMode execMode = ExecMode.SET_EXPECTED;
 
@@ -104,6 +110,8 @@ public class EnvironmentConfig implements Serializable {
 	public ExecMode getExecMode() {
 		return execMode;
 	}
+
+	public boolean getAutoResizeWindow() { return autoResizeWindow;}
 
 	/**
 	 * Selenium Grid Hubのアドレスを取得します。
@@ -204,6 +212,14 @@ public class EnvironmentConfig implements Serializable {
 		this.execMode = execMode;
 	}
 
+	/**
+	 * ウィンドウサイズの自動変更可否を設定します。
+	 *
+	 * @param autoResizeWindow ウィンドウサイズの自動変更可否
+	 */
+	void setAutoResizeWindow(boolean autoResizeWindow) {
+		this.autoResizeWindow = autoResizeWindow;
+	}
 	/**
 	 * Selenium Grid Hubのアドレスを設定します。
 	 * 
@@ -323,6 +339,7 @@ public class EnvironmentConfig implements Serializable {
 		public EnvironmentConfig build() {
 			final EnvironmentConfig ev = new EnvironmentConfig();
 			ev.setExecMode(config.execMode);
+			ev.setAutoResizeWindow(config.autoResizeWindow);
 			ev.setHubHost(config.hubHost);
 			ev.setHubPort(config.hubPort);
 			ev.setMaxThreadCount(config.maxThreadCount);

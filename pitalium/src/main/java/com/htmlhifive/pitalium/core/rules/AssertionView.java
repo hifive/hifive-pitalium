@@ -16,26 +16,6 @@
 
 package com.htmlhifive.pitalium.core.rules;
 
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -50,31 +30,27 @@ import com.htmlhifive.pitalium.core.config.ExecMode;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.io.PersistMetadata;
 import com.htmlhifive.pitalium.core.io.Persister;
-import com.htmlhifive.pitalium.core.model.CompareTarget;
-import com.htmlhifive.pitalium.core.model.DomSelector;
-import com.htmlhifive.pitalium.core.model.ExecResult;
-import com.htmlhifive.pitalium.core.model.IndexDomSelector;
-import com.htmlhifive.pitalium.core.model.ScreenArea;
-import com.htmlhifive.pitalium.core.model.ScreenAreaResult;
-import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
-import com.htmlhifive.pitalium.core.model.ScreenshotResult;
-import com.htmlhifive.pitalium.core.model.SelectorType;
-import com.htmlhifive.pitalium.core.model.TargetResult;
+import com.htmlhifive.pitalium.core.model.*;
 import com.htmlhifive.pitalium.core.result.TestResultManager;
 import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriverFactory;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriverManager;
-import com.htmlhifive.pitalium.image.model.CompareOption;
-import com.htmlhifive.pitalium.image.model.CompareOptionType;
-import com.htmlhifive.pitalium.image.model.DiffPoints;
-import com.htmlhifive.pitalium.image.model.ImageComparedResult;
-import com.htmlhifive.pitalium.image.model.RectangleArea;
-import com.htmlhifive.pitalium.image.model.ScreenshotImage;
-import com.htmlhifive.pitalium.image.model.SimilarityComparisonParameters;
-import com.htmlhifive.pitalium.image.model.SimilarityImageComparedResult;
-import com.htmlhifive.pitalium.image.model.SimilarityUnit;
+import com.htmlhifive.pitalium.image.model.*;
 import com.htmlhifive.pitalium.image.util.ImageUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.*;
+import java.util.List;
 
 /**
  * スクリーンショットのassert機能を持ちます。<br/>
@@ -202,6 +178,7 @@ public class AssertionView extends TestWatcher {
 	 * @return ブラウザに対応するWebDriver
 	 */
 	public PtlWebDriver createDriver(PtlCapabilities cap) {
+		LOG.debug("[createDriver start]");
 		if (driver != null) {
 			if (!capabilities.equals(cap)) {
 				throw new TestRuntimeException("Capabilities not match");
@@ -219,6 +196,7 @@ public class AssertionView extends TestWatcher {
 				});
 
 		driver = webDriverContainer.get();
+		LOG.debug("[createDriver finished]");
 		LOG.debug("[Get WebDriver] Use session ({})", driver);
 		return driver;
 	}
@@ -362,7 +340,9 @@ public class AssertionView extends TestWatcher {
 			throw new TestRuntimeException("Duplicate screenshotId");
 		}
 
+		LOG.debug("[getExecMode start]");
 		ExecMode execMode = PtlTestConfig.getInstance().getEnvironment().getExecMode();
+		LOG.debug("[getExecMode finished]");
 		if (execMode.equals(ExecMode.SKIP)) {
 			LOG.info("[AssertView skipped] (ssid: {}, Mode:{})", screenshotId, execMode);
 			return;
@@ -372,6 +352,7 @@ public class AssertionView extends TestWatcher {
 		LOG.trace("[AssertView start] message: {}, screenshotId: {}, compareTargets: {}, hiddenElementSelectors: {}",
 				message, screenshotId, compareTargets, hiddenElementsSelectors);
 
+		LOG.debug("[addTargets start]");
 		List<CompareTarget> targets;
 		if (compareTargets == null || compareTargets.isEmpty()) {
 			targets = new ArrayList<CompareTarget>();
@@ -379,18 +360,51 @@ public class AssertionView extends TestWatcher {
 		} else {
 			targets = compareTargets;
 		}
+		LOG.debug("[addTargets finished]");
 
 		screenshotIds.add(screenshotId);
 
+        int pageWidth = -1;
+        int pageHeight = -1;
+        int currentPageWidth = -1;
+        int currentPageHeight = -1;
+        boolean isAutoResizeWindow = PtlTestConfig.getInstance().getEnvironment().getAutoResizeWindow();
+        if (isAutoResizeWindow) {
+			LOG.debug("[autoResizeWindow start]");
+			// ウィンドウサイズをページサイズに合わせて変更
+            Dimension windowSize = driver.manage().window().getSize();
+            currentPageHeight = windowSize.getHeight();
+			currentPageWidth = windowSize.getWidth();
+        	ClientRect clientRect = driver.getCurrentBodyClientRect();
+        	pageWidth = (int)clientRect.getWidth() + (int)clientRect.getLeft();
+        	pageHeight = (int)clientRect.getHeight() + (int)clientRect.getTop();
+			LOG.info("[autoResizeWindow width: {}, height: {}, currentWidth: {}, currentHeight: {}]", pageWidth, pageHeight, currentPageWidth, currentPageHeight);
+			driver.manage().window().setSize(new Dimension(pageWidth, pageHeight));
+			LOG.debug("[autoResizeWindow finished]");
+		}
 		// ターゲットのスクリーンショットを撮影
+		LOG.debug("[takeCaptureAndPersistImage start]");
 		ScreenshotResult captureResult = takeCaptureAndPersistImage(screenshotId, targets, hiddenElementsSelectors);
+		LOG.debug("[takeCaptureAndPersistImage finished]");
+		LOG.debug("[saveTargetResults start]");
 		List<TargetResult> targetResults = captureResult.getTargetResults();
 		saveTargetResults(screenshotId, targetResults);
+		LOG.debug("[saveTargetResults finished]");
 
+		LOG.debug("[validateTargetResults start]");
 		ValidateResult validateResult = validateTargetResults(targetResults, targets);
+		LOG.debug("[validateTargetResults finished]");
+
+		if (isAutoResizeWindow) {
+			LOG.debug("[restoreWindow start]");
+			// ウィンドウサイズを元に戻す
+			driver.manage().window().setSize(new Dimension(currentPageWidth, currentPageHeight));
+			LOG.debug("[restoreWindow finished]");
+		}
 
 		// Expected mode
 		if (!execMode.isRunTest()) {
+			LOG.debug("[expectedMode start]");
 			ScreenshotResult screenshotResult = getScreenshotResultForExpectedMode(screenshotId, targetResults,
 					validateResult);
 			results.add(screenshotResult);
@@ -399,7 +413,7 @@ public class AssertionView extends TestWatcher {
 				LOG.info("[AssertView failed] (validation error, ssid: {})", screenshotId);
 				throw new AssertionError("Invalid selector found");
 			}
-
+			LOG.debug("[expectedMode finished]");
 			LOG.info("[AssertView finished] (ssid: {})", screenshotId);
 			return;
 		}
@@ -564,11 +578,14 @@ public class AssertionView extends TestWatcher {
 	 */
 	private ScreenshotResult takeCaptureAndPersistImage(String screenshotId, List<CompareTarget> compareTargets,
 			List<DomSelector> hiddenElementsSelectors) {
+		LOG.debug("[takeScreenshot start]");
 		ScreenshotResult screenshotResult = driver
 				.takeScreenshot(screenshotId, compareTargets, hiddenElementsSelectors);
+		LOG.debug("[takeScreenshot finished]");
 		LOG.trace("(takeCaptureAndPersistImage) (ssid: {}) result: {}", screenshotId, screenshotResult);
 
 		// Persist all screenshots
+		LOG.debug("[persistAllScreenshots start]");
 		Persister persister = TestResultManager.getInstance().getPersister();
 		ScreenshotImage entireScreenshotImage = screenshotResult.getEntireScreenshotImage();
 		if (entireScreenshotImage.isImageCached()) {
@@ -596,6 +613,7 @@ public class AssertionView extends TestWatcher {
 
 			persister.saveScreenshot(metadata, image.get());
 		}
+		LOG.debug("[persistAllScreenshots finished]");
 
 		return screenshotResult;
 	}

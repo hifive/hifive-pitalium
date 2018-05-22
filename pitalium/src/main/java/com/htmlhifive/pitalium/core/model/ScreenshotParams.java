@@ -15,15 +15,14 @@
  */
 package com.htmlhifive.pitalium.core.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.selenium.PtlWebElement;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * スクリーンショット撮影用のパラメータークラス
@@ -66,6 +65,7 @@ public class ScreenshotParams {
 	 * 撮影対象範囲、除外領域の矩形情報を更新します。
 	 */
 	public void updateInitialArea() {
+		LOG.debug("[updateInitialArea start]");
 		initialTargetArea = target.getArea();
 		initialExcludeAreas = new ArrayList<RectangleArea>(excludes.size());
 		for (ScreenAreaWrapper exclude : excludes) {
@@ -74,6 +74,7 @@ public class ScreenshotParams {
 
 		LOG.trace("Update initial area. target: {}; index: {}; targetArea: {}; excludeAreas: {}", target.getParent(),
 				index, initialTargetArea, initialExcludeAreas);
+		LOG.debug("[updateInitialArea finished]");
 	}
 
 	/**
