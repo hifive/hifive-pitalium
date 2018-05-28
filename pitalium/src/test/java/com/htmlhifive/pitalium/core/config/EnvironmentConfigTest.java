@@ -15,16 +15,15 @@
  */
 package com.htmlhifive.pitalium.core.config;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import com.htmlhifive.pitalium.common.util.JSONUtils;
+import org.junit.Test;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
-
-import com.htmlhifive.pitalium.common.util.JSONUtils;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class EnvironmentConfigTest {
 
@@ -47,6 +46,7 @@ public class EnvironmentConfigTest {
 		assertThat(env.getExecMode(), is(ExecMode.RUN_TEST));
 		assertThat(env.getHubHost(), is("127.0.0.1"));
 		assertThat(env.getHubPort(), is(8080));
+		assertThat(env.getAutoResizeWindow(), is(true));
 		assertThat(env.getMaxThreadCount(), is(100));
 		assertThat(env.getMaxThreadExecuteTime(), is(200));
 		assertThat(env.getMaxDriverWait(), is(300));
@@ -81,6 +81,7 @@ public class EnvironmentConfigTest {
 		assertThat(config.getExecMode(), is(ExecMode.SET_EXPECTED));
 		assertThat(config.getHubHost(), is("localhost"));
 		assertThat(config.getHubPort(), is(4444));
+		assertThat(config.getAutoResizeWindow(), is(false));
 		assertThat(config.getMaxThreadCount(), is(16));
 		assertThat(config.getMaxThreadExecuteTime(), is(3600));
 		assertThat(config.getMaxDriverWait(), is(30));
@@ -107,6 +108,7 @@ public class EnvironmentConfigTest {
 				.scriptTimeout(11)
 				.capabilitiesFilePath("cap.json")
 				.persister("persister")
+				.autoResizeWindow(true)
 				.webDriverSessionLevel(WebDriverSessionLevel.GLOBAL)
 				.debug(true)
 				.build();
@@ -115,6 +117,7 @@ public class EnvironmentConfigTest {
 		assertThat(config.getExecMode(), is(ExecMode.TAKE_SCREENSHOT));
 		assertThat(config.getHubHost(), is("127.0.0.1"));
 		assertThat(config.getHubPort(), is(1234));
+		assertThat(config.getAutoResizeWindow(), is(true));
 		assertThat(config.getMaxThreadCount(), is(1));
 		assertThat(config.getMaxThreadExecuteTime(), is(2));
 		assertThat(config.getMaxDriverWait(), is(10));
