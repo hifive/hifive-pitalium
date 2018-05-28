@@ -469,11 +469,21 @@ public class EnvironmentConfig implements Serializable {
 			return this;
 		}
 
+		/**
+		 * ウィンドウサイズの自動変更可否を設定します。
+		 *
+		 * @param b ウィンドウサイズの自動変更可否
+		 * @return このビルダーオブジェクト自身
+		 */
+		public Builder autoResizeWindow(boolean b) {
+			config.autoResizeWindow = b;
+			return this;
+		}
+
 		public Builder debug(boolean debug) {
 			config.debug = debug;
 			return this;
 		}
-
-	}
+    }
 
 }
