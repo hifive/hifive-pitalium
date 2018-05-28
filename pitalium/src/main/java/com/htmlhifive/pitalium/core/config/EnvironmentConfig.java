@@ -15,11 +15,11 @@
  */
 package com.htmlhifive.pitalium.core.config;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.io.FilePersister;
+
+import java.io.Serializable;
 
 /**
  * テストを実行するための共通設定を保持するクラス
@@ -36,7 +36,7 @@ public class EnvironmentConfig implements Serializable {
 	private static final int DEFAULT_SCRIPT_TIMEOUT = 30;
 
 	/**
-	 * テスト実行モード
+	 * ウィンドウサイズ自動調整の可否
 	 */
 	@PtlConfigurationProperty("autoResizeWindow")
 	private boolean autoResizeWindow = false;
@@ -111,6 +111,11 @@ public class EnvironmentConfig implements Serializable {
 		return execMode;
 	}
 
+	/**
+	 * ウィンドウサイズ自動調整の可否を取得します。
+	 *
+	 * @return ウィンドウサイズ自動調整の可否
+	 */
 	public boolean getAutoResizeWindow() { return autoResizeWindow;}
 
 	/**
@@ -220,6 +225,7 @@ public class EnvironmentConfig implements Serializable {
 	void setAutoResizeWindow(boolean autoResizeWindow) {
 		this.autoResizeWindow = autoResizeWindow;
 	}
+
 	/**
 	 * Selenium Grid Hubのアドレスを設定します。
 	 * 
