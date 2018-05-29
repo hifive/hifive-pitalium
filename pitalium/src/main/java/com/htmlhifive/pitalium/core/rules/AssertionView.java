@@ -364,8 +364,6 @@ public class AssertionView extends TestWatcher {
 
 		screenshotIds.add(screenshotId);
 
-        int pageWidth = -1;
-        int pageHeight = -1;
         int currentPageWidth = -1;
         int currentPageHeight = -1;
         boolean isAutoResizeWindow = PtlTestConfig.getInstance().getEnvironment().getAutoResizeWindow();
@@ -376,8 +374,8 @@ public class AssertionView extends TestWatcher {
             currentPageHeight = windowSize.getHeight();
 			currentPageWidth = windowSize.getWidth();
         	ClientRect clientRect = driver.getCurrentBodyClientRect();
-        	pageWidth = (int)clientRect.getWidth() + (int)clientRect.getLeft();
-        	pageHeight = (int)clientRect.getHeight() + (int)clientRect.getTop();
+        	int pageWidth = Math.max(currentPageWidth, (int)clientRect.getWidth() + (int)clientRect.getLeft());
+        	int pageHeight = Math.max(currentPageHeight, (int)clientRect.getHeight() + (int)clientRect.getTop());
 			LOG.info("[autoResizeWindow width: {}, height: {}, currentWidth: {}, currentHeight: {}]", pageWidth, pageHeight, currentPageWidth, currentPageHeight);
 			driver.manage().window().setSize(new Dimension(pageWidth, pageHeight));
 			LOG.debug("[autoResizeWindow finished]");
