@@ -101,7 +101,18 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	private static final String GET_SCROLL_HEIGHT_SCRIPT = "return arguments[0].scrollHeight";
 	private static final String GET_BODY_LEFT_SCRIPT = "var _bodyLeft = arguments[0].getBoundingClientRect().left; return _bodyLeft;";
 	private static final String GET_BODY_TOP_SCRIPT = "var _bodyTop = arguments[0].getBoundingClientRect().top; return _bodyTop;";
-	private static final String GET_BODY_SIZE_SCRIPT = "return document.body.getBoundingClientRect();";
+	private static final String GET_BODY_SIZE_SCRIPT =
+			"var _bcr = document.documentElement.getBoundingClientRect();" +
+					// getBoundingClientRectをそのまま戻り値にするとDriverの実装によってHTMLWebElementやDoubleになる場合があるため、
+					// 戻り値の型を揃えるために明示的にJavaScriptでNumberに直してから返す。
+					"return {" +
+					"top: parseInt(_bcr.top, 10)," +
+					"left: parseInt(_bcr.left, 10)," +
+					"bottom: parseInt(_bcr.bottom, 10)," +
+					"right: parseInt(_bcr.right, 10)," +
+					"width: parseInt(_bcr.width, 10)," +
+					"height: parseInt(_bcr.height, 10)" +
+					"};";
 	private static final long SCROLL_WAIT_MS = 100L;
 	// CHECKSTYLE:ON
 	//@formatter:on
@@ -1581,9 +1592,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		long right = ((Long)clientRectMap.get("right")).longValue();
 		long width = ((Long)clientRectMap.get("width")).longValue();
 		long height = ((Long)clientRectMap.get("height")).longValue();
-		long x = ((Long)clientRectMap.get("x")).longValue();
-		long y = ((Long)clientRectMap.get("y")).longValue();
-		return new ClientRect(top,  left,  bottom,  right,  x,  y,  height,  width);
+		return new ClientRect(top,  left,  bottom,  right, height,  width);
 	}
 
 	/**
