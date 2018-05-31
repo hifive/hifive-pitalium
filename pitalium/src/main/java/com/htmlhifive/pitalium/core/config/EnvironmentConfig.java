@@ -15,11 +15,11 @@
  */
 package com.htmlhifive.pitalium.core.config;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.htmlhifive.pitalium.common.util.JSONUtils;
 import com.htmlhifive.pitalium.core.io.FilePersister;
+
+import java.io.Serializable;
 
 /**
  * テストを実行するための共通設定を保持するクラス
@@ -34,6 +34,12 @@ public class EnvironmentConfig implements Serializable {
 	private static final int DEFAULT_MAX_THREAD_EXECUTE_TIME = 3600;
 	private static final int DEFAULT_MAX_DRIVER_WAIT = 30;
 	private static final int DEFAULT_SCRIPT_TIMEOUT = 30;
+
+	/**
+	 * ウィンドウサイズ自動調整の可否
+	 */
+	@PtlConfigurationProperty("autoResizeWindow")
+	private boolean autoResizeWindow = false;
 
 	/**
 	 * テスト実行モード
@@ -104,6 +110,13 @@ public class EnvironmentConfig implements Serializable {
 	public ExecMode getExecMode() {
 		return execMode;
 	}
+
+	/**
+	 * ウィンドウサイズ自動調整の可否を取得します。
+	 *
+	 * @return ウィンドウサイズ自動調整の可否
+	 */
+	public boolean getAutoResizeWindow() { return autoResizeWindow;}
 
 	/**
 	 * Selenium Grid Hubのアドレスを取得します。
@@ -202,6 +215,15 @@ public class EnvironmentConfig implements Serializable {
 	 */
 	void setExecMode(ExecMode execMode) {
 		this.execMode = execMode;
+	}
+
+	/**
+	 * ウィンドウサイズの自動変更可否を設定します。
+	 *
+	 * @param autoResizeWindow ウィンドウサイズの自動変更可否
+	 */
+	void setAutoResizeWindow(boolean autoResizeWindow) {
+		this.autoResizeWindow = autoResizeWindow;
 	}
 
 	/**
@@ -323,6 +345,7 @@ public class EnvironmentConfig implements Serializable {
 		public EnvironmentConfig build() {
 			final EnvironmentConfig ev = new EnvironmentConfig();
 			ev.setExecMode(config.execMode);
+			ev.setAutoResizeWindow(config.autoResizeWindow);
 			ev.setHubHost(config.hubHost);
 			ev.setHubPort(config.hubPort);
 			ev.setMaxThreadCount(config.maxThreadCount);
@@ -446,11 +469,21 @@ public class EnvironmentConfig implements Serializable {
 			return this;
 		}
 
+		/**
+		 * ウィンドウサイズの自動変更可否を設定します。
+		 *
+		 * @param b ウィンドウサイズの自動変更可否
+		 * @return このビルダーオブジェクト自身
+		 */
+		public Builder autoResizeWindow(boolean b) {
+			config.autoResizeWindow = b;
+			return this;
+		}
+
 		public Builder debug(boolean debug) {
 			config.debug = debug;
 			return this;
 		}
-
-	}
+    }
 
 }

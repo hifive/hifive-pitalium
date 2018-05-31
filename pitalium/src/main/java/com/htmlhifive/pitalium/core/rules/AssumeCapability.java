@@ -43,6 +43,7 @@ public class AssumeCapability extends TestWatcher {
 	}
 
 	public void assumeCapability(final Capabilities capabilities) {
+		LOG.debug("[assumeCapability start]");
 		if (description == null) {
 			LOG.warn("[AssumeCapability] Description is empty. assumeCapability should be called after test starting.");
 			return;
@@ -81,6 +82,7 @@ public class AssumeCapability extends TestWatcher {
 			LOG.debug("[Testcase assumed] (name: {})", description.getDisplayName());
 			throw new AssumptionViolatedException("AssumeCapability");
 		}
+		LOG.debug("[assumeCapability finished]");
 	}
 
 	/**

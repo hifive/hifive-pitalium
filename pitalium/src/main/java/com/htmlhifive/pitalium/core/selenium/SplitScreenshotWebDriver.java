@@ -15,11 +15,6 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
-import java.awt.image.BufferedImage;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.DomSelector;
@@ -27,6 +22,11 @@ import com.htmlhifive.pitalium.core.model.ScreenshotParams;
 import com.htmlhifive.pitalium.core.model.TargetResult;
 import com.htmlhifive.pitalium.image.model.RectangleArea;
 import com.htmlhifive.pitalium.image.util.ImageUtils;
+
+import java.awt.image.BufferedImage;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * スクリーンショットが可視範囲のみのブラウザ用のWebDriver。このクラスを拡張したdriverは、スクロール毎にスクリーンショットを撮り、結合した画像を返します。
@@ -72,10 +72,13 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 		LOG.trace("[GetMinimumScreenshot start]");
 
 		// 可視範囲のサイズを取得
+		LOG.debug("[getMinimumScreenshot>getWindowSize start]");
 		long windowWidth = getWindowWidth();
 		long windowHeight = getWindowHeight();
+		LOG.debug("[getMinimumScreenshot>getWindowSize finished]");
 
 		// 撮影したい要素の位置を取得
+		LOG.debug("[getMinimumScreenshot>getArea start]");
 		double targetBottom = -1;
 		double targetRight = -1;
 		if (params != null) {
@@ -85,8 +88,11 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 		}
 		LOG.trace("[GetMinimumScreenshot] window(w: {}, h: {}), target(right: {}, bottom: {})", windowWidth,
 				windowHeight, targetRight, targetBottom);
+		LOG.debug("[getMinimumScreenshot>getArea finished]");
 
+		LOG.debug("[getMinimumScreenshot>findBodyElement start]");
 		PtlWebElement bodyElement = (PtlWebElement) findElementByTagName("body");
+		LOG.debug("[getMinimumScreenshot>findBodyElement finished]");
 
 		long currentVScrollAmount = 0;
 		double captureTop = 0d;
@@ -96,14 +102,20 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 		List<List<BufferedImage>> images = new ArrayList<List<BufferedImage>>();
 		try {
+			LOG.debug("[getMinimumScreenshot>scrollTo start]");
 			// 次の撮影位置までスクロール
+			// TODO:
 			scrollTo(0d, 0d);
+			LOG.debug("[getMinimumScreenshot>scrollTo finished]");
 
 			// スクロール位置を確認
+			LOG.debug("[getMinimumScreenshot>getCurrentScrollTop start]");
 			long currentScrollTop = Math.round(getCurrentScrollTop());
+			LOG.debug("[getMinimumScreenshot>getCurrentScrollTop finished]");
 
 			long scrollNum = -1;
 			int currentScrollNum = 0;
+			long horizontalScrollNum = -1;
 
 			// Vertical scroll
 			while (scrollTop != currentScrollTop) {
@@ -115,22 +127,27 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				LOG.trace("[GetMinimumScreenshot] vertical scrollAmount: {}, scrollTop: {}", currentVScrollAmount,
 						scrollTop);
 
+				LOG.debug("[getMinimumScreenshot>getHeaderHeight start]");
 				int headerHeight = getHeaderHeight(scrollTop);
 				int footerHeight = getFooterHeight(scrollTop, captureTop);
+				LOG.debug("[getMinimumScreenshot>getHeaderHeight finished]");
 
 				// Horizontal scroll
 				double captureLeft = 0d;
 				long scrollLeft = -1L;
 				long currentHScrollAmount = 0;
-				long horizontalScrollNum = -1;
 				int currentHorizontalScrollNum = 0;
 				List<BufferedImage> lineImages = new ArrayList<BufferedImage>();
 
 				// 次の撮影位置までスクロール
+				LOG.debug("[getMinimumScreenshot>scrollToNext start]");
 				scrollTo(0d, scrollTop);
+				LOG.debug("[getMinimumScreenshot>scrollToNext finished]");
 
 				// スクロール位置を確認
+				LOG.debug("[getMinimumScreenshot>getCurrentScrollLeft start]");
 				long currentScrollLeft = Math.round(getCurrentScrollLeft());
+				LOG.debug("[getMinimumScreenshot>getCurrentScrollLeft finished]");
 				while (scrollLeft != currentScrollLeft) {
 					if (horizontalScrollNum >= 0 && currentHorizontalScrollNum > horizontalScrollNum) {
 						break;
@@ -148,17 +165,21 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 					}
 
 					// 画像のサイズからscaleを計算（初回のみ）
+					LOG.debug("[getMinimumScreenshot>calsScale start]");
 					if (Double.isNaN(currentScale)) {
 						currentScale = calcScale(windowWidth, image.getWidth());
 						setScreenshotScale(currentScale);
 						LOG.trace("[GetMinimumScreenshot] scale: {}", currentScale);
 					}
+					LOG.debug("[getMinimumScreenshot>calsScale finished]");
 
 					// 次の画像と重なる部分を切り取っておく
+					LOG.debug("[getMinimumScreenshot>trimOverlap start]");
 					if (getScreenshotScale() != DEFAULT_SCREENSHOT_SCALE) {
 						image = trimOverlap(captureTop, captureLeft, windowHeight, windowWidth, getScreenshotScale(),
 								image);
 					}
+					LOG.debug("[getMinimumScreenshot>trimOverlap finished]");
 
 					// 今回撮った画像をリストに追加
 					lineImages.add(image);
@@ -167,12 +188,17 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 					}
 
 					// 1回目のキャプチャの幅さを見てスクロール回数をセット
+					LOG.debug("[getMinimumScreenshot>setHorizontalScrollNum start]");
 					if (horizontalScrollNum < 0) {
+					    // TODO: 内部でgetPageWidthを都度呼んでいる→冗長なので上の層で取得して使いまわしたい
 						horizontalScrollNum = getHorizontalScrollNum(image.getWidth());
 					}
+					LOG.debug("[getMinimumScreenshot>setHorizontalScrollNum finished]");
 
 					// 次のキャプチャ開始位置を設定
+					LOG.debug("[getMinimumScreenshot>calcHorizontalScrollIncrement start]");
 					captureLeft += calcHorizontalScrollIncrement(windowWidth);
+					LOG.debug("[getMinimumScreenshot>calcHorizontalScrollIncrement finished]");
 
 					// Targetが写りきっていたら終了
 					if (targetRight > 0 && targetRight < captureLeft) {
@@ -182,13 +208,18 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 					LOG.trace("[GetMinimumScreenshot] horizontal scroll to ({}, {})", captureLeft, captureTop);
 
 					// 次の撮影位置までスクロール
+					LOG.debug("[getMinimumScreenshot>scrollToNextNext start]");
 					scrollTo(captureLeft, captureTop);
 					currentHorizontalScrollNum++;
+					LOG.debug("[getMinimumScreenshot>scrollToNextNext finished]");
 
 					// スクロール位置を確認
+					LOG.debug("[getMinimumScreenshot>getCurrentScrollLeft start]");
 					currentScrollLeft = Math.round(getCurrentScrollLeft());
+					LOG.debug("[getMinimumScreenshot>getCurrentScrollLeft finished]");
 				}
 
+				LOG.debug("[getMinimumScreenshot>postProcess start]");
 				// 右端の画像の重複部分をトリムする
 				trimRightImage(lineImages, currentHScrollAmount, bodyElement, getScreenshotScale());
 
@@ -196,6 +227,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 				// 1回目のキャプチャの高さを見てスクロール回数をセット
 				if (scrollNum < 0) {
+					// TODO: 内部でgetPageHeightを都度呼んでいる→冗長なので上の層で取得して使いまわしたい
 					scrollNum = getScrollNum(lineImages.get(0).getHeight());
 				}
 
@@ -213,6 +245,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 				// Targetが写りきっていたら終了
 				if (targetBottom > 0 && targetBottom < captureTop) {
 					LOG.trace("[GetMinimumScreenshot] vertical scroll break");
+					LOG.debug("[getMinimumScreenshot>postProcess finished]");
 					break;
 				}
 				LOG.trace("[GetMinimumScreenshot] vertical scroll to (0, {})", captureTop);
@@ -223,6 +256,7 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 
 				// スクロール位置を確認
 				currentScrollTop = Math.round(getCurrentScrollTop());
+				LOG.debug("[getMinimumScreenshot>postProcess finished]");
 			}
 		} catch (InterruptedException e) {
 			throw new TestRuntimeException(e);
