@@ -144,10 +144,11 @@ public class FilePersister implements Persister {
 	@Override
 	public void saveScreenshot(PersistMetadata metadata, BufferedImage image) {
 		File file = checkParentFileAvailable(getScreenshotImageFile(metadata));
-		LOG.debug("[Save screenshot] ({})", file);
+		LOG.debug("[Save screenshot start] ({})", file);
 		LOG.trace("[Save screenshot] ({})", metadata);
 		try {
 			ImageIO.write(image, "png", file);
+			LOG.debug("[Save screenshot finished] ({})", file);
 		} catch (IOException e) {
 			LOG.debug("Failed to save screenshot.", e);
 			throw new TestRuntimeException(e);

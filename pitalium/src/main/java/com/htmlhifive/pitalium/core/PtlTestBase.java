@@ -31,6 +31,8 @@ import com.htmlhifive.pitalium.core.selenium.PtlCapabilities;
 import com.htmlhifive.pitalium.core.selenium.PtlWebDriver;
 import com.htmlhifive.pitalium.junit.ParameterizedClassRule;
 import com.htmlhifive.pitalium.junit.PtlBlockJUnit4ClassRunnerWithParametersFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * テスト実行用の基底クラス。テスト実行に必要な&#064;Rule、&#064;ClassRuleが定義されています。<br/>
@@ -39,6 +41,7 @@ import com.htmlhifive.pitalium.junit.PtlBlockJUnit4ClassRunnerWithParametersFact
 @RunWith(ParameterizedThreads.class)
 @Parameterized.UseParametersRunnerFactory(PtlBlockJUnit4ClassRunnerWithParametersFactory.class)
 public abstract class PtlTestBase {
+	protected final Logger LOG = LoggerFactory.getLogger(PtlTestBase.class);
 
 	//CHECKSTYLE:OFF
 	/**
@@ -92,7 +95,9 @@ public abstract class PtlTestBase {
 	 */
 	@Before
 	public void setUp() {
+		LOG.debug("[PtlTestBase>setUp start]");
 		assumeCapability.assumeCapability(capabilities);
 		driver = assertionView.createDriver(capabilities);
+		LOG.debug("[PtlTestBase>setUp finished]");
 	}
 }

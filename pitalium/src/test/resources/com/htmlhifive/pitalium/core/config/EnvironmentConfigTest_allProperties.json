@@ -8,5 +8,6 @@
 	"scriptTimeout": 10,
 	"capabilitiesFilePath": "test.json",
 	"persister": "test",
+	"autoResizeWindow": true,
 	"debug": true
 }
