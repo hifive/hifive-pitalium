@@ -1,0 +1,138 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+</head>
+<body>
+<div th:each="performance : ${performanceResults}" class="panel panel-default">
+    <div th:text="${performance.label}" class="panel-heading">http://example.com/</div>
+    <div class="panel-body">
+        <div id="1234567890" th:id="${performance.id}" style="height:50%;"></div>
+    </div>
+</div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+function addNormalizedRow(dataTable, position, name, start, end, origin) {
+    if ((start > 0 || end > 0) && end >= start) {
+        dataTable.addRow([position, name, start - origin, end - origin]);
+    }
+}
+google.charts.load("current", { packages: ["timeline"] });
+
+google.charts.setOnLoadCallback(function(){
+    var performanceResults = /*[[${performanceResults}]]*/ [ { id: '1234567890', navigationTiming: performance.timing, resourceTimings: performance.getEntries('resource'), }, ];
+    for(var j in performanceResults) {
+        var result = performanceResults[j];
+        var container = document.getElementById(result.id);
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({ type: 'string', id: 'Position' });
+        dataTable.addColumn({ type: 'string', id: 'Name' });
+        dataTable.addColumn({ type: 'number', id: 'Start' });
+        dataTable.addColumn({ type: 'number', id: 'End' });
+        var navigationTiming = result.navigationTiming;
+        dataTable.addRows([
+            ['Navigation', '遷移開始', 0, 0],
+        ]);
+        addNormalizedRow(dataTable, 'Navigation', 'リダイレクト',
+            navigationTiming.redirectStart,
+            navigationTiming.redirectEnd,
+            navigationTiming.navigationStart
+        );
+        addNormalizedRow(dataTable, 'Navigation', '名前解決',
+            navigationTiming.domainLookupStart,
+            navigationTiming.domainLookupEnd,
+            navigationTiming.navigationStart
+        );
+        addNormalizedRow(dataTable, 'Navigation', '接続確立',
+            navigationTiming.connectStart,
+            navigationTiming.connectEnd,
+            navigationTiming.navigationStart
+        );
+        addNormalizedRow(dataTable, 'Navigation', 'バックエンド',
+            navigationTiming.requestStart,
+            navigationTiming.responseStart,
+            navigationTiming.navigationStart
+        );
+        addNormalizedRow(dataTable, 'Navigation', 'ダウンロード',
+            navigationTiming.responseStart,
+            navigationTiming.responseEnd,
+            navigationTiming.navigationStart
+        );
+        addNormalizedRow(dataTable, 'Navigation', 'DOMContentLoadedイベント',
+            navigationTiming.domContentLoadedEventStart,
+            navigationTiming.domContentLoadedEventEnd,
+            navigationTiming.navigationStart
+        );
+        addNormalizedRow(dataTable, 'Navigation', 'Loadイベント',
+            navigationTiming.loadEventStart,
+            navigationTiming.loadEventEnd,
+            navigationTiming.navigationStart
+        );
+        for(var i in result.marks) {
+            var mark = result.marks[i];
+            dataTable.addRow([
+                'marks',
+                mark.name,
+                mark.startTime,
+                mark.startTime
+            ]);
+        }
+        for(var i in result.measures) {
+            var measure = result.measures[i];
+            dataTable.addRow([
+                'measures',
+                measure.name,
+                measure.startTime,
+                measure.startTime + measure.duration
+            ]);
+        }
+        for(var i in result.resourceTimings) {
+            var resourceTiming = result.resourceTimings[i];
+            addNormalizedRow(dataTable, resourceTiming.name, 'リダイレクト',
+                resourceTiming.redirectStart,
+                resourceTiming.redirectEnd,
+                0
+            );
+            addNormalizedRow(dataTable, resourceTiming.name, '名前解決',
+                resourceTiming.redirectStart,
+                resourceTiming.redirectEnd,
+                0
+            );
+            addNormalizedRow(dataTable, resourceTiming.name, '接続確立',
+                resourceTiming.connectStart,
+                resourceTiming.connectEnd,
+                0
+            );
+            addNormalizedRow(dataTable, resourceTiming.name, 'バックエンド',
+                resourceTiming.requestStart,
+                resourceTiming.responseStart,
+                0
+            );
+            if (resourceTiming.responseStart > 0) {
+                addNormalizedRow(dataTable, resourceTiming.name, 'ダウンロード',
+                    resourceTiming.responseStart,
+                    resourceTiming.responseEnd,
+                    0
+                );
+            } else {
+                addNormalizedRow(dataTable, resourceTiming.name, '取得',
+                    resourceTiming.fetchStart,
+                    resourceTiming.responseEnd,
+                    0
+                );
+            }
+        }
+        chart.draw(dataTable, {
+            hAxis: {
+                maxValue: 1000,
+            },
+        });
+    }
+});
+/*]]>*/
+</script>
+</body>
+</html>
