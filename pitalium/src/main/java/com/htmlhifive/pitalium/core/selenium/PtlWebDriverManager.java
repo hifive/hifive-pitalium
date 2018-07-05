@@ -199,7 +199,8 @@ public final class PtlWebDriverManager {
 			throw new TestRuntimeException(e);
 		}
 
-		if (level == WebDriverSessionLevel.TEST_CASE || level == WebDriverSessionLevel.GLOBAL) {
+		if (level == WebDriverSessionLevel.TEST_CASE || level == WebDriverSessionLevel.GLOBAL
+				|| level == WebDriverSessionLevel.PERSISTED) {
 			LOG.debug("[Close WebDriver] Don't close session. ({}) level: {}", clss.getName(), level);
 			return;
 		}

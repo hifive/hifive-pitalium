@@ -17,6 +17,8 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.net.URL;
 
+import org.openqa.selenium.remote.CommandExecutor;
+
 /**
  * Google Chromeで利用する{@link org.openqa.selenium.WebDriver}
  */
@@ -24,12 +26,16 @@ class PtlChromeDriver extends SplitScreenshotWebDriver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
 	PtlChromeDriver(URL remoteAddress, PtlCapabilities capabilities) {
 		super(remoteAddress, capabilities);
+	}
+
+	PtlChromeDriver(CommandExecutor executor, PtlCapabilities capabilities) {
+		super(executor, capabilities);
 	}
 
 	@Override
