@@ -16,6 +16,7 @@
 package com.htmlhifive.pitalium.core.selenium;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,6 +53,7 @@ import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.config.TestAppConfig;
+import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
 
 /**
  * 各ブラウザに対応するWebDriverを生成するファクトリクラス
@@ -160,22 +162,23 @@ public abstract class PtlWebDriverFactory {
 		synchronized (PtlWebDriverFactory.class) {
 			LOG.debug("[Get WebDriver] create new session.");
 
-			PtlWebDriver driver;
+			PtlWebDriver driver = null;
 			URL url = getGridHubURL();
-			if (true /* 使いまわす場合 */) {
-				driver = null;
+			if (PtlTestConfig.getInstance().getEnvironment()
+					.getWebDriverSessionLevel() == WebDriverSessionLevel.PERSISTED) {
 
+				LinkedTreeMap<String, Object> map;
 				try {
-					LinkedTreeMap<String, Object> map;
 					// セッション情報読み込み
-					try (JsonReader reader = new JsonReader(new FileReader("store.json"))) {
+					File file = new File("store.json");
+					if (file.exists()) {
+						JsonReader reader = new JsonReader(new FileReader(file));
 						Gson gson = new Gson();
 						map = gson.fromJson(reader, LinkedTreeMap.class);
-					}
+						reader.close();
 
-					// Check Session is exist
-					HttpURLConnection con = null;
-					try {
+						// Check Session is exist
+						HttpURLConnection con = null;
 						LinkedTreeMap<String, Object> store = (LinkedTreeMap<String, Object>) map
 								.get(capabilities.toString());
 						String storedSession = (String) store.get("sessionId");
@@ -187,14 +190,14 @@ public abstract class PtlWebDriverFactory {
 
 						StringBuilder content;
 						InputStreamReader reponse = new InputStreamReader(con.getInputStream());
-						try (BufferedReader in = new BufferedReader(reponse)) {
-							String line;
-							content = new StringBuilder();
-							while ((line = in.readLine()) != null) {
-								content.append(line);
-								content.append(System.lineSeparator());
-							}
+						BufferedReader in = new BufferedReader(reponse);
+						String line;
+						content = new StringBuilder();
+						while ((line = in.readLine()) != null) {
+							content.append(line);
+							content.append(System.lineSeparator());
 						}
+						in.close();
 
 						JsonParser parser = new JsonParser();
 						JsonObject sessions = (JsonObject) parser.parse(content.toString());
@@ -204,11 +207,11 @@ public abstract class PtlWebDriverFactory {
 									new SessionId(storedSession), url, new DesiredCapabilities(), caps));
 							LOG.debug("reuse ({})", storedSession);
 						}
-					} catch (Exception e) {
-
 					}
-				} catch (Exception e) {
-
+				} catch (MalformedURLException e) {
+					LOG.debug("{}", e.toString());
+				} catch (IOException e) {
+					LOG.debug("{}", e.toString());
 				}
 
 				if (driver == null) {
@@ -219,20 +222,22 @@ public abstract class PtlWebDriverFactory {
 						LinkedTreeMap<String, Object> sub = new LinkedTreeMap<>();
 						sub.put("sessionId", driver.getSessionId().toString());
 						sub.put("capabilities", driver.getRawCapabilities().asMap());
-						LinkedTreeMap<String, Object> map = new LinkedTreeMap<>();
+						map = new LinkedTreeMap<>();
 						map.put(driver.getCapabilities().toString(), sub);
 
 						//　セッション情報出力
-						try (JsonWriter writer = new JsonWriter(new FileWriter("store.json"))) {
-							writer.setIndent("    ");
-							Gson gson = new Gson();
-							gson.toJson(map, LinkedTreeMap.class, writer);
-						}
-
-						LOG.debug("create ({})", driver.getSessionId().toString());
-					} catch (Exception e) {
-
+						JsonWriter writer = new JsonWriter(new FileWriter("store.json"));
+						writer.setIndent("    ");
+						Gson gson = new Gson();
+						gson.toJson(map, LinkedTreeMap.class, writer);
+						writer.close();
+					} catch (MalformedURLException e) {
+						LOG.debug("{}", e.toString());
+					} catch (IOException e) {
+						LOG.debug("{}", e.toString());
 					}
+
+					LOG.debug("create ({})", driver.getSessionId().toString());
 				}
 			} else {
 				driver = createWebDriver(url);
@@ -249,6 +254,7 @@ public abstract class PtlWebDriverFactory {
 			LOG.debug("[Get WebDriver] new session created. ({})", driver);
 			return driver;
 		}
+
 	}
 
 	/**
