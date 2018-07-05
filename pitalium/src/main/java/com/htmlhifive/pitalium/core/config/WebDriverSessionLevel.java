@@ -18,7 +18,7 @@ package com.htmlhifive.pitalium.core.config;
 
 /**
  * WebDriverセッションの利用レベル
- * 
+ *
  * @author nakatani
  */
 public enum WebDriverSessionLevel {
@@ -26,12 +26,16 @@ public enum WebDriverSessionLevel {
 	/**
 	 * テストケース毎に個別のWebDriverセッションを利用します。テストケース開始時にWebDriverセッションが開始され、テストケース終了時に自動クローズされます。
 	 */
-	TEST_CASE, /**
-				 * テストクラス内の全てのテストケースで同一のWebDriverセッションを利用します。テストクラスの開始時にWebDriverセッションが開始され、 テストクラスの全ケース終了時に自動クローズされます。
-				 */
-	TEST_CLASS, /**
-				 * テスト全体を通じて共通のWebDriverセッションを利用します。WebDriverセッションは必要に応じて開始されますが自動でクローズはされません。
-				 */
-	GLOBAL
+	TEST_CASE,
+	/**
+	 * テストクラス内の全てのテストケースで同一のWebDriverセッションを利用します。テストクラスの開始時にWebDriverセッションが開始され、 テストクラスの全ケース終了時に自動クローズされます。
+	 */
+	TEST_CLASS,
+	/**
+	 * テスト全体を通じて共通のWebDriverセッションを利用します。WebDriverセッションは必要に応じて開始されますが自動でクローズはされません。
+	 */
+	GLOBAL,
+
+	PERSISTED
 
 }

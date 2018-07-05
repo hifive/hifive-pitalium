@@ -15,17 +15,39 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
+import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
@@ -44,7 +66,7 @@ public abstract class PtlWebDriverFactory {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param environmentConfig 環境設定
 	 * @param testAppConfig テスト対象アプリケーション設定
 	 * @param capabilities Capability
@@ -58,7 +80,7 @@ public abstract class PtlWebDriverFactory {
 
 	/**
 	 * ブラウザに対応する{@link PtlWebDriverFactory}のインスタンスを取得します。
-	 * 
+	 *
 	 * @param capabilities Capability（ブラウザの情報を含む）
 	 * @return {@link PtlWebDriverFactory}のインスタンス
 	 */
@@ -131,15 +153,90 @@ public abstract class PtlWebDriverFactory {
 
 	/**
 	 * 初期設定（baseUrl、タイムアウト時間、ウィンドウサイズ）済のWebDriverを取得します。
-	 * 
+	 *
 	 * @return WebDriver
 	 */
 	public PtlWebDriver getDriver() {
 		synchronized (PtlWebDriverFactory.class) {
 			LOG.debug("[Get WebDriver] create new session.");
 
+			PtlWebDriver driver;
 			URL url = getGridHubURL();
-			PtlWebDriver driver = createWebDriver(url);
+			if (true /* 使いまわす場合 */) {
+				driver = null;
+
+				try {
+					LinkedTreeMap<String, Object> map;
+					// セッション情報読み込み
+					try (JsonReader reader = new JsonReader(new FileReader("store.json"))) {
+						Gson gson = new Gson();
+						map = gson.fromJson(reader, LinkedTreeMap.class);
+					}
+
+					// Check Session is exist
+					HttpURLConnection con = null;
+					try {
+						LinkedTreeMap<String, Object> store = (LinkedTreeMap<String, Object>) map
+								.get(capabilities.toString());
+						String storedSession = (String) store.get("sessionId");
+						LinkedTreeMap<String, Object> caps = (LinkedTreeMap<String, Object>) store.get("capabilities");
+						URL myurl = new URL("http://localhost:4444/wd/hub/session/" + storedSession);
+						con = (HttpURLConnection) myurl.openConnection();
+
+						con.setRequestMethod("GET");
+
+						StringBuilder content;
+						InputStreamReader reponse = new InputStreamReader(con.getInputStream());
+						try (BufferedReader in = new BufferedReader(reponse)) {
+							String line;
+							content = new StringBuilder();
+							while ((line = in.readLine()) != null) {
+								content.append(line);
+								content.append(System.lineSeparator());
+							}
+						}
+
+						JsonParser parser = new JsonParser();
+						JsonObject sessions = (JsonObject) parser.parse(content.toString());
+						int status = sessions.get("status").getAsInt();
+						if (status == 0) {
+							driver = createReusableWebDriver(createCommandExecutorFromSession(
+									new SessionId(storedSession), url, new DesiredCapabilities(), caps));
+							LOG.debug("reuse ({})", storedSession);
+						}
+					} catch (Exception e) {
+
+					}
+				} catch (Exception e) {
+
+				}
+
+				if (driver == null) {
+					try {
+						url = new URL("http://localhost:4444/wd/hub");
+						CustomHttpCommandExecutor executor = new CustomHttpCommandExecutor(url);
+						driver = createReusableWebDriver(executor);
+						LinkedTreeMap<String, Object> sub = new LinkedTreeMap<>();
+						sub.put("sessionId", driver.getSessionId().toString());
+						sub.put("capabilities", driver.getRawCapabilities().asMap());
+						LinkedTreeMap<String, Object> map = new LinkedTreeMap<>();
+						map.put(driver.getCapabilities().toString(), sub);
+
+						//　セッション情報出力
+						try (JsonWriter writer = new JsonWriter(new FileWriter("store.json"))) {
+							writer.setIndent("    ");
+							Gson gson = new Gson();
+							gson.toJson(map, LinkedTreeMap.class, writer);
+						}
+
+						LOG.debug("create ({})", driver.getSessionId().toString());
+					} catch (Exception e) {
+
+					}
+				}
+			} else {
+				driver = createWebDriver(url);
+			}
 			driver.setEnvironmentConfig(environmentConfig);
 			driver.setBaseUrl(testAppConfig.getBaseUrl());
 			driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS)
@@ -156,7 +253,7 @@ public abstract class PtlWebDriverFactory {
 
 	/**
 	 * Selenium Grid HubのURLを取得します。
-	 * 
+	 *
 	 * @return HubのURL
 	 */
 	protected URL getGridHubURL() {
@@ -167,24 +264,53 @@ public abstract class PtlWebDriverFactory {
 		}
 	}
 
+	protected CommandExecutor createCommandExecutorFromSession(final SessionId sessionId, URL command_executor,
+			Capabilities capabilities, Map<String, Object> rawCapabilities) {
+		CommandExecutor executor = new CustomHttpCommandExecutor(command_executor) {
+
+			@Override
+			public Response execute(Command command) throws IOException {
+				Response response = null;
+				if (command.getName() == "newSession") {
+					response = new Response();
+					response.setSessionId(sessionId.toString());
+					response.setStatus(ErrorCodes.SUCCESS);
+					response.setState(ErrorCodes.SUCCESS_STRING);
+					response.setValue(rawCapabilities);
+
+					this.commandCodec = new W3CHttpCommandCodec();
+					this.responseCodec = new W3CHttpResponseCodec();
+				} else {
+					response = super.execute(command);
+				}
+				return response;
+			}
+		};
+		return executor;
+	}
+
 	/**
 	 * モバイル端末用のdriverか否かを返します。
-	 * 
+	 *
 	 * @return モバイル端末用driverならtrue、そうでなければfalse
 	 */
 	abstract boolean isMobile();
 
 	/**
 	 * WebDriverを生成します。
-	 * 
+	 *
 	 * @param url WebDriverServerのURL
 	 * @return 生成したWebDriverのインスタンス
 	 */
 	public abstract PtlWebDriver createWebDriver(URL url);
 
+	public PtlChromeDriver createReusableWebDriver(CommandExecutor executor) {
+		return new PtlChromeDriver(executor, getCapabilities());
+	}
+
 	/**
 	 * テスト実行用の共通設定を取得します。
-	 * 
+	 *
 	 * @return 共通設定
 	 */
 	public EnvironmentConfig getEnvironmentConfig() {
@@ -193,7 +319,7 @@ public abstract class PtlWebDriverFactory {
 
 	/**
 	 * Capabilityを取得します。
-	 * 
+	 *
 	 * @return Capability
 	 */
 	public PtlCapabilities getCapabilities() {
@@ -207,7 +333,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -235,7 +361,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -268,7 +394,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -300,7 +426,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -323,7 +449,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -346,7 +472,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -374,7 +500,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -412,7 +538,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -458,7 +584,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -493,7 +619,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -521,7 +647,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
