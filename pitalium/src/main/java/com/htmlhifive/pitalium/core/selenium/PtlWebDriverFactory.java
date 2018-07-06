@@ -15,8 +15,11 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,14 +34,16 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
-import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +51,7 @@ import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -163,95 +169,156 @@ public abstract class PtlWebDriverFactory {
 			LOG.debug("[Get WebDriver] create new session.");
 
 			PtlWebDriver driver = null;
-			URL url = getGridHubURL();
-			if (PtlTestConfig.getInstance().getEnvironment()
-					.getWebDriverSessionLevel() == WebDriverSessionLevel.PERSISTED) {
 
-				LinkedTreeMap<String, Object> map;
+			WebDriverSessionLevel sessionLevel = PtlTestConfig.getInstance().getEnvironment()
+					.getWebDriverSessionLevel();
+			if (sessionLevel == WebDriverSessionLevel.PERSISTED) {
+				String capabilitiesName = capabilities.toString();
+
+				LinkedTreeMap<String, Object> map = new LinkedTreeMap<>();
+				JsonReader reader = null;
 				try {
 					// セッション情報読み込み
 					File file = new File("store.json");
 					if (file.exists()) {
-						JsonReader reader = new JsonReader(new FileReader(file));
+						reader = new JsonReader(new FileReader(file));
 						Gson gson = new Gson();
 						map = gson.fromJson(reader, LinkedTreeMap.class);
-						reader.close();
+					}
+				} catch (FileNotFoundException e) {
+					throw new TestRuntimeException("", e);
+				} finally {
+					if (reader != null) {
+						try {
+							reader.close();
+						} catch (IOException e) {
+							LOG.debug("{}", e.toString());
+						}
+					}
+				}
 
-						// Check Session is exist
-						HttpURLConnection con = null;
-						LinkedTreeMap<String, Object> store = (LinkedTreeMap<String, Object>) map
-								.get(capabilities.toString());
-						String storedSession = (String) store.get("sessionId");
-						LinkedTreeMap<String, Object> caps = (LinkedTreeMap<String, Object>) store.get("capabilities");
-						URL myurl = new URL("http://localhost:4444/wd/hub/session/" + storedSession);
+				// Check Session is exist
+				LinkedTreeMap<String, Object> store = (LinkedTreeMap<String, Object>) map.get(capabilitiesName);
+				String sessionId = (String) store.get("sessionId");
+				LinkedTreeMap<String, Object> rawCapabilities = (LinkedTreeMap<String, Object>) store
+						.get("capabilities");
+				String dialectValue = (String) store.get("dialectValue");
+
+				HttpURLConnection con = null;
+				try {
+					URL myurl = new URL("http://localhost:4444/wd/hub/session/" + sessionId);
+					try {
 						con = (HttpURLConnection) myurl.openConnection();
-
 						con.setRequestMethod("GET");
+					} catch (IOException e) {
+						LOG.debug("{}", e.toString());
+					}
+				} catch (MalformedURLException e) {
+					LOG.debug("{}", e.toString());
+				}
 
-						StringBuilder content;
+				BufferedReader in = null;
+				StringBuilder content = null;
+				if (con != null) {
+					try {
 						InputStreamReader reponse = new InputStreamReader(con.getInputStream());
-						BufferedReader in = new BufferedReader(reponse);
-						String line;
+						in = new BufferedReader(reponse);
 						content = new StringBuilder();
+						String line;
 						while ((line = in.readLine()) != null) {
 							content.append(line);
 							content.append(System.lineSeparator());
 						}
-						in.close();
-
-						JsonParser parser = new JsonParser();
-						JsonObject sessions = (JsonObject) parser.parse(content.toString());
-						int status = sessions.get("status").getAsInt();
-						if (status == 0) {
-							driver = createReusableWebDriver(createCommandExecutorFromSession(
-									new SessionId(storedSession), url, new DesiredCapabilities(), caps));
-							LOG.debug("reuse ({})", storedSession);
+					} catch (IOException e) {
+						LOG.debug("{}", e.toString());
+					} finally {
+						if (in != null) {
+							try {
+								in.close();
+							} catch (IOException e) {
+								LOG.debug("{}", e.toString());
+							}
 						}
 					}
-				} catch (MalformedURLException e) {
-					LOG.debug("{}", e.toString());
-				} catch (IOException e) {
-					LOG.debug("{}", e.toString());
+				}
+
+				if (content != null) {
+					int status = -1;
+					try {
+						JsonParser parser = new JsonParser();
+						JsonObject sessions = (JsonObject) parser.parse(content.toString());
+						status = sessions.get("status").getAsInt();
+					} catch (JsonSyntaxException e) {
+						LOG.debug("{}", e.toString());
+					}
+
+					if (status == 0) {
+						URL url = getGridHubURL();
+						driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(sessionId), url,
+								new DesiredCapabilities(), rawCapabilities, dialectValue));
+						LOG.debug("reuse ({})", sessionId);
+					}
+
 				}
 
 				if (driver == null) {
+					URL url = null;
 					try {
 						url = new URL("http://localhost:4444/wd/hub");
-						CustomHttpCommandExecutor executor = new CustomHttpCommandExecutor(url);
-						driver = createReusableWebDriver(executor);
-						LinkedTreeMap<String, Object> sub = new LinkedTreeMap<>();
-						sub.put("sessionId", driver.getSessionId().toString());
-						sub.put("capabilities", driver.getRawCapabilities().asMap());
-						map = new LinkedTreeMap<>();
-						map.put(driver.getCapabilities().toString(), sub);
-
-						//　セッション情報出力
-						JsonWriter writer = new JsonWriter(new FileWriter("store.json"));
-						writer.setIndent("    ");
-						Gson gson = new Gson();
-						gson.toJson(map, LinkedTreeMap.class, writer);
-						writer.close();
 					} catch (MalformedURLException e) {
-						LOG.debug("{}", e.toString());
-					} catch (IOException e) {
 						LOG.debug("{}", e.toString());
 					}
 
-					LOG.debug("create ({})", driver.getSessionId().toString());
+					if (url != null) {
+						CustomHttpCommandExecutor executor = new CustomHttpCommandExecutor(url);
+						driver = createReusableWebDriver(executor);
+
+						LinkedTreeMap<String, Object> sub = new LinkedTreeMap<>();
+						sub.put("sessionId", driver.getSessionId().toString());
+						sub.put("capabilities", driver.getRawCapabilities().asMap());
+						sub.put("dialectValue", executor.getDialect().name());
+
+						map.put(capabilitiesName, sub);
+
+						//　セッション情報出力
+						JsonWriter writer = null;
+						try {
+							writer = new JsonWriter(new FileWriter("store.json"));
+							writer.setIndent("    ");
+							Gson gson = new Gson();
+							gson.toJson(map, LinkedTreeMap.class, writer);
+						} catch (IOException e) {
+							LOG.debug("{}", e.toString());
+						} finally {
+							if (writer != null) {
+								try {
+									writer.close();
+								} catch (IOException e) {
+									LOG.debug("{}", e.toString());
+								}
+							}
+						}
+						LOG.debug("create ({})", driver.getSessionId().toString());
+					}
+
 				}
 			} else {
+				URL url = getGridHubURL();
 				driver = createWebDriver(url);
 			}
-			driver.setEnvironmentConfig(environmentConfig);
-			driver.setBaseUrl(testAppConfig.getBaseUrl());
-			driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS)
-					.setScriptTimeout(environmentConfig.getScriptTimeout(), TimeUnit.SECONDS);
-			if (!isMobile()) {
-				driver.manage().window()
-						.setSize(new Dimension(testAppConfig.getWindowWidth(), testAppConfig.getWindowHeight()));
-			}
 
-			LOG.debug("[Get WebDriver] new session created. ({})", driver);
+			if (driver != null) {
+				driver.setEnvironmentConfig(environmentConfig);
+				driver.setBaseUrl(testAppConfig.getBaseUrl());
+				driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS)
+						.setScriptTimeout(environmentConfig.getScriptTimeout(), TimeUnit.SECONDS);
+				if (!isMobile()) {
+					driver.manage().window()
+							.setSize(new Dimension(testAppConfig.getWindowWidth(), testAppConfig.getWindowHeight()));
+				}
+
+				LOG.debug("[Get WebDriver] new session created. ({})", driver);
+			}
 			return driver;
 		}
 
@@ -271,21 +338,29 @@ public abstract class PtlWebDriverFactory {
 	}
 
 	protected CommandExecutor createCommandExecutorFromSession(final SessionId sessionId, URL command_executor,
-			Capabilities capabilities, Map<String, Object> rawCapabilities) {
-		CommandExecutor executor = new CustomHttpCommandExecutor(command_executor) {
+			Capabilities capabilities, Map<String, Object> rawCapabilities, String dialectValue) {
 
+		CommandExecutor executor = new CustomHttpCommandExecutor(command_executor) {
 			@Override
 			public Response execute(Command command) throws IOException {
 				Response response = null;
-				if (command.getName() == "newSession") {
+				if (NEW_SESSION.equals(command.getName())) {
+					if (commandCodec != null) {
+						throw new SessionNotCreatedException("Session already exists");
+					}
+					Dialect dialect = Dialect.valueOf(dialectValue);
+					commandCodec = dialect.getCommandCodec();
+					for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
+						defineCommand(entry.getKey(), entry.getValue());
+					}
+					responseCodec = dialect.getResponseCodec();
+					log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
+
 					response = new Response();
 					response.setSessionId(sessionId.toString());
 					response.setStatus(ErrorCodes.SUCCESS);
 					response.setState(ErrorCodes.SUCCESS_STRING);
 					response.setValue(rawCapabilities);
-
-					this.commandCodec = new W3CHttpCommandCodec();
-					this.responseCodec = new W3CHttpResponseCodec();
 				} else {
 					response = super.execute(command);
 				}
