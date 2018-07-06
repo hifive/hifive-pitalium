@@ -15,37 +15,8 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
-import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
-import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.CommandExecutor;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.SessionId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Strings;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -54,6 +25,25 @@ import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.config.TestAppConfig;
 import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
+import org.openqa.selenium.remote.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 
 /**
  * 各ブラウザに対応するWebDriverを生成するファクトリクラス
@@ -153,168 +143,177 @@ public abstract class PtlWebDriverFactory {
 		return new PtlFirefoxWebDriverFactory(environmentConfig, testAppConfig, capabilities);
 	}
 
+	private Map<String, StoredSeleniumSession> readSessionsFromFile(File file) throws TestRuntimeException {
+		JsonReader reader = null;
+		Map<String, StoredSeleniumSession> map = new LinkedTreeMap<>();
+		try {
+			reader = new JsonReader(new FileReader(file));
+			Gson gson = new Gson();
+
+			JsonObject jObj = gson.fromJson(reader, JsonObject.class);
+			for(Map.Entry<String, JsonElement> entry : jObj.entrySet()) {
+			    String key = entry.getKey();
+			    JsonObject sessionJObj = entry.getValue().getAsJsonObject();
+
+			    String sessionId = sessionJObj.get("sessionId").getAsString();
+				Map<String, Object> rawCapabilities = new LinkedTreeMap<>();
+				JsonObject rawCapJObj = sessionJObj.get("rawCapabilities").getAsJsonObject();
+				for (Map.Entry<String, JsonElement> capEntry : rawCapJObj.entrySet()) {
+					JsonElement elem = capEntry.getValue();
+					if (elem.isJsonPrimitive()) {
+						rawCapabilities.put(capEntry.getKey(), capEntry.getValue().getAsString());
+					} else {
+						rawCapabilities.put(capEntry.getKey(), gson.fromJson(gson.toJson(elem.getAsJsonObject()), LinkedTreeMap.class));
+					}
+				}
+			    String dialect = sessionJObj.get("dialect").getAsString();
+			    map.put(key, new StoredSeleniumSession(sessionId, rawCapabilities, dialect));
+			}
+		} catch(IOException e) {
+			throw new TestRuntimeException(file.getName() + "を開けません。", e);
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					LOG.debug("{}", e.toString());
+				}
+			}
+		}
+
+        return map;
+	}
+
+	private String getKey(Capabilities cap) {
+		return cap.toString();
+	}
+
+	private boolean isSessionExistsOnServer (String sessionId) throws TestRuntimeException {
+		HttpURLConnection con = null;
+		try {
+			URL myUrl = new URL(getGridHubURL() + "/session/" + sessionId);
+			try {
+				con = (HttpURLConnection) myUrl.openConnection();
+				con.setRequestMethod("GET");
+			} catch (IOException e) {
+				// NOTE: 接続に失敗する場合はセッションが存在しないとみなす
+			    return false;
+			}
+		} catch (MalformedURLException e) {
+			throw new TestRuntimeException("不正なURLです。", e);
+		}
+
+		BufferedReader in = null;
+		StringBuilder content = null;
+        try {
+            InputStreamReader reponse = new InputStreamReader(con.getInputStream());
+            in = new BufferedReader(reponse);
+            content = new StringBuilder();
+            String line;
+            while ((line = in.readLine()) != null) {
+                content.append(line);
+                content.append(System.lineSeparator());
+            }
+        } catch (IOException e) {
+            throw new TestRuntimeException(e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    LOG.debug("{}", e.toString());
+                }
+            }
+        }
+
+        int status = -1;
+        try {
+            JsonParser parser = new JsonParser();
+            JsonObject sessions = (JsonObject) parser.parse(content.toString());
+            status = sessions.get("status").getAsInt();
+        } catch (JsonSyntaxException e) {
+            throw new TestRuntimeException("サーバからの戻り値が不正です", e);
+        }
+		return status == 0;
+	}
+
+	private void writeSessionsToFile(File file, Map<String, StoredSeleniumSession> sessions) {
+
+		//　セッション情報出力
+		JsonWriter writer = null;
+		try {
+			writer = new JsonWriter(new FileWriter(file));
+			writer.setIndent("    ");
+			Gson gson = new Gson();
+			gson.toJson(sessions, LinkedTreeMap.class, writer);
+		} catch (IOException e) {
+			LOG.debug("{}", e.toString());
+		} finally {
+			if (writer != null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					LOG.debug("{}", e.toString());
+				}
+			}
+		}
+	}
+
 	/**
 	 * 初期設定（baseUrl、タイムアウト時間、ウィンドウサイズ）済のWebDriverを取得します。
 	 *
 	 * @return WebDriver
 	 */
-	public PtlWebDriver getDriver() {
+	public PtlWebDriver getDriver() throws TestRuntimeException {
 		synchronized (PtlWebDriverFactory.class) {
 			LOG.debug("[Get WebDriver] create new session.");
 
 			PtlWebDriver driver = null;
+			Map<String, StoredSeleniumSession> sessions = new LinkedTreeMap<>();
 
 			WebDriverSessionLevel sessionLevel = PtlTestConfig.getInstance().getEnvironment()
 					.getWebDriverSessionLevel();
-			if (sessionLevel == WebDriverSessionLevel.PERSISTED) {
-				String capabilitiesName = capabilities.toString();
+			if (sessionLevel != WebDriverSessionLevel.PERSISTED) {
+				driver = createWebDriver(getGridHubURL());
+			} else {
+				File file = new File("store.json");
 
-				LinkedTreeMap<String, Object> map = new LinkedTreeMap<>();
-				JsonReader reader = null;
-				try {
-					// セッション情報読み込み
-					File file = new File("store.json");
-					if (file.exists()) {
-						reader = new JsonReader(new FileReader(file));
-						Gson gson = new Gson();
-						map = gson.fromJson(reader, LinkedTreeMap.class);
+				if (file.exists()) {
+					sessions = readSessionsFromFile(file);
+					StoredSeleniumSession session = sessions.get(getKey(capabilities));
+
+					if (session != null && isSessionExistsOnServer(session.getSessionId())) {
+						LOG.debug("reuse ({})", session.getSessionId());
+						driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(session.getSessionId()), getGridHubURL(),
+								new DesiredCapabilities(), session.getRawCapabilities(), session.getDialect()));
 					}
-				} catch (FileNotFoundException e) {
-					throw new TestRuntimeException("", e);
-				} finally {
-					if (reader != null) {
-						try {
-							reader.close();
-						} catch (IOException e) {
-							LOG.debug("{}", e.toString());
-						}
-					}
-				}
-
-				// Check Session is exist
-				LinkedTreeMap<String, Object> store = (LinkedTreeMap<String, Object>) map.get(capabilitiesName);
-				if (store != null) {
-					String sessionId = (String) store.get("sessionId");
-					LinkedTreeMap<String, Object> rawCapabilities = (LinkedTreeMap<String, Object>) store
-							.get("capabilities");
-					String dialectValue = (String) store.get("dialectValue");
-
-					//					HttpURLConnection con = null;
-					//					try {
-					//						URL myurl = new URL("http://localhost:4444/wd/hub/session/" + sessionId);
-					//						try {
-					//							con = (HttpURLConnection) myurl.openConnection();
-					//							con.setRequestMethod("GET");
-					//						} catch (IOException e) {
-					//							LOG.debug("{}", e.toString());
-					//						}
-					//					} catch (MalformedURLException e) {
-					//						LOG.debug("{}", e.toString());
-					//					}
-					//
-					//					BufferedReader in = null;
-					//					StringBuilder content = null;
-					//					if (con != null) {
-					//						try {
-					//							InputStreamReader reponse = new InputStreamReader(con.getInputStream());
-					//							in = new BufferedReader(reponse);
-					//							content = new StringBuilder();
-					//							String line;
-					//							while ((line = in.readLine()) != null) {
-					//								content.append(line);
-					//								content.append(System.lineSeparator());
-					//							}
-					//						} catch (IOException e) {
-					//							LOG.debug("{}", e.toString());
-					//						} finally {
-					//							if (in != null) {
-					//								try {
-					//									in.close();
-					//								} catch (IOException e) {
-					//									LOG.debug("{}", e.toString());
-					//								}
-					//							}
-					//						}
-					//					}
-					//
-					//					if (content != null) {
-					//						int status = -1;
-					//						try {
-					//							JsonParser parser = new JsonParser();
-					//							JsonObject sessions = (JsonObject) parser.parse(content.toString());
-					//							status = sessions.get("status").getAsInt();
-					//						} catch (JsonSyntaxException e) {
-					//							LOG.debug("{}", e.toString());
-					//						}
-					//
-					//						if (status == 0) {
-					URL url = getGridHubURL();
-					driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(sessionId), url,
-							new DesiredCapabilities(), rawCapabilities, dialectValue));
-					LOG.debug("reuse ({})", sessionId);
-					//						}
-
-					//					}
 				}
 
 				if (driver == null) {
-					URL url = null;
-					try {
-						url = new URL("http://localhost:4444/wd/hub");
-					} catch (MalformedURLException e) {
-						LOG.debug("{}", e.toString());
-					}
+					CustomHttpCommandExecutor executor = new CustomHttpCommandExecutor(getGridHubURL());
+					driver = createReusableWebDriver(executor);
 
-					if (url != null) {
-						CustomHttpCommandExecutor executor = new CustomHttpCommandExecutor(url);
-						driver = createReusableWebDriver(executor);
-
-						LinkedTreeMap<String, Object> sub = new LinkedTreeMap<>();
-						sub.put("sessionId", driver.getSessionId().toString());
-						sub.put("capabilities", driver.getRawCapabilities().asMap());
-						sub.put("dialectValue", executor.getDialect().name());
-
-						map.put(capabilitiesName, sub);
-
-						//　セッション情報出力
-						JsonWriter writer = null;
-						try {
-							writer = new JsonWriter(new FileWriter("store.json"));
-							writer.setIndent("    ");
-							Gson gson = new Gson();
-							gson.toJson(map, LinkedTreeMap.class, writer);
-						} catch (IOException e) {
-							LOG.debug("{}", e.toString());
-						} finally {
-							if (writer != null) {
-								try {
-									writer.close();
-								} catch (IOException e) {
-									LOG.debug("{}", e.toString());
-								}
-							}
-						}
-						LOG.debug("create ({})", driver.getSessionId().toString());
-					}
-
+				    // 利用可能なセッションが無い場合、
+					// 永続化のためにReusableDriverを使ってインスタンス化する
+					StoredSeleniumSession s = new StoredSeleniumSession(driver.getSessionId().toString(),
+							(Map<String, Object>)driver.getRawCapabilities().asMap(), executor.getDialect().toString());
+					sessions.put(getKey(capabilities), s);
+					writeSessionsToFile(file, sessions);
 				}
-			} else {
-				URL url = getGridHubURL();
-				driver = createWebDriver(url);
 			}
 
-			if (driver != null) {
-				driver.setEnvironmentConfig(environmentConfig);
-				driver.setBaseUrl(testAppConfig.getBaseUrl());
-				driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS)
-						.setScriptTimeout(environmentConfig.getScriptTimeout(), TimeUnit.SECONDS);
-				if (!isMobile()) {
-					driver.manage().window()
-							.setSize(new Dimension(testAppConfig.getWindowWidth(), testAppConfig.getWindowHeight()));
-				}
+			// Pitalium独自の設定の追加
 
-				LOG.debug("[Get WebDriver] new session created. ({})", driver);
-			}
+            driver.setEnvironmentConfig(environmentConfig);
+            driver.setBaseUrl(testAppConfig.getBaseUrl());
+            driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS)
+                    .setScriptTimeout(environmentConfig.getScriptTimeout(), TimeUnit.SECONDS);
+            if (!isMobile()) {
+                driver.manage().window()
+                        .setSize(new Dimension(testAppConfig.getWindowWidth(), testAppConfig.getWindowHeight()));
+            }
+
+            LOG.debug("[Get WebDriver] new session created. ({})", driver);
 			return driver;
 		}
 
