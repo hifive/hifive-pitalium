@@ -19,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,12 +34,16 @@ class PtlSelendroidDriver extends PtlAbsAndroidDriver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
 	PtlSelendroidDriver(URL remoteAddress, PtlCapabilities capabilities) {
 		super(remoteAddress, capabilities);
+	}
+
+	PtlSelendroidDriver(CommandExecutor executor, PtlCapabilities capabilities) {
+		super(executor, capabilities);
 	}
 
 	@Override
@@ -52,7 +57,8 @@ class PtlSelendroidDriver extends PtlAbsAndroidDriver {
 	}
 
 	@Override
-	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image, int num, int size, double currentScale) {
+	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image, int num, int size,
+			double currentScale) {
 		LOG.trace("(trimTargetBorder) el: {}; image[w: {}, h: {}], num: {}, size: {}", el, image.getWidth(),
 				image.getHeight(), num, size);
 
@@ -80,7 +86,7 @@ class PtlSelendroidDriver extends PtlAbsAndroidDriver {
 
 	/**
 	 * 下端の切り取り位置を調整します。
-	 * 
+	 *
 	 * @param trimTop 調整前の切り取り量
 	 * @param scale スケール
 	 * @return 調整後の切り取り量

@@ -19,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,12 +39,38 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
 	PtlIPhoneDriver(URL remoteAddress, PtlCapabilities capabilities) {
 		super(remoteAddress, capabilities);
+
+		Object headerHeightCapability = capabilities.getCapability("headerHeight");
+		if (headerHeightCapability == null) {
+			throw new TestRuntimeException("Capability \"headerHeight\" is required");
+		} else {
+			if (headerHeightCapability instanceof Number) {
+				headerHeight = ((Number) headerHeightCapability).intValue();
+			} else {
+				headerHeight = Integer.parseInt(headerHeightCapability.toString());
+			}
+		}
+
+		Object footerHeightCapability = capabilities.getCapability("footerHeight");
+		if (footerHeightCapability == null) {
+			throw new TestRuntimeException("Capability \"footerHeight\" is required");
+		} else {
+			if (footerHeightCapability instanceof Number) {
+				footerHeight = ((Number) footerHeightCapability).intValue();
+			} else {
+				footerHeight = Integer.parseInt(footerHeightCapability.toString());
+			}
+		}
+	}
+
+	PtlIPhoneDriver(CommandExecutor executor, PtlCapabilities capabilities) {
+		super(executor, capabilities);
 
 		Object headerHeightCapability = capabilities.getCapability("headerHeight");
 		if (headerHeightCapability == null) {
@@ -158,7 +185,8 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 	}
 
 	@Override
-	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image, int num, int size, double currentScale) {
+	protected BufferedImage trimTargetBorder(WebElement el, BufferedImage image, int num, int size,
+			double currentScale) {
 		LOG.trace("(trimTargetBorder) el: {}; image[w: {}, h: {}], num: {}, size: {}", el, image.getWidth(),
 				image.getHeight(), num, size);
 
@@ -186,7 +214,7 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 
 	/**
 	 * 下端の切り取り位置を調整します。
-	 * 
+	 *
 	 * @param trimTop 調整前の切り取り量
 	 * @param scale スケール
 	 * @return 調整後の切り取り量

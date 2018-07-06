@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.CommandExecutor;
 
 import com.htmlhifive.pitalium.core.model.CompareTarget;
 import com.htmlhifive.pitalium.core.model.ScreenshotParams;
@@ -38,6 +39,10 @@ class PtlFirefoxDriver extends SplitScreenshotWebDriver {
 	 */
 	PtlFirefoxDriver(URL remoteAddress, PtlCapabilities capabilities) {
 		super(remoteAddress, capabilities);
+	}
+
+	PtlFirefoxDriver(CommandExecutor executor, PtlCapabilities capabilities) {
+		super(executor, capabilities);
 	}
 
 	@Override

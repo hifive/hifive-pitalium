@@ -17,14 +17,11 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
@@ -49,9 +46,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -199,66 +193,68 @@ public abstract class PtlWebDriverFactory {
 
 				// Check Session is exist
 				LinkedTreeMap<String, Object> store = (LinkedTreeMap<String, Object>) map.get(capabilitiesName);
-				String sessionId = (String) store.get("sessionId");
-				LinkedTreeMap<String, Object> rawCapabilities = (LinkedTreeMap<String, Object>) store
-						.get("capabilities");
-				String dialectValue = (String) store.get("dialectValue");
+				if (store != null) {
+					String sessionId = (String) store.get("sessionId");
+					LinkedTreeMap<String, Object> rawCapabilities = (LinkedTreeMap<String, Object>) store
+							.get("capabilities");
+					String dialectValue = (String) store.get("dialectValue");
 
-				HttpURLConnection con = null;
-				try {
-					URL myurl = new URL("http://localhost:4444/wd/hub/session/" + sessionId);
-					try {
-						con = (HttpURLConnection) myurl.openConnection();
-						con.setRequestMethod("GET");
-					} catch (IOException e) {
-						LOG.debug("{}", e.toString());
-					}
-				} catch (MalformedURLException e) {
-					LOG.debug("{}", e.toString());
-				}
+					//					HttpURLConnection con = null;
+					//					try {
+					//						URL myurl = new URL("http://localhost:4444/wd/hub/session/" + sessionId);
+					//						try {
+					//							con = (HttpURLConnection) myurl.openConnection();
+					//							con.setRequestMethod("GET");
+					//						} catch (IOException e) {
+					//							LOG.debug("{}", e.toString());
+					//						}
+					//					} catch (MalformedURLException e) {
+					//						LOG.debug("{}", e.toString());
+					//					}
+					//
+					//					BufferedReader in = null;
+					//					StringBuilder content = null;
+					//					if (con != null) {
+					//						try {
+					//							InputStreamReader reponse = new InputStreamReader(con.getInputStream());
+					//							in = new BufferedReader(reponse);
+					//							content = new StringBuilder();
+					//							String line;
+					//							while ((line = in.readLine()) != null) {
+					//								content.append(line);
+					//								content.append(System.lineSeparator());
+					//							}
+					//						} catch (IOException e) {
+					//							LOG.debug("{}", e.toString());
+					//						} finally {
+					//							if (in != null) {
+					//								try {
+					//									in.close();
+					//								} catch (IOException e) {
+					//									LOG.debug("{}", e.toString());
+					//								}
+					//							}
+					//						}
+					//					}
+					//
+					//					if (content != null) {
+					//						int status = -1;
+					//						try {
+					//							JsonParser parser = new JsonParser();
+					//							JsonObject sessions = (JsonObject) parser.parse(content.toString());
+					//							status = sessions.get("status").getAsInt();
+					//						} catch (JsonSyntaxException e) {
+					//							LOG.debug("{}", e.toString());
+					//						}
+					//
+					//						if (status == 0) {
+					URL url = getGridHubURL();
+					driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(sessionId), url,
+							new DesiredCapabilities(), rawCapabilities, dialectValue));
+					LOG.debug("reuse ({})", sessionId);
+					//						}
 
-				BufferedReader in = null;
-				StringBuilder content = null;
-				if (con != null) {
-					try {
-						InputStreamReader reponse = new InputStreamReader(con.getInputStream());
-						in = new BufferedReader(reponse);
-						content = new StringBuilder();
-						String line;
-						while ((line = in.readLine()) != null) {
-							content.append(line);
-							content.append(System.lineSeparator());
-						}
-					} catch (IOException e) {
-						LOG.debug("{}", e.toString());
-					} finally {
-						if (in != null) {
-							try {
-								in.close();
-							} catch (IOException e) {
-								LOG.debug("{}", e.toString());
-							}
-						}
-					}
-				}
-
-				if (content != null) {
-					int status = -1;
-					try {
-						JsonParser parser = new JsonParser();
-						JsonObject sessions = (JsonObject) parser.parse(content.toString());
-						status = sessions.get("status").getAsInt();
-					} catch (JsonSyntaxException e) {
-						LOG.debug("{}", e.toString());
-					}
-
-					if (status == 0) {
-						URL url = getGridHubURL();
-						driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(sessionId), url,
-								new DesiredCapabilities(), rawCapabilities, dialectValue));
-						LOG.debug("reuse ({})", sessionId);
-					}
-
+					//					}
 				}
 
 				if (driver == null) {
@@ -385,9 +381,7 @@ public abstract class PtlWebDriverFactory {
 	 */
 	public abstract PtlWebDriver createWebDriver(URL url);
 
-	public PtlChromeDriver createReusableWebDriver(CommandExecutor executor) {
-		return new PtlChromeDriver(executor, getCapabilities());
-	}
+	public abstract PtlWebDriver createReusableWebDriver(CommandExecutor executor);
 
 	/**
 	 * テスト実行用の共通設定を取得します。
@@ -433,6 +427,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlFirefoxDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlFirefoxDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -460,6 +459,11 @@ public abstract class PtlWebDriverFactory {
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlChromeDriver(url, getCapabilities());
+		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlChromeDriver(executor, getCapabilities());
 		}
 	}
 
@@ -498,6 +502,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlInternetExplorerDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlInternetExplorerDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -521,6 +530,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlInternetExplorer7Driver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlInternetExplorer7Driver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -543,6 +557,11 @@ public abstract class PtlWebDriverFactory {
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlInternetExplorer8Driver(url, getCapabilities());
+		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlInternetExplorer8Driver(executor, getCapabilities());
 		}
 	}
 
@@ -572,6 +591,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlEdgeDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlEdgeDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -599,6 +623,11 @@ public abstract class PtlWebDriverFactory {
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlSafariDriver(url, getCapabilities());
+		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlSafariDriver(executor, getCapabilities());
 		}
 	}
 
@@ -646,6 +675,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlIPhoneDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlIPhoneDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -691,6 +725,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlIPadDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlIPadDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -719,6 +758,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlAndroidDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlAndroidDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -741,6 +785,11 @@ public abstract class PtlWebDriverFactory {
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlSelendroidDriver(url, getCapabilities());
+		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlSelendroidDriver(executor, getCapabilities());
 		}
 	}
 

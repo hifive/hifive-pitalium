@@ -17,6 +17,8 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.net.URL;
 
+import org.openqa.selenium.remote.CommandExecutor;
+
 /**
  * MicrosoftEdgeで利用する{@link org.openqa.selenium.WebDriver}
  */
@@ -24,12 +26,16 @@ class PtlEdgeDriver extends SplitScreenshotWebDriver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
 	PtlEdgeDriver(URL remoteAddress, PtlCapabilities capabilities) {
 		super(remoteAddress, capabilities);
+	}
+
+	PtlEdgeDriver(CommandExecutor executor, PtlCapabilities capabilities) {
+		super(executor, capabilities);
 	}
 
 	@Override

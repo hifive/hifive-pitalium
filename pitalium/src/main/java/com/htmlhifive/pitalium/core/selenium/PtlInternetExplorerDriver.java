@@ -18,6 +18,8 @@ package com.htmlhifive.pitalium.core.selenium;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
+import org.openqa.selenium.remote.CommandExecutor;
+
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 
 /**
@@ -29,12 +31,27 @@ class PtlInternetExplorerDriver extends SplitScreenshotWebDriver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
 	PtlInternetExplorerDriver(URL remoteAddress, PtlCapabilities capabilities) {
 		super(remoteAddress, capabilities);
+
+		Object chromeWidthCapability = capabilities.getCapability("chromeWidth");
+		if (chromeWidthCapability == null) {
+			throw new TestRuntimeException("Capability \"chromeWidth\" is required.");
+		}
+
+		if (chromeWidthCapability instanceof Number) {
+			chromeWidth = ((Number) chromeWidthCapability).intValue();
+		} else {
+			chromeWidth = Integer.parseInt(chromeWidthCapability.toString());
+		}
+	}
+
+	PtlInternetExplorerDriver(CommandExecutor executor, PtlCapabilities capabilities) {
+		super(executor, capabilities);
 
 		Object chromeWidthCapability = capabilities.getCapability("chromeWidth");
 		if (chromeWidthCapability == null) {
@@ -76,7 +93,7 @@ class PtlInternetExplorerDriver extends SplitScreenshotWebDriver {
 
 	/**
 	 * ウィンドウクロムの幅を取得します。
-	 * 
+	 *
 	 * @return クロム幅（整数px）
 	 */
 	public int getChromeWidth() {

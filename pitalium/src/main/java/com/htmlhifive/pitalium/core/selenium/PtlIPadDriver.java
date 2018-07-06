@@ -17,6 +17,7 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.net.URL;
 
+import org.openqa.selenium.remote.CommandExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,12 +34,27 @@ class PtlIPadDriver extends PtlIPhoneDriver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
 	PtlIPadDriver(URL remoteAddress, PtlCapabilities capabilities) {
 		super(remoteAddress, capabilities);
+
+		Object headerHeightCapability = capabilities.getCapability("headerHeight");
+		if (headerHeightCapability == null) {
+			throw new TestRuntimeException("Capability \"headerHeight\" is required");
+		} else {
+			if (headerHeightCapability instanceof Number) {
+				headerHeight = ((Number) headerHeightCapability).intValue();
+			} else {
+				headerHeight = Integer.parseInt(headerHeightCapability.toString());
+			}
+		}
+	}
+
+	PtlIPadDriver(CommandExecutor executor, PtlCapabilities capabilities) {
+		super(executor, capabilities);
 
 		Object headerHeightCapability = capabilities.getCapability("headerHeight");
 		if (headerHeightCapability == null) {

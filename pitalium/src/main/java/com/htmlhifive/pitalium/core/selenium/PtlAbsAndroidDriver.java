@@ -18,6 +18,8 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.net.URL;
 
+import org.openqa.selenium.remote.CommandExecutor;
+
 /**
  * Android端末で利用する{@link org.openqa.selenium.WebDriver}の抽象クラス。
  */
@@ -31,6 +33,10 @@ abstract class PtlAbsAndroidDriver extends SplitScreenshotWebDriver {
 	 */
 	PtlAbsAndroidDriver(URL remoteAddress, PtlCapabilities capabilities) {
 		super(remoteAddress, capabilities);
+	}
+
+	PtlAbsAndroidDriver(CommandExecutor executor, PtlCapabilities capabilities) {
+		super(executor, capabilities);
 	}
 
 	@Override

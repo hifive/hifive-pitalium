@@ -17,6 +17,8 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.net.URL;
 
+import org.openqa.selenium.remote.CommandExecutor;
+
 /**
  * Internet Explorer 7で利用する{@link org.openqa.selenium.WebDriver}
  */
@@ -24,12 +26,16 @@ class PtlInternetExplorer7Driver extends PtlInternetExplorer8Driver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
 	PtlInternetExplorer7Driver(URL remoteAddress, PtlCapabilities capabilities) {
 		super(remoteAddress, capabilities);
+	}
+
+	PtlInternetExplorer7Driver(CommandExecutor executor, PtlCapabilities capabilities) {
+		super(executor, capabilities);
 	}
 
 	@Override

@@ -18,6 +18,8 @@ package com.htmlhifive.pitalium.core.selenium;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
+import org.openqa.selenium.remote.CommandExecutor;
+
 import com.htmlhifive.pitalium.image.util.ImageUtils;
 
 /**
@@ -27,12 +29,16 @@ class PtlInternetExplorer8Driver extends PtlInternetExplorerDriver {
 
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param remoteAddress RemoteWebDriverServerのアドレス
 	 * @param capabilities Capability
 	 */
 	PtlInternetExplorer8Driver(URL remoteAddress, PtlCapabilities capabilities) {
 		super(remoteAddress, capabilities);
+	}
+
+	PtlInternetExplorer8Driver(CommandExecutor executor, PtlCapabilities capabilities) {
+		super(executor, capabilities);
 	}
 
 	@Override
