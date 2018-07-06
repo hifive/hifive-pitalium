@@ -29,24 +29,25 @@ import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpClient.Factory;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.internal.ApacheHttpClient;
 
 import com.google.common.collect.ImmutableMap;
 
 public class CustomHttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
-	private static Factory defaultClientFactory;
+	private static HttpClient.Factory defaultClientFactory;
 
 	private final URL remoteServer;
-	private final HttpClient client;
-	private final HttpClient.Factory httpClientFactory;
-	private final Map<String, CommandInfo> additionalCommands;
+	protected final HttpClient client;
+	protected final Map<String, CommandInfo> additionalCommands;
 	protected CommandCodec<HttpRequest> commandCodec;
 	protected ResponseCodec<HttpResponse> responseCodec;
 
 	private LocalLogs logs = LocalLogs.getNullLogger();
+
+	private Dialect dialect;
 
 	public CustomHttpCommandExecutor(URL addressOfRemoteServer) {
 		this(ImmutableMap.of(), addressOfRemoteServer);
@@ -74,13 +75,12 @@ public class CustomHttpCommandExecutor implements CommandExecutor, NeedsLocalLog
 		}
 
 		this.additionalCommands = additionalCommands;
-		this.httpClientFactory = httpClientFactory;
 		this.client = httpClientFactory.createClient(remoteServer);
 	}
 
-	private static synchronized Factory getDefaultClientFactory() {
+	private static synchronized HttpClient.Factory getDefaultClientFactory() {
 		if (defaultClientFactory == null) {
-			defaultClientFactory = new org.openqa.selenium.remote.internal.ApacheHttpClient.Factory();
+			defaultClientFactory = new ApacheHttpClient.Factory();
 		}
 		return defaultClientFactory;
 	}
@@ -102,7 +102,7 @@ public class CustomHttpCommandExecutor implements CommandExecutor, NeedsLocalLog
 		this.logs = logs;
 	}
 
-	private void log(String logType, LogEntry entry) {
+	protected void log(String logType, LogEntry entry) {
 		logs.addEntry(logType, entry);
 	}
 
@@ -127,7 +127,7 @@ public class CustomHttpCommandExecutor implements CommandExecutor, NeedsLocalLog
 			ProtocolHandshake handshake = new ProtocolHandshake();
 			log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
 			ProtocolHandshake.Result result = handshake.createSession(client, command);
-			Dialect dialect = result.getDialect();
+			dialect = result.getDialect();
 			commandCodec = dialect.getCommandCodec();
 			for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
 				defineCommand(entry.getKey(), entry.getValue());
@@ -156,9 +156,8 @@ public class CustomHttpCommandExecutor implements CommandExecutor, NeedsLocalLog
 					response.setSessionId(command.getSessionId().toString());
 				}
 			}
-
 			if (QUIT.equals(command.getName())) {
-				this.client.close();
+				client.close();
 			}
 			return response;
 		} catch (UnsupportedCommandException e) {
@@ -168,5 +167,9 @@ public class CustomHttpCommandExecutor implements CommandExecutor, NeedsLocalLog
 			}
 			throw e;
 		}
+	}
+
+	public Dialect getDialect() {
+		return dialect;
 	}
 }

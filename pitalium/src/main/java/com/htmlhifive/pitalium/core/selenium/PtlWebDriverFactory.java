@@ -15,6 +15,8 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -31,14 +33,16 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
-import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,6 +187,7 @@ public abstract class PtlWebDriverFactory {
 								.get(capabilities.toString());
 						String storedSession = (String) store.get("sessionId");
 						LinkedTreeMap<String, Object> caps = (LinkedTreeMap<String, Object>) store.get("capabilities");
+						String dialectValue = (String) store.get("dialectValue");
 						URL myurl = new URL("http://localhost:4444/wd/hub/session/" + storedSession);
 						con = (HttpURLConnection) myurl.openConnection();
 
@@ -204,7 +209,7 @@ public abstract class PtlWebDriverFactory {
 						int status = sessions.get("status").getAsInt();
 						if (status == 0) {
 							driver = createReusableWebDriver(createCommandExecutorFromSession(
-									new SessionId(storedSession), url, new DesiredCapabilities(), caps));
+									new SessionId(storedSession), url, new DesiredCapabilities(), caps, dialectValue));
 							LOG.debug("reuse ({})", storedSession);
 						}
 					}
@@ -222,6 +227,7 @@ public abstract class PtlWebDriverFactory {
 						LinkedTreeMap<String, Object> sub = new LinkedTreeMap<>();
 						sub.put("sessionId", driver.getSessionId().toString());
 						sub.put("capabilities", driver.getRawCapabilities().asMap());
+						sub.put("dialectValue", executor.getDialect().name());
 						map = new LinkedTreeMap<>();
 						map.put(driver.getCapabilities().toString(), sub);
 
@@ -271,21 +277,29 @@ public abstract class PtlWebDriverFactory {
 	}
 
 	protected CommandExecutor createCommandExecutorFromSession(final SessionId sessionId, URL command_executor,
-			Capabilities capabilities, Map<String, Object> rawCapabilities) {
-		CommandExecutor executor = new CustomHttpCommandExecutor(command_executor) {
+			Capabilities capabilities, Map<String, Object> rawCapabilities, String dialectValue) {
 
+		CommandExecutor executor = new CustomHttpCommandExecutor(command_executor) {
 			@Override
 			public Response execute(Command command) throws IOException {
 				Response response = null;
-				if (command.getName() == "newSession") {
+				if (NEW_SESSION.equals(command.getName())) {
+					if (commandCodec != null) {
+						throw new SessionNotCreatedException("Session already exists");
+					}
+					Dialect dialect = Dialect.valueOf(dialectValue);
+					commandCodec = dialect.getCommandCodec();
+					for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
+						defineCommand(entry.getKey(), entry.getValue());
+					}
+					responseCodec = dialect.getResponseCodec();
+					log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
+
 					response = new Response();
 					response.setSessionId(sessionId.toString());
 					response.setStatus(ErrorCodes.SUCCESS);
 					response.setState(ErrorCodes.SUCCESS_STRING);
 					response.setValue(rawCapabilities);
-
-					this.commandCodec = new W3CHttpCommandCodec();
-					this.responseCodec = new W3CHttpResponseCodec();
 				} else {
 					response = super.execute(command);
 				}
