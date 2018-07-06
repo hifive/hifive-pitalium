@@ -55,6 +55,10 @@ public @interface PtlWebDriverStrategy {
 		 */
 		GLOBAL,
 
+		/**
+		 * テスト情報をファイルに格納し、次回再利用します。
+		 * {@link com.htmlhifive.pitalium.core.config.EnvironmentConfig#reuseDriverForAllClasses} の設定をクラス単位で上書きします。
+		 */
 		PERSISTED
 	}
 

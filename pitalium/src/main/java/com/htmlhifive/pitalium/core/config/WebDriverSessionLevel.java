@@ -35,7 +35,9 @@ public enum WebDriverSessionLevel {
 	 * テスト全体を通じて共通のWebDriverセッションを利用します。WebDriverセッションは必要に応じて開始されますが自動でクローズはされません。
 	 */
 	GLOBAL,
-
+	/**
+	 * テスト情報をファイルに格納し、次回再利用します。
+	 */
 	PERSISTED
 
 }
