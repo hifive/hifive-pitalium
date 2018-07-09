@@ -69,6 +69,12 @@ class PtlIPhoneDriver extends SplitScreenshotWebDriver {
 		}
 	}
 
+	/**
+	 * コンストラクタ
+	 *
+	 * @param executor CommandExecutor
+	 * @param capabilities Capability
+	 */
 	PtlIPhoneDriver(CommandExecutor executor, PtlCapabilities capabilities) {
 		super(executor, capabilities);
 

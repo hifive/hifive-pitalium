@@ -35,6 +35,9 @@ import org.openqa.selenium.remote.internal.ApacheHttpClient;
 
 import com.google.common.collect.ImmutableMap;
 
+/**
+ * HttpCommandExecutorの一部のプロパティをprotectedに変更したカスタムクラス
+ */
 public class CustomHttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
 	private static HttpClient.Factory defaultClientFactory;

@@ -159,6 +159,12 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		setElementConverter(new JsonToPtlWebElementConverter(this));
 	}
 
+	/**
+	 * コンストラクタ
+	 *
+	 * @param executor CommandExecutor
+	 * @param capabilities Capability
+	 */
 	protected PtlWebDriver(CommandExecutor executor, PtlCapabilities capabilities) {
 		super(executor, capabilities);
 		this.capabilities = capabilities;
@@ -219,6 +225,11 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		return capabilities;
 	}
 
+	/**
+	 * RemoteWebDriverが保持しているCapabilityを取得します。
+	 * 
+	 * @return Capability
+	 */
 	public Capabilities getRawCapabilities() {
 		return super.getCapabilities();
 	}

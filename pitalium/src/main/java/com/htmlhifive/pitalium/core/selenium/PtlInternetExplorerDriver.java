@@ -50,6 +50,12 @@ class PtlInternetExplorerDriver extends SplitScreenshotWebDriver {
 		}
 	}
 
+	/**
+	 * コンストラクタ
+	 *
+	 * @param executor CommandExecutor
+	 * @param capabilities Capability
+	 */
 	PtlInternetExplorerDriver(CommandExecutor executor, PtlCapabilities capabilities) {
 		super(executor, capabilities);
 

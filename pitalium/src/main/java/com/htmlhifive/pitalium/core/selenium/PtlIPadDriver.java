@@ -53,6 +53,12 @@ class PtlIPadDriver extends PtlIPhoneDriver {
 		}
 	}
 
+	/**
+	 * コンストラクタ
+	 *
+	 * @param executor CommandExecutor
+	 * @param capabilities Capability
+	 */
 	PtlIPadDriver(CommandExecutor executor, PtlCapabilities capabilities) {
 		super(executor, capabilities);
 

@@ -35,6 +35,12 @@ abstract class PtlAbsAndroidDriver extends SplitScreenshotWebDriver {
 		super(remoteAddress, capabilities);
 	}
 
+	/**
+	 * コンストラクタ
+	 *
+	 * @param executor CommandExecutor
+	 * @param capabilities Capability
+	 */
 	PtlAbsAndroidDriver(CommandExecutor executor, PtlCapabilities capabilities) {
 		super(executor, capabilities);
 	}

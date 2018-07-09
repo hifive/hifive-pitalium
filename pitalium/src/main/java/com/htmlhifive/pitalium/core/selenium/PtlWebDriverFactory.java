@@ -15,8 +15,44 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.SessionId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Strings;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -25,25 +61,6 @@ import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.config.TestAppConfig;
 import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
-import org.openqa.selenium.remote.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 
 /**
  * 各ブラウザに対応するWebDriverを生成するファクトリクラス
@@ -144,6 +161,7 @@ public abstract class PtlWebDriverFactory {
 	}
 
 	private Map<String, StoredSeleniumSession> readSessionsFromFile(File file) throws TestRuntimeException {
+		// セッション情報取得
 		JsonReader reader = null;
 		Map<String, StoredSeleniumSession> map = new LinkedTreeMap<>();
 		try {
@@ -151,11 +169,11 @@ public abstract class PtlWebDriverFactory {
 			Gson gson = new Gson();
 
 			JsonObject jObj = gson.fromJson(reader, JsonObject.class);
-			for(Map.Entry<String, JsonElement> entry : jObj.entrySet()) {
-			    String key = entry.getKey();
-			    JsonObject sessionJObj = entry.getValue().getAsJsonObject();
+			for (Map.Entry<String, JsonElement> entry : jObj.entrySet()) {
+				String key = entry.getKey();
+				JsonObject sessionJObj = entry.getValue().getAsJsonObject();
 
-			    String sessionId = sessionJObj.get("sessionId").getAsString();
+				String sessionId = sessionJObj.get("sessionId").getAsString();
 				Map<String, Object> rawCapabilities = new LinkedTreeMap<>();
 				JsonObject rawCapJObj = sessionJObj.get("rawCapabilities").getAsJsonObject();
 				for (Map.Entry<String, JsonElement> capEntry : rawCapJObj.entrySet()) {
@@ -163,81 +181,102 @@ public abstract class PtlWebDriverFactory {
 					if (elem.isJsonPrimitive()) {
 						rawCapabilities.put(capEntry.getKey(), capEntry.getValue().getAsString());
 					} else {
-						rawCapabilities.put(capEntry.getKey(), gson.fromJson(gson.toJson(elem.getAsJsonObject()), LinkedTreeMap.class));
+						rawCapabilities.put(capEntry.getKey(),
+								gson.fromJson(gson.toJson(elem.getAsJsonObject()), LinkedTreeMap.class));
 					}
 				}
-			    String dialect = sessionJObj.get("dialect").getAsString();
-			    map.put(key, new StoredSeleniumSession(sessionId, rawCapabilities, dialect));
+				String dialect = sessionJObj.get("dialect").getAsString();
+				map.put(key, new StoredSeleniumSession(sessionId, rawCapabilities, dialect));
 			}
-		} catch(IOException e) {
+		} catch (IOException e) {
 			throw new TestRuntimeException(file.getName() + "を開けません。", e);
 		} finally {
 			if (reader != null) {
 				try {
 					reader.close();
 				} catch (IOException e) {
-					LOG.debug("{}", e.toString());
+					throw new TestRuntimeException(file.getName() + "を閉じられません。", e);
 				}
 			}
 		}
 
-        return map;
+		return map;
 	}
 
 	private String getKey(Capabilities cap) {
 		return cap.toString();
 	}
 
-	private boolean isSessionExistsOnServer (String sessionId) throws TestRuntimeException {
-		HttpURLConnection con = null;
+	private boolean isSessionExistsOnServer(String sessionId) throws TestRuntimeException {
+		HttpURLConnection con;
+		// HTTP Status-Codeではありえない値
+		int responseCode = -1;
 		try {
-			URL myUrl = new URL(getGridHubURL() + "/session/" + sessionId);
+			// TODO: 2018/7/9現在 /sessions コマンドが実装されていないため代わりに /session/{sessionId}/url コマンドでsessionIdが存在することを確認している
+			URL myUrl = new URL(getGridHubURL() + "/session/" + sessionId + "/url");
 			try {
 				con = (HttpURLConnection) myUrl.openConnection();
 				con.setRequestMethod("GET");
+				responseCode = con.getResponseCode();
 			} catch (IOException e) {
 				// NOTE: 接続に失敗する場合はセッションが存在しないとみなす
-			    return false;
+				return false;
 			}
 		} catch (MalformedURLException e) {
 			throw new TestRuntimeException("不正なURLです。", e);
 		}
 
-		BufferedReader in = null;
-		StringBuilder content = null;
-        try {
-            InputStreamReader reponse = new InputStreamReader(con.getInputStream());
-            in = new BufferedReader(reponse);
-            content = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                content.append(line);
-                content.append(System.lineSeparator());
-            }
-        } catch (IOException e) {
-            throw new TestRuntimeException(e);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    LOG.debug("{}", e.toString());
-                }
-            }
-        }
+		// HTTP Status-Codeが200ならば指定したsessionが存在するとみなす
+		if (responseCode == HttpURLConnection.HTTP_OK) {
+			// sessionの接続確認
+			BufferedReader in = null;
+			StringBuilder content = null;
+			try {
+				InputStreamReader reponse = new InputStreamReader(con.getInputStream());
+				in = new BufferedReader(reponse);
+				content = new StringBuilder();
+				String line;
+				while ((line = in.readLine()) != null) {
+					content.append(line);
+					content.append(System.lineSeparator());
+				}
+			} catch (IOException e) {
+				throw new TestRuntimeException(e);
+			} finally {
+				if (in != null) {
+					try {
+						in.close();
+					} catch (IOException e) {
+						LOG.debug("{}", e.toString());
+					}
+				}
+			}
 
-        int status = -1;
-        try {
-            JsonParser parser = new JsonParser();
-            JsonObject sessions = (JsonObject) parser.parse(content.toString());
-            status = sessions.get("status").getAsInt();
-        } catch (JsonSyntaxException e) {
-            throw new TestRuntimeException("サーバからの戻り値が不正です", e);
-        }
-		return status == 0;
+			// 返ってきた文字列をJSONにパース
+			JsonObject sessions;
+			try {
+				JsonParser parser = new JsonParser();
+				sessions = (JsonObject) parser.parse(content.toString());
+			} catch (JsonSyntaxException e) {
+				throw new TestRuntimeException("サーバからの戻り値が不正です", e);
+			}
+
+			if (sessions.has("status")) {
+				// JSONにstatusがある場合はstatusの値によってsessionに接続できるかを判定する
+				int status = sessions.get("status").getAsInt();
+				return status == 0;
+			}
+
+			// JSONにstatusがない場合はそのままtrue
+			return true;
+		}
+
+		// HTTP Status-Codeが200でない場合は指定したsessionが存在しない
+		return false;
 	}
 
-	private void writeSessionsToFile(File file, Map<String, StoredSeleniumSession> sessions) {
+	private void writeSessionsToFile(File file, Map<String, StoredSeleniumSession> sessions)
+			throws TestRuntimeException {
 
 		//　セッション情報出力
 		JsonWriter writer = null;
@@ -247,13 +286,13 @@ public abstract class PtlWebDriverFactory {
 			Gson gson = new Gson();
 			gson.toJson(sessions, LinkedTreeMap.class, writer);
 		} catch (IOException e) {
-			LOG.debug("{}", e.toString());
+			throw new TestRuntimeException(file.getName() + "を開けません。", e);
 		} finally {
 			if (writer != null) {
 				try {
 					writer.close();
 				} catch (IOException e) {
-					LOG.debug("{}", e.toString());
+					throw new TestRuntimeException(file.getName() + "を閉じられません。", e);
 				}
 			}
 		}
@@ -269,23 +308,41 @@ public abstract class PtlWebDriverFactory {
 			LOG.debug("[Get WebDriver] create new session.");
 
 			PtlWebDriver driver = null;
-			Map<String, StoredSeleniumSession> sessions = new LinkedTreeMap<>();
 
 			WebDriverSessionLevel sessionLevel = PtlTestConfig.getInstance().getEnvironment()
 					.getWebDriverSessionLevel();
 			if (sessionLevel != WebDriverSessionLevel.PERSISTED) {
 				driver = createWebDriver(getGridHubURL());
 			} else {
+				Map<String, StoredSeleniumSession> sessions = new LinkedTreeMap<>();
 				File file = new File("store.json");
 
 				if (file.exists()) {
 					sessions = readSessionsFromFile(file);
 					StoredSeleniumSession session = sessions.get(getKey(capabilities));
 
-					if (session != null && isSessionExistsOnServer(session.getSessionId())) {
-						LOG.debug("reuse ({})", session.getSessionId());
-						driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(session.getSessionId()), getGridHubURL(),
-								new DesiredCapabilities(), session.getRawCapabilities(), session.getDialect()));
+					// セッションを再利用
+					if (session != null) {
+						if (isSessionExistsOnServer(session.getSessionId())) {
+							LOG.debug("reuse ({})", session.getSessionId());
+							driver = createReusableWebDriver(createCommandExecutorFromSession(
+									new SessionId(session.getSessionId()), getGridHubURL(), new DesiredCapabilities(),
+									session.getRawCapabilities(), session.getDialect()));
+						} else {
+							// 接続できないセッションがある場合、driverを停止してdriverを新規作成する
+							driver = createReusableWebDriver(createCommandExecutorFromSession(
+									new SessionId(session.getSessionId()), getGridHubURL(), new DesiredCapabilities(),
+									session.getRawCapabilities(), session.getDialect()));
+							// driverが終了している状態でquit()すると例外が発生する
+							// ブラウザが開いていてdriverが終了していてセッションに接続できない場合にもdriverを新規作成したいので例外を握りつぶして処理を続ける
+							try {
+								driver.quit();
+								LOG.debug("quit ({})", session.getSessionId());
+							} catch (WebDriverException e) {
+								LOG.debug("quit ({}) {}", session.getSessionId(), e.toString());
+							}
+							driver = null;
+						}
 					}
 				}
 
@@ -293,10 +350,11 @@ public abstract class PtlWebDriverFactory {
 					CustomHttpCommandExecutor executor = new CustomHttpCommandExecutor(getGridHubURL());
 					driver = createReusableWebDriver(executor);
 
-				    // 利用可能なセッションが無い場合、
+					// 利用可能なセッションが無い場合、
 					// 永続化のためにReusableDriverを使ってインスタンス化する
 					StoredSeleniumSession s = new StoredSeleniumSession(driver.getSessionId().toString(),
-							(Map<String, Object>)driver.getRawCapabilities().asMap(), executor.getDialect().toString());
+							(Map<String, Object>) driver.getRawCapabilities().asMap(),
+							executor.getDialect().toString());
 					sessions.put(getKey(capabilities), s);
 					writeSessionsToFile(file, sessions);
 				}
@@ -304,16 +362,16 @@ public abstract class PtlWebDriverFactory {
 
 			// Pitalium独自の設定の追加
 
-            driver.setEnvironmentConfig(environmentConfig);
-            driver.setBaseUrl(testAppConfig.getBaseUrl());
-            driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS)
-                    .setScriptTimeout(environmentConfig.getScriptTimeout(), TimeUnit.SECONDS);
-            if (!isMobile()) {
-                driver.manage().window()
-                        .setSize(new Dimension(testAppConfig.getWindowWidth(), testAppConfig.getWindowHeight()));
-            }
+			driver.setEnvironmentConfig(environmentConfig);
+			driver.setBaseUrl(testAppConfig.getBaseUrl());
+			driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS)
+					.setScriptTimeout(environmentConfig.getScriptTimeout(), TimeUnit.SECONDS);
+			if (!isMobile()) {
+				driver.manage().window()
+						.setSize(new Dimension(testAppConfig.getWindowWidth(), testAppConfig.getWindowHeight()));
+			}
 
-            LOG.debug("[Get WebDriver] new session created. ({})", driver);
+			LOG.debug("[Get WebDriver] new session created. ({})", driver);
 			return driver;
 		}
 
@@ -380,6 +438,12 @@ public abstract class PtlWebDriverFactory {
 	 */
 	public abstract PtlWebDriver createWebDriver(URL url);
 
+	/**
+	 * WebDriverを生成します。
+	 *
+	 * @param executor CommandExecutor
+	 * @return 生成したWebDriverのインスタンス
+	 */
 	public abstract PtlWebDriver createReusableWebDriver(CommandExecutor executor);
 
 	/**

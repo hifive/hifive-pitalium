@@ -45,6 +45,12 @@ abstract class SplitScreenshotWebDriver extends PtlWebDriver {
 		super(remoteAddress, capabilities);
 	}
 
+	/**
+	 * コンストラクタ
+	 *
+	 * @param executor CommandExecutor
+	 * @param capabilities Capability
+	 */
 	SplitScreenshotWebDriver(CommandExecutor executor, PtlCapabilities capabilities) {
 		super(executor, capabilities);
 	}

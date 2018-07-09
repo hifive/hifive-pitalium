@@ -34,6 +34,12 @@ class PtlChromeDriver extends SplitScreenshotWebDriver {
 		super(remoteAddress, capabilities);
 	}
 
+	/**
+	 * コンストラクタ
+	 *
+	 * @param executor CommandExecutor
+	 * @param capabilities Capability
+	 */
 	PtlChromeDriver(CommandExecutor executor, PtlCapabilities capabilities) {
 		super(executor, capabilities);
 	}

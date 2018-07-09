@@ -42,6 +42,12 @@ class PtlSelendroidDriver extends PtlAbsAndroidDriver {
 		super(remoteAddress, capabilities);
 	}
 
+	/**
+	 * コンストラクタ
+	 *
+	 * @param executor CommandExecutor
+	 * @param capabilities Capability
+	 */
 	PtlSelendroidDriver(CommandExecutor executor, PtlCapabilities capabilities) {
 		super(executor, capabilities);
 	}

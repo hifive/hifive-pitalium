@@ -41,6 +41,12 @@ class PtlFirefoxDriver extends SplitScreenshotWebDriver {
 		super(remoteAddress, capabilities);
 	}
 
+	/**
+	 * コンストラクタ
+	 *
+	 * @param executor CommandExecutor
+	 * @param capabilities Capability
+	 */
 	PtlFirefoxDriver(CommandExecutor executor, PtlCapabilities capabilities) {
 		super(executor, capabilities);
 	}

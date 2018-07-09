@@ -2,26 +2,51 @@ package com.htmlhifive.pitalium.core.selenium;
 
 import java.util.Map;
 
+/**
+ * jsonファイルに出力するセッション情報を持つクラス
+ */
 public class StoredSeleniumSession {
-    private final String sessionId;
-    private final Map<String,Object> rawCapabilities;
-    private final String dialect;
+	private final String sessionId;
+	private final Map<String, Object> rawCapabilities;
+	private final String dialect;
 
-    public String getSessionId() {
-        return sessionId;
-    }
+	/**
+	 * コンストラクタ
+	 *
+	 * @param sessionId セッションID
+	 * @param rawCapabilities Capabilities
+	 * @param dialect Dialect
+	 */
+	public StoredSeleniumSession(String sessionId, Map<String, Object> rawCapabilities, String dialect) {
+		this.sessionId = sessionId;
+		this.rawCapabilities = rawCapabilities;
+		this.dialect = dialect;
+	}
 
-    public Map<String, Object> getRawCapabilities() {
-        return rawCapabilities;
-    }
+	/**
+	 * セッションIDを取得する
+	 *
+	 * @return セッションID
+	 */
+	public String getSessionId() {
+		return sessionId;
+	}
 
-    public String getDialect() {
-        return dialect;
-    }
+	/**
+	 * Capabilitiesを取得する
+	 *
+	 * @return Capabilities
+	 */
+	public Map<String, Object> getRawCapabilities() {
+		return rawCapabilities;
+	}
 
-    public StoredSeleniumSession(String sessionId, Map<String, Object> rawCapabilities, String dialect) {
-        this.sessionId = sessionId;
-        this.rawCapabilities = rawCapabilities;
-        this.dialect = dialect;
-    }
+	/**
+	 * Dialectを取得する
+	 *
+	 * @return Dialect
+	 */
+	public String getDialect() {
+		return dialect;
+	}
 }

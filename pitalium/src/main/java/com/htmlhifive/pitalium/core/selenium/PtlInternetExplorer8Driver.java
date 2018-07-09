@@ -37,6 +37,12 @@ class PtlInternetExplorer8Driver extends PtlInternetExplorerDriver {
 		super(remoteAddress, capabilities);
 	}
 
+	/**
+	 * コンストラクタ
+	 *
+	 * @param executor CommandExecutor
+	 * @param capabilities Capability
+	 */
 	PtlInternetExplorer8Driver(CommandExecutor executor, PtlCapabilities capabilities) {
 		super(executor, capabilities);
 	}
