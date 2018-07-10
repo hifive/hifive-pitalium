@@ -315,7 +315,7 @@ public abstract class PtlWebDriverFactory {
 				driver = createWebDriver(getGridHubURL());
 			} else {
 				Map<String, StoredSeleniumSession> sessions = new LinkedTreeMap<>();
-				File file = new File("store.json");
+				File file = new File("src/main/resources/session.json");
 
 				if (file.exists()) {
 					sessions = readSessionsFromFile(file);

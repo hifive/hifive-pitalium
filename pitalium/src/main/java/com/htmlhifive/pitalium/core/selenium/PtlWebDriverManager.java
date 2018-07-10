@@ -68,6 +68,11 @@ public final class PtlWebDriverManager {
 								LOG.debug("[Get WebDriver] reuse level: {} (annotated, {})",
 										WebDriverSessionLevel.TEST_CLASS, clss.getName());
 								return WebDriverSessionLevel.TEST_CLASS;
+
+							case PERSISTED:
+								LOG.debug("[Get WebDriver] reuse level: {} (annotated, {})",
+										WebDriverSessionLevel.PERSISTED, clss.getName());
+								return WebDriverSessionLevel.PERSISTED;
 							default:
 								// 未到達コード
 								return configSessionLevel;
