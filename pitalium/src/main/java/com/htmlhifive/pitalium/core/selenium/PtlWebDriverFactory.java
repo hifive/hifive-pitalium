@@ -19,13 +19,14 @@ import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +36,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
 import org.openqa.selenium.remote.Command;
@@ -48,14 +50,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
@@ -160,45 +157,15 @@ public abstract class PtlWebDriverFactory {
 		return new PtlFirefoxWebDriverFactory(environmentConfig, testAppConfig, capabilities);
 	}
 
-	private Map<String, StoredSeleniumSession> readSessionsFromFile(File file) throws TestRuntimeException {
-		// セッション情報取得
-		JsonReader reader = null;
-		Map<String, StoredSeleniumSession> map = new LinkedTreeMap<>();
+	private Map<String, Object> readSessionsFromFile(File file) throws TestRuntimeException {
+		byte[] fileContentBytes;
 		try {
-			reader = new JsonReader(new FileReader(file));
-			Gson gson = new Gson();
-
-			JsonObject jObj = gson.fromJson(reader, JsonObject.class);
-			for (Map.Entry<String, JsonElement> entry : jObj.entrySet()) {
-				String key = entry.getKey();
-				JsonObject sessionJObj = entry.getValue().getAsJsonObject();
-
-				String sessionId = sessionJObj.get("sessionId").getAsString();
-				Map<String, Object> rawCapabilities = new LinkedTreeMap<>();
-				JsonObject rawCapJObj = sessionJObj.get("rawCapabilities").getAsJsonObject();
-				for (Map.Entry<String, JsonElement> capEntry : rawCapJObj.entrySet()) {
-					JsonElement elem = capEntry.getValue();
-					if (elem.isJsonPrimitive()) {
-						rawCapabilities.put(capEntry.getKey(), capEntry.getValue().getAsString());
-					} else {
-						rawCapabilities.put(capEntry.getKey(),
-								gson.fromJson(gson.toJson(elem.getAsJsonObject()), LinkedTreeMap.class));
-					}
-				}
-				String dialect = sessionJObj.get("dialect").getAsString();
-				map.put(key, new StoredSeleniumSession(sessionId, rawCapabilities, dialect));
-			}
+			fileContentBytes = Files.readAllBytes(file.toPath());
 		} catch (IOException e) {
 			throw new TestRuntimeException(file.getName() + "を開けません。", e);
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					throw new TestRuntimeException(file.getName() + "を閉じられません。", e);
-				}
-			}
 		}
+		String str = new String(fileContentBytes, StandardCharsets.UTF_8);
+		Map<String, Object> map = new Json().toType(str, Map.class);
 
 		return map;
 	}
@@ -275,26 +242,12 @@ public abstract class PtlWebDriverFactory {
 		return false;
 	}
 
-	private void writeSessionsToFile(File file, Map<String, StoredSeleniumSession> sessions)
-			throws TestRuntimeException {
-
-		//　セッション情報出力
-		JsonWriter writer = null;
+	private void writeSessionsToFile(File file, Map<String, Object> map) throws TestRuntimeException {
+		String str = new Json().toJson(map);
 		try {
-			writer = new JsonWriter(new FileWriter(file));
-			writer.setIndent("    ");
-			Gson gson = new Gson();
-			gson.toJson(sessions, LinkedTreeMap.class, writer);
+			Files.write(file.toPath(), str.getBytes());
 		} catch (IOException e) {
 			throw new TestRuntimeException(file.getName() + "を開けません。", e);
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					throw new TestRuntimeException(file.getName() + "を閉じられません。", e);
-				}
-			}
 		}
 	}
 
@@ -314,32 +267,33 @@ public abstract class PtlWebDriverFactory {
 			if (sessionLevel != WebDriverSessionLevel.PERSISTED) {
 				driver = createWebDriver(getGridHubURL());
 			} else {
-				Map<String, StoredSeleniumSession> sessions = new LinkedTreeMap<>();
+				Map<String, Object> sessions = new HashMap<>();
 				File file = new File("src/main/resources/session.json");
 
 				if (file.exists()) {
 					sessions = readSessionsFromFile(file);
-					StoredSeleniumSession session = sessions.get(getKey(capabilities));
+					Map<String, Object> session = (Map<String, Object>) sessions.get(getKey(capabilities));
 
 					// セッションを再利用
 					if (session != null) {
-						if (isSessionExistsOnServer(session.getSessionId())) {
-							LOG.debug("reuse ({})", session.getSessionId());
-							driver = createReusableWebDriver(createCommandExecutorFromSession(
-									new SessionId(session.getSessionId()), getGridHubURL(), new DesiredCapabilities(),
-									session.getRawCapabilities(), session.getDialect()));
+						String sessionId = (String) session.get("sessionId");
+						Map<String, Object> rawCapabilitiesMap = (Map<String, Object>) session.get("rawCapabilities");
+						String dialect = (String) session.get("dialect");
+						if (isSessionExistsOnServer(sessionId)) {
+							LOG.debug("reuse ({})", sessionId);
+							driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(sessionId),
+									getGridHubURL(), new DesiredCapabilities(), rawCapabilitiesMap, dialect));
 						} else {
 							// 接続できないセッションがある場合、driverを停止してdriverを新規作成する
-							driver = createReusableWebDriver(createCommandExecutorFromSession(
-									new SessionId(session.getSessionId()), getGridHubURL(), new DesiredCapabilities(),
-									session.getRawCapabilities(), session.getDialect()));
+							driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(sessionId),
+									getGridHubURL(), new DesiredCapabilities(), rawCapabilitiesMap, dialect));
 							// driverが終了している状態でquit()すると例外が発生する
 							// ブラウザが開いていてdriverが終了していてセッションに接続できない場合にもdriverを新規作成したいので例外を握りつぶして処理を続ける
 							try {
 								driver.quit();
-								LOG.debug("quit ({})", session.getSessionId());
+								LOG.debug("quit ({})", sessionId);
 							} catch (WebDriverException e) {
-								LOG.debug("quit ({}) {}", session.getSessionId(), e.toString());
+								LOG.debug("quit ({}) {}", sessionId, e.toString());
 							}
 							driver = null;
 						}
@@ -352,9 +306,10 @@ public abstract class PtlWebDriverFactory {
 
 					// 利用可能なセッションが無い場合、
 					// 永続化のためにReusableDriverを使ってインスタンス化する
-					StoredSeleniumSession s = new StoredSeleniumSession(driver.getSessionId().toString(),
-							(Map<String, Object>) driver.getRawCapabilities().asMap(),
-							executor.getDialect().toString());
+					Map<String, Object> s = new HashMap<String, Object>();
+					s.put("sessionId", driver.getSessionId().toString());
+					s.put("rawCapabilities", driver.getRawCapabilities().asMap());
+					s.put("dialect", executor.getDialect().toString());
 					sessions.put(getKey(capabilities), s);
 					writeSessionsToFile(file, sessions);
 				}
@@ -401,7 +356,7 @@ public abstract class PtlWebDriverFactory {
 					if (commandCodec != null) {
 						throw new SessionNotCreatedException("Session already exists");
 					}
-					Dialect dialect = Dialect.valueOf(dialectValue);
+					this.dialect = Dialect.valueOf(dialectValue);
 					commandCodec = dialect.getCommandCodec();
 					for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
 						defineCommand(entry.getKey(), entry.getValue());

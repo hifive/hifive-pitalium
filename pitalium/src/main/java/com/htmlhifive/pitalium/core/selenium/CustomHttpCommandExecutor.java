@@ -50,7 +50,7 @@ public class CustomHttpCommandExecutor implements CommandExecutor, NeedsLocalLog
 
 	private LocalLogs logs = LocalLogs.getNullLogger();
 
-	private Dialect dialect;
+	protected Dialect dialect;
 
 	public CustomHttpCommandExecutor(URL addressOfRemoteServer) {
 		this(ImmutableMap.of(), addressOfRemoteServer);
