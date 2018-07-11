@@ -15,7 +15,22 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
-import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+import com.google.common.base.Strings;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
+import com.htmlhifive.pitalium.core.config.TestAppConfig;
+import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
+import org.openqa.selenium.*;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
+import org.openqa.selenium.remote.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,33 +46,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
-import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.CommandExecutor;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.SessionId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Strings;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
-import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
-import com.htmlhifive.pitalium.core.config.PtlTestConfig;
-import com.htmlhifive.pitalium.core.config.TestAppConfig;
-import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 
 /**
  * 各ブラウザに対応するWebDriverを生成するファクトリクラス
@@ -166,7 +155,6 @@ public abstract class PtlWebDriverFactory {
 		}
 		String str = new String(fileContentBytes, StandardCharsets.UTF_8);
 		Map<String, Object> map = new Json().toType(str, Map.class);
-
 		return map;
 	}
 
@@ -273,6 +261,15 @@ public abstract class PtlWebDriverFactory {
 				if (file.exists()) {
 					sessions = readSessionsFromFile(file);
 					Map<String, Object> session = (Map<String, Object>) sessions.get(getKey(capabilities));
+
+					// Proxyの値をインスタンス化
+					Map<String, Object> cap = (Map<String, Object>)session.get("rawCapabilities");
+					if (cap != null) {
+						Object proxy = cap.get("proxy");
+						if (proxy != null) {
+							cap.put("proxy", new Proxy((Map<String, ?>)proxy));
+						}
+					}
 
 					// セッションを再利用
 					if (session != null) {
