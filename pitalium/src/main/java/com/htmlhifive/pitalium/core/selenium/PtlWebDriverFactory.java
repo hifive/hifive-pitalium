@@ -311,17 +311,6 @@ public abstract class PtlWebDriverFactory {
 					// TODO: 未検査キャスト
 					Map<String, Object> session = (Map<String, Object>) sessions.get(getKey(capabilities));
 
-					// Proxyの値をインスタンス化
-					// TODO: 未検査キャスト
-					Map<String, Object> cap = (Map<String, Object>) session.get(rawCapabilitiesPropertyName);
-					if (cap != null) {
-						Object proxy = cap.get(proxyPropertyName);
-						if (proxy != null) {
-							// TODO: 未検査キャスト
-							cap.put(proxyPropertyName, new Proxy((Map<String, ?>) proxy));
-						}
-					}
-
 					// セッションを再利用
 					if (session != null) {
 						String sessionId = (String) session.get(sessionIdPropertyName);
@@ -331,6 +320,16 @@ public abstract class PtlWebDriverFactory {
 						String dialect = (String) session.get(dialectPropertyName);
 						if (isSessionExistsOnServer(sessionId)) {
 							LOG.debug("reuse ({})", sessionId);
+							// Proxyの値をインスタンス化
+							// TODO: 未検査キャスト
+							Map<String, Object> cap = (Map<String, Object>) session.get(rawCapabilitiesPropertyName);
+							if (cap != null) {
+								Object proxy = cap.get(proxyPropertyName);
+								if (proxy != null) {
+									// TODO: 未検査キャスト
+									cap.put(proxyPropertyName, new Proxy((Map<String, ?>) proxy));
+								}
+							}
 							driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(sessionId),
 									getGridHubURL(), new DesiredCapabilities(), rawCapabilitiesMap, dialect));
 						} else {
