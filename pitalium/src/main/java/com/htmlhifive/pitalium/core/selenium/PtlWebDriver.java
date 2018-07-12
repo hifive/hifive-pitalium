@@ -15,22 +15,32 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
-import com.google.common.base.Function;
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
-import com.google.common.io.Files;
-import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
-import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
-import com.htmlhifive.pitalium.core.model.*;
-import com.htmlhifive.pitalium.image.model.RectangleArea;
-import com.htmlhifive.pitalium.image.model.ScreenshotImage;
-import com.htmlhifive.pitalium.image.util.ImageUtils;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.transform;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.imageio.ImageIO;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
@@ -38,17 +48,27 @@ import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Lists.transform;
+import com.google.common.base.Function;
+import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
+import com.google.common.io.Files;
+import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
+import com.htmlhifive.pitalium.core.model.ClientRect;
+import com.htmlhifive.pitalium.core.model.CompareTarget;
+import com.htmlhifive.pitalium.core.model.DomSelector;
+import com.htmlhifive.pitalium.core.model.IndexDomSelector;
+import com.htmlhifive.pitalium.core.model.ScreenArea;
+import com.htmlhifive.pitalium.core.model.ScreenAreaResult;
+import com.htmlhifive.pitalium.core.model.ScreenAreaWrapper;
+import com.htmlhifive.pitalium.core.model.ScreenshotArgument;
+import com.htmlhifive.pitalium.core.model.ScreenshotParams;
+import com.htmlhifive.pitalium.core.model.ScreenshotResult;
+import com.htmlhifive.pitalium.core.model.SelectorType;
+import com.htmlhifive.pitalium.core.model.TargetResult;
+import com.htmlhifive.pitalium.image.model.RectangleArea;
+import com.htmlhifive.pitalium.image.model.ScreenshotImage;
+import com.htmlhifive.pitalium.image.util.ImageUtils;
 
 /**
  * WebDriverの実装クラス。{@link org.openqa.selenium.remote.RemoteWebDriver}
@@ -140,6 +160,20 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	}
 
 	/**
+	 * コンストラクタ
+	 *
+	 * @param executor CommandExecutor
+	 * @param capabilities Capability
+	 */
+	protected PtlWebDriver(CommandExecutor executor, PtlCapabilities capabilities) {
+		super(executor, capabilities);
+		this.capabilities = capabilities;
+
+		// JsonToWebElementConverterを上書きすることでfindElementから取得されるRemoteWebElementを差し替え
+		setElementConverter(new JsonToPtlWebElementConverter(this));
+	}
+
+	/**
 	 * テスト対象アプリケーションのベースURLを取得します。
 	 *
 	 * @see com.htmlhifive.pitalium.core.config.TestAppConfig#baseUrl
@@ -189,6 +223,15 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	@Override
 	public PtlCapabilities getCapabilities() {
 		return capabilities;
+	}
+
+	/**
+	 * RemoteWebDriverが保持しているCapabilityを取得します。
+	 * 
+	 * @return Capability
+	 */
+	public Capabilities getRawCapabilities() {
+		return super.getCapabilities();
 	}
 
 	@Override
@@ -414,7 +457,6 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 		} else {
 			cTarget = compareTargets;
 		}
-
 
 		List<PtlWebElement> hiddenElements = findElementsByDomSelectors(hiddenElementSelectors);
 		LOG.trace("[TakeScreenshot] compareTargets: {}, hiddenElementSelectors: {}, hiddenElements: {}", compareTargets,
@@ -1514,7 +1556,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @return 取得した要素のリスト
 	 */
 	protected List<PtlWebElement> findElementsByDomSelectors(List<DomSelector> selectors) {
-	    LOG.debug("[findElementsByDomSelectors start]");
+		LOG.debug("[findElementsByDomSelectors start]");
 		List<PtlWebElement> elements = new ArrayList<PtlWebElement>();
 		if (selectors == null || selectors.isEmpty()) {
 			return elements;
@@ -1539,7 +1581,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 */
 	private void updateScreenWrapperStatus(double moveX, double moveY, ScreenshotParams params,
 			ScreenshotParams... additionalParams) {
-	    LOG.debug("[updateScreenSrapperStatusWithAdditional start]");
+		LOG.debug("[updateScreenSrapperStatusWithAdditional start]");
 		// Scroll to top
 		try {
 			scrollTo(0d, 0d);
@@ -1582,17 +1624,18 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 
 	/**
 	 * 現在のbodyのサイズを取得します。
+	 *
 	 * @return 現在のbodyのclientRect
 	 */
 	public ClientRect getCurrentBodyClientRect() {
 		Map<String, Object> clientRectMap = executeJavaScript(GET_BODY_SIZE_SCRIPT);
-		long top = ((Long)clientRectMap.get("top")).longValue();
-		long left = ((Long)clientRectMap.get("left")).longValue();
-		long bottom = ((Long)clientRectMap.get("bottom")).longValue();
-		long right = ((Long)clientRectMap.get("right")).longValue();
-		long width = ((Long)clientRectMap.get("width")).longValue();
-		long height = ((Long)clientRectMap.get("height")).longValue();
-		return new ClientRect(top,  left,  bottom,  right, height,  width);
+		long top = ((Long) clientRectMap.get("top")).longValue();
+		long left = ((Long) clientRectMap.get("left")).longValue();
+		long bottom = ((Long) clientRectMap.get("bottom")).longValue();
+		long right = ((Long) clientRectMap.get("right")).longValue();
+		long width = ((Long) clientRectMap.get("width")).longValue();
+		long height = ((Long) clientRectMap.get("height")).longValue();
+		return new ClientRect(top, left, bottom, right, height, width);
 	}
 
 	/**
@@ -1747,7 +1790,7 @@ public abstract class PtlWebDriver extends RemoteWebDriver {
 	 * @return スクロール回数
 	 */
 	public long getScrollNum() {
-	    LOG.debug("[getScrollNum start]");
+		LOG.debug("[getScrollNum start]");
 		double clientHeight = getWindowHeight();
 		double scrollHeight = getScrollHeight() + 1;
 

@@ -68,6 +68,11 @@ public final class PtlWebDriverManager {
 								LOG.debug("[Get WebDriver] reuse level: {} (annotated, {})",
 										WebDriverSessionLevel.TEST_CLASS, clss.getName());
 								return WebDriverSessionLevel.TEST_CLASS;
+
+							case PERSISTED:
+								LOG.debug("[Get WebDriver] reuse level: {} (annotated, {})",
+										WebDriverSessionLevel.PERSISTED, clss.getName());
+								return WebDriverSessionLevel.PERSISTED;
 							default:
 								// 未到達コード
 								return configSessionLevel;
@@ -199,7 +204,8 @@ public final class PtlWebDriverManager {
 			throw new TestRuntimeException(e);
 		}
 
-		if (level == WebDriverSessionLevel.TEST_CASE || level == WebDriverSessionLevel.GLOBAL) {
+		if (level == WebDriverSessionLevel.TEST_CASE || level == WebDriverSessionLevel.GLOBAL
+				|| level == WebDriverSessionLevel.PERSISTED) {
 			LOG.debug("[Close WebDriver] Don't close session. ({}) level: {}", clss.getName(), level);
 			return;
 		}
