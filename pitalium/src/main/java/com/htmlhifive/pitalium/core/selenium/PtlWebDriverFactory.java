@@ -15,21 +15,50 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.SessionId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.config.TestAppConfig;
+import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
 
 /**
  * 各ブラウザに対応するWebDriverを生成するファクトリクラス
@@ -42,9 +71,17 @@ public abstract class PtlWebDriverFactory {
 	private final TestAppConfig testAppConfig;
 	private final PtlCapabilities capabilities;
 
+	private final String sessionFilePath = "src/main/resources/session.json";
+
+	private final String sessionIdPropertyName = "sessionId";
+	private final String rawCapabilitiesPropertyName = "rawCapabilities";
+	private final String dialectPropertyName = "dialect";
+	private final String statusPropertyName = "status";
+	private final String proxyPropertyName = "proxy";
+
 	/**
 	 * コンストラクタ
-	 * 
+	 *
 	 * @param environmentConfig 環境設定
 	 * @param testAppConfig テスト対象アプリケーション設定
 	 * @param capabilities Capability
@@ -58,7 +95,7 @@ public abstract class PtlWebDriverFactory {
 
 	/**
 	 * ブラウザに対応する{@link PtlWebDriverFactory}のインスタンスを取得します。
-	 * 
+	 *
 	 * @param capabilities Capability（ブラウザの情報を含む）
 	 * @return {@link PtlWebDriverFactory}のインスタンス
 	 */
@@ -130,16 +167,205 @@ public abstract class PtlWebDriverFactory {
 	}
 
 	/**
+	 * JSONファイルを読み込みます。
+	 *
+	 * @param file 読み込むJSONファイル
+	 * @return JSON構造を表現しているMap
+	 * @throws TestRuntimeException
+	 */
+	private Map<String, Object> readSessionsFromFile(File file) throws TestRuntimeException {
+		byte[] fileContentBytes;
+		try {
+			fileContentBytes = Files.readAllBytes(file.toPath());
+		} catch (IOException e) {
+			throw new TestRuntimeException(file.getName() + "を読み込めません。", e);
+		}
+		String str = new String(fileContentBytes, StandardCharsets.UTF_8);
+		// TODO: 未検査キャスト
+		Map<String, Object> map = new Json().toType(str, Map.class);
+		return map;
+	}
+
+	/**
+	 * capabilitiesの各値をkeyとした文字列を返します。
+	 *
+	 * @param cap capabilities
+	 * @return key
+	 */
+	private String getKey(Capabilities cap) {
+		return cap.toString();
+	}
+
+	/**
+	 * 指定したsessionIdがサーバに存在するかどうかを返します。
+	 *
+	 * @param sessionId sessionId
+	 * @return 存在するならtrue, 存在しないならfalse
+	 * @throws TestRuntimeException
+	 */
+	private boolean isSessionExistsOnServer(String sessionId) throws TestRuntimeException {
+		HttpURLConnection con;
+		// HTTP Status-Codeではありえない値
+		int responseCode = -1;
+		try {
+			// TODO: 2018/7/9現在 /sessions コマンドが実装されていないため代わりに /session/{sessionId}/url コマンドでsessionIdが存在することを確認している
+			URL myUrl = new URL(getGridHubURL() + "/session/" + sessionId + "/url");
+			try {
+				con = (HttpURLConnection) myUrl.openConnection();
+				con.setRequestMethod("GET");
+				responseCode = con.getResponseCode();
+			} catch (IOException e) {
+				// NOTE: 接続に失敗する場合はセッションが存在しないとみなす
+				return false;
+			}
+		} catch (MalformedURLException e) {
+			throw new TestRuntimeException("不正なURLです。", e);
+		}
+
+		// HTTP Status-Codeが200ならば指定したsessionが存在するとみなす
+		if (responseCode == HttpURLConnection.HTTP_OK) {
+			// sessionの接続確認
+			BufferedReader in = null;
+			StringBuilder content = null;
+			try {
+				InputStreamReader reponse = new InputStreamReader(con.getInputStream());
+				in = new BufferedReader(reponse);
+				content = new StringBuilder();
+				String line;
+				while ((line = in.readLine()) != null) {
+					content.append(line);
+					content.append(System.lineSeparator());
+				}
+			} catch (IOException e) {
+				throw new TestRuntimeException(e);
+			} finally {
+				if (in != null) {
+					try {
+						in.close();
+					} catch (IOException e) {
+						LOG.debug("{}", e.toString());
+					}
+				}
+			}
+
+			// 返ってきた文字列をJSONにパース
+			JsonObject sessions;
+			try {
+				JsonParser parser = new JsonParser();
+				sessions = (JsonObject) parser.parse(content.toString());
+			} catch (JsonSyntaxException e) {
+				throw new TestRuntimeException("サーバからの戻り値が不正です", e);
+			}
+
+			if (sessions.has(statusPropertyName)) {
+				// JSONにstatusがある場合はstatusの値によってsessionに接続できるかを判定する
+				int status = sessions.get(statusPropertyName).getAsInt();
+				return status == 0;
+			}
+
+			// JSONにstatusがない場合はそのままtrue
+			return true;
+		}
+
+		// HTTP Status-Codeが200でない場合は指定したsessionが存在しない
+		return false;
+	}
+
+	/**
+	 * JSONファイルに書き込みます。
+	 *
+	 * @param file 書き込むJSONファイル
+	 * @param map JSON構造を表現しているMap
+	 * @throws TestRuntimeException
+	 */
+	private void writeSessionsToFile(File file, Map<String, Object> map) throws TestRuntimeException {
+		String str = new Json().toJson(map);
+		try {
+			Files.write(file.toPath(), str.getBytes());
+		} catch (IOException e) {
+			throw new TestRuntimeException(file.getName() + "に書き込めません。", e);
+		}
+	}
+
+	/**
 	 * 初期設定（baseUrl、タイムアウト時間、ウィンドウサイズ）済のWebDriverを取得します。
-	 * 
+	 *
 	 * @return WebDriver
 	 */
-	public PtlWebDriver getDriver() {
+	public PtlWebDriver getDriver() throws TestRuntimeException {
 		synchronized (PtlWebDriverFactory.class) {
 			LOG.debug("[Get WebDriver] create new session.");
 
-			URL url = getGridHubURL();
-			PtlWebDriver driver = createWebDriver(url);
+			PtlWebDriver driver = null;
+
+			WebDriverSessionLevel sessionLevel = PtlTestConfig.getInstance().getEnvironment()
+					.getWebDriverSessionLevel();
+			if (sessionLevel != WebDriverSessionLevel.PERSISTED) {
+				driver = createWebDriver(getGridHubURL());
+			} else {
+				Map<String, Object> sessions = new HashMap<>();
+				File file = new File(sessionFilePath);
+
+				if (file.exists()) {
+					sessions = readSessionsFromFile(file);
+					// TODO: 未検査キャスト
+					Map<String, Object> session = (Map<String, Object>) sessions.get(getKey(capabilities));
+
+					// セッションを再利用
+					if (session != null) {
+						String sessionId = (String) session.get(sessionIdPropertyName);
+						// TODO: 未検査キャスト
+						Map<String, Object> rawCapabilitiesMap = (Map<String, Object>) session
+								.get(rawCapabilitiesPropertyName);
+						String dialect = (String) session.get(dialectPropertyName);
+						if (isSessionExistsOnServer(sessionId)) {
+							LOG.debug("reuse ({})", sessionId);
+							// Proxyの値をインスタンス化
+							// TODO: 未検査キャスト
+							Map<String, Object> cap = (Map<String, Object>) session.get(rawCapabilitiesPropertyName);
+							if (cap != null) {
+								Object proxy = cap.get(proxyPropertyName);
+								if (proxy != null) {
+									// TODO: 未検査キャスト
+									cap.put(proxyPropertyName, new Proxy((Map<String, ?>) proxy));
+								}
+							}
+							driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(sessionId),
+									getGridHubURL(), new DesiredCapabilities(), rawCapabilitiesMap, dialect));
+						} else {
+							// 接続できないセッションがある場合、driverを停止してdriverを新規作成する
+							driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(sessionId),
+									getGridHubURL(), new DesiredCapabilities(), rawCapabilitiesMap, dialect));
+							// driverが終了している状態でquit()すると例外が発生する
+							// ブラウザが開いていてdriverが終了していてセッションに接続できない場合にもdriverを新規作成したいので例外を握りつぶして処理を続ける
+							try {
+								driver.quit();
+								LOG.debug("quit ({})", sessionId);
+							} catch (WebDriverException e) {
+								LOG.debug("quit ({}) {}", sessionId, e.toString());
+							}
+							driver = null;
+						}
+					}
+				}
+
+				if (driver == null) {
+					CustomHttpCommandExecutor executor = new CustomHttpCommandExecutor(getGridHubURL());
+					driver = createReusableWebDriver(executor);
+
+					// 利用可能なセッションが無い場合、
+					// 永続化のためにReusableDriverを使ってインスタンス化する
+					Map<String, Object> s = new HashMap<String, Object>();
+					s.put(sessionIdPropertyName, driver.getSessionId().toString());
+					s.put(rawCapabilitiesPropertyName, driver.getRawCapabilities().asMap());
+					s.put(dialectPropertyName, executor.getDialect().toString());
+					sessions.put(getKey(capabilities), s);
+					writeSessionsToFile(file, sessions);
+				}
+			}
+
+			// Pitalium独自の設定の追加
+
 			driver.setEnvironmentConfig(environmentConfig);
 			driver.setBaseUrl(testAppConfig.getBaseUrl());
 			driver.manage().timeouts().implicitlyWait(environmentConfig.getMaxDriverWait(), TimeUnit.SECONDS)
@@ -152,11 +378,12 @@ public abstract class PtlWebDriverFactory {
 			LOG.debug("[Get WebDriver] new session created. ({})", driver);
 			return driver;
 		}
+
 	}
 
 	/**
 	 * Selenium Grid HubのURLを取得します。
-	 * 
+	 *
 	 * @return HubのURL
 	 */
 	protected URL getGridHubURL() {
@@ -168,23 +395,74 @@ public abstract class PtlWebDriverFactory {
 	}
 
 	/**
+	 * 任意のsessionId, rawCapabilities, dialectを持つHttpCommandExecutorを作成します。sessionを再利用してdriverを作成するために使用します。
+	 *
+	 * @param sessionId sessionId
+	 * @param addressOfRemoteServer コマンドのURL
+	 * @param executorCapabilities capabilities
+	 * @param rawCapabilities RemoteWebDriverのcapabilitiesのMap
+	 * @param dialectValue dialectの値の文字列
+	 * @return CustomHttpCommnadExecutor
+	 */
+	protected CommandExecutor createCommandExecutorFromSession(final SessionId sessionId, URL addressOfRemoteServer,
+			Capabilities executorCapabilities, Map<String, Object> rawCapabilities, String dialectValue) {
+
+		CommandExecutor executor = new CustomHttpCommandExecutor(addressOfRemoteServer) {
+			@Override
+			public Response execute(Command command) throws IOException {
+				Response response = null;
+				if (NEW_SESSION.equals(command.getName())) {
+					if (commandCodec != null) {
+						throw new SessionNotCreatedException("Session already exists");
+					}
+					this.dialect = Dialect.valueOf(dialectValue);
+					commandCodec = dialect.getCommandCodec();
+					for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
+						defineCommand(entry.getKey(), entry.getValue());
+					}
+					responseCodec = dialect.getResponseCodec();
+					log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
+
+					response = new Response();
+					response.setSessionId(sessionId.toString());
+					response.setStatus(ErrorCodes.SUCCESS);
+					response.setState(ErrorCodes.SUCCESS_STRING);
+					response.setValue(rawCapabilities);
+				} else {
+					response = super.execute(command);
+				}
+				return response;
+			}
+		};
+		return executor;
+	}
+
+	/**
 	 * モバイル端末用のdriverか否かを返します。
-	 * 
+	 *
 	 * @return モバイル端末用driverならtrue、そうでなければfalse
 	 */
 	abstract boolean isMobile();
 
 	/**
 	 * WebDriverを生成します。
-	 * 
+	 *
 	 * @param url WebDriverServerのURL
 	 * @return 生成したWebDriverのインスタンス
 	 */
 	public abstract PtlWebDriver createWebDriver(URL url);
 
 	/**
+	 * WebDriverを生成します。
+	 *
+	 * @param executor CommandExecutor
+	 * @return 生成したWebDriverのインスタンス
+	 */
+	public abstract PtlWebDriver createReusableWebDriver(CommandExecutor executor);
+
+	/**
 	 * テスト実行用の共通設定を取得します。
-	 * 
+	 *
 	 * @return 共通設定
 	 */
 	public EnvironmentConfig getEnvironmentConfig() {
@@ -193,7 +471,7 @@ public abstract class PtlWebDriverFactory {
 
 	/**
 	 * Capabilityを取得します。
-	 * 
+	 *
 	 * @return Capability
 	 */
 	public PtlCapabilities getCapabilities() {
@@ -207,7 +485,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -226,6 +504,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlFirefoxDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlFirefoxDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -235,7 +518,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -254,6 +537,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlChromeDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlChromeDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -268,7 +556,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -291,6 +579,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlInternetExplorerDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlInternetExplorerDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -300,7 +593,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -314,6 +607,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlInternetExplorer7Driver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlInternetExplorer7Driver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -323,7 +621,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -337,6 +635,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlInternetExplorer8Driver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlInternetExplorer8Driver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -346,7 +649,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -365,6 +668,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlEdgeDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlEdgeDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -374,7 +682,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -392,6 +700,11 @@ public abstract class PtlWebDriverFactory {
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlSafariDriver(url, getCapabilities());
+		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlSafariDriver(executor, getCapabilities());
 		}
 	}
 
@@ -412,7 +725,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -439,6 +752,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlIPhoneDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlIPhoneDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -458,7 +776,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -484,6 +802,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlIPadDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlIPadDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -493,7 +816,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -512,6 +835,11 @@ public abstract class PtlWebDriverFactory {
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlAndroidDriver(url, getCapabilities());
 		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlAndroidDriver(executor, getCapabilities());
+		}
 	}
 
 	/**
@@ -521,7 +849,7 @@ public abstract class PtlWebDriverFactory {
 
 		/**
 		 * コンストラクタ
-		 * 
+		 *
 		 * @param environmentConfig 環境設定
 		 * @param testAppConfig テスト対象アプリケーション設定
 		 * @param capabilities Capability
@@ -534,6 +862,11 @@ public abstract class PtlWebDriverFactory {
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
 			return new PtlSelendroidDriver(url, getCapabilities());
+		}
+
+		@Override
+		public PtlWebDriver createReusableWebDriver(CommandExecutor executor) {
+			return new PtlSelendroidDriver(executor, getCapabilities());
 		}
 	}
 
