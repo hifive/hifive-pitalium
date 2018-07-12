@@ -189,7 +189,7 @@ public class ReusedSessionTest {
 	}
 
 	/**
-	 * 出力されたsession.jsonの値が正しいこと
+	 * 出力されたsession.jsonの値が正しいことを確認するため、新規作成したセッションとsession.jsonを読み込み再利用したセッションの値が等しいことを確認する
 	 *
 	 * @throws Exception
 	 */
@@ -211,34 +211,13 @@ public class ReusedSessionTest {
 			Map<String, ?> capabilitiesMap = newDriver.getRawCapabilities().asMap();
 			for (Map.Entry<String, ?> entry : capabilitiesMap.entrySet()) {
 				String key = entry.getKey();
-				if (key.equals("proxy")) {
-					continue;
-				}
 				assertThat(entry.getValue(), is(storedCapabilitiesMap.get(key)));
 			}
 
+			// dialectが保持されていること
 			CustomHttpCommandExecutor newExecutor = (CustomHttpCommandExecutor) newDriver.getCommandExecutor();
 			CustomHttpCommandExecutor executor = (CustomHttpCommandExecutor) driver.getCommandExecutor();
 			assertThat(newExecutor.getDialect(), is(executor.getDialect()));
-		}
-	}
-
-	/**
-	 * 新規作成したセッションと再利用したセッションの値が等しいこと
-	 *
-	 * @throws Exception
-	 */
-	@Test
-	public void testReusableWebDriver() throws Exception {
-		// 各ブラウザごとにテストを実行
-		for (int i = 0; i < drivers.size(); i++) {
-			PtlWebDriver driver = PtlWebDriverFactory.getInstance(capabilities.get(i)).getDriver();
-
-			// driverがキャッシュされていないこと
-			assertThat(driver, not(drivers.get(i)));
-
-			assertThat(driver.getSessionId(), is(drivers.get(i).getSessionId()));
-			assertThat(driver.getCapabilities(), is(drivers.get(i).getCapabilities()));
 		}
 	}
 
