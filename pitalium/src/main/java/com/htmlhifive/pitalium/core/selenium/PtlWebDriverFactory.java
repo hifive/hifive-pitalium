@@ -15,22 +15,7 @@
  */
 package com.htmlhifive.pitalium.core.selenium;
 
-import com.google.common.base.Strings;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
-import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
-import com.htmlhifive.pitalium.core.config.PtlTestConfig;
-import com.htmlhifive.pitalium.core.config.TestAppConfig;
-import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
-import org.openqa.selenium.*;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
-import org.openqa.selenium.remote.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,7 +31,34 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.SessionId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
+import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
+import com.htmlhifive.pitalium.core.config.PtlTestConfig;
+import com.htmlhifive.pitalium.core.config.TestAppConfig;
+import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
 
 /**
  * 各ブラウザに対応するWebDriverを生成するファクトリクラス
@@ -58,6 +70,14 @@ public abstract class PtlWebDriverFactory {
 	private final EnvironmentConfig environmentConfig;
 	private final TestAppConfig testAppConfig;
 	private final PtlCapabilities capabilities;
+
+	private final String sessionFilePath = "src/main/resources/session.json";
+
+	private final String sessionIdPropertyName = "sessionId";
+	private final String rawCapabilitiesPropertyName = "rawCapabilities";
+	private final String dialectPropertyName = "dialect";
+	private final String statusPropertyName = "status";
+	private final String proxyPropertyName = "proxy";
 
 	/**
 	 * コンストラクタ
@@ -146,22 +166,43 @@ public abstract class PtlWebDriverFactory {
 		return new PtlFirefoxWebDriverFactory(environmentConfig, testAppConfig, capabilities);
 	}
 
+	/**
+	 * JSONファイルを読み込みます。
+	 *
+	 * @param file 読み込むJSONファイル
+	 * @return JSON構造を表現しているMap
+	 * @throws TestRuntimeException
+	 */
 	private Map<String, Object> readSessionsFromFile(File file) throws TestRuntimeException {
 		byte[] fileContentBytes;
 		try {
 			fileContentBytes = Files.readAllBytes(file.toPath());
 		} catch (IOException e) {
-			throw new TestRuntimeException(file.getName() + "を開けません。", e);
+			throw new TestRuntimeException(file.getName() + "を読み込めません。", e);
 		}
 		String str = new String(fileContentBytes, StandardCharsets.UTF_8);
+		// TODO: 未検査キャスト
 		Map<String, Object> map = new Json().toType(str, Map.class);
 		return map;
 	}
 
+	/**
+	 * capabilitiesの各値をkeyとした文字列を返します。
+	 *
+	 * @param cap capabilities
+	 * @return key
+	 */
 	private String getKey(Capabilities cap) {
 		return cap.toString();
 	}
 
+	/**
+	 * 指定したsessionIdがサーバに存在するかどうかを返します。
+	 *
+	 * @param sessionId sessionId
+	 * @return 存在するならtrue, 存在しないならfalse
+	 * @throws TestRuntimeException
+	 */
 	private boolean isSessionExistsOnServer(String sessionId) throws TestRuntimeException {
 		HttpURLConnection con;
 		// HTTP Status-Codeではありえない値
@@ -216,9 +257,9 @@ public abstract class PtlWebDriverFactory {
 				throw new TestRuntimeException("サーバからの戻り値が不正です", e);
 			}
 
-			if (sessions.has("status")) {
+			if (sessions.has(statusPropertyName)) {
 				// JSONにstatusがある場合はstatusの値によってsessionに接続できるかを判定する
-				int status = sessions.get("status").getAsInt();
+				int status = sessions.get(statusPropertyName).getAsInt();
 				return status == 0;
 			}
 
@@ -230,12 +271,19 @@ public abstract class PtlWebDriverFactory {
 		return false;
 	}
 
+	/**
+	 * JSONファイルに書き込みます。
+	 *
+	 * @param file 書き込むJSONファイル
+	 * @param map JSON構造を表現しているMap
+	 * @throws TestRuntimeException
+	 */
 	private void writeSessionsToFile(File file, Map<String, Object> map) throws TestRuntimeException {
 		String str = new Json().toJson(map);
 		try {
 			Files.write(file.toPath(), str.getBytes());
 		} catch (IOException e) {
-			throw new TestRuntimeException(file.getName() + "を開けません。", e);
+			throw new TestRuntimeException(file.getName() + "に書き込めません。", e);
 		}
 	}
 
@@ -256,26 +304,31 @@ public abstract class PtlWebDriverFactory {
 				driver = createWebDriver(getGridHubURL());
 			} else {
 				Map<String, Object> sessions = new HashMap<>();
-				File file = new File("src/main/resources/session.json");
+				File file = new File(sessionFilePath);
 
 				if (file.exists()) {
 					sessions = readSessionsFromFile(file);
+					// TODO: 未検査キャスト
 					Map<String, Object> session = (Map<String, Object>) sessions.get(getKey(capabilities));
 
 					// Proxyの値をインスタンス化
-					Map<String, Object> cap = (Map<String, Object>)session.get("rawCapabilities");
+					// TODO: 未検査キャスト
+					Map<String, Object> cap = (Map<String, Object>) session.get(rawCapabilitiesPropertyName);
 					if (cap != null) {
-						Object proxy = cap.get("proxy");
+						Object proxy = cap.get(proxyPropertyName);
 						if (proxy != null) {
-							cap.put("proxy", new Proxy((Map<String, ?>)proxy));
+							// TODO: 未検査キャスト
+							cap.put(proxyPropertyName, new Proxy((Map<String, ?>) proxy));
 						}
 					}
 
 					// セッションを再利用
 					if (session != null) {
-						String sessionId = (String) session.get("sessionId");
-						Map<String, Object> rawCapabilitiesMap = (Map<String, Object>) session.get("rawCapabilities");
-						String dialect = (String) session.get("dialect");
+						String sessionId = (String) session.get(sessionIdPropertyName);
+						// TODO: 未検査キャスト
+						Map<String, Object> rawCapabilitiesMap = (Map<String, Object>) session
+								.get(rawCapabilitiesPropertyName);
+						String dialect = (String) session.get(dialectPropertyName);
 						if (isSessionExistsOnServer(sessionId)) {
 							LOG.debug("reuse ({})", sessionId);
 							driver = createReusableWebDriver(createCommandExecutorFromSession(new SessionId(sessionId),
@@ -304,9 +357,9 @@ public abstract class PtlWebDriverFactory {
 					// 利用可能なセッションが無い場合、
 					// 永続化のためにReusableDriverを使ってインスタンス化する
 					Map<String, Object> s = new HashMap<String, Object>();
-					s.put("sessionId", driver.getSessionId().toString());
-					s.put("rawCapabilities", driver.getRawCapabilities().asMap());
-					s.put("dialect", executor.getDialect().toString());
+					s.put(sessionIdPropertyName, driver.getSessionId().toString());
+					s.put(rawCapabilitiesPropertyName, driver.getRawCapabilities().asMap());
+					s.put(dialectPropertyName, executor.getDialect().toString());
 					sessions.put(getKey(capabilities), s);
 					writeSessionsToFile(file, sessions);
 				}
@@ -342,10 +395,20 @@ public abstract class PtlWebDriverFactory {
 		}
 	}
 
-	protected CommandExecutor createCommandExecutorFromSession(final SessionId sessionId, URL command_executor,
-			Capabilities capabilities, Map<String, Object> rawCapabilities, String dialectValue) {
+	/**
+	 * 任意のsessionId, rawCapabilities, dialectを持つHttpCommandExecutorを作成します。sessionを再利用してdriverを作成するために使用します。
+	 *
+	 * @param sessionId sessionId
+	 * @param addressOfRemoteServer コマンドのURL
+	 * @param executorCapabilities capabilities
+	 * @param rawCapabilities RemoteWebDriverのcapabilitiesのMap
+	 * @param dialectValue dialectの値の文字列
+	 * @return CustomHttpCommnadExecutor
+	 */
+	protected CommandExecutor createCommandExecutorFromSession(final SessionId sessionId, URL addressOfRemoteServer,
+			Capabilities executorCapabilities, Map<String, Object> rawCapabilities, String dialectValue) {
 
-		CommandExecutor executor = new CustomHttpCommandExecutor(command_executor) {
+		CommandExecutor executor = new CustomHttpCommandExecutor(addressOfRemoteServer) {
 			@Override
 			public Response execute(Command command) throws IOException {
 				Response response = null;

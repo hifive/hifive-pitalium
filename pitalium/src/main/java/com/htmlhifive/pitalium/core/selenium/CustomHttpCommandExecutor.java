@@ -36,7 +36,7 @@ import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * HttpCommandExecutorの一部のプロパティをprotectedに変更したカスタムクラス
+ * Overrideしたメソッドからアクセスするために、HttpCommandExecutorの一部のプロパティをprotectedに変更したカスタムクラス。カスタマイズした値を持つHttpCommandExecutorを作成するために使用します。
  */
 public class CustomHttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
