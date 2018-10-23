@@ -53,6 +53,7 @@ public class EnvironmentConfigTest {
 		assertThat(env.getScriptTimeout(), is(10));
 		assertThat(env.getCapabilitiesFilePath(), is("test.json"));
 		assertThat(env.getPersister(), is("test"));
+		assertThat(env.getPerformanceMeasurementMode(), is(PerformanceMeasurementMode.ON));
 		assertThat(env.isDebug(), is(true));
 	}
 
@@ -89,6 +90,7 @@ public class EnvironmentConfigTest {
 		assertThat(config.getCapabilitiesFilePath(), is("capabilities.json"));
 		assertThat(config.getPersister(), is("com.htmlhifive.pitalium.core.io.FilePersister"));
 		assertThat(config.getWebDriverSessionLevel(), is(WebDriverSessionLevel.TEST_CASE));
+		assertThat(config.getPerformanceMeasurementMode(), is(PerformanceMeasurementMode.OFF));
 		assertThat(config.isDebug(), is(false));
 	}
 
@@ -110,6 +112,7 @@ public class EnvironmentConfigTest {
 				.persister("persister")
 				.autoResizeWindow(true)
 				.webDriverSessionLevel(WebDriverSessionLevel.GLOBAL)
+				.performanceMeasurementMode(PerformanceMeasurementMode.ON)
 				.debug(true)
 				.build();
 //@formatter:on
@@ -125,6 +128,7 @@ public class EnvironmentConfigTest {
 		assertThat(config.getCapabilitiesFilePath(), is("cap.json"));
 		assertThat(config.getPersister(), is("persister"));
 		assertThat(config.getWebDriverSessionLevel(), is(WebDriverSessionLevel.GLOBAL));
+		assertThat(config.getPerformanceMeasurementMode(), is(PerformanceMeasurementMode.ON));
 		assertThat(config.isDebug(), is(true));
 	}
 

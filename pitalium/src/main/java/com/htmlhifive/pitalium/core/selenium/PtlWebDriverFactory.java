@@ -56,6 +56,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.htmlhifive.pitalium.common.exception.TestRuntimeException;
 import com.htmlhifive.pitalium.core.config.EnvironmentConfig;
+import com.htmlhifive.pitalium.core.config.PerformanceMeasurementMode;
 import com.htmlhifive.pitalium.core.config.PtlTestConfig;
 import com.htmlhifive.pitalium.core.config.TestAppConfig;
 import com.htmlhifive.pitalium.core.config.WebDriverSessionLevel;
@@ -502,7 +503,11 @@ public abstract class PtlWebDriverFactory {
 
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
-			return new PtlFirefoxDriver(url, getCapabilities());
+			if (getEnvironmentConfig().getPerformanceMeasurementMode() == PerformanceMeasurementMode.OFF) {
+				return new PtlFirefoxDriver(url, getCapabilities());
+			} else {
+				return new TelemetricFirefoxDriver(url, getCapabilities());
+			}
 		}
 
 		@Override
@@ -535,7 +540,11 @@ public abstract class PtlWebDriverFactory {
 
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
-			return new PtlChromeDriver(url, getCapabilities());
+			if (getEnvironmentConfig().getPerformanceMeasurementMode() == PerformanceMeasurementMode.OFF) {
+				return new PtlChromeDriver(url, getCapabilities());
+			} else {
+				return new TelemetricChromeDriver(url, getCapabilities());
+			}
 		}
 
 		@Override
@@ -577,7 +586,11 @@ public abstract class PtlWebDriverFactory {
 
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
-			return new PtlInternetExplorerDriver(url, getCapabilities());
+			if (getEnvironmentConfig().getPerformanceMeasurementMode() == PerformanceMeasurementMode.OFF) {
+				return new PtlInternetExplorerDriver(url, getCapabilities());
+			} else {
+				return new TelemetricInternetExplorerDriver(url, getCapabilities());
+			}
 		}
 
 		@Override
@@ -605,7 +618,11 @@ public abstract class PtlWebDriverFactory {
 
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
-			return new PtlInternetExplorer7Driver(url, getCapabilities());
+			if (getEnvironmentConfig().getPerformanceMeasurementMode() == PerformanceMeasurementMode.OFF) {
+				return new PtlInternetExplorer7Driver(url, getCapabilities());
+			} else {
+				return new TelemetricInternetExplorer7Driver(url, getCapabilities());
+			}
 		}
 
 		@Override
@@ -633,7 +650,11 @@ public abstract class PtlWebDriverFactory {
 
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
-			return new PtlInternetExplorer8Driver(url, getCapabilities());
+			if (getEnvironmentConfig().getPerformanceMeasurementMode() == PerformanceMeasurementMode.OFF) {
+				return new PtlInternetExplorer8Driver(url, getCapabilities());
+			} else {
+				return new TelemetricInternetExplorer8Driver(url, getCapabilities());
+			}
 		}
 
 		@Override
@@ -666,7 +687,11 @@ public abstract class PtlWebDriverFactory {
 
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
-			return new PtlEdgeDriver(url, getCapabilities());
+			if (getEnvironmentConfig().getPerformanceMeasurementMode() == PerformanceMeasurementMode.OFF) {
+				return new PtlEdgeDriver(url, getCapabilities());
+			} else {
+				return new TelemetricEdgeDriver(url, getCapabilities());
+			}
 		}
 
 		@Override
@@ -699,7 +724,11 @@ public abstract class PtlWebDriverFactory {
 
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
-			return new PtlSafariDriver(url, getCapabilities());
+			if (getEnvironmentConfig().getPerformanceMeasurementMode() == PerformanceMeasurementMode.OFF) {
+				return new PtlSafariDriver(url, getCapabilities());
+			} else {
+				return new TelemetricSafariDriver(url, getCapabilities());
+			}
 		}
 
 		@Override
@@ -750,7 +779,11 @@ public abstract class PtlWebDriverFactory {
 
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
-			return new PtlIPhoneDriver(url, getCapabilities());
+			if (getEnvironmentConfig().getPerformanceMeasurementMode() == PerformanceMeasurementMode.OFF) {
+				return new PtlIPhoneDriver(url, getCapabilities());
+			} else {
+				return new TelemetricIPhoneDriver(url, getCapabilities());
+			}
 		}
 
 		@Override
@@ -800,7 +833,11 @@ public abstract class PtlWebDriverFactory {
 
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
-			return new PtlIPadDriver(url, getCapabilities());
+			if (getEnvironmentConfig().getPerformanceMeasurementMode() == PerformanceMeasurementMode.OFF) {
+				return new PtlIPadDriver(url, getCapabilities());
+			} else {
+				return new TelemetricIPadDriver(url, getCapabilities());
+			}
 		}
 
 		@Override
@@ -833,7 +870,11 @@ public abstract class PtlWebDriverFactory {
 
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
-			return new PtlAndroidDriver(url, getCapabilities());
+			if (getEnvironmentConfig().getPerformanceMeasurementMode() == PerformanceMeasurementMode.OFF) {
+				return new PtlAndroidDriver(url, getCapabilities());
+			} else {
+				return new TelemetricAndroidDriver(url, getCapabilities());
+			}
 		}
 
 		@Override
@@ -861,7 +902,11 @@ public abstract class PtlWebDriverFactory {
 
 		@Override
 		public PtlWebDriver createWebDriver(URL url) {
-			return new PtlSelendroidDriver(url, getCapabilities());
+			if (getEnvironmentConfig().getPerformanceMeasurementMode() == PerformanceMeasurementMode.OFF) {
+				return new PtlSelendroidDriver(url, getCapabilities());
+			} else {
+				return new TelemetricSelendroidDriver(url, getCapabilities());
+			}
 		}
 
 		@Override

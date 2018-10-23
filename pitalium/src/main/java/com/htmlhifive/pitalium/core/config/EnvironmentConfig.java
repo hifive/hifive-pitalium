@@ -97,6 +97,11 @@ public class EnvironmentConfig implements Serializable {
 	private boolean debug = false;
 
 	/**
+	 * 性能測定モード
+	 */
+	private PerformanceMeasurementMode performanceMeasurementMode = PerformanceMeasurementMode.OFF;
+
+	/**
 	 * デフォルトの設定値を持つオブジェクトを生成します。
 	 */
 	public EnvironmentConfig() {
@@ -197,6 +202,15 @@ public class EnvironmentConfig implements Serializable {
 	 */
 	public WebDriverSessionLevel getWebDriverSessionLevel() {
 		return webDriverSessionLevel;
+	}
+
+	/**
+	 * 性能測定モードを取得します。
+	 *
+	 * @return 性能測定モード
+	 */
+	public PerformanceMeasurementMode getPerformanceMeasurementMode() {
+		return performanceMeasurementMode;
 	}
 
 	/**
@@ -308,6 +322,15 @@ public class EnvironmentConfig implements Serializable {
 	}
 
 	/**
+	 * 性能測定モードを設定します。
+	 *
+	 * @param performanceMeasurementMode 性能測定モード
+	 */
+	public void setPerformanceMeasurementMode(PerformanceMeasurementMode performanceMeasurementMode) {
+		this.performanceMeasurementMode = performanceMeasurementMode;
+	}
+
+	/**
 	 * デバッグモード実行フラグを設定します。
 	 * 
 	 * @param debug デバッグモード実行フラグ
@@ -355,6 +378,7 @@ public class EnvironmentConfig implements Serializable {
 			ev.setCapabilitiesFilePath(config.capabilitiesFilePath);
 			ev.setPersister(config.persister);
 			ev.setWebDriverSessionLevel(config.webDriverSessionLevel);
+			ev.setPerformanceMeasurementMode(config.performanceMeasurementMode);
 			ev.setDebug(config.debug);
 			return ev;
 		}
@@ -477,6 +501,17 @@ public class EnvironmentConfig implements Serializable {
 		 */
 		public Builder autoResizeWindow(boolean b) {
 			config.autoResizeWindow = b;
+			return this;
+		}
+
+		/**
+		 * 性能測定モードを設定します。
+		 *
+		 * @param mode 性能測定モード
+		 * @return このビルダーオブジェクト自身
+		 */
+		public Builder performanceMeasurementMode(PerformanceMeasurementMode mode) {
+			config.performanceMeasurementMode = mode;
 			return this;
 		}
 

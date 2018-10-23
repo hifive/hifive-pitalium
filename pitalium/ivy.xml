@@ -22,6 +22,7 @@
 		<dependency org="org.powermock" name="powermock-module-junit4" rev="1.6.6" conf="test->default" />
         <dependency org="org.hamcrest" name="java-hamcrest" rev="2.0.0.0" conf="test->default" />
         <dependency org="commons-io" name="commons-io" rev="2.5" conf="default" />
+		<dependency org="org.thymeleaf" name="thymeleaf-spring4" rev="2.1.3.RELEASE" conf="default"/>
 		<!-- ソースが必要な場合は下記のコメントを外してください。 -->
 		<dependency org="org.apache.commons" name="commons-lang3" rev="3.5" conf="sources" />
 		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.25" conf="sources" />

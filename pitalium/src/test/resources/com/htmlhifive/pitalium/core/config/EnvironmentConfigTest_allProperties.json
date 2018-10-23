@@ -9,5 +9,6 @@
 	"capabilitiesFilePath": "test.json",
 	"persister": "test",
 	"autoResizeWindow": true,
+	"performanceMeasurementMode": "ON",
 	"debug": true
 }
